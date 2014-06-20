@@ -8,6 +8,10 @@ apply plugin: 'bintray'
 sourceCompatibility = 1.8
 version = '1.0'
 
+group = 'com.ofg'
+description = 'Microservice dependency manager'
+version = '0.0.1-SNAPSHOT'
+
 buildscript {
     repositories {
         mavenLocal()
@@ -49,6 +53,8 @@ dependencies {
     }
 }
 
+bintrayUpload.dependsOn 'build'
+
 publishing {
     publications {
         plugin(MavenPublication) {
@@ -71,7 +77,7 @@ bintray {
     publications = ['plugin']
     pkg {
         repo = 'micro-deps'
-        userOrg = '4finance'
+        userOrg = 'szimano'
         name = 'micro-deps'
         desc = 'Library for managing microservice dependencies using Apache Curator'
         licenses = ['Apache-2.0']
@@ -87,4 +93,9 @@ task sourcesJar(type: Jar, dependsOn:classes) {
 task javadocJar(type: Jar, dependsOn:javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
 }

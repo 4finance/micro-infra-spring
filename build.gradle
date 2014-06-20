@@ -39,8 +39,9 @@ ext {
 
 dependencies {
     compile "org.codehaus.groovy:groovy-all:$groovyVersion:indy"
-    compile"org.apache.curator:curator-x-discovery:$curatorVersion"
+    compile "org.apache.curator:curator-x-discovery:$curatorVersion"
     compile "org.apache.curator:curator-test:$curatorVersion"
+    compile 'org.jboss.resteasy:resteasy-netty:3.0.8.Final'
 
     testCompile("org.spockframework:spock-core:$spockVersion") {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
@@ -87,17 +88,17 @@ bintray {
     publish = true
 }
 
-task sourcesJar(type: Jar, dependsOn:classes) {
+task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
 }
 
-task javadocJar(type: Jar, dependsOn:javadoc) {
+task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
 
-task fatJar(type: Jar,  dependsOn: sourcesJar) {
+task fatJar(type: Jar, dependsOn: sourcesJar) {
     classifier = 'fatJar'
 
     from files(sourceSets.main.output.classesDir)

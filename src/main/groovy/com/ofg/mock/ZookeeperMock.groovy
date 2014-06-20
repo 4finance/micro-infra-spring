@@ -13,10 +13,23 @@ class ZookeeperMock {
 
     @GET
     @Path("/stop")
-    public void stop() {
-        println "Stopping the zookeeper mock"
-        testingServer.close()
-        NettyContainer.stop()
+    public String stop() {
+        try {
+            println "Stopping the zookeeper mock"
+            testingServer.close()
+            scheduleShutdownIn5Seconds()
+            return "Zookeeper mock stopped"
+        } catch (Exception e) {
+            return e.toString()
+        }
+    }
+
+    private static scheduleShutdownIn5Seconds() {
+        new Thread({
+            Thread.sleep(1000)
+            NettyContainer.stop()
+            println "Netty stopped"
+        }).start()
     }
 
     public static void main(String[] args) {

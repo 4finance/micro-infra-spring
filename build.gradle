@@ -4,13 +4,14 @@ apply plugin: 'idea'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'bintray'
+apply plugin: 'uptodate'
 
 sourceCompatibility = 1.8
 version = '1.0'
 
 group = 'com.ofg'
 description = 'Microservice dependency manager'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.2-SNAPSHOT'
 
 buildscript {
     repositories {
@@ -20,6 +21,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
+        classpath("com.ofg:uptodate-gradle-plugin:0.0.2")
     }
 }
 
@@ -43,15 +45,17 @@ dependencies {
         exclude group: 'log4j'
     }
 
-    testCompile("org.spockframework:spock-core:$spockVersion") {
-        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
-    }
-
-    testCompile("org.apache.curator:curator-test:$curatorVersion") {
+    compile("org.apache.curator:curator-test:$curatorVersion") {
         exclude group: 'org.slf4j'
         exclude group: 'log4j'
     }
+
+    testCompile("org.spockframework:spock-core:$spockVersion") {
+        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+    }
 }
+
+build.dependsOn 'uptodate'
 
 bintrayUpload.dependsOn 'build'
 
@@ -74,15 +78,17 @@ publishing {
 bintray {
     user = System.properties['bintrayUser']
     key = System.properties['bintrayKey']
+
     publications = ['plugin']
     pkg {
-        repo = 'micro-deps'
-        userOrg = 'szimano'
+        repo = 'maven'
+//        userOrg = '4finance'
         name = 'micro-deps'
         desc = 'Library for managing microservice dependencies using Apache Curator'
         licenses = ['Apache-2.0']
         labels = ['microservice']
     }
+    publish = true
 }
 
 task sourcesJar(type: Jar, dependsOn:classes) {

@@ -19,6 +19,12 @@ buildscript {
     }
 }
 
+repositories {
+    mavenLocal()
+    maven { url 'http://jcenter.bintray.com' }
+    mavenCentral()
+}
+
 ext {
     groovyVersion = '2.3.2'
     spockVersion = '0.7-groovy-2.0'
@@ -26,7 +32,7 @@ ext {
 }
 
 dependencies {
-    compile "org.codehaus.groovy:groovy-all:$groovyVersion"
+    compile "org.codehaus.groovy:groovy-all:$groovyVersion:indy"
 
     compile("org.apache.curator:curator-x-discovery:$curatorVersion") {
         exclude group: 'org.slf4j'

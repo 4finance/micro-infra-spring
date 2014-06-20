@@ -11,7 +11,7 @@ version = '1.0'
 
 group = 'com.ofg'
 description = 'Microservice dependency manager'
-version = '0.0.2'
+version = '0.0.3'
 
 buildscript {
     repositories {
@@ -39,29 +39,21 @@ ext {
 
 dependencies {
     compile "org.codehaus.groovy:groovy-all:$groovyVersion:indy"
-
-    compile("org.apache.curator:curator-x-discovery:$curatorVersion") {
-        exclude group: 'org.slf4j'
-        exclude group: 'log4j'
-    }
-
-    compile("org.apache.curator:curator-test:$curatorVersion") {
-        exclude group: 'org.slf4j'
-        exclude group: 'log4j'
-    }
+    compile"org.apache.curator:curator-x-discovery:$curatorVersion"
+    compile "org.apache.curator:curator-test:$curatorVersion"
 
     testCompile("org.spockframework:spock-core:$spockVersion") {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
 }
 
-build.dependsOn 'uptodate'
+build.dependsOn(['uptodate', 'fatJar'])
 
 bintrayUpload.dependsOn 'build'
 
 publishing {
     publications {
-        plugin(MavenPublication) {
+        mavenJava(MavenPublication) {
             from components.java
 
             artifact sourcesJar {
@@ -71,6 +63,10 @@ publishing {
             artifact javadocJar {
                 classifier "javadoc"
             }
+
+            artifact fatJar {
+                classifier "fatJar"
+            }
         }
     }
 }
@@ -79,7 +75,7 @@ bintray {
     user = System.properties['bintrayUser']
     key = System.properties['bintrayKey']
 
-    publications = ['plugin']
+    publications = ['mavenJava']
     pkg {
         repo = 'micro-deps'
         userOrg = '4finance'
@@ -101,7 +97,21 @@ task javadocJar(type: Jar, dependsOn:javadoc) {
     from javadoc.destinationDir
 }
 
+task fatJar(type: Jar,  dependsOn: sourcesJar) {
+    classifier = 'fatJar'
+
+    from files(sourceSets.main.output.classesDir)
+    from configurations.runtime.asFileTree.files.collect { zipTree(it) }
+
+    manifest {
+        attributes 'Main-Class': 'com.ofg.mock.ZookeeperMock'
+    }
+}
+
 artifacts {
     archives sourcesJar
     archives javadocJar
+    archives fatJar
 }
+
+

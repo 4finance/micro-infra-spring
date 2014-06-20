@@ -81,8 +81,8 @@ bintray {
 
     publications = ['plugin']
     pkg {
-        repo = 'maven'
-//        userOrg = '4finance'
+        repo = 'micro-deps'
+        userOrg = '4finance'
         name = 'micro-deps'
         desc = 'Library for managing microservice dependencies using Apache Curator'
         licenses = ['Apache-2.0']

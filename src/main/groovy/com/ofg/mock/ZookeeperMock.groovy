@@ -25,7 +25,7 @@ class ZookeeperMock {
     
     @Option(name = '-mp', usage = """optional port number on which zookeeper rest server will be started.
 It will expose one method on /stop to stop the server. Default is 18081""")
-    private int mockPortNumber = DEFAULT_MOCK_PORT_NUMBER 
+    private int controlPortNumber = DEFAULT_MOCK_PORT_NUMBER 
     
     @Option(name = '-c', usage = "json configuration with dependencies to load (exclusive with -f)", forbids = ['-f'])
     private String jsonConfig
@@ -92,16 +92,16 @@ It will expose one method on /stop to stop the server. Default is 18081""")
             if (!repository) {
                 throw new CmdLineException('In order to load stubs you must provide a repository with -r')
             }
-            new StubLoader().loadStubs(resolver.dependencies, repository)
+            new StubLoader().loadStubs(resolver, repository, portNumber)
         }
     }
 
     private void startZookeeperMock() {
-        System.setProperty("org.jboss.resteasy.port", "$mockPortNumber")
+        System.setProperty("org.jboss.resteasy.port", "$controlPortNumber")
         server = new UndertowJaxrsServer().start()
         server.deploy(RestApp)
         testingServer = new TestingServer(portNumber)
-        println "ZooKeeper mock started with mock controll port [$mockPortNumber] and zookeeper port [$portNumber]"
+        println "ZooKeeper mock started with mock controll port [$controlPortNumber] and zookeeper port [$portNumber]"
     }
 
     @ApplicationPath("/")

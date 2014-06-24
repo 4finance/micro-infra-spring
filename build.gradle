@@ -11,7 +11,7 @@ version = '1.0'
 
 group = 'com.ofg'
 description = 'Microservice dependency manager'
-version = '0.0.4'
+version = '0.0.5'
 
 buildscript {
     repositories {

@@ -31,13 +31,13 @@ class ServiceResolver {
     
     Optional<String> getUrl(String dependency) {
         ServiceProvider serviceProvider = services[dependency]
-        checkIfDependencyNotMissing(serviceProvider, dependency)
+        checkIfDependencyNotDefinedInConfig(serviceProvider, dependency)
         return Optional.ofNullable(serviceProvider?.instance?.buildUriSpec())
     }
 
-    private void checkIfDependencyNotMissing(ServiceProvider serviceProvider, String dependency) {
+    private void checkIfDependencyNotDefinedInConfig(ServiceProvider serviceProvider, String dependency) {
         if (!serviceProvider) {
-            throw new DependencyNotDefinedException("$dependency dependency not found")
+            throw new DependencyNotDefinedInConfigException("$dependency dependency not found")
         }
     }
 

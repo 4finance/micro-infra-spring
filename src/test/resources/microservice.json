@@ -2,7 +2,7 @@
     "pl": {
         "this": "com/ofg/payments-pl",
         "dependencies": {
-            "loans": "com/ofg/loans/pl/backoffice-vivus-pl"
+            "trustly": "com/ofg/trustly-adapter"
         }
     }
 }

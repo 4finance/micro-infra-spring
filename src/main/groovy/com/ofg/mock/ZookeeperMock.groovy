@@ -77,7 +77,7 @@ It will expose one method on /stop to stop the server. Default is 18081""")
         CmdLineParser parser = new CmdLineParser(this);
         try {
             parser.parseArgument(args);
-            startZookeeperMock()
+            //startZookeeperMock()
             startStubs()
         } catch( CmdLineException e ) {
             System.err.println(e.getMessage())

@@ -18,6 +18,7 @@ class ZookeeperMock {
     static TestingServer testingServer
 
     private static final int DEFAULT_PORT_NUMBER = 2181
+    
     private static final int DEFAULT_MOCK_PORT_NUMBER = 18081
     
     @Option(name = '-p', usage = "optional port number on which zookeeper mock will be started. Default is 2181")
@@ -77,7 +78,7 @@ It will expose one method on /stop to stop the server. Default is 18081""")
         CmdLineParser parser = new CmdLineParser(this);
         try {
             parser.parseArgument(args);
-            //startZookeeperMock()
+            startZookeeperMock()
             startStubs()
         } catch( CmdLineException e ) {
             System.err.println(e.getMessage())

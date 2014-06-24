@@ -29,9 +29,9 @@ class DependencyWatcher {
     }
 
     private void checkDependencyPresenceOnStartup(String dependencyName, ServiceCache serviceCache) {
-        PresenceChecker dependencyPresenceListener = dependencyPresenceOnStartupChecker[dependencyName]
-        if (dependencyPresenceListener) {
-            dependencyPresenceListener.checkPresence(serviceCache.instances)
+        PresenceChecker dependencyPresenceChecker = dependencyPresenceOnStartupChecker[dependencyName]
+        if (dependencyPresenceChecker) {
+            dependencyPresenceChecker.checkPresence(serviceCache.instances)
         }
     }
 

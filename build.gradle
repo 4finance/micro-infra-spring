@@ -7,16 +7,15 @@ apply plugin: 'bintray'
 apply plugin: 'uptodate'
 
 sourceCompatibility = 1.8
-version = '1.0'
 
 group = 'com.ofg'
 description = 'Microservice dependency manager'
-version = '0.0.6'
+version = '0.1.0-SNAPSHOT'
 
 buildscript {
     repositories {
         mavenLocal()
-        maven { url 'http://jcenter.bintray.com' }
+        jcenter()
         mavenCentral()
     }
     dependencies {
@@ -27,7 +26,7 @@ buildscript {
 
 repositories {
     mavenLocal()
-    maven { url 'http://jcenter.bintray.com' }
+    jcenter()
     mavenCentral()
 }
 
@@ -94,7 +93,6 @@ bintray {
         licenses = ['Apache-2.0']
         labels = ['microservice']
     }
-    publish = true
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {

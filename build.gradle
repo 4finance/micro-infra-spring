@@ -10,7 +10,7 @@ sourceCompatibility = 1.8
 
 group = 'com.ofg'
 description = 'Microservice dependency manager'
-version = '0.1.0-SNAPSHOT'
+version = '0.1.0'
 
 buildscript {
     repositories {

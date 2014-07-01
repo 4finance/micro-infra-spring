@@ -1,0 +1,79 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'bintray'
+apply plugin: 'uptodate'
+
+sourceCompatibility = 1.8
+
+group = 'com.ofg'
+description = 'Microservice dependency manager - default Spring configuration'
+version = '0.0.1-SNAPSHOT'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
+        classpath("com.ofg:uptodate-gradle-plugin:0.0.2")
+    }
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.3.3:indy'
+    compile 'org.springframework:spring-context:4.0.5.RELEASE'
+    compile('com.ofg:micro-deps:0.1.0') {
+        exclude group: 'log4j'
+    }
+}
+
+bintrayUpload.dependsOn 'build'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourcesJar {
+                classifier "sources"
+            }
+        }
+    }
+}
+
+bintray {
+    user = System.properties['bintrayUser']
+    key = System.properties['bintrayKey']
+
+    publications = ['mavenJava']
+    pkg {
+        repo = 'micro-deps'
+        userOrg = '4finance'
+        name = 'micro-deps-spring'
+        desc = 'Default Spring configuration for Microservice Dependency Manager'
+        licenses = ['Apache-2.0']
+        labels = ['microservice']
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.0'
+}

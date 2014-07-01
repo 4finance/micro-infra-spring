@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.discovery.watcher
 
+import com.ofg.infrastructure.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
 import groovy.transform.PackageScope
 import org.apache.curator.x.discovery.ServiceCache
 import org.apache.curator.x.discovery.ServiceDiscovery
@@ -10,28 +11,21 @@ class DependencyWatcher {
     private final ServiceDiscovery serviceDiscovery
     private final Map<String, ServiceCache> dependencyRegistry = [:]
     private final List<DependencyWatcherListener> listeners = []
-    private final Map<String, PresenceChecker> dependencyPresenceOnStartupChecker
+    private final DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier
 
-    DependencyWatcher(Map<String, String> dependencies, ServiceDiscovery serviceDiscovery, Map<String, PresenceChecker> dependencyPresenceOnStartupChecker) {
+    DependencyWatcher(Map<String, String> dependencies, ServiceDiscovery serviceDiscovery, DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier) {
         this.dependencies = dependencies
         this.serviceDiscovery = serviceDiscovery
-        this.dependencyPresenceOnStartupChecker = dependencyPresenceOnStartupChecker
+        this.dependencyPresenceOnStartupVerifier = dependencyPresenceOnStartupVerifier
     }
 
     @PackageScope void registerDependencies() {
         dependencies.each { String dependencyName, String dependencyDefinition ->
             ServiceCache serviceCache = serviceDiscovery.serviceCacheBuilder().name(dependencyDefinition).build()
             serviceCache.start()
-            checkDependencyPresenceOnStartup(dependencyName, serviceCache)
+            dependencyPresenceOnStartupVerifier.verifyDependencyPresence(dependencyName, serviceCache)
             dependencyRegistry[dependencyName] = serviceCache
             serviceCache.addListener(new DependencyStateChangeListenerRegistry(listeners, dependencyName, serviceCache))
-        }
-    }
-
-    private void checkDependencyPresenceOnStartup(String dependencyName, ServiceCache serviceCache) {
-        PresenceChecker dependencyPresenceChecker = dependencyPresenceOnStartupChecker[dependencyName]
-        if (dependencyPresenceChecker) {
-            dependencyPresenceChecker.checkPresence(serviceCache.instances)
         }
     }
 

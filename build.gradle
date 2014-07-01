@@ -6,11 +6,11 @@ apply plugin: 'maven-publish'
 apply plugin: 'bintray'
 apply plugin: 'uptodate'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.7
 
 group = 'com.ofg'
 description = 'Microservice dependency manager'
-version = '0.2.0'
+version = '0.3.0'
 
 buildscript {
     repositories {
@@ -50,6 +50,7 @@ dependencies {
     compile 'io.undertow:undertow-servlet:1.0.1.Final'
     compile 'org.apache.ivy:ivy:2.3.0'
     compile 'args4j:args4j:2.0.28'
+    compile 'com.google.guava:guava:17.0'
 
     testCompile("org.spockframework:spock-core:$spockVersion") {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'

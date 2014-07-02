@@ -18,7 +18,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
-        classpath("com.ofg:uptodate-gradle-plugin:0.0.2")
+        classpath('com.ofg:uptodate-gradle-plugin:0.0.3')
     }
 }
 
@@ -31,7 +31,7 @@ repositories {
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.3.3:indy'
     compile 'org.springframework:spring-context:4.0.5.RELEASE'
-    compile('com.ofg:micro-deps:0.1.0') {
+    compile('com.ofg:micro-deps:0.3.0') {
         exclude group: 'log4j'
     }
 }
@@ -58,7 +58,7 @@ bintray {
     pkg {
         repo = 'micro-deps'
         userOrg = '4finance'
-        name = 'micro-deps-spring'
+        name = 'micro-deps-spring-config'
         desc = 'Default Spring configuration for Microservice Dependency Manager'
         licenses = ['Apache-2.0']
         labels = ['microservice']

@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'bintray'
 apply plugin: 'uptodate'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.7
 
 group = 'com.ofg'
 description = 'Microservice dependency manager - default Spring configuration'

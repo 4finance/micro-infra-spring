@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.discovery
-
-import com.ofg.infrastructure.discovery.watcher.DefaultDependencyPresenceOnStartupChecker
 import com.ofg.infrastructure.discovery.watcher.DependencyWatcher
+import com.ofg.infrastructure.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
+import com.ofg.infrastructure.discovery.watcher.presence.MissingDependencyLoggingOnStartupVerifier
 import groovy.transform.PackageScope
 import groovy.transform.TypeChecked
 import org.apache.curator.framework.CuratorFramework
@@ -11,6 +11,7 @@ import org.apache.curator.x.discovery.ServiceDiscovery
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
 import org.apache.curator.x.discovery.ServiceInstance
 import org.apache.curator.x.discovery.UriSpec
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -20,12 +21,14 @@ import org.springframework.core.io.ClassPathResource
 @Configuration
 @PackageScope
 class ServiceResolverConfiguration {
-        
+            
+    @Autowired(required = false) DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier
+    
     @PackageScope
     @Bean(initMethod = 'registerDependencies', destroyMethod = 'unregisterDependencies')
     DependencyWatcher dependencyWatcher(ServiceConfigurationResolver serviceConfigurationResolver, ServiceDiscovery serviceDiscovery) {
         //TODO: Add a default listener that checks whether each dependency is online (default implementation treats all deps as critical)
-        return new DependencyWatcher(serviceConfigurationResolver.dependencies, serviceDiscovery, [:].withDefault { new DefaultDependencyPresenceOnStartupChecker() } )
+        return new DependencyWatcher(serviceConfigurationResolver.dependencies, serviceDiscovery, dependencyPresenceOnStartupVerifier ?: new MissingDependencyLoggingOnStartupVerifier())
     }
     
     @PackageScope

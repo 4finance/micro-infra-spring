@@ -10,7 +10,7 @@ sourceCompatibility = 1.7
 
 group = 'com.ofg'
 description = 'Microservice dependency manager'
-version = '0.3.1-SNAPSHOT'
+version = '0.3.1'
 
 buildscript {
     repositories {
@@ -20,7 +20,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
-        classpath("com.ofg:uptodate-gradle-plugin:0.0.2")
+        classpath("com.ofg:uptodate-gradle-plugin:0.0.3")
     }
 }
 
@@ -31,7 +31,7 @@ repositories {
 }
 
 ext {
-    groovyVersion = '2.3.2'
+    groovyVersion = '2.3.3'
     spockVersion = '0.7-groovy-2.0'
     curatorVersion = '2.5.0'
 }

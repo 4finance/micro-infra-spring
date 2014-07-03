@@ -1,7 +1,8 @@
 package com.ofg.infrastructure.discovery
+
 import com.ofg.infrastructure.discovery.watcher.DependencyWatcher
 import com.ofg.infrastructure.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
-import com.ofg.infrastructure.discovery.watcher.presence.MissingDependencyLoggingOnStartupVerifier
+import com.ofg.infrastructure.discovery.watcher.presence.FailOnMissingDependencyOnStartupVerifier
 import groovy.transform.PackageScope
 import groovy.transform.TypeChecked
 import org.apache.curator.framework.CuratorFramework
@@ -19,7 +20,6 @@ import org.springframework.core.io.ClassPathResource
 
 @TypeChecked
 @Configuration
-@PackageScope
 class ServiceResolverConfiguration {
             
     @Autowired(required = false) DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier
@@ -27,8 +27,7 @@ class ServiceResolverConfiguration {
     @PackageScope
     @Bean(initMethod = 'registerDependencies', destroyMethod = 'unregisterDependencies')
     DependencyWatcher dependencyWatcher(ServiceConfigurationResolver serviceConfigurationResolver, ServiceDiscovery serviceDiscovery) {
-        //TODO: Add a default listener that checks whether each dependency is online (default implementation treats all deps as critical)
-        return new DependencyWatcher(serviceConfigurationResolver.dependencies, serviceDiscovery, dependencyPresenceOnStartupVerifier ?: new MissingDependencyLoggingOnStartupVerifier())
+        return new DependencyWatcher(serviceConfigurationResolver.dependencies, serviceDiscovery, dependencyPresenceOnStartupVerifier ?: new FailOnMissingDependencyOnStartupVerifier())
     }
     
     @PackageScope

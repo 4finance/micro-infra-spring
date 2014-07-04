@@ -12,8 +12,8 @@ version = '0.0.3-SNAPSHOT'
 
 buildscript {
     repositories {
+        mavenLocal()
         jcenter()
-        mavenCentral()
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
@@ -22,6 +22,7 @@ buildscript {
 }
 
 repositories {
+    mavenLocal()
     jcenter()
     mavenCentral()
 }

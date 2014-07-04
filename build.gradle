@@ -1,6 +1,4 @@
 apply plugin: 'groovy'
-apply plugin: 'java'
-apply plugin: 'idea'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'bintray'
@@ -16,7 +14,6 @@ buildscript {
     repositories {
         mavenLocal()
         jcenter()
-        mavenCentral()
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
@@ -26,14 +23,15 @@ buildscript {
 
 repositories {
     mavenLocal()
-    jcenter()
     mavenCentral()
+    jcenter()
 }
 
 ext {
     groovyVersion = '2.3.3'
     spockVersion = '0.7-groovy-2.0'
     curatorVersion = '2.5.0'
+    undertowVersion = '1.0.15.Final'
 }
 
 configurations {
@@ -46,8 +44,8 @@ dependencies {
     compile "org.apache.curator:curator-x-discovery:$curatorVersion"
     compile "org.apache.curator:curator-test:$curatorVersion"
     compile 'org.jboss.resteasy:resteasy-undertow:3.0.8.Final'
-    compile 'io.undertow:undertow-core:1.0.1.Final'
-    compile 'io.undertow:undertow-servlet:1.0.1.Final'
+    compile "io.undertow:undertow-core:$undertowVersion"
+    compile "io.undertow:undertow-servlet:$undertowVersion"
     compile 'org.apache.ivy:ivy:2.3.0'
     compile 'args4j:args4j:2.0.28'
     compile 'com.google.guava:guava:17.0'
@@ -57,7 +55,7 @@ dependencies {
     }
 }
 
-build.dependsOn(['uptodate', 'fatJar'])
+build.dependsOn 'fatJar'
 
 bintrayUpload.dependsOn 'build'
 
@@ -68,10 +66,6 @@ publishing {
 
             artifact sourcesJar {
                 classifier "sources"
-            }
-
-            artifact javadocJar {
-                classifier "javadoc"
             }
 
             artifact fatJar {
@@ -101,11 +95,6 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
 task fatJar(type: Jar, dependsOn: sourcesJar) {
     classifier = 'fatJar'
 
@@ -117,9 +106,12 @@ task fatJar(type: Jar, dependsOn: sourcesJar) {
     }
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.0'
+}
+
 artifacts {
     archives sourcesJar
-    archives javadocJar
     archives fatJar
 }
 

@@ -48,12 +48,11 @@ class ServiceResolverConfiguration {
     
     @PackageScope
     @Bean
-    ServiceInstance serviceInstance(@Value('${microservice.url:localhost}') String microserviceUrl,
+    ServiceInstance serviceInstance(@Value('${microservice.host:localhost}') String microserviceHost,
                                     @Value('${microservice.port:8080}') int microservicePort,
-                                    @Value('${microservice.context:rest}') String microserviceContext,
                                     ServiceConfigurationResolver serviceConfigurationResolver) {
-        return ServiceInstance.builder().uriSpec(new UriSpec("{scheme}://{address}:{port}/$microserviceContext"))
-                                        .address(microserviceUrl)
+        return ServiceInstance.builder().uriSpec(new UriSpec('{scheme}://{address}:{port}'))
+                                        .address(microserviceHost)
                                         .port(microservicePort)
                                         .name(serviceConfigurationResolver.microserviceName)
                                         .build()

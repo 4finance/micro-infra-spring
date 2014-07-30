@@ -16,16 +16,16 @@ class AddressProviderConfiguration {
     @Bean
     @PackageScope
     MicroserviceAddressProvider microserviceAddressProvider(
-            @Value('${microservice.host:#{@addressProviderConfiguration.resolveMicroserviceLocalhost()}}') String microserviceHost,
-            @Value('${microservice.port:#{@addressProviderConfiguration.resolveMicroservicePort()}}') int microservicePort) {        
+            @Value('${microservice.host:#{T(com.ofg.infrastructure.discovery.AddressProviderConfiguration).resolveMicroserviceLocalhost()}}') String microserviceHost,
+            @Value('${microservice.port:#{T(com.ofg.infrastructure.discovery.AddressProviderConfiguration).resolveMicroservicePort(@environment)}}') int microservicePort) {        
         return new MicroserviceAddressProvider(microserviceHost, microservicePort)
     }
     
-    String resolveMicroserviceLocalhost() {
+    static String resolveMicroserviceLocalhost() {
         return InetAddress.localHost.hostAddress
     }
     
-    Integer resolveMicroservicePort() {
+    static Integer resolveMicroservicePort(Environment environment) {
         String port = System.getProperty('port') ?: environment.getProperty('server.port')
         return port != null ? port.toInteger() : DEFAULT_SERVER_PORT
     }

@@ -64,6 +64,167 @@ not have to change it everywhere in the code, just in this one place.
 Usage 
 -----
 
+### Register your service ###
+
 If you are using spring, checkout the [microdeps-spring-config](github.com/4finance/micro-deps-spring-config) 
 that will create all the needed beans.
 
+In all other cases it will most probably make sense for you to check out `com.ofg.infrastructure.discovery.util.MicroDepsService`.
+
+This class takes all the configuration needed to start, then you call start() on it and your service will get registered.
+Check out the javadocs for the specific usage.
+
+If you want to have more control over the specific classes used inside, feel free to check out the code to see how they
+ are used.
+
+### Register custom Dependency Watchers ###
+
+Use `MicroDepsService.registerDependencyStateChangeListener` or `DependencyWatcher.registerDependencyStateChangeListener`
+if you have chosen to create all the classes on your own.
+
+The object you pass of class `DependencyWatcherListener` is a very simple listener
+
+````groovy
+interface DependencyWatcherListener {        
+    void stateChanged(String dependencyName, DependencyState newState)        
+}
+````
+
+Now every time any of your dependency changes, you will get a notification with the dependencyName (the key from dependencies)
+and the state of it - it can be either that at least one is CONNECTED or DISCONNECTED. Just bare in mind you will be notified
+every time a node connects or disconnects so you might be getting number of CONNECTED notifications in a row.
+
+Stubs
+-----
+
+Another important case that micro-deps is trying to solve is microservice stubs.
+
+### Stub definition ###
+
+First thing you need to make sure is that you develop another stub project that will be an equivalent of your real project,
+ but it's only use will be stubbing the API.
+ 
+So make sure that your project has another one with -stub suffix and mimics all the API you are providing. Then make sure 
+you deploy it to your favorite dependency repository.
+
+Your stub should be an executable jar with a main function that accepts 4 parameters
+`zookeper context, fully qualified name, port to bind to, zookeeper port`
+
+Then it should use the above config to register in zookeeper. An example class that does it that can be almost 1:1 copy-pasted
+can be found at [boot-microservice-stub example](https://github.com/4finance/boot-microservice-stub/blob/master/src/main/groovy/com/ofg/BootMicroserviceStubApplication.groovy).
+
+### Stub deployment ###
+
+Now the convention is that the fully qualified name of you microservice is also the fully qualified name in your dependency 
+repository. So in our case if this was a maven project groupId would be `foo.bar` and artifactId `registration`. The stub
+project should have groupId `foo.bar` and artifactId `registration-stub`.
+
+### Running stubs ###
+
+Now when you're doing your day-to-day development you will want to run stubs of all the dependencies so that locally you
+can test your code.
+
+micro-deps in this case acts as a runnable jar type
+
+`java -jar micro-deps-VERSION-fatJar.jar`
+
+#### Test zookeeper server
+
+What it does when no parameters are passed is
+* Starts testing zookeeper instance (providing you with the port)
+* Starts a simple local server that allows you to send GET to http://localhost:PORT/stop to stop it
+
+#### Dependency resolution and downloading
+
+There are couple of parameters you can pass to the jar
+````
+ -c VAL : json configuration with dependencies to load (exclusive with -f)
+ -f VAL : path to file with json config (exclusive with -c)
+ -mp N  : optional port number on which zookeeper rest server will be started.
+          It will expose one method on /stop to stop the server. Default is
+          18081
+ -p N   : optional port number on which zookeeper mock will be started. Default
+          is 2181
+ -r VAL : url to repository with stubs
+````
+
+You can override the default zookeeper port/stop server, but more importantly you can pass you microservice.json file,
+which then will be read and micro-deps will try downloading and running those stubs from the repository passed with -r option.
+
+API Version Handling
+----------------
+
+There are two approaches that can be taken.
+
+### Versioned service names ###
+
+The straight-forward approach is that you can add version to your microservice name. Your microservice.json can look like this
+
+````json
+    {
+        "prod": {
+            "this": "foo/bar/registration/12",
+            "dependencies": {
+                "users": "foo/bar/users/8",
+                "newsletter": "foo/bar/comms/newsletter/14",
+                "confirmation": "foo/bar/security/confirmation/3"
+            }
+        }
+    }
+````
+
+The good thing with this approach is that it is very easy to manage, every service must support only it's API version,
+but when you think about it it's almost impossible to follow that approach when you have a database and it's schema
+changes from version to version.
+
+Also bear in mind that in this case stubs described in previous section are not supported. Pull-Requests are welcome ;-)
+
+### Header-level support ###
+
+Another approach is to have your microservice support different version of API using the headers. 
+ 
+As you extend your webservice and change the data, you will have to support multiple versions of the API (as long 
+as there are any other microservices using the older versions).
+
+Imagine you used to have ConfirmationController that would send out an unique link over email. Then the API has changed
+and instead of accepting full email address you're accepting only username, because for some reason the domain is always the same.
+
+Spring/groovy example can look like this
+
+````groovy
+    @RestController
+    @RequestMapping(value = "/payment-order")
+    class ConfirmationController {
+    
+        private final EmailSender emailSender
+    
+        private final String emailDomain = '@foo.bar'
+        
+        @Autowired
+        PaymentOrderController(EmailSender emailSender) {
+            this.emailSender = emailSender
+        }
+    
+        @RequestMapping(method = RequestMethod.POST, 
+                consumes = 'application/vnd.mymoid-adapter.v1+json',
+                produces = 'application/vnd.mymoid-adapter.v1+json')
+        ResponseEntity<String> createPaymentOrder(@RequestParam('emailAddress') emailAddress) {
+            if (!emailAddress.endsWith(emailDomain)) {
+                return new ResponseEntity("Email $emailAddress is not in $emailDomain", HttpStatus.PRECONDITION_FAILED)
+            }
+            emailSender.sendEmailTo(emailAddress)
+            return new ResponseEntity('Email sent', HttpStatus.OK)
+        }
+        
+        @RequestMapping(method = RequestMethod.POST, 
+                consumes = 'application/vnd.mymoid-adapter.v2+json',
+                produces = 'application/vnd.mymoid-adapter.v2+json')
+        ResponseEntity<String> createPaymentOrder(@RequestParam('userLogin') userLogin) {
+            emailSender.sendEmailTo(userLogin + emailDomain)
+            return new ResponseEntity('Email sent', HttpStatus.OK)
+        }
+    }
+````     
+
+If you are not using Spring for sure your REST library handles consumes/produces in a similar way. If it does not, then
+you probably should change your library ;-).

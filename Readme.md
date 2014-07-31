@@ -18,7 +18,8 @@ The heart of your application is the microservice.json file. The file defines th
 * Fully qualified name of your microservice
 * List of the dependencies
 
-But lets look at the file
+But lets look at the file (think internet shop and microservice that handles user registration, so it must create users,
+sign them up for newsletters and send confirmation emails).
 
 ````json
     {
@@ -33,29 +34,27 @@ But lets look at the file
     }
 ````
 
-Imagine a world where you are creating yet another internet shop. We will see how the three things mentioned above
-are done.
-
 ### Deployment context ###
 
 Your microservice is deployed in the "prod" environment (see the root of the json).
 
 Having this you can use single zookeeper server for many contexts, and while a prod context is not maybe the best example,
-it makes more sense where you have 7 jenkins agents building your application simultaneously, In that case you will just register
+it makes more sense when you have 7 jenkins agents building your application simultaneously - in that case you will just register
 your microservices in contexts under agent names.
 
 ### Name of the microservice ###
 
-Whatever is put in this will be the fully qualified name of your microservice. 
+Whatever is put here will be the fully qualified name of your microservice. 
 
-Your microservice in this case will be registered under `prod/foo/bar/registration` and since we're using ServiceDiscovery
+In the above example microservice will be registered under `prod/foo/bar/registration` and since we're using ServiceDiscovery
  implemented in Curator you will have all instances of your service registered under generated UUIDs under the above path.
+ Service Discovery will out of the box give you different strategies for high availability.
  
 ### Dependencies ###
 
 The last section defines the dependencies that your microservice will be looking for. When starting everything up you will
 have possibility to either use an out-of-the-box strategy or implement your own on what should happen when a dependency is
-or is not available on your microservice boot and then what happens when a dependency disappears.
+or is not available during the microservice boot and then what happens when a dependency disappears.
 
 Dependencies are always defined with a key and a value. The key must be an unique identifier that you will reference from
 your code, while the value is a fully qualified name of the dependency. When the path to the dependency changes, you will
@@ -91,20 +90,32 @@ interface DependencyWatcherListener {
 ````
 
 Now every time any of your dependency changes, you will get a notification with the dependencyName (the key from dependencies)
-and the state of it - it can be either that at least one is CONNECTED or DISCONNECTED. Just bare in mind you will be notified
+and the state of it - it can be either that at least one is CONNECTED or all are DISCONNECTED. Just bare in mind you will be notified
 every time a node connects or disconnects so you might be getting number of CONNECTED notifications in a row.
+
+### Resolve dependency endpoints ###
+
+Use `com.ofg.infrastructure.discovery.ServiceResolver.getUrl(dependency)`, where dependency is the key from you dependency list.
+
+This will give you url to your dependency that zookeeper thinks is alive. It is a good idea to run this every time you are accessing
+your dependency to be almost sure you're getting one that is alive and that you're using you HA strategy.
+
+Just bare in mind, that if a service dies unexpectedly without proper closing the zookeeper connection there will be a timeout
+after which zookeeper will realise your dependency is dead. So allow timeouts there.
 
 Stubs
 -----
 
-Another important case that micro-deps is trying to solve is microservice stubs.
+Another important case that micro-deps is trying to solve is microservice stubs. 
+Stubs are helpful when you're doing your day-to-day development and you want to run stubs of all the dependencies 
+so that your service can start quickly, without the need to set up the whole tree of dependencies first.
 
 ### Stub definition ###
 
-First thing you need to make sure is that you develop another stub project that will be an equivalent of your real project,
+First thing you need to make sure is that you develop another project that will be an equivalent of your real project,
  but it's only use will be stubbing the API.
  
-So make sure that your project has another one with -stub suffix and mimics all the API you are providing. Then make sure 
+So make sure that your project has an equivalent with -stub suffix and mimics all the API you are providing. Then make sure 
 you deploy it to your favorite dependency repository.
 
 Your stub should be an executable jar with a main function that accepts 4 parameters
@@ -112,6 +123,7 @@ Your stub should be an executable jar with a main function that accepts 4 parame
 
 Then it should use the above config to register in zookeeper. An example class that does it that can be almost 1:1 copy-pasted
 can be found at [boot-microservice-stub example](https://github.com/4finance/boot-microservice-stub/blob/master/src/main/groovy/com/ofg/BootMicroserviceStubApplication.groovy).
+You can also use the project to see how the stub can be done.
 
 ### Stub deployment ###
 
@@ -121,16 +133,13 @@ project should have groupId `foo.bar` and artifactId `registration-stub`.
 
 ### Running stubs ###
 
-Now when you're doing your day-to-day development you will want to run stubs of all the dependencies so that locally you
-can test your code.
-
-micro-deps in this case acts as a runnable jar type
+micro-deps acts for this as a runnable jar
 
 `java -jar micro-deps-VERSION-fatJar.jar`
 
 #### Test zookeeper server
 
-What it does when no parameters are passed is
+What it does on start is
 * Starts testing zookeeper instance (providing you with the port)
 * Starts a simple local server that allows you to send GET to http://localhost:PORT/stop to stop it
 
@@ -149,7 +158,11 @@ There are couple of parameters you can pass to the jar
 ````
 
 You can override the default zookeeper port/stop server, but more importantly you can pass you microservice.json file,
-which then will be read and micro-deps will try downloading and running those stubs from the repository passed with -r option.
+which then will be read and micro-deps will try downloading and running the stubs specified in dependencies section,
+using the repository passed with -r option.
+
+At the end of the day you will have a running local zookeeper instance with all the dependencies your project needs run
+and registered.
 
 API Version Handling
 ----------------
@@ -173,27 +186,28 @@ The straight-forward approach is that you can add version to your microservice n
     }
 ````
 
-The good thing with this approach is that it is very easy to manage, every service must support only it's API version,
+The good thing with this approach is that it is very easy to manage versions, because every service must support only it's API version,
 but when you think about it it's almost impossible to follow that approach when you have a database and it's schema
-changes from version to version.
+changes from version to version (like you cannot have old hibernate entities and new hibernate entities running against the same DB).
 
-Also bear in mind that in this case stubs described in previous section are not supported. Pull-Requests are welcome ;-)
+Also bear in mind that in this case stubs described in previous section are not supported. Pull-Requests are welcome though ;-)
 
 ### Header-level support ###
 
-Another approach is to have your microservice support different version of API using the headers. 
+Another approach is to have your microservice support different versions of API using the headers. 
  
-As you extend your webservice and change the data, you will have to support multiple versions of the API (as long 
+As you extend your webservice and change the API, you will have to support multiple versions of it (as long 
 as there are any other microservices using the older versions).
 
-Imagine you used to have ConfirmationController that would send out an unique link over email. Then the API has changed
-and instead of accepting full email address you're accepting only username, because for some reason the domain is always the same.
+Imagine you used to have ConfirmationController that would send out an unique link over email to any address.
+ Then the API has changed and instead of accepting full email address you're accepting only username, 
+ because for some reason the domain is always the same. And actually it's the only allowed email domain now.
 
 Spring/groovy example can look like this
 
 ````groovy
     @RestController
-    @RequestMapping(value = "/payment-order")
+    @RequestMapping(value = "/confirmation")
     class ConfirmationController {
     
         private final EmailSender emailSender

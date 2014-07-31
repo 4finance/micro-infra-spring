@@ -1,0 +1,63 @@
+package com.ofg.infrastructure.discovery.util
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
+import com.ofg.infrastructure.discovery.ServiceResolver
+import com.ofg.infrastructure.discovery.watcher.DependencyWatcher
+import com.ofg.infrastructure.discovery.watcher.DependencyWatcherListener
+import com.ofg.infrastructure.discovery.watcher.presence.FailOnMissingDependencyOnStartupVerifier
+import groovy.transform.TypeChecked
+import org.apache.curator.RetryPolicy
+import org.apache.curator.framework.CuratorFramework
+import org.apache.curator.framework.CuratorFrameworkFactory
+import org.apache.curator.retry.RetryNTimes
+import org.apache.curator.x.discovery.ServiceDiscovery
+import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
+import org.apache.curator.x.discovery.ServiceInstance
+import org.apache.curator.x.discovery.UriSpec
+
+@TypeChecked
+class MicroDepsService {
+    private ServiceConfigurationResolver configurationResolver
+    private DependencyWatcher dependencyWatcher
+    private CuratorFramework curatorFramework
+    private ServiceInstance serviceInstance
+    private ServiceDiscovery serviceDiscovery
+    private ServiceResolver serviceResolver
+
+    MicroDepsService(String zookeeperUrl,
+                     String microserviceContext,
+                     String microserviceUrl,
+                     int microservicePort,
+                     String microserviceConfig = MicroDepsService.class.getResourceAsStream("/microservice.json").text,
+                     String uriSpec = "{scheme}://{address}:{port}/$microserviceContext",
+                     RetryPolicy retryPolicy = new RetryNTimes(20, 5000)) {
+        curatorFramework = CuratorFrameworkFactory.newClient(zookeeperUrl, retryPolicy)
+        configurationResolver = new ServiceConfigurationResolver(microserviceConfig)
+        serviceInstance = ServiceInstance.builder().uriSpec(new UriSpec(uriSpec))
+                .address(microserviceUrl)
+                .port(microservicePort)
+                .name(configurationResolver.microserviceName)
+                .build()
+        serviceDiscovery = ServiceDiscoveryBuilder.builder(Void).basePath(configurationResolver.basePath).client(curatorFramework).thisInstance(serviceInstance).build()
+        dependencyWatcher = new DependencyWatcher(configurationResolver.dependencies, serviceDiscovery,
+                new FailOnMissingDependencyOnStartupVerifier())
+        serviceResolver = new ServiceResolver(configurationResolver, serviceDiscovery)
+    }
+
+    void registerDependencyStateChangeListener(DependencyWatcherListener listener) {
+        dependencyWatcher.registerDependencyStateChangeListener(listener)
+    }
+
+    void start() {
+        curatorFramework.start()
+        serviceDiscovery.start()
+        dependencyWatcher.registerDependencies()
+        serviceResolver.startServiceProviders()
+    }
+
+    void stop() {
+        serviceResolver.stopServiceProviders()
+        dependencyWatcher.unregisterDependencies()
+        serviceDiscovery.close()
+        curatorFramework.close()
+    }
+}

@@ -14,7 +14,7 @@ buildscript {
 ext {
     project_source_compatibility = 1.7
     project_group = 'com.ofg'
-    project_version = '0.0.8'
+    project_version = '0.0.9-SNAPSHOT'
     spock_version = '0.7-groovy-2.0'
     spring_version = '4.0.6.RELEASE'
 }
@@ -50,7 +50,7 @@ subprojects {
     group = project_group
     version = project_version
 
-    bintrayUpload.dependsOn 'build'
+    bintrayUpload.dependsOn 'clean', 'build'
 
     bintray {
         user = System.properties['bintrayUser']

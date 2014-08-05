@@ -8,7 +8,7 @@ sourceCompatibility = 1.7
 
 group = 'com.ofg'
 description = 'Microservice dependency manager'
-version = '0.4.0'
+version = '0.4.1-SNAPSHOT'
 
 buildscript {
     repositories {
@@ -17,7 +17,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
-        classpath("com.ofg:uptodate-gradle-plugin:0.0.3")
+        classpath 'com.ofg:uptodate-gradle-plugin:0.0.5'
     }
 }
 
@@ -28,9 +28,9 @@ repositories {
 }
 
 ext {
-    groovyVersion = '2.3.3'
+    groovyVersion = '2.3.6'
     spockVersion = '0.7-groovy-2.0'
-    curatorVersion = '2.5.0'
+    curatorVersion = '2.6.0'
     undertowVersion = '1.0.15.Final'
 }
 
@@ -47,7 +47,7 @@ dependencies {
     compile "io.undertow:undertow-core:$undertowVersion"
     compile "io.undertow:undertow-servlet:$undertowVersion"
     compile 'org.apache.ivy:ivy:2.3.0'
-    compile 'args4j:args4j:2.0.28'
+    compile 'args4j:args4j:2.0.29'
     compile 'com.google.guava:guava:17.0'
 
     testCompile("org.spockframework:spock-core:$spockVersion") {

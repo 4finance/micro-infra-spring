@@ -30,7 +30,7 @@ ext {
 
 group = 'com.ofg'
 description = 'Library containing microservice default infrastructure Spring configuration'
-version = '0.0.1'
+version = '0.0.2-SNAPSHOT'
 
 task addHashFile << {
     String gitCmd = "git log --pretty=format:'%H' -n 1"
@@ -86,6 +86,21 @@ task wrapper(type: Wrapper) {
 
 bintrayUpload.dependsOn 'build'
 
+bintray {
+    user = System.properties['bintrayUser']
+    key = System.properties['bintrayKey']
+
+    publications = ['mavenJava']
+    pkg {
+        repo = 'micro'
+        userOrg = '4finance'
+        name = project.name
+        desc = project.description
+        licenses = ['Apache-2.0']
+        labels = ['microservice']
+    }
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -102,21 +117,6 @@ publishing {
     }
 }
 
-bintray {
-    user = System.properties['bintrayUser']
-    key = System.properties['bintrayKey']
-
-    publications = ['mavenJava']
-    pkg {
-        repo = 'micro'
-        userOrg = '4finance'
-        name = project.name
-        desc = project.description
-        licenses = ['Apache-2.0']
-        labels = ['microservice']
-    }
-}
-
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
@@ -125,6 +125,11 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
 }
 
 if(project.hasProperty("coverage")) {

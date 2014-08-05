@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.base
 
+import com.ofg.infrastructure.discovery.StubbedServiceResolver
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 import org.springframework.test.context.web.WebAppConfiguration
@@ -11,10 +12,11 @@ import spock.lang.Specification
 @WebAppConfiguration
 abstract class MvcIntegrationSpec extends Specification {
     
-    @Autowired private WebApplicationContext webApplicationContext
-    @Autowired private ApplicationContext applicationContext
+    @Autowired WebApplicationContext webApplicationContext
+    @Autowired ApplicationContext applicationContext
+    @Autowired StubbedServiceResolver stubbedServiceResolver
     protected MockMvc mockMvc
-
+    
     void setup() {
         mockMvc = MockMvcBuilders.
                 webAppContextSetup(webApplicationContext).

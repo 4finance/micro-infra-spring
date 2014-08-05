@@ -1,11 +1,9 @@
 package com.ofg.infrastructure.discovery
 
+import com.ofg.infrastructure.discovery.config.ConfigWithEnvironment
+import com.ofg.infrastructure.discovery.config.PropertySourceConfiguration
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.PropertySource
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 import spock.lang.Specification
 
 class ServiceResolverConfigurationSpec extends Specification {
@@ -44,19 +42,5 @@ class ServiceResolverConfigurationSpec extends Specification {
             applicationContext.getBean(MicroserviceAddressProvider).port == 8080
         cleanup:
             System.setProperty('port', previousProp ?: '')
-    }
-    
-    @Configuration
-    @PropertySource('classpath:microservice.properties')
-    static class ConfigWithEnvironment {
-        
-    }
-    
-    @Configuration
-    static class PropertySourceConfiguration {
-        @Bean
-        public static PropertySourcesPlaceholderConfigurer propertiesConfigurer() {
-            return new PropertySourcesPlaceholderConfigurer()
-        }
-    }
+    }    
 }

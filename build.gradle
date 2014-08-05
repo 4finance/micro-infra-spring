@@ -1,0 +1,172 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url "http://repo.spring.io/libs-snapshot" }
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.4.RELEASE'
+        classpath 'com.ofg:uptodate-gradle-plugin:0.0.5'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
+        if(project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:1.0.2' }
+    }
+}
+
+apply plugin: 'groovy'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'bintray'
+apply plugin: 'uptodate'
+
+ext {    
+    groovyVersion = '2.3.6'
+    spockVersion = '0.7-groovy-2.0'
+    springBootVersion = '1.1.4.RELEASE'
+    springVersion = '4.0.6.RELEASE'
+    jacksonMapper = '1.9.13'
+    aspectjVersion = '1.8.1'
+}
+
+group = 'com.ofg'
+description = 'Library containing microservice default infrastructure Spring configuration'
+version = '0.0.1'
+
+task addHashFile << {
+    String gitCmd = "git log --pretty=format:'%H' -n 1"
+    def proc = gitCmd.execute()
+    proc.waitFor()
+    new File("commitHash.txt").withWriter { it << proc.in.text }
+}
+
+jar {
+    dependsOn addHashFile
+    from "commitHash.txt"
+}
+
+repositories {
+    mavenLocal()
+    maven { url 'http://repository.codehaus.org' }
+    maven { url 'http://repo.spring.io/milestone' }
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {  
+    compile "org.springframework:spring-web:$springVersion"
+    compile "org.codehaus.groovy:groovy-all:$groovyVersion:indy"
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.4.1.3'
+    compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    compile "org.codehaus.jackson:jackson-mapper-asl:$jacksonMapper"
+    compile "org.codehaus.jackson:jackson-core-asl:$jacksonMapper"
+    compile "com.mangofactory:swagger-springmvc:0.8.5"
+    compile "org.aspectj:aspectjrt:$aspectjVersion"
+    
+    runtime 'org.aspectj:aspectjweaver:1.8.1'
+
+    testCompile("org.spockframework:spock-core:$spockVersion") {
+        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+    }
+    testRuntime("org.spockframework:spock-spring:$spockVersion") {
+        exclude group: 'org.spockframework', module: 'spock-core'
+    }
+    testCompile 'org.springframework:spring-test:4.0.6.RELEASE'
+    testCompile 'org.hamcrest:hamcrest-library:1.3'
+    testCompile 'org.hibernate:hibernate-validator:5.1.2.Final'
+    testCompile 'com.jayway.jsonpath:json-path-assert:0.9.1'
+}
+
+tasks.withType(GroovyCompile) {
+    groovyOptions.optimizationOptions.indy = true
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.0'
+}
+
+bintrayUpload.dependsOn 'build'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourcesJar {
+                classifier "sources"
+            }
+
+            artifact javadocJar {
+                classifier "javadoc"
+            }
+        }
+    }
+}
+
+bintray {
+    user = System.properties['bintrayUser']
+    key = System.properties['bintrayKey']
+
+    publications = ['mavenJava']
+    pkg {
+        repo = 'micro'
+        userOrg = '4finance'
+        name = project.name
+        desc = project.description
+        licenses = ['Apache-2.0']
+        labels = ['microservice']
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+if(project.hasProperty("coverage")) {
+    apply plugin: 'codenarc'
+    apply plugin: 'jacoco'
+    apply plugin: 'sonar-runner'
+    apply plugin: 'com.github.kt3k.coveralls'
+
+    jacoco {
+        toolVersion = "0.7.0.201403182114"
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled = true // coveralls plugin depends on xml format report
+            html.enabled = true
+        }
+    }
+
+    codenarc {
+        configFile = file('config/codenarc/rules.groovy')
+        maxPriority1Violations = 0
+        maxPriority2Violations = 6
+        maxPriority3Violations = 10
+        reportFormat = 'xml'
+        ignoreFailures = true
+    }
+
+    dependencies {
+        codenarc 'org.codenarc:CodeNarc:0.21'
+    }
+
+    test {
+        ignoreFailures = true
+        jacoco {
+            excludes = ['*Configuration']
+        }
+    }
+
+    sonarRunner {
+        sonarProperties {
+            //TODO: fill this
+        }
+    }
+}

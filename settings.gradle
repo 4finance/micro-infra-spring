@@ -1,2 +1,5 @@
-rootProject.name = 'micro-deps-spring-config'
+include 'micro-deps-spring-config'
+include 'micro-deps-spring-test-config'
+
+rootProject.name = 'micro-deps-spring-config-root'
 

@@ -2,7 +2,7 @@ package com.ofg.infrastructure.discovery
 
 import com.ofg.infrastructure.discovery.watcher.DependencyWatcher
 import com.ofg.infrastructure.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
-import com.ofg.infrastructure.discovery.watcher.presence.FailOnMissingDependencyOnStartupVerifier
+import com.ofg.infrastructure.discovery.watcher.presence.MissingDependencyLoggingOnStartupVerifier
 import groovy.transform.PackageScope
 import groovy.transform.TypeChecked
 import org.apache.curator.x.discovery.ServiceDiscovery
@@ -24,7 +24,7 @@ class DependencyResolutionConfiguration {
     @PackageScope
     @Bean(initMethod = 'registerDependencies', destroyMethod = 'unregisterDependencies')
     DependencyWatcher dependencyWatcher(ServiceConfigurationResolver serviceConfigurationResolver, ServiceDiscovery serviceDiscovery) {
-        return new DependencyWatcher(serviceConfigurationResolver.dependencies, serviceDiscovery, dependencyPresenceOnStartupVerifier ?: new FailOnMissingDependencyOnStartupVerifier())
+        return new DependencyWatcher(serviceConfigurationResolver.dependencies, serviceDiscovery, dependencyPresenceOnStartupVerifier ?: new MissingDependencyLoggingOnStartupVerifier())
     }
 
     @PackageScope

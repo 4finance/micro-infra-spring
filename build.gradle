@@ -1,19 +1,4 @@
 apply plugin: 'groovy'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: 'bintray'
-apply plugin: 'uptodate'
-
-sourceCompatibility = 1.7
-
-group = 'com.ofg'
-description = 'Microservice dependency manager - default Spring configuration'
-version = '0.0.8-SNAPSHOT'
-
-ext {
-    spock_version = '0.7-groovy-2.0'
-    spring_version = '4.0.6.RELEASE'
-}
 
 buildscript {
     repositories {
@@ -22,67 +7,113 @@ buildscript {
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
-        classpath 'com.ofg:uptodate-gradle-plugin:0.0.3'
+        classpath 'com.ofg:uptodate-gradle-plugin:0.0.5'
     }
 }
 
-repositories {
-    mavenLocal()
-    jcenter()
-    mavenCentral()
+ext {
+    project_source_compatibility = 1.7
+    project_group = 'com.ofg'
+    project_version = '0.0.8-SNAPSHOT'
+    spock_version = '0.7-groovy-2.0'
+    spring_version = '4.0.6.RELEASE'
 }
 
-dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.3.3:indy'
-    compile "org.springframework:spring-context:$spring_version"
-    compile('com.ofg:micro-deps:0.3.1') {
-        exclude group: 'log4j'
-        exclude group: "org.slf4j", module: "slf4j-log4j12"
-        exclude group: "org.slf4j", module: "log4j-over-slf4j"
+subprojects {
+    apply plugin: 'groovy'
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+    apply plugin: 'bintray'
+    apply plugin: 'uptodate'
+
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
     }
-    testCompile "org.spockframework:spock-core:$spock_version"
-    testCompile "org.spockframework:spock-spring:$spock_version"
-    testCompile "org.springframework:spring-test:$spring_version"
-}
 
-bintrayUpload.dependsOn 'build'
+    dependencies {
+        compile 'org.codehaus.groovy:groovy-all:2.3.6:indy'
+        compile "org.springframework:spring-context:$spring_version"
+        compile('com.ofg:micro-deps:0.3.1') {
+            exclude group: 'log4j'
+            exclude group: "org.slf4j", module: "slf4j-log4j12"
+            exclude group: "org.slf4j", module: "log4j-over-slf4j"
+        }
+        testCompile "org.spockframework:spock-core:$spock_version"
+        testCompile "org.spockframework:spock-spring:$spock_version"
+        testCompile "org.springframework:spring-test:$spring_version"
+    }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
 
-            artifact sourcesJar {
-                classifier "sources"
+    sourceCompatibility = project_source_compatibility
+    group = project_group
+    version = project_version
+
+    bintrayUpload.dependsOn 'build'
+
+    bintray {
+        user = System.properties['bintrayUser']
+        key = System.properties['bintrayKey']
+
+        publications = ['mavenJava']
+        pkg {
+            repo = 'micro-deps'
+            userOrg = '4finance'
+            name = "${project.name}"
+            desc = 'Default Spring configuration for Microservice Dependency Manager'
+            licenses = ['Apache-2.0']
+            labels = ['microservice']
+        }
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+
+                artifact sourcesJar {
+                    classifier "sources"
+                }
             }
         }
     }
-}
 
-bintray {
-    user = System.properties['bintrayUser']
-    key = System.properties['bintrayKey']
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
 
-    publications = ['mavenJava']
-    pkg {
-        repo = 'micro-deps'
-        userOrg = '4finance'
-        name = 'micro-deps-spring-config'
-        desc = 'Default Spring configuration for Microservice Dependency Manager'
-        licenses = ['Apache-2.0']
-        labels = ['microservice']
+    artifacts {
+        archives sourcesJar
+    }
+
+    task wrapper(type: Wrapper) {
+        gradleVersion = '2.0'
     }
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
+project(':micro-deps-spring-config') {
+    description = 'Microservice dependency manager - default Spring configuration'
+    
 }
 
-artifacts {
-    archives sourcesJar
+project(':micro-deps-spring-test-config') {
+    description = 'Microservice dependency manager - Spring test configuration'
+
+    dependencies {        
+        compile 'cglib:cglib-nodep:3.1'
+        compile 'org.objenesis:objenesis:2.1' // allows mocking of classes without default constructor (together with CGLIB)
+        compile 'org.aspectj:aspectjweaver:1.8.1'
+        compile "org.spockframework:spock-core:$spock_version"
+        compile "org.spockframework:spock-spring:$spock_version"
+        compile "org.springframework:spring-webmvc:$spring_version"
+        compile "org.springframework:spring-test:$spring_version"
+        compile 'com.github.tomakehurst:wiremock:1.47'
+        
+        testCompile project(':micro-deps-spring-config')
+        testCompile 'com.jayway.restassured:rest-assured:2.3.2'
+    }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.0'
-}
+

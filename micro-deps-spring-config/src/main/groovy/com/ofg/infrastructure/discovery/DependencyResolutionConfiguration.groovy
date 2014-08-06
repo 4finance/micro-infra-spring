@@ -33,9 +33,9 @@ class DependencyResolutionConfiguration {
         return new ServiceConfigurationResolver(microserviceConfig.inputStream.text)
     }
 
-    @Bean(initMethod = 'startServiceProviders', destroyMethod = 'stopServiceProviders')
+    @Bean(initMethod = 'start', destroyMethod = 'close')
     ServiceResolver serviceResolver(ServiceConfigurationResolver serviceConfigurationResolver, ServiceDiscovery serviceDiscovery) {
-        return new ServiceResolver(serviceConfigurationResolver, serviceDiscovery)
+        return new ZookeeperServiceResolver(serviceConfigurationResolver, serviceDiscovery)
     }
 
 }

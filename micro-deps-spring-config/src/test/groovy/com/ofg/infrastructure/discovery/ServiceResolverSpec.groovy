@@ -23,7 +23,7 @@ class ServiceResolverSpec extends Specification {
             ServiceResolver serviceResolver = applicationContext.getBean(ServiceResolver)
         and:
             setupStubs(serviceConfigurationResolver, curatorFramework)
-            serviceResolver.startServiceProviders()
+            serviceResolver.start()
         expect:
             serviceResolver.getUrl("collerator") == Optional.of('http://localhost:8030/collerator')
         cleanup:

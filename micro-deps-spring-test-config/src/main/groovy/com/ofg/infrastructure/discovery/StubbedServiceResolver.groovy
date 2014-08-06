@@ -3,14 +3,13 @@ import com.google.common.base.Optional as GuavaOptional
 import groovy.transform.TypeChecked
 
 @TypeChecked
-class StubbedServiceResolver extends ServiceResolver {
+class StubbedServiceResolver implements ServiceResolver {
     
     Map<String, String> stubbedDeps = [:]
     private final Integer wiremockPort
     private final String wiremockUrl
     
     StubbedServiceResolver(Integer wiremockPort,  String wiremockUrl) {
-        super(null, null)
         this.wiremockPort = wiremockPort
         this.wiremockUrl = wiremockUrl
     }
@@ -32,5 +31,15 @@ class StubbedServiceResolver extends ServiceResolver {
     @Override
     GuavaOptional<String> getUrl(String dependency) {
         return GuavaOptional.fromNullable(stubbedDeps[dependency])
+    }
+
+    @Override
+    void start() {
+
+    }
+
+    @Override
+    void close() {
+
     }
 }

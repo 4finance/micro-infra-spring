@@ -12,11 +12,12 @@ buildscript {
 }
 
 ext {
-    project_source_compatibility = 1.7
-    project_group = 'com.ofg'
-    project_version = '0.0.9-SNAPSHOT'
-    spock_version = '0.7-groovy-2.0'
-    spring_version = '4.0.6.RELEASE'
+    projectSourceCompatibility = 1.7
+    projectGroup = 'com.ofg'
+    projectVersion = '0.2.0'
+    
+    spockVersion = '0.7-groovy-2.0'
+    springVersion = '4.0.6.RELEASE'
 }
 
 subprojects {
@@ -34,23 +35,23 @@ subprojects {
 
     dependencies {
         compile 'org.codehaus.groovy:groovy-all:2.3.6:indy'
-        compile "org.springframework:spring-context:$spring_version"
-        compile('com.ofg:micro-deps:0.3.1') {
+        compile "org.springframework:spring-context:$springVersion"
+        compile('com.ofg:micro-deps:0.5.0') {
             exclude group: 'log4j'
             exclude group: "org.slf4j", module: "slf4j-log4j12"
             exclude group: "org.slf4j", module: "log4j-over-slf4j"
         }
-        testCompile "org.spockframework:spock-core:$spock_version"
-        testCompile "org.spockframework:spock-spring:$spock_version"
-        testCompile "org.springframework:spring-test:$spring_version"
+        testCompile "org.spockframework:spock-core:$spockVersion"
+        testCompile "org.spockframework:spock-spring:$spockVersion"
+        testCompile "org.springframework:spring-test:$springVersion"
     }
 
 
-    sourceCompatibility = project_source_compatibility
-    group = project_group
-    version = project_version
+    sourceCompatibility = projectSourceCompatibility
+    group = projectGroup
+    version = projectVersion
 
-    bintrayUpload.dependsOn 'clean', 'build'
+    bintrayUpload.dependsOn 'build'
 
     bintray {
         user = System.properties['bintrayUser']
@@ -105,10 +106,10 @@ project(':micro-deps-spring-test-config') {
         compile 'cglib:cglib-nodep:3.1'
         compile 'org.objenesis:objenesis:2.1' // allows mocking of classes without default constructor (together with CGLIB)
         compile 'org.aspectj:aspectjweaver:1.8.1'
-        compile "org.spockframework:spock-core:$spock_version"
-        compile "org.spockframework:spock-spring:$spock_version"
-        compile "org.springframework:spring-webmvc:$spring_version"
-        compile "org.springframework:spring-test:$spring_version"
+        compile "org.spockframework:spock-core:$spockVersion"
+        compile "org.spockframework:spock-spring:$spockVersion"
+        compile "org.springframework:spring-webmvc:$springVersion"
+        compile "org.springframework:spring-test:$springVersion"
         compile 'com.github.tomakehurst:wiremock:1.47'
         
         testCompile project(':micro-deps-spring-config')

@@ -13,17 +13,17 @@ import org.springframework.test.context.ContextConfiguration
 @ContextConfiguration(classes = [MockServerConfiguration])
 class MvcWiremockIntegrationSpec extends MvcIntegrationSpec {
 
-    WireMock colaWireMock
+    WireMock wireMock
     @Autowired HttpMockServer httpMockServer    
     @Value('${wiremock.url:localhost}') String wiremockUrl
     
     void setup() {
-        colaWireMock = new WireMock(wiremockUrl, httpMockServer.port())
-        colaWireMock.resetMappings()
+        wireMock = new WireMock(wiremockUrl, httpMockServer.port())
+        wireMock.resetMappings()
     }
 
     protected void stubInteraction(MappingBuilder mapping, ResponseDefinitionBuilder response) {
-        colaWireMock.register(mapping.willReturn(response))
+        wireMock.register(mapping.willReturn(response))
     }
     
     

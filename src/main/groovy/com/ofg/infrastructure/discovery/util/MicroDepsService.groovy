@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.discovery.util
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
+import com.ofg.infrastructure.discovery.ZookeeperServiceResolver
 import com.ofg.infrastructure.discovery.watcher.DependencyWatcher
 import com.ofg.infrastructure.discovery.watcher.DependencyWatcherListener
 import com.ofg.infrastructure.discovery.watcher.presence.FailOnMissingDependencyOnStartupVerifier
@@ -40,7 +41,7 @@ class MicroDepsService {
         serviceDiscovery = ServiceDiscoveryBuilder.builder(Void).basePath(configurationResolver.basePath).client(curatorFramework).thisInstance(serviceInstance).build()
         dependencyWatcher = new DependencyWatcher(configurationResolver.dependencies, serviceDiscovery,
                 new FailOnMissingDependencyOnStartupVerifier())
-        serviceResolver = new ServiceResolver(configurationResolver, serviceDiscovery)
+        serviceResolver = new ZookeeperServiceResolver(configurationResolver, serviceDiscovery)
     }
 
     void registerDependencyStateChangeListener(DependencyWatcherListener listener) {
@@ -51,11 +52,11 @@ class MicroDepsService {
         curatorFramework.start()
         serviceDiscovery.start()
         dependencyWatcher.registerDependencies()
-        serviceResolver.startServiceProviders()
+        serviceResolver.start()
     }
 
     void stop() {
-        serviceResolver.stopServiceProviders()
+        serviceResolver.close()
         dependencyWatcher.unregisterDependencies()
         serviceDiscovery.close()
         curatorFramework.close()

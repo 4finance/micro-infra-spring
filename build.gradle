@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'bintray'
 apply plugin: 'uptodate'
 
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
 
 group = 'com.ofg'
 description = 'Microservice dependency manager'
@@ -14,6 +14,7 @@ buildscript {
     repositories {
         mavenLocal()
         jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
@@ -59,7 +60,6 @@ dependencies {
     }
 }
 
-build.dependsOn 'fatJar'
 
 bintrayUpload.dependsOn 'build'
 
@@ -100,6 +100,11 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 }
 
 task fatJar(type: Jar, dependsOn: sourcesJar) {
+    onlyIf {
+        project.gradle.startParameter.taskNames.any {
+            it in ['bintrayUpload', 'uploadArchives', 'publish']
+        }
+    }
     classifier = 'fatJar'
 
     from files(sourceSets.main.output.classesDir)
@@ -110,13 +115,7 @@ task fatJar(type: Jar, dependsOn: sourcesJar) {
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.0'
-}
-
 artifacts {
     archives sourcesJar
     archives fatJar
 }
-
-

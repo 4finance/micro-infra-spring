@@ -2,15 +2,20 @@ package com.ofg.mock
 
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import groovy.grape.Grape
+import groovy.transform.PackageScope
 import groovy.transform.ToString
 import org.codehaus.groovy.tools.RootLoader
+import groovyx.net.http.RESTClient
 
+@PackageScope
 class StubLoader {
 
     private static final String LATEST_MODULE = '*'
     private static final String MANIFEST_PATH = 'META-INF/MANIFEST.MF'
     private static final int STARTING_PORT = 12345
     private static final int MAX_PORT = 50000
+
+    private Map<Module, String> portsTakenByStubs = [:]
 
     void loadStubs(ServiceConfigurationResolver resolver, String repository, int zookeeperPort) {
         Grape.addResolver(name: 'dependency-repository', root: repository)
@@ -20,7 +25,8 @@ class StubLoader {
             Map depToGrab = [group: module.group, module: module.module, version: LATEST_MODULE, classifier: 'shadow', transitive: false]
             GroovyClassLoader runtimeCS = loadStubJar(depToGrab)
             String mainClassFullyQualifiedName = findMainClass(depToGrab, runtimeCS)
-            runtimeCS.loadClass(mainClassFullyQualifiedName).main(resolver.basePath, module.unparsedDependency, (nextAvailablePort()).toString(), zookeeperPort.toString())
+            portsTakenByStubs.put(module, nextAvailablePort().toString())
+            runtimeCS.loadClass(mainClassFullyQualifiedName).main(resolver.basePath, module.unparsedDependency, portsTakenByStubs.last(), zookeeperPort.toString())
         }
     }
 
@@ -71,6 +77,18 @@ class StubLoader {
         manifest.load(rootLoader.getResourceAsStream(MANIFEST_PATH))
         return manifest
     }
+    
+    void unloadStubs() {
+        portsTakenByStubs.each { module, port ->
+            String stubShutdownUrl = "http://localhost:$port/__admin/shutdown"
+            RESTClient stubClient = new RESTClient(stubShutdownUrl)
+            try {
+                stubClient.post()
+            } catch (Exception e) {
+                System.err.println "Cannot stop module $module. To stop it mannualy make POST request at $stubShutdownUrl"
+            }
+        }
+    }
 
     @ToString(includePackage = false, includeNames = true)
     private class Module {
@@ -78,4 +96,5 @@ class StubLoader {
         String module
         String unparsedDependency
     }
+
 }

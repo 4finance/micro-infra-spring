@@ -30,7 +30,8 @@ ext {
 
 group = 'com.ofg'
 description = 'Library containing microservice default infrastructure Spring configuration'
-version = '0.0.2-SNAPSHOT'
+version = '0.0.2'
+sourceCompatibility = 1.7
 
 task addHashFile << {
     String gitCmd = "git log --pretty=format:'%H' -n 1"

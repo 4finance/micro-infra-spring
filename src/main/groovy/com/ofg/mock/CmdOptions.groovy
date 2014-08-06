@@ -12,11 +12,11 @@ class CmdOptions {
 
     private static final int DEFAULT_MOCK_PORT_NUMBER = 18081
 
-    @Option(name = '-p', usage = "optional port number on which zookeeper mock will be started. Default is $DEFAULT_PORT_NUMBER")
+    @Option(name = '-p', usage = "optional port number on which zookeeper mock will be started. Default is [2181]")
     int portNumber = DEFAULT_PORT_NUMBER
 
     @Option(name = '-mp', usage = """optional port number on which rest control server will be started.
-It will expose one method on /stop to stop the server. Default is $DEFAULT_MOCK_PORT_NUMBER""")
+It will expose one method on /stop to stop the server. Default is [18081]""")
     int controlPortNumber = DEFAULT_MOCK_PORT_NUMBER
 
     @Option(name = '-c', usage = "json configuration with dependencies to load (exclusive with -f)", forbids = ['-f'], depends = ['-r'])

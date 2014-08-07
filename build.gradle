@@ -30,7 +30,7 @@ ext {
 
 group = 'com.ofg'
 description = 'Library containing microservice default infrastructure Spring configuration'
-version = '0.0.3'
+version = '0.0.3-SNAPSHOT'
 sourceCompatibility = 1.7
 
 task addHashFile << {

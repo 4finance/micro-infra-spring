@@ -65,7 +65,7 @@ Usage
 
 ### Register your service ###
 
-If you are using spring, checkout the [microdeps-spring-config](github.com/4finance/micro-deps-spring-config) 
+If you are using spring, checkout the [microdeps-spring-config](//github.com/4finance/micro-deps-spring-config) 
 that will create all the needed beans.
 
 In all other cases it will most probably make sense for you to check out `com.ofg.infrastructure.discovery.util.MicroDepsService`.

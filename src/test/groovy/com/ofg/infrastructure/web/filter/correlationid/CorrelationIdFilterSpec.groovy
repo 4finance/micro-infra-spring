@@ -2,7 +2,7 @@ package com.ofg.infrastructure.web.filter.correlationid
 
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcIntegrationSpec
-import com.ofg.infrastructure.web.config.WebConfiguration
+import com.ofg.infrastructure.web.config.WebInfrastructureConfiguration
 import org.slf4j.MDC
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.http.MediaType
@@ -10,7 +10,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 
-@ContextConfiguration(classes = [BaseConfiguration, WebConfiguration], loader = SpringApplicationContextLoader)
+@ContextConfiguration(classes = [BaseConfiguration, WebInfrastructureConfiguration], loader = SpringApplicationContextLoader)
 class CorrelationIdFilterSpec extends MvcIntegrationSpec {
 
     def "should create and return correlationId in HTTP header"() {

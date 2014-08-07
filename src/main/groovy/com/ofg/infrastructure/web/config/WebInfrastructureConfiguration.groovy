@@ -1,6 +1,5 @@
 package com.ofg.infrastructure.web.config
 
-import com.ofg.infrastructure.healthcheck.HealthCheckConfiguration
 import com.ofg.infrastructure.web.exception.ControllerExceptionConfiguration
 import com.ofg.infrastructure.web.filter.FilterConfiguration
 import com.ofg.infrastructure.web.resttemplate.RestTemplateConfiguration
@@ -14,8 +13,7 @@ import org.springframework.context.annotation.Import
 @Import([RestTemplateConfiguration,
         ControllerExceptionConfiguration,
         FilterConfiguration,
-        ViewConfiguration,
-        HealthCheckConfiguration])
-class WebConfiguration {
+        ViewConfiguration])
+class WebInfrastructureConfiguration {
 
 }

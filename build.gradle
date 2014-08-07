@@ -30,7 +30,7 @@ ext {
 
 group = 'com.ofg'
 description = 'Library containing microservice default infrastructure Spring configuration'
-version = '0.0.3-SNAPSHOT'
+version = '0.0.3'
 sourceCompatibility = 1.7
 
 task addHashFile << {
@@ -62,7 +62,8 @@ dependencies {
     compile "org.codehaus.jackson:jackson-core-asl:$jacksonMapper"
     compile "com.mangofactory:swagger-springmvc:0.8.5"
     compile "org.aspectj:aspectjrt:$aspectjVersion"
-    
+    compile 'com.codahale.metrics:metrics-core:3.0.2'
+
     runtime 'org.aspectj:aspectjweaver:1.8.1'
 
     testCompile("org.spockframework:spock-core:$spockVersion") {

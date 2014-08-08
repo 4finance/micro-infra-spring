@@ -47,7 +47,11 @@ class MicroserviceDependenciesRunner {
         }
     }
 
-    public MicroserviceDependenciesRunner(final CmdOptions options) {
+    MicroserviceDependenciesRunner() {
+        this.options = null
+    }
+
+    MicroserviceDependenciesRunner(final CmdOptions options) {
         this.options = options
     }
 

@@ -1,5 +1,7 @@
 package com.ofg.infrastructure.base.dsl
+
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
+import com.github.tomakehurst.wiremock.client.WireMock
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -32,18 +34,18 @@ class StubbedHttpResponseBuilder {
     }
 
     static ResponseDefinitionBuilder notFoundResponse() {
-        return com.github.tomakehurst.wiremock.client.WireMock.aResponse().withStatus(HttpStatus.NOT_FOUND.value())
+        return WireMock.aResponse().withStatus(HttpStatus.NOT_FOUND.value())
     }
 
     private static ResponseDefinitionBuilder createResponse(HttpStatus status, String responseBody, String contentType) {
-        return com.github.tomakehurst.wiremock.client.WireMock.aResponse()
+        return WireMock.aResponse()
                 .withStatus(status.value())
                 .withHeader('Content-Type', contentType)
                 .withBody(responseBody)
     }   
     
     private static ResponseDefinitionBuilder createFileResponse(HttpStatus status, String responseBodyFileName, String contentType) {
-        return com.github.tomakehurst.wiremock.client.WireMock.aResponse()
+        return WireMock.aResponse()
                 .withStatus(status.value())
                 .withHeader('Content-Type', contentType)
                 .withBodyFile("/$responseBodyFileName")

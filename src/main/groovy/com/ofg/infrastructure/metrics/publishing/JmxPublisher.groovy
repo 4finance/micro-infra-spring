@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 
 @TypeChecked
 class JmxPublisher {
-    private JmxReporter jmxReporter
+    private final JmxReporter jmxReporter
 
     JmxPublisher(MetricRegistry metricRegistry, TimeUnit reportedRatesTimeUnit, TimeUnit reportedDurationsTimeUnit) {
         this(metricRegistry, reportedRatesTimeUnit, reportedDurationsTimeUnit, MetricFilter.ALL)

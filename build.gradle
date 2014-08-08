@@ -24,13 +24,15 @@ ext {
     spockVersion = '0.7-groovy-2.0'
     springBootVersion = '1.1.4.RELEASE'
     springVersion = '4.0.6.RELEASE'
+    metricsVersion = '3.0.2'
     jacksonMapper = '1.9.13'
     aspectjVersion = '1.8.1'
 }
 
 group = 'com.ofg'
 description = 'Library containing microservice default infrastructure Spring configuration'
-version = '0.0.3-SNAPSHOT'
+version = '0.0.4'
+
 sourceCompatibility = 1.7
 
 task addHashFile << {
@@ -62,7 +64,8 @@ dependencies {
     compile "org.codehaus.jackson:jackson-core-asl:$jacksonMapper"
     compile "com.mangofactory:swagger-springmvc:0.8.5"
     compile "org.aspectj:aspectjrt:$aspectjVersion"
-    compile 'com.codahale.metrics:metrics-core:3.0.2'
+    compile "com.codahale.metrics:metrics-core:$metricsVersion"
+    compile "com.codahale.metrics:metrics-graphite:$metricsVersion"
 
     runtime 'org.aspectj:aspectjweaver:1.8.1'
 

@@ -48,6 +48,7 @@ class StubLoader {
             }
             port++
         }
+        throw new NoPortAvailableException(STARTING_PORT, MAX_PORT)
     }
 
     private List<Module> parseDeps(Map<String, String> deps) {
@@ -97,4 +98,9 @@ class StubLoader {
         String unparsedDependency
     }
 
+    private static class NoPortAvailableException extends RuntimeException {
+        NoPortAvailableException(int loweBound, int upperBound) {
+            super("Could not find available port in range $loweBound:$upperBound")
+        }
+    }
 }

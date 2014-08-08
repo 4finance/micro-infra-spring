@@ -30,8 +30,8 @@ ext {
 }
 
 group = 'com.ofg'
-description = 'Library containing microservice default infrastructure Spring configuration'
-version = '0.0.4'
+description = 'Microservice default infrastructure Spring configuration'
+version = '0.0.5-SNAPSHOT'
 
 sourceCompatibility = 1.7
 

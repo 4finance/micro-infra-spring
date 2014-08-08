@@ -103,7 +103,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 task fatJar(type: Jar, dependsOn: sourcesJar) {
     onlyIf {
         project.gradle.startParameter.taskNames.any {
-            it in ['bintrayUpload', 'uploadArchives', 'publish']
+            it in ['bintrayUpload', 'uploadArchives', 'publish', 'install']
         }
     }
     classifier = 'fatJar'

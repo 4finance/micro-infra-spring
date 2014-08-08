@@ -91,8 +91,8 @@ class MicroserviceDependenciesRunner {
     }
 
     private void shutdownOnFailure() {
-        zookeeperTestingServer.close()
-        controlServer.stop()
+        zookeeperTestingServer?.close()
+        controlServer?.stop()
         println "rest stopped"
         System.exit(-1)
     }

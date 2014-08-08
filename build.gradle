@@ -21,7 +21,7 @@ sourceCompatibility = 1.7
 
 group = 'com.ofg'
 description = 'Microservice dependency manager'
-version = '0.5.3-SNAPSHOT'
+version = '0.5.3'
 
 repositories {
     mavenLocal()
@@ -119,4 +119,4 @@ task bootJars(dependsOn: build)
 bootJars {
     dependsOn = [sourcesJar, fatJarBoot]
 }
-project.tasks.findAll {it.name.startsWith 'publish'}*.dependsOn(bootJars)
+project.tasks.findAll {it.name.startsWith('publish') || it.name == 'bintrayUpload' }*.dependsOn(bootJars)

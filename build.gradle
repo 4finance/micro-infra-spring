@@ -85,6 +85,9 @@ publishing {
             artifact sourcesJar {
                 classifier "sources"
             }
+            artifact jar {
+                classifier "fatJar"
+            }
         }
     }
 }

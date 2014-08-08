@@ -85,16 +85,29 @@ publishing {
             artifact sourcesJar {
                 classifier "sources"
             }
-            artifact jar {
+
+            artifact fatJar {
                 classifier "fatJar"
             }
         }
     }
 }
 
+springBoot.backupSource = false
+jar.enabled = false
+
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
+}
+
+task fatJar(type: Jar) {
+    classifier = 'fatJar'
+    from sourceSets.main.output
+}
+
+task fatJarBoot(type: BootRepackage, dependsOn: fatJar) {
+    withJarTask = fatJar
 }
 
 springBoot {
@@ -102,4 +115,8 @@ springBoot {
     backupSource = false
 }
 
-project.tasks.findAll {it.name.startsWith 'publish'}*.dependsOn(bootRepackage)
+task bootJars(dependsOn: build)
+bootJars {
+    dependsOn = [sourcesJar, fatJarBoot]
+}
+project.tasks.findAll {it.name.startsWith 'publish'}*.dependsOn(bootJars)

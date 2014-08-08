@@ -7,16 +7,16 @@ buildscript {
     }
     dependencies {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.4.RELEASE'
-        classpath 'com.ofg:uptodate-gradle-plugin:0.0.5'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
-        if(project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:1.0.2' }
+        classpath 'com.ofg:uptodate-gradle-plugin:+'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
+        if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
     }
 }
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: 'bintray'
+apply plugin: 'com.jfrog.bintray'
 apply plugin: 'uptodate'
 
 ext {    

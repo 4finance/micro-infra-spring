@@ -22,11 +22,12 @@ class StubLoader {
         List<Module> parsedDeps = parseDeps(resolver.dependencies)
         parsedDeps.each { Module module ->
             println "Loading stub $module"
-            Map depToGrab = [group: module.group, module: module.module, version: LATEST_MODULE, classifier: 'shadow', transitive: false]
+            Map depToGrab = [group: module.group, module: module.module, version: LATEST_MODULE, classifier: 'groovyless-shadow', transitive: false]
             GroovyClassLoader runtimeCS = loadStubJar(depToGrab)
             String mainClassFullyQualifiedName = findMainClass(depToGrab, runtimeCS)
-            portsTakenByStubs.put(module, nextAvailablePort().toString())
-            runtimeCS.loadClass(mainClassFullyQualifiedName).main(resolver.basePath, module.unparsedDependency, portsTakenByStubs.last(), zookeeperPort.toString())
+            String nextFreePortToTake = nextAvailablePort().toString()
+            portsTakenByStubs.put(module, nextFreePortToTake)
+            runtimeCS.loadClass(mainClassFullyQualifiedName).main(resolver.basePath, module.unparsedDependency, nextFreePortToTake, zookeeperPort.toString())
         }
     }
 
@@ -68,7 +69,7 @@ class StubLoader {
 
     private String findMainClass(Map<String, String> depToGrab, ClassLoader classLoader) {
         Properties manifest = loadStubManifest(depToGrab, classLoader)
-        return manifest.getProperty('Main-Class')
+        return manifest.getProperty('Start-Class') ?: manifest.getProperty('Main-Class') 
     }
 
     private Properties loadStubManifest(Map<String, String> depToGrab, ClassLoader classLoader) {

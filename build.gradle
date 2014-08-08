@@ -1,15 +1,3 @@
-apply plugin: 'groovy'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: 'bintray'
-apply plugin: 'uptodate'
-
-sourceCompatibility = 1.7
-
-group = 'com.ofg'
-description = 'Microservice dependency manager'
-version = '0.5.2-SNAPSHOT'
-
 buildscript {
     repositories {
         mavenLocal()
@@ -17,10 +5,23 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
-        classpath 'com.ofg:uptodate-gradle-plugin:0.0.5'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:+'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
+        classpath 'com.ofg:uptodate-gradle-plugin:+'
     }
 }
+
+apply plugin: 'groovy'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'uptodate'
+apply plugin: 'spring-boot'
+
+sourceCompatibility = 1.7
+
+group = 'com.ofg'
+description = 'Microservice dependency manager'
+version = '0.5.2-SNAPSHOT'
 
 repositories {
     mavenLocal()
@@ -61,24 +62,7 @@ dependencies {
     }
 }
 
-
 bintrayUpload.dependsOn 'build'
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-
-            artifact sourcesJar {
-                classifier "sources"
-            }
-
-            artifact fatJar {
-                classifier "fatJar"
-            }
-        }
-    }
-}
 
 bintray {
     user = System.properties['bintrayUser']
@@ -95,28 +79,24 @@ bintray {
     }
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact sourcesJar {
+                classifier "sources"
+            }
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
 }
 
-task fatJar(type: Jar, dependsOn: sourcesJar) {
-    onlyIf {
-        project.gradle.startParameter.taskNames.any {
-            it in ['bintrayUpload', 'uploadArchives', 'publish', 'install']
-        }
-    }
+springBoot {
     classifier = 'fatJar'
-
-    from files(sourceSets.main.output.classesDir)
-    from configurations.runtime.asFileTree.files.collect { zipTree(it) }
-
-    manifest {
-        attributes 'Main-Class': 'com.ofg.mock.MicroserviceDependenciesRunner'
-    }
+    backupSource = false
 }
 
-artifacts {
-    archives sourcesJar
-    archives fatJar
-}
+project.tasks.findAll {it.name.startsWith 'publish'}*.dependsOn(bootRepackage)

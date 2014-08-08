@@ -21,7 +21,7 @@ sourceCompatibility = 1.7
 
 group = 'com.ofg'
 description = 'Microservice dependency manager'
-version = '0.5.2'
+version = '0.5.3-SNAPSHOT'
 
 repositories {
     mavenLocal()

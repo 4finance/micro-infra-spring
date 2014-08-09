@@ -16,7 +16,7 @@ class EnvironmentSetupVerifier implements ApplicationListener<ApplicationEnviron
     @Override
     void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
         String[] activeProfiles = event.environment.activeProfiles
-        if (activeProfiles.length == 0) {
+        if (activeProfiles.length == 0 || !allPossibleSpringProfiles.containsAll(activeProfiles.toList())) {
             println """\
             This app requires an explicit profile
             Please setup a profile in environment variable 'spring.profiles.active'

@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/4finance/stub-runner.svg?branch=master)](https://travis-ci.org/4finance/stub-runner)
+
 Stub-runner
 ===========
 

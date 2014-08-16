@@ -1,0 +1,61 @@
+apply plugin: 'groovy'
+apply plugin: 'com.ofg.uptodate'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.ofg:uptodate-gradle-plugin:1.0.0'
+    }
+}
+
+sourceCompatibility = 1.7
+
+ext {
+    stubRepository = 'repository'
+    stubRegistryPort = 2181
+    minStubPortNumber = 2300
+    maxStubPortNumber = 2399
+
+    curatorVersion = '2.6.0'
+    slf4jVersion = '1.7.7'
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.3.6'
+    compile 'com.github.tomakehurst:wiremock:1.47'
+    compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
+    compile "org.apache.curator:curator-x-discovery:$curatorVersion"
+    compile "org.apache.curator:curator-test:$curatorVersion"
+    compile "org.slf4j:slf4j-api:$slf4jVersion"
+    compile "org.slf4j:log4j-over-slf4j:$slf4jVersion"
+    compile 'ch.qos.logback:logback-classic:1.1.2'
+
+    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+}
+
+tasks.addRule('Pattern: runStubs<Project>: Run stubs for project') { String taskName ->
+    if (taskName.startsWith('runStubs')) {
+        String metadata = taskName - 'runStubs'
+        metadata = metadata[0].toLowerCase() + metadata.substring(1)
+
+        task(taskName, type: JavaExec, dependsOn: classes) {
+            main = 'com.ofg.stub.Main'
+            classpath = sourceSets.main.output + configurations.compile
+            args = [ stubRepository, "${metadata}.json", stubRegistryPort, minStubPortNumber, maxStubPortNumber ]
+        }
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.0'
+}

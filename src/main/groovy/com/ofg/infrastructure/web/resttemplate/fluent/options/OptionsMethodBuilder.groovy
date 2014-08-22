@@ -34,6 +34,12 @@ class OptionsMethodBuilder implements OptionsMethod, UrlParameterizableOptionsMe
         params.url = url
         return this
     }
+    
+    @Override
+    ResponseReceivingOptionsMethod onUrl(String url) {
+        params.url = new URI(url)
+        return this
+    }
 
     @Override
     UrlParameterizableOptionsMethod onUrlFromTemplate(String urlTemplate) {

@@ -121,4 +121,18 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
             1 * restTemplate.exchange(url, HEAD, _ as HttpEntity, Object)
     }
 
+    def "should ignore service url when passing full URL as String"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
+            String url = 'http://some.url/api/objects/42'
+        when:            
+            httpMethodBuilder
+                .head()
+                    .onUrl(url)
+                    .andExecuteFor()
+                    .aResponseEntity()
+        then:
+            1 * restTemplate.exchange(new URI(url), HEAD, _ as HttpEntity, Object)
+    }
+
 }

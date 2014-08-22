@@ -33,6 +33,12 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
     }
 
     @Override
+    ResponseReceivingHeadMethod onUrl(String url) {
+        params.url = new URI(url)
+        return this
+    }
+
+    @Override
     UrlParameterizableHeadMethod onUrlFromTemplate(String urlTemplate) {
         params.urlTemplate = urlTemplate
         return this

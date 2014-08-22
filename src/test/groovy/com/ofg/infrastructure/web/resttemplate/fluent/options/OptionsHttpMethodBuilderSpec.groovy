@@ -131,5 +131,20 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
         then:
             1 * restTemplate.exchange(url, OPTIONS, _ as HttpEntity, RESPONSE_TYPE)
     }
+    
+    def "should ignore service url when passing full URL as String"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
+            String url = 'http://some.url/api/objects/42'
+        when:            
+            httpMethodBuilder
+                .options()
+                    .onUrl(url)
+                    .andExecuteFor()
+                    .aResponseEntity()
+                    .ofType(RESPONSE_TYPE)
+        then:
+            1 * restTemplate.exchange(new URI(url), OPTIONS, _ as HttpEntity, RESPONSE_TYPE)
+    }
 
 }

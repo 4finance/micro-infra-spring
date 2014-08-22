@@ -39,6 +39,12 @@ class PutMethodBuilder extends LocationFindingExecutor implements PutMethod, Req
         params.url = url
         return this
     }
+    
+    @Override
+    RequestHavingPutMethod onUrl(String url) {
+        params.url = new URI(url)
+        return this
+    }
 
     @Override
     UrlParameterizablePutMethod onUrlFromTemplate(String urlTemplate) {

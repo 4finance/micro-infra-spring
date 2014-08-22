@@ -30,6 +30,12 @@ class DeleteMethodBuilder implements DeleteMethod, UrlParameterizableDeleteMetho
         params.url = url
         return this
     }
+    
+    @Override
+    ResponseReceivingDeleteMethod onUrl(String url) {
+        params.url = new URI(url)
+        return this
+    }
 
     @Override
     UrlParameterizableDeleteMethod onUrlFromTemplate(String urlTemplate) {

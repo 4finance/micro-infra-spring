@@ -98,5 +98,19 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
         then:
             1 * restTemplate.exchange(url, DELETE, _ as HttpEntity, Object)
     }
+    
+    def "should ignore service url when passing full URL as string"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
+            String url = 'http://some.url/api/objects/42'
+        when:            
+            httpMethodBuilder
+                .delete()
+                    .onUrl(url)
+                    .andExecuteFor()
+                    .aResponseEntity()
+        then:
+            1 * restTemplate.exchange(new URI(url), DELETE, _ as HttpEntity, Object)
+    }
 
 }

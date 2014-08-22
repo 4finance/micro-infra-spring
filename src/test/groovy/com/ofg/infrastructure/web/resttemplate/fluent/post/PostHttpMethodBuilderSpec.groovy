@@ -35,6 +35,25 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
             actualLocation == expectedLocation
     }
     
+    def "should query for location when sending a post request on given address as String"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            String expectedLocationAsString = 'localhost'
+            URI expectedLocation = new URI(expectedLocationAsString)
+        when:
+            URI actualLocation = httpMethodBuilder
+                                                .post()
+                                                    .onUrl(expectedLocation)
+                                                    .body(REQUEST_BODY)
+                                                    .forLocation()
+        then:
+            1 * restTemplate.exchange(expectedLocation, 
+                                      POST, 
+                                      { HttpEntity httpEntity -> httpEntity.body == REQUEST_BODY } as HttpEntity, 
+                                      RESPONSE_TYPE) >> responseEntityWith(expectedLocation)
+            actualLocation == expectedLocation
+    }
+    
     def "should query for location when sending a post request on given template address"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(restTemplate)

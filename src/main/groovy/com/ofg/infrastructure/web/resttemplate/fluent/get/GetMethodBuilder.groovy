@@ -32,6 +32,12 @@ class GetMethodBuilder implements GetMethod, UrlParameterizableGetMethod, Respon
         params.url = url
         return this
     }
+    
+    @Override
+    ResponseReceivingGetMethod onUrl(String url) {
+        params.url = new URI(url)
+        return this
+    }
 
     @Override
     UrlParameterizableGetMethod onUrlFromTemplate(String urlTemplate) {

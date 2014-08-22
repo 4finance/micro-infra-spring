@@ -10,7 +10,8 @@ class InvalidHttpMethodParametersSpec extends HttpMethodSpec {
         when:
             httpMethodBuilder
                     .get()
-                    .onUrl(null)
+                    .onUrlFromTemplate(null)
+                    .withVariables(null)
                     .anObject()
                     .ofType(BigDecimal)
         then:
@@ -23,7 +24,8 @@ class InvalidHttpMethodParametersSpec extends HttpMethodSpec {
         when:
             httpMethodBuilder
                     .post()
-                    .onUrl(null)
+                    .onUrlFromTemplate(null)
+                    .withVariables(null)
                     .body('')                    
                     .anObject()
                     .ofType(BigDecimal)
@@ -37,7 +39,8 @@ class InvalidHttpMethodParametersSpec extends HttpMethodSpec {
         when:
             httpMethodBuilder
                     .head()
-                    .onUrl(null)
+                    .onUrlFromTemplate(null)
+                    .withVariables(null)
                     .aResponseEntity()
         then:
             thrown(InvalidHttpMethodParametersException)
@@ -50,7 +53,8 @@ class InvalidHttpMethodParametersSpec extends HttpMethodSpec {
         when:
             httpMethodBuilder
                     .options()
-                    .onUrl(null)
+                    .onUrlFromTemplate(null)
+                    .withVariables(null)
                     .aResponseEntity()
                     .ofType(String)
         then:
@@ -63,7 +67,8 @@ class InvalidHttpMethodParametersSpec extends HttpMethodSpec {
         when:
             httpMethodBuilder
                     .delete()
-                    .onUrl(null)
+                    .onUrlFromTemplate(null)
+                    .withVariables(null)
                     .aResponseEntity()
         then:
             thrown(InvalidHttpMethodParametersException)

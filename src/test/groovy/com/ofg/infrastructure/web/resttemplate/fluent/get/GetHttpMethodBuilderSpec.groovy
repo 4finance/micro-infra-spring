@@ -104,4 +104,19 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
             1 * restTemplate.exchange(url, GET, _ as HttpEntity, BigDecimal)
     }
 
+    def "should ignore service url when passing full URL as String"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
+            String url = 'http://some.url/api/objects/42'
+        when:            
+            httpMethodBuilder
+                .get()
+                    .onUrl(url)
+                    .andExecuteFor()
+                        .anObject()
+                        .ofType(BigDecimal)
+        then:
+            1 * restTemplate.exchange(new URI(url), GET, _ as HttpEntity, BigDecimal)
+    }
+
 }

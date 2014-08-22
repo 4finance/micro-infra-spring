@@ -41,6 +41,12 @@ class PostMethodBuilder extends LocationFindingExecutor implements PostMethod, R
     }
 
     @Override
+    RequestHavingPostMethod onUrl(String url) {
+        params.url = new URI(url)
+        return this
+    }
+
+    @Override
     UrlParameterizablePostMethod onUrlFromTemplate(String urlTemplate) {
         params.urlTemplate = urlTemplate
         return this

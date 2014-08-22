@@ -35,6 +35,25 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
             actualLocation == expectedLocation
     }
     
+    def "should query for location when sending a put request on given address as String"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            String expectedLocationAsString = 'localhost'
+            URI expectedLocation = new URI(expectedLocationAsString)
+        when:
+            URI actualLocation = httpMethodBuilder
+                                                .put()
+                                                    .onUrl(expectedLocationAsString)
+                                                    .body(REQUEST_BODY)
+                                                    .forLocation()
+        then:
+            1 * restTemplate.exchange(expectedLocation, 
+                                      PUT, 
+                                      { HttpEntity httpEntity -> httpEntity.body == REQUEST_BODY } as HttpEntity, 
+                                      RESPONSE_TYPE) >> responseEntityWith(expectedLocation)
+            actualLocation == expectedLocation
+    }
+    
     def "should query for location when sending a put request on given template address"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(restTemplate)

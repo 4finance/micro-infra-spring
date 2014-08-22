@@ -5,12 +5,14 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.Bo
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving
+import groovy.transform.TypeChecked
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
 
 import static org.springframework.http.HttpMethod.PUT
 
+@TypeChecked
 class PutMethodBuilder extends LocationFindingExecutor implements PutMethod, RequestHavingPutMethod, ResponseReceivingPutMethod, UrlParameterizablePutMethod, HeadersSetting {
 
     public static final String EMPTY_HOST = ''

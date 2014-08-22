@@ -1,21 +1,16 @@
-package com.ofg.infrastructure.web.config
+package com.ofg.infrastructure.base
 
 import com.ofg.infrastructure.web.exception.ControllerExceptionConfiguration
 import com.ofg.infrastructure.web.filter.FilterConfiguration
-import com.ofg.infrastructure.web.resttemplate.RestTemplateConfiguration
-import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClientConfiguration
 import com.ofg.infrastructure.web.view.ViewConfiguration
 import groovy.transform.TypeChecked
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 
-@Configuration
 @TypeChecked
-@Import([RestTemplateConfiguration,
-        ServiceRestClientConfiguration,
-        ControllerExceptionConfiguration,
+@Configuration
+@Import([ControllerExceptionConfiguration,
         FilterConfiguration,
         ViewConfiguration])
-class WebInfrastructureConfiguration {
-
+class ConfigurationWithoutServiceDiscovery {
 }

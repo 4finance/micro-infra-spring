@@ -26,12 +26,12 @@ ext {
     metricsVersion = '3.0.2'
     jacksonMapper = '1.9.13'
     aspectjVersion = '1.8.2'
+    microDepsSpringConfigVersion = '0.2.2'
 }
 
 group = 'com.ofg'
 description = 'Microservice default infrastructure Spring configuration'
 version = '0.0.6-SNAPSHOT'
-
 sourceCompatibility = 1.7
 
 task addHashFile << {
@@ -55,7 +55,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.ofg:micro-deps-spring-config:0.2.1'
+    compile "com.ofg:micro-deps-spring-config:$microDepsSpringConfigVersion"
     compile "org.codehaus.groovy:groovy-all:$groovyVersion"
     compile 'com.fasterxml.jackson.core:jackson-databind:2.4.2'
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
@@ -79,12 +79,17 @@ dependencies {
     testCompile 'org.hibernate:hibernate-validator:5.1.2.Final'
     testCompile 'com.jayway.jsonpath:json-path-assert:0.9.1'
     testCompile 'com.github.stefanbirkner:system-rules:1.6.0'
+    testCompile("com.ofg:micro-deps-spring-test-config:$microDepsSpringConfigVersion") {
+        exclude group: 'org.slf4j'
+        exclude group: 'log4j'
+    }
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.0'
 }
 
+//Workaround for the issue with Java 8u11 and 7u65 - http://www.infoq.com/news/2014/08/Java8-U11-Broke-Tools
 test {
     jvmArgs '-noverify'
 }

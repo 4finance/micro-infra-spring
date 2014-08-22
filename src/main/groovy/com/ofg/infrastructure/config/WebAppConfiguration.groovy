@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.config
 
+import com.ofg.infrastructure.discovery.ServiceDiscoveryConfiguration
 import com.ofg.infrastructure.healthcheck.HealthCheckConfiguration
 import com.ofg.infrastructure.metrics.registry.MetricsRegistryConfiguration
 import com.ofg.infrastructure.web.config.WebInfrastructureConfiguration
@@ -9,6 +10,6 @@ import org.springframework.context.annotation.Import
 
 @Configuration
 @TypeChecked
-@Import([WebInfrastructureConfiguration, MetricsRegistryConfiguration, HealthCheckConfiguration])
+@Import([WebInfrastructureConfiguration, ServiceDiscoveryConfiguration, MetricsRegistryConfiguration, HealthCheckConfiguration])
 class WebAppConfiguration {
 }

@@ -1,10 +1,12 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
 
+import groovy.transform.TypeChecked
 import org.springframework.http.HttpMethod
 import org.springframework.web.client.RestTemplate
 
 import static HttpEntityUtils.getHttpEntityFrom
 
+@TypeChecked
 abstract class LocationFindingExecutor implements LocationReceiving {
 
     protected final Map params = [:]

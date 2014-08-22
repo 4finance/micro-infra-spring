@@ -12,8 +12,10 @@ import com.ofg.infrastructure.web.resttemplate.fluent.post.PostMethod
 import com.ofg.infrastructure.web.resttemplate.fluent.post.PostMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.put.PutMethod
 import com.ofg.infrastructure.web.resttemplate.fluent.put.PutMethodBuilder
+import groovy.transform.CompileStatic
 import org.springframework.web.client.RestTemplate
 
+@CompileStatic
 class HttpMethodBuilder {
 
     private final RestTemplate restTemplate

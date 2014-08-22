@@ -4,9 +4,11 @@ import groovy.transform.TypeChecked
 import org.springframework.boot.context.embedded.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.EnableAspectJAutoProxy
 
 @TypeChecked
 @Configuration
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 class CorrelationIdConfiguration {
 
     @Bean

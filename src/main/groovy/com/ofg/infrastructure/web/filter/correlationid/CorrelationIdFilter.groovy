@@ -10,6 +10,7 @@ import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+import static com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
 import static org.springframework.util.StringUtils.hasText
 
 @TypeChecked
@@ -34,17 +35,17 @@ class CorrelationIdFilter extends OncePerRequestFilter {
     }
 
     private String getCorrelationIdFrom(HttpServletResponse response) {
-        return withLoggingAs('response') { response.getHeader(CorrelationIdHolder.CORRELATION_ID_HEADER) }
+        return withLoggingAs('response') { response.getHeader(CORRELATION_ID_HEADER) }
     }
 
     private String getCorrelationIdFrom(HttpServletRequest request) {
-        return withLoggingAs('request') { request.getHeader(CorrelationIdHolder.CORRELATION_ID_HEADER) }
+        return withLoggingAs('request') { request.getHeader(CORRELATION_ID_HEADER) }
     }
 
     private withLoggingAs(String whereWasFound, Closure correlationIdGetter) {
         String correlationId = correlationIdGetter.call()
         if (hasText(correlationId)) {
-            MDC.put(CorrelationIdHolder.CORRELATION_ID_HEADER, correlationId)
+            MDC.put(CORRELATION_ID_HEADER, correlationId)
             log.debug("Found correlationId in $whereWasFound: $correlationId")
         }
         return correlationId
@@ -54,20 +55,20 @@ class CorrelationIdFilter extends OncePerRequestFilter {
     private String createNewCorrIdIfEmpty(String currentCorrId) {
         if (!hasText(currentCorrId)) {
             currentCorrId = UUID.randomUUID().toString()
-            MDC.put(CorrelationIdHolder.CORRELATION_ID_HEADER, currentCorrId)
+            MDC.put(CORRELATION_ID_HEADER, currentCorrId)
             log.info("Generating new correlationId: " + currentCorrId)
         }
         return currentCorrId
     }
 
     private void addCorrelationIdToResponseIfNotPresent(HttpServletResponse response, String correlationId) {
-        if (!hasText(response.getHeader(CorrelationIdHolder.CORRELATION_ID_HEADER))) {
-            response.addHeader(CorrelationIdHolder.CORRELATION_ID_HEADER, correlationId)
+        if (!hasText(response.getHeader(CORRELATION_ID_HEADER))) {
+            response.addHeader(CORRELATION_ID_HEADER, correlationId)
         }
     }
 
     private void cleanupCorrelationId() {
-        MDC.remove(CorrelationIdHolder.CORRELATION_ID_HEADER)
+        MDC.remove(CORRELATION_ID_HEADER)
         CorrelationIdHolder.remove()
     }
 

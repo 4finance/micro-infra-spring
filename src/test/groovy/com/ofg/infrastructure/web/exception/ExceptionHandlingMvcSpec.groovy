@@ -1,7 +1,8 @@
 package com.ofg.infrastructure.web.exception
+
 import com.ofg.infrastructure.base.BaseConfiguration
+import com.ofg.infrastructure.base.ConfigurationWithoutServiceDiscovery
 import com.ofg.infrastructure.base.MvcIntegrationSpec
-import com.ofg.infrastructure.web.config.WebInfrastructureConfiguration
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -14,7 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@ContextConfiguration(classes = [Config, BaseConfiguration, WebInfrastructureConfiguration], loader = SpringApplicationContextLoader)
+@ContextConfiguration(classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery], loader = SpringApplicationContextLoader)
 class ExceptionHandlingMvcSpec extends MvcIntegrationSpec {
     
     def "should return bad request error for missing last name"() {

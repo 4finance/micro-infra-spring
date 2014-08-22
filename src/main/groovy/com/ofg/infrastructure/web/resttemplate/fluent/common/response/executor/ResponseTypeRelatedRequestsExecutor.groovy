@@ -1,10 +1,13 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
+
+import groovy.transform.TypeChecked
 import org.springframework.http.HttpMethod as SpringHttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.HttpEntityUtils.getHttpEntityFrom
 
+@TypeChecked
 abstract class ResponseTypeRelatedRequestsExecutor<T> {
 
     protected final RestTemplate restTemplate

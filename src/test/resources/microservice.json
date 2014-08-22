@@ -1,0 +1,10 @@
+{
+    "prod": {
+        "this": "foo/bar/registration",
+        "dependencies": {
+            "users": "foo/bar/users",
+            "newsletter": "foo/bar/comms/newsletter",
+            "confirmation": "foo/bar/security/confirmation"
+        }
+    }
+}

@@ -2,9 +2,11 @@ package com.ofg.infrastructure.web.resttemplate.fluent.delete
 
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodylessWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
+import groovy.transform.TypeChecked
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
 
+@TypeChecked
 class DeleteMethodBuilder implements DeleteMethod, UrlParameterizableDeleteMethod, ResponseReceivingDeleteMethod, HeadersHaving {
 
     public static final String EMPTY_HOST = ''
@@ -16,7 +18,7 @@ class DeleteMethodBuilder implements DeleteMethod, UrlParameterizableDeleteMetho
     DeleteMethodBuilder(String host, RestTemplate restTemplate) {
         this.restTemplate = restTemplate
         params.host = host
-        withHeaders =  new BodylessWithHeaders<>(this, params)
+        withHeaders =  new BodylessWithHeaders<ResponseReceivingDeleteMethod>(this, params)
     }
 
     DeleteMethodBuilder(RestTemplate restTemplate) {

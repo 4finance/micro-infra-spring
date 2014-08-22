@@ -9,7 +9,7 @@ class ServiceRestClient {
     private final RestTemplate restTemplate
     private final ServiceResolver serviceResolver
 
-    public ServiceRestClient(RestTemplate restTemplate, ServiceResolver serviceResolver) {
+    ServiceRestClient(RestTemplate restTemplate, ServiceResolver serviceResolver) {
         this.restTemplate = restTemplate
         this.serviceResolver = serviceResolver
     }
@@ -28,12 +28,11 @@ class ServiceRestClient {
     }
 
     /**
-     * Returns fluent api to send requests to given host name
-     * @param hostName
+     * Returns fluent api to send requests to external service
      * @return
      */
-    public HttpMethodBuilder forHost(String hostName) {
-        return new HttpMethodBuilder(hostName, restTemplate)
+    public HttpMethodBuilder forExternalService() {
+        return new HttpMethodBuilder(restTemplate)
     }
 
 }

@@ -1,13 +1,16 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.options
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.InvalidHttpMethodParametersException
 import groovy.transform.PackageScope
+import groovy.transform.TypeChecked
 import org.springframework.http.HttpMethod
 import org.springframework.web.client.RestTemplate
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.HttpEntityUtils.getHttpEntityFrom
 import static org.springframework.http.HttpMethod.OPTIONS
 
-@PackageScope class OptionsAllowHeaderExecutor implements AllowHeaderReceiving {
+@TypeChecked 
+@PackageScope 
+class OptionsAllowHeaderExecutor implements AllowHeaderReceiving {
 
     private final Map params
     private final RestTemplate restTemplate

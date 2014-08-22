@@ -1,8 +1,8 @@
 package com.ofg.infrastructure.web.filter.correlationid
 
 import com.ofg.infrastructure.base.BaseConfiguration
+import com.ofg.infrastructure.base.ConfigurationWithoutServiceDiscovery
 import com.ofg.infrastructure.base.MvcIntegrationSpec
-import com.ofg.infrastructure.web.config.WebInfrastructureConfiguration
 import org.slf4j.MDC
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.http.MediaType
@@ -10,7 +10,9 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 
-@ContextConfiguration(classes = [BaseConfiguration, WebInfrastructureConfiguration], loader = SpringApplicationContextLoader)
+import static com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
+
+@ContextConfiguration(classes = [BaseConfiguration, ConfigurationWithoutServiceDiscovery], loader = SpringApplicationContextLoader)
 class CorrelationIdFilterSpec extends MvcIntegrationSpec {
 
     def "should create and return correlationId in HTTP header"() {
@@ -40,12 +42,12 @@ class CorrelationIdFilterSpec extends MvcIntegrationSpec {
             sendPingWithCorrelationId(passedCorrelationId)
 
         then:
-            MDC.get(CorrelationIdHolder.CORRELATION_ID_HEADER) == null
+            MDC.get(CORRELATION_ID_HEADER) == null
     }
 
     private MvcResult sendPingWithCorrelationId(String passedCorrelationId) {
         mockMvc.perform(MockMvcRequestBuilders.get('/ping').accept(MediaType.TEXT_PLAIN)
-                .header(CorrelationIdHolder.CORRELATION_ID_HEADER, passedCorrelationId)).andReturn()
+                .header(CORRELATION_ID_HEADER, passedCorrelationId)).andReturn()
     }
 
     private MvcResult sendPingWithoutCorrelationId() {
@@ -53,6 +55,6 @@ class CorrelationIdFilterSpec extends MvcIntegrationSpec {
     }
 
     private String getCorrelationIdFromResonseHeader(MvcResult mvcResult) {
-        mvcResult.getResponse().getHeader(CorrelationIdHolder.CORRELATION_ID_HEADER)
+        mvcResult.getResponse().getHeader(CORRELATION_ID_HEADER)
     }
 }

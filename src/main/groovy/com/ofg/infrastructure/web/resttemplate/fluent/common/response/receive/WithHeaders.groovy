@@ -1,8 +1,10 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive
 
+import groovy.transform.TypeChecked
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 
+@TypeChecked
 class WithHeaders<T> implements HeadersSetting<T>, HeadersHaving<T> {
 
     private static final String CONTENT_TYPE_HEADER_NAME = 'Content-Type'

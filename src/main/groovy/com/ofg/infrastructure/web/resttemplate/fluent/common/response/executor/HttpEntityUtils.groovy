@@ -1,10 +1,9 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
-
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 
-@TypeChecked
+@CompileStatic
 final class HttpEntityUtils {
     private HttpEntityUtils() {
         throw new UnsupportedOperationException("Can't instantiate a utility class")

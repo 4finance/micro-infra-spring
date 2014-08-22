@@ -3,10 +3,12 @@ package com.ofg.infrastructure.web.resttemplate.fluent.options
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving
+import groovy.transform.TypeChecked
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
 
+@TypeChecked
 class OptionsMethodBuilder implements OptionsMethod, UrlParameterizableOptionsMethod, ResponseReceivingOptionsMethod, HeadersHaving, AllowHeaderReceiving {
 
     public static final String EMPTY_HOST = ''

@@ -1,8 +1,8 @@
 package com.ofg.infrastructure.discovery
 import com.google.common.base.Optional as GuavaOptional
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 
-@TypeChecked
+@CompileStatic
 class StubbedServiceResolver implements ServiceResolver {
     
     Map<String, String> stubbedDeps = [:]

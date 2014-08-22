@@ -1,9 +1,9 @@
 package com.ofg.infrastructure.discovery.web
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 
-@TypeChecked
+@CompileStatic
 class HttpMockServer extends WireMockServer {
 
     static final int DEFAULT_PORT = 8030

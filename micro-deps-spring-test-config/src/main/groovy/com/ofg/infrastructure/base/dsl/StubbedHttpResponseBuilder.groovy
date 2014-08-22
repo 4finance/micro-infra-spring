@@ -2,11 +2,12 @@ package com.ofg.infrastructure.base.dsl
 
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 //TODO: this needs a usage example (preferably as tests)
-@TypeChecked
+
+@CompileStatic
 class StubbedHttpResponseBuilder {
 
     static ResponseDefinitionBuilder xmlResponse(HttpStatus status, String responseBodyFileName) {

@@ -1,8 +1,8 @@
 package com.ofg.infrastructure.discovery
 
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 
-@TypeChecked
+@CompileStatic
 class MicroserviceAddressProvider {
 
     private final String host

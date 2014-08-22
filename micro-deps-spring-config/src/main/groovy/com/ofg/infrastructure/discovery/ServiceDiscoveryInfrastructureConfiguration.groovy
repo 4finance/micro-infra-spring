@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.discovery
 
+import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.TypeChecked
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
 import org.apache.curator.retry.RetryNTimes
@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration
 /**
  * Class holding configuration to Zookeeper server, Zookeeper service instance and to Curator framework
  */
-@TypeChecked
+@CompileStatic
 @Configuration
 class ServiceDiscoveryInfrastructureConfiguration {
     

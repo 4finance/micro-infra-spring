@@ -6,15 +6,14 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
-        classpath 'com.ofg:uptodate-gradle-plugin:0.0.5'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
+        classpath 'com.ofg:uptodate-gradle-plugin:+'
     }
 }
 
 ext {
-    projectSourceCompatibility = 1.7
     projectGroup = 'com.ofg'
-    projectVersion = '0.2.2-SNAPSHOT'
+    projectVersion = '0.2.2'
     
     spockVersion = '0.7-groovy-2.0'
     springVersion = '4.0.6.RELEASE'
@@ -22,11 +21,14 @@ ext {
 
 subprojects {
     apply plugin: 'groovy'
-    apply plugin: 'maven'
     apply plugin: 'maven-publish'
-    apply plugin: 'bintray'
-    apply plugin: 'uptodate'
+    apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'com.ofg.uptodate'
 
+    sourceCompatibility = 1.7
+    group = projectGroup
+    version = projectVersion
+    
     repositories {
         mavenLocal()
         jcenter()
@@ -45,11 +47,6 @@ subprojects {
         testCompile "org.spockframework:spock-spring:$spockVersion"
         testCompile "org.springframework:spring-test:$springVersion"
     }
-
-
-    sourceCompatibility = projectSourceCompatibility
-    group = projectGroup
-    version = projectVersion
 
     bintrayUpload.dependsOn 'build'
 
@@ -89,9 +86,13 @@ subprojects {
         archives sourcesJar
     }
 
-    task wrapper(type: Wrapper) {
-        gradleVersion = '2.0'
+
+    //Workaround for the issue with Java 8u11 and 7u65 - http://www.infoq.com/news/2014/08/Java8-U11-Broke-Tools
+    test {
+        jvmArgs '-noverify'
     }
+
+
 }
 
 project(':micro-deps-spring-config') {

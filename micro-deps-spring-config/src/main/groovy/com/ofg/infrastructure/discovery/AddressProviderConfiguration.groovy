@@ -1,4 +1,6 @@
 package com.ofg.infrastructure.discovery
+
+import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -7,6 +9,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
 
 @Configuration
+@CompileStatic
 class AddressProviderConfiguration {
     
     @PackageScope static final Integer DEFAULT_SERVER_PORT = 8080

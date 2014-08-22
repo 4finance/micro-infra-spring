@@ -1,10 +1,11 @@
 package com.ofg.infrastructure.base.dsl
+
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 
 //TODO: this needs a usage example (preferably as tests)
-@TypeChecked
+@CompileStatic
 class WireMockHttpRequestMapper {
 
     static MappingBuilder wireMockGet(String path) {

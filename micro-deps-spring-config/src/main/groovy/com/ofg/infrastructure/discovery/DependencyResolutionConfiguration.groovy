@@ -3,8 +3,8 @@ package com.ofg.infrastructure.discovery
 import com.ofg.infrastructure.discovery.watcher.DependencyWatcher
 import com.ofg.infrastructure.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
 import com.ofg.infrastructure.discovery.watcher.presence.MissingDependencyLoggingOnStartupVerifier
+import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.TypeChecked
 import org.apache.curator.x.discovery.ServiceDiscovery
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -15,7 +15,7 @@ import org.springframework.core.io.Resource
 /**
  * Configuration of microservice's dependencies resolving classes. 
  */
-@TypeChecked
+@CompileStatic
 @Configuration
 class DependencyResolutionConfiguration {
 

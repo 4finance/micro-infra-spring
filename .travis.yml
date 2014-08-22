@@ -17,4 +17,5 @@ env:
 
 after_success:
 - ./gradlew test jacocoTestReport coveralls -Pcoverage
+- ./gradlew uptodate
 

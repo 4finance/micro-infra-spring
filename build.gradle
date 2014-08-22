@@ -5,7 +5,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:+'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
         classpath 'com.ofg:uptodate-gradle-plugin:+'
     }
@@ -14,8 +13,7 @@ buildscript {
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
-apply plugin: 'uptodate'
-apply plugin: 'spring-boot'
+apply plugin: 'com.ofg.uptodate'
 
 sourceCompatibility = 1.7
 
@@ -82,41 +80,30 @@ bintray {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            from components.java
+
             artifact sourcesJar {
                 classifier "sources"
             }
 
-            artifact fatJar {
-                classifier "fatJar"
+            artifact javadocJar {
+                classifier "javadoc"
             }
         }
     }
 }
 
-springBoot.backupSource = false
-jar.enabled = false
-
-task sourcesJar(type: Jar) {
+task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
 }
 
-task fatJar(type: Jar) {
-    classifier = 'fatJar'
-    from sourceSets.main.output
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
 }
 
-task fatJarBoot(type: BootRepackage, dependsOn: fatJar) {
-    withJarTask = fatJar
+artifacts {
+    archives sourcesJar
+    archives javadocJar
 }
-
-springBoot {
-    classifier = 'fatJar'
-    backupSource = false
-}
-
-task bootJars(dependsOn: build)
-bootJars {
-    dependsOn = [sourcesJar, fatJarBoot]
-}
-project.tasks.findAll {it.name.startsWith('publish') || it.name == 'bintrayUpload' }*.dependsOn(bootJars)

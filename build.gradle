@@ -19,6 +19,7 @@ ext {
     stubRegistryPort = 2181
     minStubPortNumber = 2300
     maxStubPortNumber = 2399
+    context = 'pl'
 
     curatorVersion = '2.6.0'
     slf4jVersion = '1.7.7'
@@ -44,7 +45,14 @@ dependencies {
 }
 
 tasks.addRule('Pattern: runStubs<Project>: Run stubs for project') { String taskName ->
-    if (taskName.startsWith('runStubs')) {
+    if (taskName == 'runStubs') {
+        task(taskName, type: JavaExec, dependsOn: classes) {
+            main = 'com.ofg.stub.Main'
+            classpath = sourceSets.main.output + configurations.compile
+            args = [ stubRepository, '', stubRegistryPort, minStubPortNumber, maxStubPortNumber, context ]
+            println "Running task with args $args"
+        }
+    } else if (taskName.startsWith('runStubs')) {
         String metadata = taskName - 'runStubs'
         metadata = metadata[0].toLowerCase() + metadata.substring(1)
 
@@ -52,6 +60,7 @@ tasks.addRule('Pattern: runStubs<Project>: Run stubs for project') { String task
             main = 'com.ofg.stub.Main'
             classpath = sourceSets.main.output + configurations.compile
             args = [ stubRepository, "${metadata}.json", stubRegistryPort, minStubPortNumber, maxStubPortNumber ]
+            println "Running task with args $args"
         }
     }
 }

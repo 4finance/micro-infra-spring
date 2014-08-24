@@ -3,12 +3,15 @@ package com.ofg.stub
 import com.ofg.stub.mapping.DescriptorRepository
 import com.ofg.stub.mapping.MappingDescriptor
 import com.ofg.stub.mapping.ProjectMetadata
+import com.ofg.stub.mapping.ProjectMetadataParser
+import com.ofg.stub.mapping.RepositoryMetada
 import com.ofg.stub.registry.StubRegistry
 import com.ofg.stub.server.AvailablePortScanner
 import com.ofg.stub.server.StubServer
 import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j
 
+import static com.ofg.stub.mapping.ProjectMetadataParser.createMetaDataForAllStubs
 import static com.ofg.stub.mapping.ProjectMetadataParser.parseMetadata
 
 @TypeChecked
@@ -23,8 +26,8 @@ class StubRunner {
         this.stubRegistry = stubRegistry
     }
 
-    void runStubs(DescriptorRepository repository, File metadata) {
-        List<ProjectMetadata> projects = parseMetadata(metadata)
+    void runStubs(DescriptorRepository repository, RepositoryMetada repositoryMetada) {
+        List<ProjectMetadata> projects = repositoryMetada.isForAllStubs() ? createMetaDataForAllStubs(repositoryMetada) : parseMetadata(repositoryMetada)
         List<StubServer> stubServers = startStubServers(projects, repository)
         stubRegistry.register(stubServers)
         log.info("All stubs are now running and registered in service registry available on port $stubRegistry.port")

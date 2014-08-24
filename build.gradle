@@ -46,24 +46,24 @@ dependencies {
 
 tasks.addRule('Pattern: runStubs<Project>: Run stubs for project') { String taskName ->
     if (taskName == 'runStubs') {
-        task(taskName, type: JavaExec, dependsOn: classes) {
-            main = 'com.ofg.stub.Main'
-            classpath = sourceSets.main.output + configurations.compile
-            args = [ stubRepository, '', stubRegistryPort, minStubPortNumber, maxStubPortNumber, context ]
-            println "Running task with args $args"
-        }
+        createStubRunnerTask(taskName, [ stubRepository, '', stubRegistryPort, minStubPortNumber, maxStubPortNumber, context ])
+
     } else if (taskName.startsWith('runStubs')) {
         String metadata = taskName - 'runStubs'
         metadata = metadata[0].toLowerCase() + metadata.substring(1)
-
-        task(taskName, type: JavaExec, dependsOn: classes) {
-            main = 'com.ofg.stub.Main'
-            classpath = sourceSets.main.output + configurations.compile
-            args = [ stubRepository, "${metadata}.json", stubRegistryPort, minStubPortNumber, maxStubPortNumber ]
-            println "Running task with args $args"
-        }
+        createStubRunnerTask(taskName, [ stubRepository, "${metadata}.json", stubRegistryPort, minStubPortNumber, maxStubPortNumber ])
     }
 }
+
+void createStubRunnerTask(String taskName, List arguments) {
+    task (taskName, type: JavaExec, dependsOn: classes) {
+        main = 'com.ofg.stub.Main'
+        classpath = sourceSets.main.output + configurations.compile
+        args = arguments
+        println "Running task with args $args"
+    }
+}
+
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.0'

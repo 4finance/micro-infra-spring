@@ -1,10 +1,8 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.get
 
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodyContainingWithHeaders
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import groovy.transform.TypeChecked
+import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
 
@@ -36,6 +34,12 @@ class GetMethodBuilder implements GetMethod, UrlParameterizableGetMethod, Respon
     @Override
     ResponseReceivingGetMethod onUrl(String url) {
         params.url = new URI(url)
+        return this
+    }
+    
+    @Override
+    ResponseReceivingGetMethod httpEntity(HttpEntity httpEntity) {
+        params.httpEntity = httpEntity
         return this
     }
 
@@ -75,6 +79,11 @@ class GetMethodBuilder implements GetMethod, UrlParameterizableGetMethod, Respon
                 return new GetExecuteForResponseTypeRelated<T>(params, restTemplate, responseType).exchange()
             }
         }
+    }
+
+    @Override
+    void execute() {
+        aResponseEntity().ofType(Object)
     }
 
 }

@@ -1,9 +1,9 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.options
-
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving
 import groovy.transform.TypeChecked
+import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
@@ -38,6 +38,12 @@ class OptionsMethodBuilder implements OptionsMethod, UrlParameterizableOptionsMe
     @Override
     ResponseReceivingOptionsMethod onUrl(String url) {
         params.url = new URI(url)
+        return this
+    }
+
+    @Override
+    ResponseReceivingOptionsMethod httpEntity(HttpEntity httpEntity) {
+        params.httpEntity = httpEntity
         return this
     }
 
@@ -82,6 +88,11 @@ class OptionsMethodBuilder implements OptionsMethod, UrlParameterizableOptionsMe
                 return new OptionsExecuteForResponseTypeRelated<T>(params, restTemplate, responseType).exchange()
             }
         }
+    }
+
+    @Override
+    void execute() {
+        aResponseEntity().ofType(Object)
     }
 
 }

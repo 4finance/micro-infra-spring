@@ -1,8 +1,8 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.head
-
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodylessWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
 import groovy.transform.TypeChecked
+import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
@@ -39,6 +39,12 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
     }
 
     @Override
+    ResponseReceivingHeadMethod httpEntity(HttpEntity httpEntity) {
+        params.httpEntity = httpEntity
+        return this
+    }
+
+    @Override
     UrlParameterizableHeadMethod onUrlFromTemplate(String urlTemplate) {
         params.urlTemplate = urlTemplate
         return this
@@ -64,6 +70,11 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
     @Override
     HttpHeaders httpHeaders() {
         return new HeadExecuteForResponseTypeRelated(params, restTemplate).exchange()?.headers
+    }
+
+    @Override
+    void execute() {
+        aResponseEntity()
     }
 
 }

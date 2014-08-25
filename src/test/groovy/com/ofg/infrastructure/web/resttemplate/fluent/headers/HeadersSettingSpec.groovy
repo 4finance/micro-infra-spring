@@ -128,7 +128,6 @@ class HeadersSettingSpec extends HttpMethodSpec {
                     _ as Long)
     }
 
-
     def "should fill out headers for delete method"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(restTemplate)
@@ -152,6 +151,27 @@ class HeadersSettingSpec extends HttpMethodSpec {
             1 * restTemplate.exchange(TEMPLATE_URL,
                     DELETE,
                     { HttpEntity httpEntity -> httpEntity.headers.keySet().every isPresentInSetHeaders() } as HttpEntity,
+                    _ as Class,
+                    _ as Long)
+    }
+
+
+    def "should send a request from passed HttpEntity"() {
+        given:
+            String body = '''{"some":"body"}'''
+            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+        when:
+            httpMethodBuilder
+                    .post()
+                        .onUrlFromTemplate(TEMPLATE_URL)
+                        .withVariables(OBJECT_ID)     
+                    .httpEntity(new HttpEntity(body, createHeaders()))                    
+                    .execute()    
+        then:
+            1 * restTemplate.exchange(TEMPLATE_URL,
+                    POST,
+                    { HttpEntity httpEntity -> 
+                        httpEntity.headers.keySet().every(isPresentInSetHeaders()) && httpEntity.body == body } as HttpEntity,
                     _ as Class,
                     _ as Long)
     }

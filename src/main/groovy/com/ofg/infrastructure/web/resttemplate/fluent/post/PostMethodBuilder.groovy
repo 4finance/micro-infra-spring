@@ -1,11 +1,11 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.post
-
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.LocationFindingExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodyContainingWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving
 import groovy.transform.TypeChecked
+import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
@@ -43,6 +43,12 @@ class PostMethodBuilder extends LocationFindingExecutor implements PostMethod, R
     @Override
     RequestHavingPostMethod onUrl(String url) {
         params.url = new URI(url)
+        return this
+    }
+
+    @Override
+    ResponseReceivingPostMethod httpEntity(HttpEntity httpEntity) {
+        params.httpEntity = httpEntity
         return this
     }
 
@@ -88,6 +94,11 @@ class PostMethodBuilder extends LocationFindingExecutor implements PostMethod, R
                 return new PostExecuteForResponseTypeRelated<T>(params, restTemplate, responseType).exchange()
             }
         }
+    }
+    
+    @Override
+    void execute() {
+        aResponseEntity().ofType(Object)    
     }
 
 }

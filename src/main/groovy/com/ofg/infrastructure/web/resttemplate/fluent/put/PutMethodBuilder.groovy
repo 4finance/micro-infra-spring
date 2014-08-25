@@ -1,11 +1,11 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.put
-
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.LocationFindingExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodyContainingWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving
 import groovy.transform.TypeChecked
+import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
@@ -46,6 +46,12 @@ class PutMethodBuilder extends LocationFindingExecutor implements PutMethod, Req
         return this
     }
 
+    @Override
+    ResponseReceivingPutMethod httpEntity(HttpEntity httpEntity) {
+        params.httpEntity = httpEntity
+        return this
+    }
+    
     @Override
     UrlParameterizablePutMethod onUrlFromTemplate(String urlTemplate) {
         params.urlTemplate = urlTemplate
@@ -88,6 +94,11 @@ class PutMethodBuilder extends LocationFindingExecutor implements PutMethod, Req
                 return new PutExecuteForResponseTypeRelated<T>(params, restTemplate, responseType).exchange()
             }
         }
+    }
+    
+    @Override
+    void execute() {
+        aResponseEntity().ofType(Object)
     }
 
 }

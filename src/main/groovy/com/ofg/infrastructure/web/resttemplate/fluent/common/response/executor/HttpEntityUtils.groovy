@@ -9,7 +9,10 @@ final class HttpEntityUtils {
         throw new UnsupportedOperationException("Can't instantiate a utility class")
     }
 
-    public static HttpEntity<Object> getHttpEntityFrom(Map params) {        
+    public static HttpEntity<Object> getHttpEntityFrom(Map params) {
+        if (params.httpEntity) {
+            return params.httpEntity as HttpEntity
+        }
         HttpHeaders headers = params.headers as HttpHeaders
         HttpEntity<?> httpEntity = new HttpEntity<Object>(params.request, headers)
         return httpEntity

@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive
 
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.Executable
+import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 
 interface HeadersSetting<T> extends Executable<T> {
@@ -22,5 +23,7 @@ interface HeadersSetting<T> extends Executable<T> {
     HeadersSetting<T> header(String headerName, String headerValue)
 
     HeadersSetting<T> headers(Map<String, String> values)
+    
+    HeadersSetting<T> headers(HttpHeaders httpHeaders)
 
 }

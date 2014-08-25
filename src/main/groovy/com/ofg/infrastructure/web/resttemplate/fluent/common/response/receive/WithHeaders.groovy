@@ -80,6 +80,12 @@ class WithHeaders<T> implements HeadersSetting<T>, HeadersHaving<T> {
         return this
     }
 
+    @Override
+    HeadersSetting<T> headers(HttpHeaders httpHeaders) {
+        params.headers = httpHeaders
+        return this
+    }
+
     private void updateHeaderParams() {
         params.headers = httpHeaders
     }

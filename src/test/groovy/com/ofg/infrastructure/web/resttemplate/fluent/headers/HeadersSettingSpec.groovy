@@ -1,5 +1,4 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.headers
-
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
 import groovy.transform.TypeChecked
@@ -166,7 +165,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
                         .onUrlFromTemplate(TEMPLATE_URL)
                         .withVariables(OBJECT_ID)     
                     .httpEntity(new HttpEntity(body, createHeaders()))                    
-                    .execute()    
+                    .ignoringResponse()
         then:
             1 * restTemplate.exchange(TEMPLATE_URL,
                     POST,
@@ -216,6 +215,50 @@ class HeadersSettingSpec extends HttpMethodSpec {
             1 * restTemplate.exchange(TEMPLATE_URL,
                     GET,
                     { HttpEntity httpEntity -> httpEntity.headers.keySet().every isPresentInSetHeaders() } as HttpEntity,
+                    _ as Class,
+                    _ as Long)
+    }
+
+    def "should fill out JSON content type header"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+        when:
+            httpMethodBuilder
+                    .get()
+                        .onUrlFromTemplate(TEMPLATE_URL)
+                        .withVariables(OBJECT_ID)
+                    .withHeaders()
+                        .contentTypeJson()
+                    .andExecuteFor()
+                        .anObject()
+                        .ofType(BigDecimal)
+        then:
+            1 * restTemplate.exchange(TEMPLATE_URL,
+                    GET,
+                    { HttpEntity httpEntity ->
+                        httpEntity.headers.get('Content-Type') == [MediaType.APPLICATION_JSON_VALUE]
+                    } as HttpEntity,
+                    _ as Class,
+                    _ as Long)
+    }
+
+    def "should fill out XML content type header"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+        when:
+            httpMethodBuilder
+                    .get()
+                        .onUrlFromTemplate(TEMPLATE_URL)
+                        .withVariables(OBJECT_ID)
+                    .withHeaders()
+                        .contentTypeXml()
+                    .andExecuteFor()
+                        .anObject()
+                        .ofType(BigDecimal)
+        then:
+            1 * restTemplate.exchange(TEMPLATE_URL,
+                    GET,
+                    { HttpEntity httpEntity -> httpEntity.headers.get('Content-Type') == [MediaType.APPLICATION_XML_VALUE] } as HttpEntity,
                     _ as Class,
                     _ as Long)
     }

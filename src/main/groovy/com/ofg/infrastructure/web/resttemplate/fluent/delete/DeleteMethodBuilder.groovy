@@ -67,7 +67,7 @@ class DeleteMethodBuilder implements DeleteMethod, UrlParameterizableDeleteMetho
     }
 
     @Override
-    void execute() {
+    void ignoringResponse() {
         aResponseEntity()
     }
 

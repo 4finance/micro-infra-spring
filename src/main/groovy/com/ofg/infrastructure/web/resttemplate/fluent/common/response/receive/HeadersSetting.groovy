@@ -4,6 +4,10 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.E
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 
+/**
+ *
+ * @param < T > - interface to return via {@link Executable} when you have finished setting headers
+ */
 interface HeadersSetting<T> extends Executable<T> {
 
     HeadersSetting<T> accept(List<MediaType> acceptableMediaTypes)
@@ -13,6 +17,10 @@ interface HeadersSetting<T> extends Executable<T> {
     HeadersSetting<T> contentType(MediaType mediaType)
     
     HeadersSetting<T> contentType(String contentType)
+
+    HeadersSetting<T> contentTypeJson()
+
+    HeadersSetting<T> contentTypeXml()
 
     HeadersSetting<T> expires(long expires)
 

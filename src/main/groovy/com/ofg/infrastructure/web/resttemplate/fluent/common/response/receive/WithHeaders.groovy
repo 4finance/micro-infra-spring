@@ -4,6 +4,9 @@ import groovy.transform.TypeChecked
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 
+import static org.springframework.http.MediaType.APPLICATION_JSON
+import static org.springframework.http.MediaType.APPLICATION_XML
+
 @TypeChecked
 class WithHeaders<T> implements HeadersSetting<T>, HeadersHaving<T> {
 
@@ -42,6 +45,21 @@ class WithHeaders<T> implements HeadersSetting<T>, HeadersHaving<T> {
     @Override
     HeadersSetting<ResponseReceiving> contentType(String contentType) {
         httpHeaders.add(CONTENT_TYPE_HEADER_NAME, contentType)
+        updateHeaderParams()
+        return this
+    }
+
+    @Override
+    HeadersSetting<T> contentTypeJson() {
+        httpHeaders.setContentType(APPLICATION_JSON)
+        updateHeaderParams()
+        return this
+    }
+
+    @Override
+    HeadersSetting<T> contentTypeXml() {
+        httpHeaders.setContentType(APPLICATION_XML)
+        updateHeaderParams()
         return this
     }
 

@@ -135,4 +135,21 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
             1 * restTemplate.exchange(new URI(url), HEAD, _ as HttpEntity, Object)
     }
 
+    def "should be able to send a request and ignore the response"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            String url = 'http://some.url/api/objects'
+        when:
+            httpMethodBuilder
+                    .head()
+                    .onUrl(url)
+                    .ignoringResponse()
+        then:
+            1 * restTemplate.exchange(new URI(url),
+                    HEAD,
+                    _ as HttpEntity,
+                    Object)
+
+    }
+
 }

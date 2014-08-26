@@ -77,6 +77,12 @@ class PostMethodBuilder extends LocationFindingExecutor implements PostMethod, R
     }
 
     @Override
+    ResponseReceivingPostMethod withoutBody() {
+        params.request = null
+        return this
+    }
+
+    @Override
     ObjectReceiving anObject() {
         return new ObjectReceiving() {
             @Override
@@ -97,7 +103,7 @@ class PostMethodBuilder extends LocationFindingExecutor implements PostMethod, R
     }
     
     @Override
-    void execute() {
+    void ignoringResponse() {
         aResponseEntity().ofType(Object)    
     }
 

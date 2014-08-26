@@ -147,4 +147,21 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
             1 * restTemplate.exchange(new URI(url), OPTIONS, _ as HttpEntity, RESPONSE_TYPE)
     }
 
+    def "should be able to send a request and ignore the response"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            String url = 'http://some.url/api/objects'
+        when:
+            httpMethodBuilder
+                    .options()
+                    .onUrl(url)
+                    .ignoringResponse()
+        then:
+            1 * restTemplate.exchange(new URI(url),
+                    OPTIONS,
+                    _ as HttpEntity,
+                    Object)
+
+    }
+
 }

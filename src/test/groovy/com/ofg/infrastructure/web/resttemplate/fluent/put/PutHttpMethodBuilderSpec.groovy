@@ -1,5 +1,4 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.put
-
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
 import groovy.transform.TypeChecked
@@ -201,6 +200,24 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
                                       RESPONSE_TYPE,
                                       OBJECT_ID) >> expectedResponseEntity
             actualResponseEntity == expectedResponseEntity
+    }
+
+    def "should be able to send a request and ignore the response"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            String url = 'http://some.url/api/objects'
+        when:
+            httpMethodBuilder
+                    .put()
+                    .onUrl(url)
+                    .withoutBody()
+                    .ignoringResponse()
+        then:
+            1 * restTemplate.exchange(new URI(url),
+                    PUT,
+                    _ as HttpEntity,
+                    Object)
+
     }
 
     private ResponseEntity responseEntityWith(URI expectedLocation) {

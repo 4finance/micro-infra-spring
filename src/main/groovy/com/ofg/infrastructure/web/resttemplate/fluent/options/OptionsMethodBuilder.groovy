@@ -91,7 +91,7 @@ class OptionsMethodBuilder implements OptionsMethod, UrlParameterizableOptionsMe
     }
 
     @Override
-    void execute() {
+    void ignoringResponse() {
         aResponseEntity().ofType(Object)
     }
 

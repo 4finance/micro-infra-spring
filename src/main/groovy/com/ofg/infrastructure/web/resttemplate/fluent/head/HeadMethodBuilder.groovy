@@ -73,7 +73,7 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
     }
 
     @Override
-    void execute() {
+    void ignoringResponse() {
         aResponseEntity()
     }
 

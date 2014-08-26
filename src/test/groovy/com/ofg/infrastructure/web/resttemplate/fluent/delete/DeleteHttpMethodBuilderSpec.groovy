@@ -1,5 +1,4 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.delete
-
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
 import groovy.transform.TypeChecked
@@ -111,6 +110,23 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
                     .aResponseEntity()
         then:
             1 * restTemplate.exchange(new URI(url), DELETE, _ as HttpEntity, Object)
+    }
+
+    def "should be able to send a request and ignore the response"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            String url = 'http://some.url/api/objects'
+        when:
+            httpMethodBuilder
+                    .delete()
+                    .onUrl(url)
+                    .ignoringResponse()
+        then:
+        1 * restTemplate.exchange(new URI(url),
+                DELETE,
+                _ as HttpEntity,
+                Object)
+
     }
 
 }

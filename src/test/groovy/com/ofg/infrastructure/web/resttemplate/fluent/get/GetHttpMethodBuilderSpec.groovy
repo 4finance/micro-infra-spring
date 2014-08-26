@@ -1,5 +1,4 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.get
-
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
 import groovy.transform.TypeChecked
@@ -117,6 +116,23 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
                         .ofType(BigDecimal)
         then:
             1 * restTemplate.exchange(new URI(url), GET, _ as HttpEntity, BigDecimal)
+    }
+
+    def "should be able to send a request and ignore the response"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            String url = 'http://some.url/api/objects'
+        when:
+            httpMethodBuilder
+                    .get()
+                    .onUrl(url)
+                    .ignoringResponse()
+        then:
+            1 * restTemplate.exchange(new URI(url),
+                    GET,
+                    _ as HttpEntity,
+                    Object)
+
     }
 
 }

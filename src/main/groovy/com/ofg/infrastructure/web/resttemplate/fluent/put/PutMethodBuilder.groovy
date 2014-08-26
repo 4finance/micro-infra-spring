@@ -77,6 +77,12 @@ class PutMethodBuilder extends LocationFindingExecutor implements PutMethod, Req
     }
 
     @Override
+    ResponseReceivingPutMethod withoutBody() {
+        params.request = null
+        return this
+    }
+
+    @Override
     ObjectReceiving anObject() {
         return new ObjectReceiving() {
             @Override
@@ -97,7 +103,7 @@ class PutMethodBuilder extends LocationFindingExecutor implements PutMethod, Req
     }
     
     @Override
-    void execute() {
+    void ignoringResponse() {
         aResponseEntity().ofType(Object)
     }
 

@@ -31,7 +31,7 @@ ext {
 
 group = 'com.ofg'
 description = 'Microservice default infrastructure Spring configuration'
-version = '0.0.8-SNAPSHOT'
+version = '0.0.8'
 sourceCompatibility = 1.7
 
 task addHashFile << {
@@ -48,9 +48,6 @@ jar {
 
 repositories {
     mavenLocal()
-    maven { url 'http://repository.codehaus.org' }
-    maven { url 'http://repo.spring.io/milestone' }
-    mavenCentral()
     jcenter()
 }
 

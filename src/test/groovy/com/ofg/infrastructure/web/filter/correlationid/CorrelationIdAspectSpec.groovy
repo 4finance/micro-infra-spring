@@ -6,9 +6,8 @@ import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClient
 import groovy.transform.PackageScope
 import groovy.transform.TypeChecked
 import org.springframework.boot.test.SpringApplicationContextLoader
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -19,7 +18,8 @@ import org.springframework.web.bind.annotation.RestController
 import static com.github.tomakehurst.wiremock.client.WireMock.*
 import static com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
 
-@ContextConfiguration(classes = [BaseConfiguration, TestConfiguration], loader = SpringApplicationContextLoader)
+@ActiveProfiles('aspect')
+@ContextConfiguration(classes = [BaseConfiguration, CorrelationIdAspectSpecConfiguration], loader = SpringApplicationContextLoader)
 class CorrelationIdAspectSpec extends MicroserviceMvcWiremockSpec {
 
     def "should set correlationId on header via aspect"() {
@@ -33,17 +33,6 @@ class CorrelationIdAspectSpec extends MicroserviceMvcWiremockSpec {
 
     private MvcResult sendRequestToAspectEndpoint() {
         mockMvc.perform(MockMvcRequestBuilders.get('/aspect').accept(MediaType.TEXT_PLAIN)).andReturn()
-    }
-
-    @Configuration
-    static class TestConfiguration {
-
-        @Bean
-        AspectTestingController aspectTestingController(ServiceRestClient serviceRestClient,
-                                                        HttpMockServer httpMockServer) {
-            return new AspectTestingController(serviceRestClient, httpMockServer)
-        }
-
     }
 
     @RestController

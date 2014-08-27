@@ -88,34 +88,32 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
             1 * restTemplate.exchange(FULL_URL, GET, _ as HttpEntity, BigDecimal, OBJECT_ID)
     }
 
-    def "should ignore service url when passing full URL"() {
+    def "should treat url as path when sending request to a service to a path conaining a slash"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
-            URI url = new URI('http://some.url/api/objects/42')
         when:            
             httpMethodBuilder
                 .get()
-                    .onUrl(url)
+                    .onUrl(PATH_WITH_SLASH)
                     .andExecuteFor()
                         .anObject()
                         .ofType(BigDecimal)
         then:
-            1 * restTemplate.exchange(url, GET, _ as HttpEntity, BigDecimal)
+            1 * restTemplate.exchange(new URI(FULL_SERVICE_URL), GET, _ as HttpEntity, BigDecimal)
     }
 
-    def "should ignore service url when passing full URL as String"() {
+    def "should treat String url as path when sending request to a service"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
-            String url = 'http://some.url/api/objects/42'
         when:            
             httpMethodBuilder
                 .get()
-                    .onUrl(url)
+                    .onUrl(PATH)
                     .andExecuteFor()
                         .anObject()
                         .ofType(BigDecimal)
         then:
-            1 * restTemplate.exchange(new URI(url), GET, _ as HttpEntity, BigDecimal)
+            1 * restTemplate.exchange(new URI(FULL_SERVICE_URL), GET, _ as HttpEntity, BigDecimal)
     }
 
     def "should be able to send a request and ignore the response"() {

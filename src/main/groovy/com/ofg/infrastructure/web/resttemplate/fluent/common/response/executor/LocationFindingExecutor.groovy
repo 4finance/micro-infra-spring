@@ -5,6 +5,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.web.client.RestTemplate
 
 import static HttpEntityUtils.getHttpEntityFrom
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.UrlParsingUtils.appendPathToHost
 
 @TypeChecked
 abstract class LocationFindingExecutor implements LocationReceiving {
@@ -21,9 +22,9 @@ abstract class LocationFindingExecutor implements LocationReceiving {
     @Override
     URI forLocation() {
         if(params.url) {
-            return restTemplate.exchange(params.url as URI, getHttpMethod(), getHttpEntityFrom(params), params.request.class).headers.getLocation()
+            return restTemplate.exchange(new URI(appendPathToHost(params.host as String, params.url as URI)), getHttpMethod(), getHttpEntityFrom(params), params.request.class)?.headers?.getLocation()
         } else if(params.urlTemplate) {
-            return restTemplate.exchange("${params.host}${params.urlTemplate}", getHttpMethod(), getHttpEntityFrom(params), params.request.class, params.urlVariablesArray as Object[] ?: params.urlVariablesMap as Map<String, ?>).headers.getLocation()
+            return restTemplate.exchange(appendPathToHost(params.host as String, params.urlTemplate as String), getHttpMethod(), getHttpEntityFrom(params), params.request.class, params.urlVariablesArray as Object[] ?: params.urlVariablesMap as Map<String, ?>)?.headers?.getLocation()
         }
         throw new InvalidHttpMethodParametersException(params)
     }

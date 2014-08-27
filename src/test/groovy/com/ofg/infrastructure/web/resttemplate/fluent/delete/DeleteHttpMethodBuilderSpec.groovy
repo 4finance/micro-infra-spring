@@ -10,7 +10,8 @@ import static org.springframework.http.HttpStatus.OK
 
 @TypeChecked
 class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
-    
+
+
     def "should use only url template without provided service url to retrieve response entity"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(restTemplate)
@@ -84,10 +85,10 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
             1 * restTemplate.exchange(FULL_URL, DELETE, _ as HttpEntity, Object, OBJECT_ID)
     }
 
-    def "should ignore service url when passing full URL"() {
+    def "should treat url as path when sending request to a service to a path containing a slash"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
-            URI url = new URI('http://some.url/api/objects/42')
+            URI url = new URI(PATH_WITH_SLASH)
         when:            
             httpMethodBuilder
                 .delete()
@@ -95,21 +96,20 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
                     .andExecuteFor()
                     .aResponseEntity()
         then:
-            1 * restTemplate.exchange(url, DELETE, _ as HttpEntity, Object)
+            1 * restTemplate.exchange(new URI(FULL_SERVICE_URL), DELETE, _ as HttpEntity, Object)
     }
     
-    def "should ignore service url when passing full URL as string"() {
+    def "should treat String url as path when sending request to a service"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
-            String url = 'http://some.url/api/objects/42'
         when:            
             httpMethodBuilder
                 .delete()
-                    .onUrl(url)
+                    .onUrl(PATH)
                     .andExecuteFor()
                     .aResponseEntity()
         then:
-            1 * restTemplate.exchange(new URI(url), DELETE, _ as HttpEntity, Object)
+            1 * restTemplate.exchange(new URI(FULL_SERVICE_URL), DELETE, _ as HttpEntity, Object)
     }
 
     def "should be able to send a request and ignore the response"() {

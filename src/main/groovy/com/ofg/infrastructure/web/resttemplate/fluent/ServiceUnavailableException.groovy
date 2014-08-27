@@ -1,8 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
+import groovy.transform.CompileStatic
 
-import groovy.transform.TypeChecked
-
-@TypeChecked
+@CompileStatic
 class ServiceUnavailableException extends RuntimeException {
 
     ServiceUnavailableException(String serviceName) {

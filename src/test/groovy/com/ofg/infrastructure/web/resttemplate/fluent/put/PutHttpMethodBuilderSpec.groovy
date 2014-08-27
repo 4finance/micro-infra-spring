@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.put
+
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
 import groovy.transform.TypeChecked
@@ -19,7 +20,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
     def "should query for location when sending a put request on given address"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(restTemplate)
-            URI expectedLocation = new URI('localhost')
+            URI expectedLocation = new URI('http://localhost')
         when:
             URI actualLocation = httpMethodBuilder
                                                 .put()
@@ -37,7 +38,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
     def "should query for location when sending a put request on given address as String"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(restTemplate)
-            String expectedLocationAsString = 'localhost'
+            String expectedLocationAsString = 'http://localhost'
             URI expectedLocation = new URI(expectedLocationAsString)
         when:
             URI actualLocation = httpMethodBuilder

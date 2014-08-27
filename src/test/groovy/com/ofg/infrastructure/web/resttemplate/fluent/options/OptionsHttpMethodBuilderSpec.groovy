@@ -117,34 +117,32 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
             1 * restTemplate.exchange(FULL_URL, OPTIONS, _ as HttpEntity, RESPONSE_TYPE, OBJECT_ID)
     }
 
-    def "should ignore service url when passing full URL"() {
+    def "should treat url as path when sending request to a service with a path containing a slash"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
-            URI url = new URI('http://some.url/api/objects/42')
         when:            
             httpMethodBuilder
                 .options()
-                    .onUrl(url)
+                    .onUrl(PATH_WITH_SLASH)
                     .andExecuteFor()
                     .aResponseEntity()
                     .ofType(RESPONSE_TYPE)
         then:
-            1 * restTemplate.exchange(url, OPTIONS, _ as HttpEntity, RESPONSE_TYPE)
+            1 * restTemplate.exchange(new URI(FULL_SERVICE_URL), OPTIONS, _ as HttpEntity, RESPONSE_TYPE)
     }
     
-    def "should ignore service url when passing full URL as String"() {
+    def "should treat String url as path when sending request to a service"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
-            String url = 'http://some.url/api/objects/42'
         when:            
             httpMethodBuilder
                 .options()
-                    .onUrl(url)
+                    .onUrl(PATH)
                     .andExecuteFor()
                     .aResponseEntity()
                     .ofType(RESPONSE_TYPE)
         then:
-            1 * restTemplate.exchange(new URI(url), OPTIONS, _ as HttpEntity, RESPONSE_TYPE)
+            1 * restTemplate.exchange(new URI(FULL_SERVICE_URL), OPTIONS, _ as HttpEntity, RESPONSE_TYPE)
     }
 
     def "should be able to send a request and ignore the response"() {

@@ -107,32 +107,30 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
             1 * restTemplate.exchange(FULL_URL, HEAD, _ as HttpEntity, Object, OBJECT_ID)
     }
 
-    def "should ignore service url when passing full URL"() {
+    def "should treat url as path when sending request to a service to a path containing a slash"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
-            URI url = new URI('http://some.url/api/objects/42')
         when:            
             httpMethodBuilder
                 .head()
-                    .onUrl(url)
+                    .onUrl(PATH_WITH_SLASH)
                     .andExecuteFor()
                     .aResponseEntity()
         then:
-            1 * restTemplate.exchange(url, HEAD, _ as HttpEntity, Object)
+            1 * restTemplate.exchange(new URI(FULL_SERVICE_URL), HEAD, _ as HttpEntity, Object)
     }
 
-    def "should ignore service url when passing full URL as String"() {
+    def "should treat String url as path when sending request to a service"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
-            String url = 'http://some.url/api/objects/42'
         when:            
             httpMethodBuilder
                 .head()
-                    .onUrl(url)
+                    .onUrl(PATH)
                     .andExecuteFor()
                     .aResponseEntity()
         then:
-            1 * restTemplate.exchange(new URI(url), HEAD, _ as HttpEntity, Object)
+            1 * restTemplate.exchange(new URI(FULL_SERVICE_URL), HEAD, _ as HttpEntity, Object)
     }
 
     def "should be able to send a request and ignore the response"() {

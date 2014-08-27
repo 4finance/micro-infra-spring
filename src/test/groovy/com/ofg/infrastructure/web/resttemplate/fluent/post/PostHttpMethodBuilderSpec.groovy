@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.post
+
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
 import groovy.transform.TypeChecked
@@ -19,7 +20,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
     def "should query for location when sending a post request on given address"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(restTemplate)
-            URI expectedLocation = new URI('localhost')
+            URI expectedLocation = new URI('http://localhost')
         when:
             URI actualLocation = httpMethodBuilder
                                                 .post()
@@ -37,7 +38,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
     def "should query for location when sending a post request on given address as String"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(restTemplate)
-            String expectedLocationAsString = 'localhost'
+            String expectedLocationAsString = 'http://localhost'
             URI expectedLocation = new URI(expectedLocationAsString)
         when:
             URI actualLocation = httpMethodBuilder
@@ -95,6 +96,44 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
     }
 
     def "should query for location when sending a post request on service template address using map for url vars"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
+            URI expectedLocation = new URI('localhost')
+        when:
+            URI actualLocation = httpMethodBuilder
+                                                .post()
+                                                    .onUrlFromTemplate(URL_TEMPLATE)
+                                                        .withVariables([objectId: OBJECT_ID])
+                                                    .body(REQUEST_BODY)
+                                                    .forLocation()
+        then:
+            1 * restTemplate.exchange(FULL_URL, 
+                                      POST, 
+                                      { HttpEntity httpEntity -> httpEntity.body == REQUEST_BODY } as HttpEntity, 
+                                      RESPONSE_TYPE,
+                                      [objectId: OBJECT_ID]) >> responseEntityWith(expectedLocation)
+            actualLocation == expectedLocation
+    }
+
+    def "should query for location when sending a post request on service template address with url"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
+            URI expectedLocation = new URI(FULL_SERVICE_URL)
+        when:
+            URI actualLocation = httpMethodBuilder
+                                                .post()
+                                                    .onUrl(PATH)
+                                                    .body(REQUEST_BODY)
+                                                    .forLocation()
+        then:
+            1 * restTemplate.exchange(new URI(FULL_SERVICE_URL), 
+                                      POST, 
+                                      { HttpEntity httpEntity -> httpEntity.body == REQUEST_BODY } as HttpEntity, 
+                                      RESPONSE_TYPE) >> responseEntityWith(expectedLocation)
+            actualLocation == expectedLocation
+    }
+
+    def "should query for location when sending a post request on service template address with String url"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
             URI expectedLocation = new URI('localhost')
@@ -218,6 +257,32 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
                     _ as HttpEntity,
                     Object)
 
+    }
+
+    def "should treat url as path when sending request to a service"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
+        when:
+            httpMethodBuilder
+                    .post()
+                    .onUrl(PATH_WITH_SLASH)
+                    .withoutBody()
+                    .ignoringResponse()
+        then:
+            1 * restTemplate.exchange(new URI(FULL_SERVICE_URL), POST, _ as HttpEntity, _ as Class)
+    }
+
+    def "should treat String url as path when sending request to a service"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
+        when:
+            httpMethodBuilder
+                    .post()
+                    .onUrl(PATH)
+                    .withoutBody()
+                    .ignoringResponse()
+        then:
+            1 * restTemplate.exchange(new URI(FULL_SERVICE_URL), POST, _ as HttpEntity, _ as Class)
     }
 
     private ResponseEntity responseEntityWith(URI expectedLocation) {

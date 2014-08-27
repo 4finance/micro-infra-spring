@@ -17,10 +17,10 @@ class CorrelationIdAspect {
 
     private static final int HTTP_ENTITY_PARAM_INDEX = 2
 
-    @Pointcut("@target(org.springframework.web.bind.annotation.RestController))")
+    @Pointcut("@target(org.springframework.web.bind.annotation.RestController)")
     private void anyRestControllerAnnotated() {}
 
-    @Pointcut("@target(org.springframework.stereotype.Controller))")
+    @Pointcut("@target(org.springframework.stereotype.Controller)")
     private void anyControllerAnnotated() {}
 
     @Pointcut("execution(public java.util.concurrent.Callable *(..))")

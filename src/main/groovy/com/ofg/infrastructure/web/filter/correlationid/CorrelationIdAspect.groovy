@@ -42,18 +42,19 @@ class CorrelationIdAspect {
     private void anyExchangeRestTemplateMethod() {}
     
     @Around('anyExchangeRestTemplateMethod()')
-    void wrapWithCorrelationIdForRestTemplate(ProceedingJoinPoint pjp) throws Throwable {
-        log.debug("Wrapping RestTemplate call with correlation id [${CorrelationIdHolder.get()}]")
+    Object wrapWithCorrelationIdForRestTemplate(ProceedingJoinPoint pjp) throws Throwable {
+        String correlationId = CorrelationIdHolder.get()
+        log.debug("Wrapping RestTemplate call with correlation id [$correlationId]")
         HttpEntity httpEntity = pjp.args[HTTP_ENTITY_PARAM_INDEX] as HttpEntity
-        HttpEntity newHttpEntity = createNewHttpEntity(httpEntity)
+        HttpEntity newHttpEntity = createNewHttpEntity(httpEntity, correlationId)
         List<Object> newArgs = modifyHttpEntityInMethodArguments(pjp, newHttpEntity)
-        pjp.proceed(newArgs.toArray())
+        return pjp.proceed(newArgs.toArray())
     }
 
-    private HttpEntity createNewHttpEntity(HttpEntity httpEntity) {
+    private HttpEntity createNewHttpEntity(HttpEntity httpEntity, String correlationId) {
         HttpHeaders newHttpHeaders = new HttpHeaders()
         newHttpHeaders.putAll(httpEntity.headers)
-        newHttpHeaders.add(CORRELATION_ID_HEADER, CorrelationIdHolder.get())
+        newHttpHeaders.add(CORRELATION_ID_HEADER, correlationId)
         return new HttpEntity(httpEntity.body, newHttpHeaders)
     }
 

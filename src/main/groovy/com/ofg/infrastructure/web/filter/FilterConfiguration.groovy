@@ -15,11 +15,6 @@ import javax.servlet.Filter
 class FilterConfiguration {
 
     @Bean
-    CORSFilter apiDocsCORSFilter() {
-        return new CORSFilter()
-    }
-
-    @Bean
     Filter requestBodyLoggingContextFilter(@Value('${request.payload.logging.maxlength:2000}') int maxPayloadLength) {
         return new RequestBodyLoggingContextFilter(maxPayloadLength)
     }

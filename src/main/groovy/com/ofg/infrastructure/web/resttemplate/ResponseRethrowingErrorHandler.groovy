@@ -5,6 +5,13 @@ import groovy.util.logging.Slf4j
 import org.springframework.http.client.ClientHttpResponse
 import org.springframework.web.client.ResponseErrorHandler
 
+/**
+ * RestTemplate {@link ResponseErrorHandler} that on statuses equal to 4xx or 5xx
+ * logs an error response body, status code and then rethrows exceptions {@link ResponseException}
+ *
+ * @see org.springframework.web.client.RestTemplate
+ * @see ResponseErrorHandler
+ */
 @TypeChecked
 @Slf4j
 class ResponseRethrowingErrorHandler implements ResponseErrorHandler {

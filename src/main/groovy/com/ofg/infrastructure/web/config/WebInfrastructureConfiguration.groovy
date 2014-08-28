@@ -10,16 +10,22 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 
 /**
- * Imports:
+ * Configuration related to default web application setup. Imports:
  *  <li>
  *      <ul>
- *          <li>RestTemplateConfiguration - default RestTemplate with custom error handling</li>
- *          <li>ServiceRestClientConfiguration - RestTemplate abstraction with ServiceDiscovery</li>
- *          <li>ControllerExceptionConfiguration - default Exception handling</li>
- *          <li>FilterConfiguration - filter for logging request body</li>
- *          <li>ViewConfiguration - converts unmapped Views to JSON requests</li>
+ *          <li>{@link RestTemplateConfiguration} - default RestTemplate with custom error handling</li>
+ *          <li>{@link ServiceRestClientConfiguration} - RestTemplate abstraction with ServiceDiscovery</li>
+ *          <li>{@link ControllerExceptionConfiguration} - default Exception handling</li>
+ *          <li>{@link FilterConfiguration} - filter for logging request body</li>
+ *          <li>{@link ViewConfiguration} - converts unmapped Views to JSON requests</li>
  *      </ul>
  *  </li>
+ *
+ * @see RestTemplateConfiguration
+ * @see ServiceRestClientConfiguration
+ * @see ControllerExceptionConfiguration
+ * @see FilterConfiguration
+ * @see ViewConfiguration
  */
 @Configuration
 @TypeChecked

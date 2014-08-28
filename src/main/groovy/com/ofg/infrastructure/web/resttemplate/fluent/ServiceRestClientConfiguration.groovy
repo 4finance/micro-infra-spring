@@ -5,6 +5,10 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestTemplate
 
+/**
+ * Creates a bean of abstraction over {@link RestTemplate}.
+ * See {@see ServiceRestClient} for more details about the abstraction
+ */
 @Configuration
 @TypeChecked
 class ServiceRestClientConfiguration {

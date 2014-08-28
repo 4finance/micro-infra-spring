@@ -9,6 +9,18 @@ import groovy.transform.TypeChecked
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 
+/**
+ * Imports:
+ *  <li>
+ *      <ul>
+ *          <li>RestTemplateConfiguration - default RestTemplate with custom error handling</li>
+ *          <li>ServiceRestClientConfiguration - RestTemplate abstraction with ServiceDiscovery</li>
+ *          <li>ControllerExceptionConfiguration - default Exception handling</li>
+ *          <li>FilterConfiguration - filter for logging request body</li>
+ *          <li>ViewConfiguration - converts unmapped Views to JSON requests</li>
+ *      </ul>
+ *  </li>
+ */
 @Configuration
 @TypeChecked
 @Import([RestTemplateConfiguration,

@@ -12,6 +12,70 @@ buildscript {
     }
 }
 
+if(project.hasProperty("coverage")) {
+    apply plugin: 'codenarc'
+    apply plugin: 'jacoco'
+    apply plugin: 'sonar-runner'
+    apply plugin: 'com.github.kt3k.coveralls'
+
+    jacoco {
+        toolVersion = "0.7.0.201403182114"
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled = true // coveralls plugin depends on xml format report
+            html.enabled = true
+        }
+    }
+
+    codenarc {
+        configFile = file('config/codenarc/rules.groovy')
+        maxPriority1Violations = 0
+        maxPriority2Violations = 6
+        maxPriority3Violations = 10
+        reportFormat = 'xml'
+        ignoreFailures = true
+    }
+
+    dependencies {
+        codenarc 'org.codenarc:CodeNarc:0.21'
+    }
+
+    test {
+        ignoreFailures = true
+        jacoco {
+            excludes = ['.*Configuration.*']
+        }
+    }
+
+    sonarRunner {
+        sonarProperties {
+            //TODO: fill this
+        }
+    }
+
+    task jacocoReport(type: JacocoReport) {
+        // Add execution data from all subprojects
+        executionData fileTree(project.rootDir.absolutePath).include("*/build/jacoco/*.exec")
+        // Add source classes from all subprojects
+        subprojects.each {
+            sourceSets it.sourceSets.main
+        }
+        // Make the aggregate report go in a top-level directory somewhere
+        reports {
+            html {
+                enabled true
+                destination "release/reports/jacoco"
+            }
+            xml {
+                enabled true
+                destination "release/reports/jacoco"
+            }
+        }
+    }
+}
+
 ext {
     projectGroup = 'com.ofg'
     projectVersion = '0.2.3-SNAPSHOT'
@@ -91,74 +155,13 @@ subprojects {
     //Workaround for the issue with Java 8u11 and 7u65 - http://www.infoq.com/news/2014/08/Java8-U11-Broke-Tools
     test {
         jvmArgs '-noverify'
-    }
-
-    if(project.hasProperty("coverage")) {
-        apply plugin: 'codenarc'
-        apply plugin: 'jacoco'
-        apply plugin: 'sonar-runner'
-        apply plugin: 'com.github.kt3k.coveralls'
-
-        jacoco {
-            toolVersion = "0.7.0.201403182114"
-        }
-
-        jacocoTestReport {
-            reports {
-                xml.enabled = true // coveralls plugin depends on xml format report
-                html.enabled = true
-            }
-        }
-
-        codenarc {
-            configFile = file('config/codenarc/rules.groovy')
-            maxPriority1Violations = 0
-            maxPriority2Violations = 6
-            maxPriority3Violations = 10
-            reportFormat = 'xml'
-            ignoreFailures = true
-        }
-
-        dependencies {
-            codenarc 'org.codenarc:CodeNarc:0.21'
-        }
-
-        test {
-            ignoreFailures = true
+        if (project.hasProperty("coverage")) {            
             jacoco {
-                excludes = ['.*Configuration.*']
+                enabled = true
             }
-        }
-
-        sonarRunner {
-            sonarProperties {
-                //TODO: fill this
-            }
-        }      
+        }        
     }
-
-}
-
-if(project.hasProperty("coverage")) {
-    task jacocoReport(type: JacocoReport) {
-        // Add execution data from all subprojects
-        executionData fileTree(project.rootDir.absolutePath).include("*/build/jacoco/*.exec")
-        // Add source classes from all subprojects
-        subprojects.each {
-            sourceSets it.sourceSets.main
-        }
-        // Make the aggregate report go in a top-level directory somewhere
-        reports {
-            html {
-                enabled true
-                destination "release/reports/jacoco"
-            }
-            xml {
-                enabled true
-                destination "release/reports/jacoco"
-            }
-        }
-    }
+   
 }
 
 project(':micro-deps-spring-config') {

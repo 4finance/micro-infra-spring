@@ -5,8 +5,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
-        classpath 'com.ofg:uptodate-gradle-plugin:+'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
+        classpath 'com.ofg:uptodate-gradle-plugin:1.0.0'
+        if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.0' }
     }
 }
 
@@ -106,4 +107,48 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 artifacts {
     archives sourcesJar
     archives javadocJar
+}
+
+if(project.hasProperty("coverage")) {
+    apply plugin: 'codenarc'
+    apply plugin: 'jacoco'
+    apply plugin: 'sonar-runner'
+    apply plugin: 'com.github.kt3k.coveralls'
+
+    jacoco {
+        toolVersion = "0.7.0.201403182114"
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled = true // coveralls plugin depends on xml format report
+            html.enabled = true
+        }
+    }
+
+    codenarc {
+        configFile = file('config/codenarc/rules.groovy')
+        maxPriority1Violations = 0
+        maxPriority2Violations = 6
+        maxPriority3Violations = 10
+        reportFormat = 'xml'
+        ignoreFailures = true
+    }
+
+    dependencies {
+        codenarc 'org.codenarc:CodeNarc:0.21'
+    }
+
+    test {
+        ignoreFailures = true
+        jacoco {
+            excludes = ['.*Configuration.*']
+        }
+    }
+
+    sonarRunner {
+        sonarProperties {
+            //TODO: fill this
+        }
+    }
 }

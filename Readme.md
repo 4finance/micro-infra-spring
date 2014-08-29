@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/4finance/micro-deps.svg?branch=master)](https://travis-ci.org/4finance/micro-deps)  [ ![Download](https://api.bintray.com/packages/4finance/micro-deps/micro-deps/images/download.png) ](https://bintray.com/4finance/micro-deps/micro-deps/_latestVersion)
+[![Build Status](https://travis-ci.org/4finance/micro-deps.svg?branch=master)](https://travis-ci.org/4finance/micro-deps)  [![Coverage Status](http://img.shields.io/coveralls/4finance/micro-deps/master.svg)](https://coveralls.io/r/4finance/micro-deps) [ ![Download](https://api.bintray.com/packages/4finance/micro-deps/micro-deps/images/download.png) ](https://bintray.com/4finance/micro-deps/micro-deps/_latestVersion) 
 
 
 Microservice Dependency Manager

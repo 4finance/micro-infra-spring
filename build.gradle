@@ -135,6 +135,27 @@ subprojects {
                 //TODO: fill this
             }
         }
+
+        task jacocoReport(type: JacocoReport) {
+            jacocoClasspath = configurations.jacoco
+            // Add execution data from all subprojects
+            executionData fileTree(project.rootDir.absolutePath).include("*/build/jacoco/*.exec")
+            // Add source classes from all subprojects
+            subprojects.each {
+                sourceSets it.sourceSets.main
+            }
+            // Make the aggregate report go in a top-level directory somewhere
+            reports {
+                html {
+                    enabled true
+                    destination "release/reports/jacoco"
+                }
+                xml {
+                    enabled true
+                    destination "release/reports/jacoco"
+                }
+            }
+        }
     }
 
 }

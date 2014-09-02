@@ -16,7 +16,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
     
     def "should fill out headers for get method"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
         when:
             httpMethodBuilder
                 .get()
@@ -35,7 +35,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
                         .anObject()
                         .ofType(BigDecimal)
         then:
-            1 * restTemplate.exchange(TEMPLATE_URL,
+            1 * restOperations.exchange(TEMPLATE_URL,
                     GET,
                     { HttpEntity httpEntity -> httpEntity.headers.keySet().every isPresentInSetHeaders() } as HttpEntity,
                     _ as Class,
@@ -44,7 +44,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
 
     def "should fill out headers for post method"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
         when:
             httpMethodBuilder
                 .post()
@@ -64,7 +64,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
                         .anObject()
                         .ofType(BigDecimal)
         then:
-            1 * restTemplate.exchange(TEMPLATE_URL,
+            1 * restOperations.exchange(TEMPLATE_URL,
                     POST,
                     { HttpEntity httpEntity -> httpEntity.headers.keySet().every isPresentInSetHeaders() } as HttpEntity,
                     _ as Class,
@@ -73,7 +73,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
 
     def "should fill out headers for head method"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
         when:
             httpMethodBuilder
                     .head()
@@ -91,7 +91,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
                         .andExecuteFor()
                         .aResponseEntity()
             then:
-        1 * restTemplate.exchange(TEMPLATE_URL,
+        1 * restOperations.exchange(TEMPLATE_URL,
                 HEAD,
                 { HttpEntity httpEntity -> httpEntity.headers.keySet().every isPresentInSetHeaders() } as HttpEntity,
                 _ as Class,
@@ -101,7 +101,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
 
     def "should fill out headers for options method"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
         when:
             httpMethodBuilder
                     .options()
@@ -120,7 +120,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
                         .aResponseEntity()
                         .ofType(String)
         then:
-            1 * restTemplate.exchange(TEMPLATE_URL,
+            1 * restOperations.exchange(TEMPLATE_URL,
                     OPTIONS,
                     { HttpEntity httpEntity -> httpEntity.headers.keySet().every isPresentInSetHeaders() } as HttpEntity,
                     _ as Class,
@@ -129,7 +129,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
 
     def "should fill out headers for delete method"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
         when:
             httpMethodBuilder
                     .delete()
@@ -147,7 +147,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
                     .andExecuteFor()
                         .aResponseEntity()
         then:
-            1 * restTemplate.exchange(TEMPLATE_URL,
+            1 * restOperations.exchange(TEMPLATE_URL,
                     DELETE,
                     { HttpEntity httpEntity -> httpEntity.headers.keySet().every isPresentInSetHeaders() } as HttpEntity,
                     _ as Class,
@@ -158,7 +158,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
     def "should send a request from passed HttpEntity"() {
         given:
             String body = '''{"some":"body"}'''
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
         when:
             httpMethodBuilder
                     .post()
@@ -167,7 +167,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
                     .httpEntity(new HttpEntity(body, createHeaders()))                    
                     .ignoringResponse()
         then:
-            1 * restTemplate.exchange(TEMPLATE_URL,
+            1 * restOperations.exchange(TEMPLATE_URL,
                     POST,
                     { HttpEntity httpEntity -> 
                         httpEntity.headers.keySet().every(isPresentInSetHeaders()) && httpEntity.body == body } as HttpEntity,
@@ -177,7 +177,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
 
     def "should fill out content type from media type"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
         when:
             httpMethodBuilder
                 .get()
@@ -189,7 +189,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
                         .anObject()
                         .ofType(BigDecimal)
         then:
-            1 * restTemplate.exchange(TEMPLATE_URL,
+            1 * restOperations.exchange(TEMPLATE_URL,
                     GET,
                     { HttpEntity httpEntity -> httpEntity.headers.keySet().every { it in ['Content-Type'] } } as  HttpEntity,
                     _ as Class,
@@ -199,7 +199,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
 
     def "should fill out headers from HttpHeaders"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
             HttpHeaders headers = createHeaders()
         when:
             httpMethodBuilder
@@ -212,7 +212,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
                         .anObject()
                         .ofType(BigDecimal)
         then:
-            1 * restTemplate.exchange(TEMPLATE_URL,
+            1 * restOperations.exchange(TEMPLATE_URL,
                     GET,
                     { HttpEntity httpEntity -> httpEntity.headers.keySet().every isPresentInSetHeaders() } as HttpEntity,
                     _ as Class,
@@ -221,7 +221,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
 
     def "should fill out JSON content type header"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
         when:
             httpMethodBuilder
                     .get()
@@ -233,7 +233,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
                         .anObject()
                         .ofType(BigDecimal)
         then:
-            1 * restTemplate.exchange(TEMPLATE_URL,
+            1 * restOperations.exchange(TEMPLATE_URL,
                     GET,
                     { HttpEntity httpEntity ->
                         httpEntity.headers.get('Content-Type') == [MediaType.APPLICATION_JSON_VALUE]
@@ -244,7 +244,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
 
     def "should fill out XML content type header"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
         when:
             httpMethodBuilder
                     .get()
@@ -256,7 +256,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
                         .anObject()
                         .ofType(BigDecimal)
         then:
-            1 * restTemplate.exchange(TEMPLATE_URL,
+            1 * restOperations.exchange(TEMPLATE_URL,
                     GET,
                     { HttpEntity httpEntity -> httpEntity.headers.get('Content-Type') == [MediaType.APPLICATION_XML_VALUE] } as HttpEntity,
                     _ as Class,

@@ -14,7 +14,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should use only url template without provided service url to retrieve response entity"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
         when:
             httpMethodBuilder
@@ -24,7 +24,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
                                 .andExecuteFor()
                                     .aResponseEntity()
         then:
-            1 * restTemplate.exchange(templateUrl,
+            1 * restOperations.exchange(templateUrl,
                     DELETE,
                     _ as HttpEntity,
                     Object,
@@ -33,7 +33,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should use only url template without provided service url to retrieve ResponseEntity"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
             ResponseEntity<Object> expectedResponseEntity = new ResponseEntity<>(OK)
         when:
@@ -44,7 +44,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
                                                                         .andExecuteFor()
                                                                             .aResponseEntity()
         then:
-            1 * restTemplate.exchange(templateUrl,
+            1 * restOperations.exchange(templateUrl,
                             DELETE,
                             _ as HttpEntity,
                             Object,
@@ -54,7 +54,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should use only url template from map without provided service url"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
         when:
             httpMethodBuilder
@@ -64,7 +64,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
                     .andExecuteFor()
                         .aResponseEntity()
         then:
-            1 * restTemplate.exchange(templateUrl,
+            1 * restOperations.exchange(templateUrl,
                     DELETE,
                     _ as HttpEntity,
                     Object,
@@ -73,7 +73,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add service url to template when provided"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
         when:
             httpMethodBuilder
                 .delete()
@@ -82,12 +82,12 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
                     .andExecuteFor()
                     .aResponseEntity()
         then:
-            1 * restTemplate.exchange(FULL_URL, DELETE, _ as HttpEntity, Object, OBJECT_ID)
+            1 * restOperations.exchange(FULL_URL, DELETE, _ as HttpEntity, Object, OBJECT_ID)
     }
 
     def "should treat url as path when sending request to a service to a path containing a slash"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
             URI url = new URI(PATH_WITH_SLASH)
         when:            
             httpMethodBuilder
@@ -96,12 +96,12 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
                     .andExecuteFor()
                     .aResponseEntity()
         then:
-            1 * restTemplate.exchange(new URI(FULL_SERVICE_URL), DELETE, _ as HttpEntity, Object)
+            1 * restOperations.exchange(new URI(FULL_SERVICE_URL), DELETE, _ as HttpEntity, Object)
     }
     
     def "should treat String url as path when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
         when:            
             httpMethodBuilder
                 .delete()
@@ -109,12 +109,12 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
                     .andExecuteFor()
                     .aResponseEntity()
         then:
-            1 * restTemplate.exchange(new URI(FULL_SERVICE_URL), DELETE, _ as HttpEntity, Object)
+            1 * restOperations.exchange(new URI(FULL_SERVICE_URL), DELETE, _ as HttpEntity, Object)
     }
 
     def "should be able to send a request and ignore the response"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
             String url = 'http://some.url/api/objects'
         when:
             httpMethodBuilder
@@ -122,7 +122,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
                     .onUrl(url)
                     .ignoringResponse()
         then:
-        1 * restTemplate.exchange(new URI(url),
+        1 * restOperations.exchange(new URI(url),
                 DELETE,
                 _ as HttpEntity,
                 Object)

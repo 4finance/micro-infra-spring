@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
 import com.ofg.infrastructure.discovery.ServiceResolver
 import org.springframework.http.HttpEntity
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestOperations
 import spock.lang.Specification
 
 import static org.springframework.http.HttpMethod.GET
@@ -9,10 +9,10 @@ import static org.springframework.http.HttpMethod.GET
 class ServiceRestClientSpec extends Specification {
 
     public static final String COLA_COLLABORATOR_NAME = 'cola'
-    RestTemplate restTemplate = Mock()
+    RestOperations restOperations = Mock()
     ServiceResolver serviceResolver = Mock()
     
-    ServiceRestClient serviceRestClient = new ServiceRestClient(restTemplate, serviceResolver)
+    ServiceRestClient serviceRestClient = new ServiceRestClient(restOperations, serviceResolver)
     
     def "should send a request to provided URL with appending host when calling service"() {
         given:
@@ -25,7 +25,7 @@ class ServiceRestClientSpec extends Specification {
         when:
             serviceRestClient.forService(COLA_COLLABORATOR_NAME).get().onUrl(path).ignoringResponse()
         then:
-            1 * restTemplate.exchange(expectedUri, GET, _ as HttpEntity, _ as Class)
+            1 * restOperations.exchange(expectedUri, GET, _ as HttpEntity, _ as Class)
     }
     
     def "should throw an exception when trying to access an unavailable service"() {
@@ -44,6 +44,6 @@ class ServiceRestClientSpec extends Specification {
         when:
             serviceRestClient.forExternalService().get().onUrl(expectedUrlAsString).ignoringResponse()
         then:
-            1 * restTemplate.exchange(expectedUri, GET, _ as HttpEntity, _ as Class)
+            1 * restOperations.exchange(expectedUri, GET, _ as HttpEntity, _ as Class)
     }
 }

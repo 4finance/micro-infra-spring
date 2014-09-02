@@ -19,7 +19,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should query for location when sending a put request on given address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
             URI expectedLocation = new URI('http://localhost')
         when:
             URI actualLocation = httpMethodBuilder
@@ -28,7 +28,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
                                                     .body(REQUEST_BODY)
                                                     .forLocation()
         then:
-            1 * restTemplate.exchange(expectedLocation, 
+            1 * restOperations.exchange(expectedLocation, 
                                       PUT, 
                                       { HttpEntity httpEntity -> httpEntity.body == REQUEST_BODY } as HttpEntity, 
                                       RESPONSE_TYPE) >> responseEntityWith(expectedLocation)
@@ -37,7 +37,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should query for location when sending a put request on given address as String"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
             String expectedLocationAsString = 'http://localhost'
             URI expectedLocation = new URI(expectedLocationAsString)
         when:
@@ -47,7 +47,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
                                                     .body(REQUEST_BODY)
                                                     .forLocation()
         then:
-            1 * restTemplate.exchange(expectedLocation, 
+            1 * restOperations.exchange(expectedLocation, 
                                       PUT, 
                                       { HttpEntity httpEntity -> httpEntity.body == REQUEST_BODY } as HttpEntity, 
                                       RESPONSE_TYPE) >> responseEntityWith(expectedLocation)
@@ -56,7 +56,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should query for location when sending a put request on given template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
             URI expectedLocation = new URI('localhost')
         when:
@@ -67,7 +67,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
                                                     .body(REQUEST_BODY)
                                                     .forLocation()
         then:
-            1 * restTemplate.exchange(templateUrl, 
+            1 * restOperations.exchange(templateUrl, 
                                       PUT, 
                                       { HttpEntity httpEntity -> httpEntity.body == REQUEST_BODY } as HttpEntity, 
                                       RESPONSE_TYPE , 
@@ -77,7 +77,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for location when sending a put request on service template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
             URI expectedLocation = new URI('localhost')
         when:
             URI actualLocation = httpMethodBuilder
@@ -87,7 +87,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
                                                     .body(REQUEST_BODY)
                                                     .forLocation()
         then:
-            1 * restTemplate.exchange(FULL_URL, 
+            1 * restOperations.exchange(FULL_URL, 
                                       PUT, 
                                       { HttpEntity httpEntity -> httpEntity.body == REQUEST_BODY } as HttpEntity, 
                                       RESPONSE_TYPE, 
@@ -97,7 +97,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for location when sending a put request on service template address using map for url vars"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
             URI expectedLocation = new URI('localhost')
         when:
             URI actualLocation = httpMethodBuilder
@@ -107,7 +107,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
                                                     .body(REQUEST_BODY)
                                                     .forLocation()
         then:
-            1 * restTemplate.exchange(FULL_URL, 
+            1 * restOperations.exchange(FULL_URL, 
                                       PUT, 
                                       { HttpEntity httpEntity -> httpEntity.body == REQUEST_BODY } as HttpEntity, 
                                       RESPONSE_TYPE,
@@ -117,7 +117,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for object when sending a put request on given template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
         when:
             String actualResponseBody = httpMethodBuilder
@@ -129,7 +129,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
                                                                 .anObject()
                                                                 .ofType(RESPONSE_TYPE)
         then:
-            1 * restTemplate.exchange(templateUrl,
+            1 * restOperations.exchange(templateUrl,
                                       PUT,
                                       { HttpEntity httpEntity -> httpEntity.body == REQUEST_BODY } as HttpEntity,
                                       RESPONSE_TYPE,
@@ -139,7 +139,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for object when sending a put request on service template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
         when:
             String actualResponseBody = httpMethodBuilder
                                                         .put()
@@ -150,7 +150,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
                                                                 .anObject()
                                                                 .ofType(RESPONSE_TYPE)
         then:
-            1 * restTemplate.exchange(FULL_URL,
+            1 * restOperations.exchange(FULL_URL,
                                       PUT,
                                       { HttpEntity httpEntity -> httpEntity.body == REQUEST_BODY } as HttpEntity,
                                       RESPONSE_TYPE,
@@ -160,7 +160,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for entity when sending a put request on given template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
             ResponseEntity<String> expectedResponseEntity = responseEntityWith(RESPONSE_BODY)
         when:
@@ -173,7 +173,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
                                                                                 .aResponseEntity()
                                                                                 .ofType(RESPONSE_TYPE)
         then:
-            1 * restTemplate.exchange(templateUrl,
+            1 * restOperations.exchange(templateUrl,
                                       PUT,
                                       { HttpEntity httpEntity -> httpEntity.body == REQUEST_BODY } as HttpEntity,
                                       RESPONSE_TYPE,
@@ -183,7 +183,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for entity when sending a put request on service template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
             ResponseEntity<String> expectedResponseEntity = responseEntityWith(RESPONSE_BODY)
         when:
             ResponseEntity<String> actualResponseEntity = httpMethodBuilder
@@ -195,7 +195,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
                         .aResponseEntity()
                         .ofType(RESPONSE_TYPE)
         then:
-            1 * restTemplate.exchange(FULL_URL,
+            1 * restOperations.exchange(FULL_URL,
                                       PUT,
                                       { HttpEntity httpEntity -> httpEntity.body == REQUEST_BODY } as HttpEntity,
                                       RESPONSE_TYPE,
@@ -205,7 +205,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should be able to send a request and ignore the response"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
             String url = 'http://some.url/api/objects'
         when:
             httpMethodBuilder
@@ -214,7 +214,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
                     .withoutBody()
                     .ignoringResponse()
         then:
-            1 * restTemplate.exchange(new URI(url),
+            1 * restOperations.exchange(new URI(url),
                     PUT,
                     _ as HttpEntity,
                     Object)

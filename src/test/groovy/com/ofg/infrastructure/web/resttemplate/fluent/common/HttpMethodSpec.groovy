@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common
 
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestOperations
 import spock.lang.Specification
 
 class HttpMethodSpec extends Specification {
@@ -15,7 +15,7 @@ class HttpMethodSpec extends Specification {
 
     protected static final Long OBJECT_ID = 42L;
 
-    RestTemplate restTemplate = Mock()
+    RestOperations restOperations = Mock()
     HttpMethodBuilder httpMethodBuilder
     
 }

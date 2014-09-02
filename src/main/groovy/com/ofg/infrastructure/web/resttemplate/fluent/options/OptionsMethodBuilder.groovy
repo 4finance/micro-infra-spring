@@ -6,7 +6,7 @@ import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestOperations
 
 @TypeChecked
 class OptionsMethodBuilder implements OptionsMethod, UrlParameterizableOptionsMethod, ResponseReceivingOptionsMethod, HeadersHaving, AllowHeaderReceiving {
@@ -14,19 +14,19 @@ class OptionsMethodBuilder implements OptionsMethod, UrlParameterizableOptionsMe
     public static final String EMPTY_HOST = ''
 
     private final Map params = [:]
-    private final RestTemplate restTemplate
+    private final RestOperations restOperations
     @Delegate private final AllowContainingWithHeaders withHeaders
     @Delegate private final OptionsAllowHeaderExecutor allowHeaderExecutor
 
-    OptionsMethodBuilder(String host, RestTemplate restTemplate) {
-        this.restTemplate = restTemplate
+    OptionsMethodBuilder(String host, RestOperations restOperations) {
+        this.restOperations = restOperations
         params.host = host
         withHeaders = new AllowContainingWithHeaders(this, params)
-        allowHeaderExecutor = new OptionsAllowHeaderExecutor(params, restTemplate)
+        allowHeaderExecutor = new OptionsAllowHeaderExecutor(params, restOperations)
     }
 
-    OptionsMethodBuilder(RestTemplate restTemplate) {
-        this(EMPTY_HOST, restTemplate)
+    OptionsMethodBuilder(RestOperations restOperations) {
+        this(EMPTY_HOST, restOperations)
     }
 
     @Override
@@ -75,7 +75,7 @@ class OptionsMethodBuilder implements OptionsMethod, UrlParameterizableOptionsMe
         return new ObjectReceiving() {
             @Override
             public <T> T ofType(Class<T> responseType) {
-                return new OptionsExecuteForResponseTypeRelated<T>(params, restTemplate, responseType).exchange()?.body
+                return new OptionsExecuteForResponseTypeRelated<T>(params, restOperations, responseType).exchange()?.body
             }
         }
     }
@@ -85,7 +85,7 @@ class OptionsMethodBuilder implements OptionsMethod, UrlParameterizableOptionsMe
         return new ResponseEntityReceiving() {
             @Override
             public <T> ResponseEntity<T> ofType(Class<T> responseType) {
-                return new OptionsExecuteForResponseTypeRelated<T>(params, restTemplate, responseType).exchange()
+                return new OptionsExecuteForResponseTypeRelated<T>(params, restOperations, responseType).exchange()
             }
         }
     }

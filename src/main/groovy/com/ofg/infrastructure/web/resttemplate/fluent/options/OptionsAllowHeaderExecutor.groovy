@@ -3,7 +3,7 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.I
 import groovy.transform.PackageScope
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpMethod
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestOperations
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.HttpEntityUtils.getHttpEntityFrom
 import static org.springframework.http.HttpMethod.OPTIONS
@@ -13,19 +13,19 @@ import static org.springframework.http.HttpMethod.OPTIONS
 class OptionsAllowHeaderExecutor implements AllowHeaderReceiving {
 
     private final Map params
-    private final RestTemplate restTemplate
+    private final RestOperations restOperations
 
-    OptionsAllowHeaderExecutor(Map params, RestTemplate restTemplate) {
+    OptionsAllowHeaderExecutor(Map params, RestOperations restOperations) {
         this.params = params
-        this.restTemplate = restTemplate
+        this.restOperations = restOperations
     }
 
     @Override
     Set<HttpMethod> allow() {
         if(params.url) {
-            return restTemplate.exchange(params.url as URI, OPTIONS, getHttpEntityFrom(params), Object).headers.getAllow()
+            return restOperations.exchange(params.url as URI, OPTIONS, getHttpEntityFrom(params), Object).headers.getAllow()
         } else if(params.urlTemplate) {
-            return restTemplate.exchange("${params.host}${params.urlTemplate}", OPTIONS, getHttpEntityFrom(params), Object, params.urlVariablesArray as Object[] ?: params.urlVariablesMap as Map<String, ?>).headers.getAllow()
+            return restOperations.exchange("${params.host}${params.urlTemplate}", OPTIONS, getHttpEntityFrom(params), Object, params.urlVariablesArray as Object[] ?: params.urlVariablesMap as Map<String, ?>).headers.getAllow()
         }
         throw new InvalidHttpMethodParametersException(params)
     }

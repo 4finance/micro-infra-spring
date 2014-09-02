@@ -3,6 +3,7 @@ package com.ofg.infrastructure.web.resttemplate
 import groovy.transform.TypeChecked
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.client.RestOperations
 
 /**
  * Contains default configuration related to RestTemplate {@link org.springframework.web.client.RestTemplate}
@@ -14,7 +15,7 @@ import org.springframework.context.annotation.Configuration
 class RestTemplateConfiguration {
 
     @Bean
-    RestTemplate restTemplate() {
+    RestOperations restTemplate() {
         return new RestTemplate()
     }
 

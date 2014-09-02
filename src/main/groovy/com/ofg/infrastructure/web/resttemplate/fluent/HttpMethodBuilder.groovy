@@ -13,45 +13,45 @@ import com.ofg.infrastructure.web.resttemplate.fluent.post.PostMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.put.PutMethod
 import com.ofg.infrastructure.web.resttemplate.fluent.put.PutMethodBuilder
 import groovy.transform.CompileStatic
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestOperations
 
 @CompileStatic
 class HttpMethodBuilder {
 
-    private final RestTemplate restTemplate
+    private final RestOperations restOperations
     private final String serviceUrl
 
-    HttpMethodBuilder(RestTemplate restTemplate) {
-        this('', restTemplate)
+    HttpMethodBuilder(RestOperations restOperations) {
+        this('', restOperations)
     }
 
-    HttpMethodBuilder(String serviceUrl, RestTemplate restTemplate) {
-        this.restTemplate = restTemplate
+    HttpMethodBuilder(String serviceUrl, RestOperations restOperations) {
+        this.restOperations = restOperations
         this.serviceUrl = serviceUrl
     }
 
     public DeleteMethod delete() {
-        return new DeleteMethodBuilder(serviceUrl, restTemplate)
+        return new DeleteMethodBuilder(serviceUrl, restOperations)
     }
 
     public GetMethod get() {
-        return new GetMethodBuilder(serviceUrl, restTemplate)
+        return new GetMethodBuilder(serviceUrl, restOperations)
     }
 
     public HeadMethod head() {
-        return new HeadMethodBuilder(serviceUrl, restTemplate)
+        return new HeadMethodBuilder(serviceUrl, restOperations)
     }
 
     public OptionsMethod options() {
-        return new OptionsMethodBuilder(serviceUrl, restTemplate)
+        return new OptionsMethodBuilder(serviceUrl, restOperations)
     }
 
     public PostMethod post() {
-        return new PostMethodBuilder(serviceUrl, restTemplate)
+        return new PostMethodBuilder(serviceUrl, restOperations)
     }
 
     public PutMethod put() {
-        return new PutMethodBuilder(serviceUrl, restTemplate)
+        return new PutMethodBuilder(serviceUrl, restOperations)
     }
 
 }

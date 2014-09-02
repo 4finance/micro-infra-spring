@@ -7,7 +7,7 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.Re
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestOperations
 
 @TypeChecked
 class GetMethodBuilder implements GetMethod, UrlParameterizableGetMethod, ResponseReceivingGetMethod, HeadersHaving {
@@ -15,17 +15,17 @@ class GetMethodBuilder implements GetMethod, UrlParameterizableGetMethod, Respon
     public static final String EMPTY_HOST = ''
 
     private final Map params = [:]
-    private final RestTemplate restTemplate
+    private final RestOperations restOperations
     @Delegate private final BodyContainingWithHeaders withHeaders
 
-    GetMethodBuilder(String host, RestTemplate restTemplate) {
-        this.restTemplate = restTemplate
+    GetMethodBuilder(String host, RestOperations restOperations) {
+        this.restOperations = restOperations
         params.host = host
         withHeaders = new BodyContainingWithHeaders(this, params)
     }
 
-    GetMethodBuilder(RestTemplate restTemplate) {
-        this(EMPTY_HOST, restTemplate)
+    GetMethodBuilder(RestOperations restOperations) {
+        this(EMPTY_HOST, restOperations)
     }
 
     @Override
@@ -69,7 +69,7 @@ class GetMethodBuilder implements GetMethod, UrlParameterizableGetMethod, Respon
         return new ObjectReceiving() {
             @Override
             public <T> T ofType(Class<T> responseType) {
-                return new GetExecuteForResponseTypeRelated<T>(params, restTemplate, responseType).exchange()?.body
+                return new GetExecuteForResponseTypeRelated<T>(params, restOperations, responseType).exchange()?.body
             }
         }
     }
@@ -79,7 +79,7 @@ class GetMethodBuilder implements GetMethod, UrlParameterizableGetMethod, Respon
         return new ResponseEntityReceiving() {
             @Override
             public <T> ResponseEntity<T> ofType(Class<T> responseType) {
-                return new GetExecuteForResponseTypeRelated<T>(params, restTemplate, responseType).exchange()
+                return new GetExecuteForResponseTypeRelated<T>(params, restOperations, responseType).exchange()
             }
         }
     }

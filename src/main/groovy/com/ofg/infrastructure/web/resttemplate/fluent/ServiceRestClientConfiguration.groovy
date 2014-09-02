@@ -3,7 +3,7 @@ import com.ofg.infrastructure.discovery.ServiceResolver
 import groovy.transform.TypeChecked
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestOperations
 
 /**
  * Creates a bean of abstraction over {@link RestTemplate}.
@@ -14,8 +14,8 @@ import org.springframework.web.client.RestTemplate
 class ServiceRestClientConfiguration {
 
     @Bean
-    ServiceRestClient serviceRestClient(RestTemplate restTemplate, ServiceResolver serviceResolver) {
-        return new ServiceRestClient(restTemplate, serviceResolver)
+    ServiceRestClient serviceRestClient(RestOperations restOperations, ServiceResolver serviceResolver) {
+        return new ServiceRestClient(restOperations, serviceResolver)
     }
 
 }

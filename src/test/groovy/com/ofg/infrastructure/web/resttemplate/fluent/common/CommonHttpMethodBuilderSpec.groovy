@@ -10,7 +10,7 @@ class CommonHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should be able to send a request and ignore the response"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restTemplate)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
             String url = 'http://some.url/api/objects'
             HttpEntity expectedHttpEntity = new HttpEntity('')
         when:
@@ -20,7 +20,7 @@ class CommonHttpMethodBuilderSpec extends HttpMethodSpec {
                                 .httpEntity(expectedHttpEntity)
                                     .ignoringResponse()
         then:
-            1 * restTemplate.exchange(new URI(url),
+            1 * restOperations.exchange(new URI(url),
                     method as HttpMethod,
                     expectedHttpEntity,
                     Object)

@@ -5,7 +5,7 @@ import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestOperations
 
 @TypeChecked
 class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, ResponseReceivingHeadMethod, HeadersHaving {
@@ -13,17 +13,17 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
     public static final String EMPTY_HOST = ''
 
     private final Map params = [:]
-    private final RestTemplate restTemplate
+    private final RestOperations restOperations
     @Delegate private final BodylessWithHeaders<ResponseReceivingHeadMethod> withHeaders
 
-    HeadMethodBuilder(String host, RestTemplate restTemplate) {
-        this.restTemplate = restTemplate
+    HeadMethodBuilder(String host, RestOperations restOperations) {
+        this.restOperations = restOperations
         params.host = host
         withHeaders =  new BodylessWithHeaders<ResponseReceivingHeadMethod>(this, params)
     }
 
-    HeadMethodBuilder(RestTemplate restTemplate) {
-        this(EMPTY_HOST, restTemplate)
+    HeadMethodBuilder(RestOperations restOperations) {
+        this(EMPTY_HOST, restOperations)
     }
 
     @Override
@@ -64,12 +64,12 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
 
     @Override
     ResponseEntity aResponseEntity() {
-        return new HeadExecuteForResponseTypeRelated(params, restTemplate).exchange()
+        return new HeadExecuteForResponseTypeRelated(params, restOperations).exchange()
     }
 
     @Override
     HttpHeaders httpHeaders() {
-        return new HeadExecuteForResponseTypeRelated(params, restTemplate).exchange()?.headers
+        return new HeadExecuteForResponseTypeRelated(params, restOperations).exchange()?.headers
     }
 
     @Override

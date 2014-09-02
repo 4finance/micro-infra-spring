@@ -8,7 +8,7 @@ import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestOperations
 
 import static org.springframework.http.HttpMethod.PUT
 
@@ -19,14 +19,14 @@ class PutMethodBuilder extends LocationFindingExecutor implements PutMethod, Req
     
     @Delegate private final BodyContainingWithHeaders withHeaders
 
-    PutMethodBuilder(String host, RestTemplate restTemplate) {
-        super(restTemplate)
+    PutMethodBuilder(String host, RestOperations restOperations) {
+        super(restOperations)
         params.host = host
         withHeaders = new BodyContainingWithHeaders(this, params)
     }
 
-    PutMethodBuilder(RestTemplate restTemplate) {
-        this(EMPTY_HOST, restTemplate)
+    PutMethodBuilder(RestOperations restOperations) {
+        this(EMPTY_HOST, restOperations)
     }
 
     @Override
@@ -87,7 +87,7 @@ class PutMethodBuilder extends LocationFindingExecutor implements PutMethod, Req
         return new ObjectReceiving() {
             @Override
             public <T> T ofType(Class<T> responseType) {
-                return new PutExecuteForResponseTypeRelated<T>(params, restTemplate, responseType).exchange()?.body
+                return new PutExecuteForResponseTypeRelated<T>(params, restOperations, responseType).exchange()?.body
             }
         }
     }
@@ -97,7 +97,7 @@ class PutMethodBuilder extends LocationFindingExecutor implements PutMethod, Req
         return new ResponseEntityReceiving() {
             @Override
             public <T> ResponseEntity<T> ofType(Class<T> responseType) {
-                return new PutExecuteForResponseTypeRelated<T>(params, restTemplate, responseType).exchange()
+                return new PutExecuteForResponseTypeRelated<T>(params, restOperations, responseType).exchange()
             }
         }
     }

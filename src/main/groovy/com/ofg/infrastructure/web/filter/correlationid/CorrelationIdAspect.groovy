@@ -38,11 +38,11 @@ class CorrelationIdAspect {
         }
     }
 
-    @Pointcut('execution(public * org.springframework.web.client.RestTemplate.exchange(..))')
-    private void anyExchangeRestTemplateMethod() {}
+    @Pointcut('execution(public * org.springframework.web.client.RestOperations.exchange(..))')
+    private void anyExchangeRestOperationsMethod() {}
     
-    @Around('anyExchangeRestTemplateMethod()')
-    Object wrapWithCorrelationIdForRestTemplate(ProceedingJoinPoint pjp) throws Throwable {
+    @Around('anyExchangeRestOperationsMethod()')
+    Object wrapWithCorrelationIdForRestOperations(ProceedingJoinPoint pjp) throws Throwable {
         String correlationId = CorrelationIdHolder.get()
         log.debug("Wrapping RestTemplate call with correlation id [$correlationId]")
         HttpEntity httpEntity = pjp.args[HTTP_ENTITY_PARAM_INDEX] as HttpEntity

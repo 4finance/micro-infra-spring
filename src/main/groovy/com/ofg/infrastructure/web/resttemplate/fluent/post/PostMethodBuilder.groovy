@@ -8,7 +8,7 @@ import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
-import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.RestOperations
 
 import static org.springframework.http.HttpMethod.POST
 
@@ -19,14 +19,14 @@ class PostMethodBuilder extends LocationFindingExecutor implements PostMethod, R
     
     @Delegate private final BodyContainingWithHeaders withHeaders
 
-    PostMethodBuilder(String host, RestTemplate restTemplate) {
-        super(restTemplate)
+    PostMethodBuilder(String host, RestOperations restOperations) {
+        super(restOperations)
         params.host = host
         withHeaders = new BodyContainingWithHeaders(this, params)
     }
     
-    PostMethodBuilder(RestTemplate restTemplate) {
-        this(EMPTY_HOST, restTemplate)
+    PostMethodBuilder(RestOperations restOperations) {
+        this(EMPTY_HOST, restOperations)
     }
 
     @Override
@@ -87,7 +87,7 @@ class PostMethodBuilder extends LocationFindingExecutor implements PostMethod, R
         return new ObjectReceiving() {
             @Override
             public <T> T ofType(Class<T> responseType) {
-                return new PostExecuteForResponseTypeRelated<T>(params, restTemplate, responseType).exchange()?.body
+                return new PostExecuteForResponseTypeRelated<T>(params, restOperations, responseType).exchange()?.body
             }
         }
     }
@@ -97,7 +97,7 @@ class PostMethodBuilder extends LocationFindingExecutor implements PostMethod, R
         return new ResponseEntityReceiving() {
             @Override
             public <T> ResponseEntity<T> ofType(Class<T> responseType) {
-                return new PostExecuteForResponseTypeRelated<T>(params, restTemplate, responseType).exchange()
+                return new PostExecuteForResponseTypeRelated<T>(params, restOperations, responseType).exchange()
             }
         }
     }

@@ -20,6 +20,10 @@ class DescriptorRepository {
         return mappingDescriptors
     }
 
+    URI getLocation() {
+        return repository.toURI()
+    }
+
     private static boolean isMappingDescriptor(File file) {
         return file.isFile() && file.name.endsWith('.json')
     }

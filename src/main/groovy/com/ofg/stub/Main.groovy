@@ -1,19 +1,20 @@
 package com.ofg.stub
 
 import com.ofg.stub.mapping.DescriptorRepository
-import com.ofg.stub.mapping.RepositoryMetada
+import com.ofg.stub.mapping.ProjectMetadata
 import com.ofg.stub.registry.StubRegistry
 import com.ofg.stub.server.AvailablePortScanner
 import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j
 
+import static com.ofg.stub.mapping.ProjectMetadataResolver.resolveAllProjectsFromRepository
+import static com.ofg.stub.mapping.ProjectMetadataResolver.resolveFromMetadata
+
 @TypeChecked
 @Slf4j
 class Main {
 
-    private static final String VALUE_MISSING = ''
-
-    static void main(String... args) {
+    static void main(String[] args) {
         log.debug("Launching StubRunner with args: $args")
         if (args.size() < 5) {
             printUsage()
@@ -21,19 +22,27 @@ class Main {
         doMain(args)
     }
 
-    private static void doMain(String... args) {
+    private static void doMain(String[] args) {
         File repositoryPath = new File(args[0])
-        File metadata = args[1] ? new File(repositoryPath, args[1]) : null
+        DescriptorRepository repository = new DescriptorRepository(repositoryPath)
         StubRegistry stubRegistry = new StubRegistry(portNumber(args[2]))
         AvailablePortScanner portScanner = new AvailablePortScanner(portNumber(args[3]), portNumber(args[4]))
-        RepositoryMetada repositoryMetada = new RepositoryMetada(repositoryPath, metadata, parseContext(args))
-        DescriptorRepository repository = new DescriptorRepository(repositoryPath)
+        List<ProjectMetadata> projects = resolveProjects(repository, args)
         StubRunner stubRunner = new StubRunner(portScanner, stubRegistry)
-        stubRunner.runStubs(repository, repositoryMetada)
+        stubRunner.runStubs(repository, projects)
     }
 
-    private static String parseContext(String... args) {
-        args.length == 6 ? args[5] : VALUE_MISSING
+    private static List<ProjectMetadata> resolveProjects(DescriptorRepository repository, String[] args) {
+        if (args[1]) {
+            File metadata = new File(repository.location.path, args[1])
+            return resolveFromMetadata(metadata)
+        } else {
+            return resolveAllProjectsFromRepository(repository, getContext(args))
+        }
+    }
+
+    private static String getContext(String[] args) {
+        args.length == 6 ? args[5] : null
     }
 
     private static int portNumber(String port) {

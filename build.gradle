@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
-        classpath 'com.ofg:uptodate-gradle-plugin:1.0.0'
+        classpath 'com.ofg:uptodate-gradle-plugin:1.1.0'
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.0' }
     }
 }
@@ -57,6 +57,7 @@ if(project.hasProperty("coverage")) {
     }
 }
 
+jar.enabled = false
 
 subprojects {
     apply plugin: 'groovy'
@@ -108,10 +109,8 @@ subprojects {
         publications {
             mavenJava(MavenPublication) {
                 from components.java
-
-                artifact sourcesJar {
-                    classifier "sources"
-                }
+                artifact sourcesJar
+                artifact javadocJar
             }
         }
     }
@@ -121,8 +120,14 @@ subprojects {
         from sourceSets.main.allSource
     }
 
+    task javadocJar(type: Jar, dependsOn: groovydoc) {
+        classifier = 'javadoc'
+        from groovydoc.destinationDir
+    }
+
     artifacts {
         archives sourcesJar
+        archives javadocJar
     }
 
 
@@ -183,7 +188,7 @@ project(':micro-deps-spring-test-config') {
     dependencies {        
         compile 'cglib:cglib-nodep:3.1'
         compile 'org.objenesis:objenesis:2.1' // allows mocking of classes without default constructor (together with CGLIB)
-        compile 'org.aspectj:aspectjweaver:1.8.1'
+        compile 'org.aspectj:aspectjweaver:1.8.2'
         compile "org.spockframework:spock-core:$spockVersion"
         compile "org.spockframework:spock-spring:$spockVersion"
         compile "org.springframework:spring-webmvc:$springVersion"
@@ -191,7 +196,7 @@ project(':micro-deps-spring-test-config') {
         compile 'com.github.tomakehurst:wiremock:1.47'
         
         testCompile project(':micro-deps-spring-config')
-        testCompile 'com.jayway.restassured:rest-assured:2.3.2'
+        testCompile 'com.jayway.restassured:rest-assured:2.3.3'
     }
 }
 

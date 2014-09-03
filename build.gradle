@@ -112,14 +112,8 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-
-            artifact sourcesJar {
-                classifier "sources"
-            }
-
-            artifact javadocJar {
-                classifier "javadoc"
-            }
+            artifact sourcesJar
+            artifact javadocJar
         }
     }
 }
@@ -129,9 +123,9 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
+task javadocJar(type: Jar, dependsOn: groovydoc) {
     classifier = 'javadoc'
-    from javadoc.destinationDir
+    from groovydoc.destinationDir
 }
 
 artifacts {

@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
-        classpath 'com.ofg:uptodate-gradle-plugin:1.0.0'
+        classpath 'com.ofg:uptodate-gradle-plugin:1.1.0'
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.0' }
     }
 }
@@ -20,7 +20,7 @@ sourceCompatibility = 1.7
 
 group = 'com.ofg'
 description = 'Microservice dependency manager'
-version = '0.5.4'
+version = '0.5.5-SNAPSHOT'
 
 repositories {
     mavenLocal()
@@ -49,7 +49,7 @@ dependencies {
     compile "io.undertow:undertow-servlet:$undertowVersion"
     compile 'org.apache.ivy:ivy:2.3.0'
     compile 'args4j:args4j:2.0.29'
-    compile 'com.google.guava:guava:17.0'
+    compile 'com.google.guava:guava:18.0'
     compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
 
     testCompile("org.spockframework:spock-core:$spockVersion") {

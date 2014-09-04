@@ -31,3 +31,62 @@ Having such a folder structure
 it will register stubs in the __/com/ofg/foo/bar/__ folder while ignoring the __foo.json__ file
 
 * register stubs in Zookeeper
+
+### Stub runner configuration
+
+Under `ext` block inside `build.gradle` you can configure stub runner with the following properties:
+* stubRepositoryPath
+* stubRegistryPort
+* minStubPortNumber
+* maxStubPortNumber
+* context
+    
+Project metadata that will be loaded is derived from the executed task name, e.g.: `gradle runStubsHealthCheck` will register collaborators defined in `healthCheck.json`.
+
+### Defining collaborators' stubs
+
+#### Defining service collaborators
+
+Service collaborators are defined in project metadata file (JSON document) with the following structure:
+```
+{
+    "context": [ Fully qualified names of your collaborators ]
+}
+```
+
+Example:
+```
+{
+    "pl": [
+        "com/ofg/foo",
+        "com/ofg/bar"
+    ]
+}
+```
+
+By default project metadata definitions are stored at stub repository root
+
+#### Stubbing collaborators
+
+For each collaborator defined in project metadata all collaborator mappings (stubs) available in repository are loaded and registered in service registry (Zookeeper).
+Stubs are defined in JSON documents, whose syntax is defined in [WireMock documentation](http://wiremock.org/stubbing.html)
+
+Example:
+```
+{
+    "request": {
+        "method": "GET",
+        "url": "/ping"
+    },
+    "response": {
+        "status": 200,
+        "body": "pong",
+        "headers": {
+            "Content-Type": "text/plain"
+        }
+    }
+}
+```
+
+Stub definitions are stored in stub repository under the same path as collaborator fully qualified name.
+Paths (as long it's inside the directory mentioned above) and names of documents containing stub definitions not play any other role than describing stubs' role / purpose.

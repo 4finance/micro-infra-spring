@@ -16,7 +16,7 @@ buildscript {
 sourceCompatibility = 1.7
 
 ext {
-    stubRepository = 'repository'
+    stubRepositoryPath = 'repository'
     stubRegistryPort = 2181
     minStubPortNumber = 2300
     maxStubPortNumber = 2399
@@ -48,12 +48,12 @@ dependencies {
 tasks.addRule('Pattern: runStubs<Project>: Run stubs for project') { String taskName ->
     if (taskName == 'runStubs') {
         String skipLoadingMetadataMarker = ''
-        executeStubRunner(taskName, [ stubRepository, skipLoadingMetadataMarker, stubRegistryPort, minStubPortNumber, maxStubPortNumber, context ])
+        executeStubRunner(taskName, [ stubRepositoryPath, skipLoadingMetadataMarker, stubRegistryPort, minStubPortNumber, maxStubPortNumber, context ])
 
     } else if (taskName.startsWith('runStubs')) {
         String metadata = taskName - 'runStubs'
         metadata = metadata[0].toLowerCase() + metadata.substring(1)
-        executeStubRunner(taskName, [ stubRepository, "${metadata}.json", stubRegistryPort, minStubPortNumber, maxStubPortNumber ])
+        executeStubRunner(taskName, [ stubRepositoryPath, "${metadata}.json", stubRegistryPort, minStubPortNumber, maxStubPortNumber ])
     }
 }
 

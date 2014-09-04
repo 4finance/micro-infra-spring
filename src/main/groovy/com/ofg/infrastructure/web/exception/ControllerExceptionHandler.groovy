@@ -9,6 +9,15 @@ import org.springframework.web.bind.annotation.ResponseBody
 
 import javax.servlet.http.HttpServletResponse
 
+/**
+ * Advice on {@link BadParametersException} and {@link Exception} that 
+ * catches uncaught exceptions, logs and present them
+ * 
+ * @see ControllerAdvice
+ * @see ExceptionHandler
+ * @see BadParametersException
+ * @see BadParameterError
+ */
 @Slf4j
 @ControllerAdvice
 @TypeChecked

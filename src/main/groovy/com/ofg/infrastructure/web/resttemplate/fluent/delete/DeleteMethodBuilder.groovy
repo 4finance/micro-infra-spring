@@ -7,6 +7,9 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
+/**
+ * Implementation of the {@link org.springframework.http.HttpMethod#DELETE method} fluent API
+ */
 @TypeChecked
 class DeleteMethodBuilder implements DeleteMethod, UrlParameterizableDeleteMethod, ResponseReceivingDeleteMethod, HeadersHaving {
 

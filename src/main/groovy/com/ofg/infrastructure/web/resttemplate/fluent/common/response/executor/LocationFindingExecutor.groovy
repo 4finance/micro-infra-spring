@@ -7,6 +7,10 @@ import org.springframework.web.client.RestOperations
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.HttpEntityUtils.getHttpEntityFrom
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.UrlParsingUtils.appendPathToHost
 
+/**
+ * Class that executes {@link RestOperations}.exchange() and from {@link org.springframework.http.ResponseEntity#headers}
+ * it returns {@link org.springframework.http.HttpHeaders#LOCATION} header
+ */
 @TypeChecked
 abstract class LocationFindingExecutor implements LocationReceiving {
 

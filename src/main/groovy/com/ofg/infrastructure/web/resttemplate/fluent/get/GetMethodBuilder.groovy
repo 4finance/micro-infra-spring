@@ -9,6 +9,9 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
+/**
+ * Implementation of the {@link org.springframework.http.HttpMethod#GET method} fluent API
+ */
 @TypeChecked
 class GetMethodBuilder implements GetMethod, UrlParameterizableGetMethod, ResponseReceivingGetMethod, HeadersHaving {
 

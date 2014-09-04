@@ -7,6 +7,9 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
+/**
+ * Implementation of the {@link org.springframework.http.HttpMethod#HEAD method} fluent API
+ */
 @TypeChecked
 class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, ResponseReceivingHeadMethod, HeadersHaving {
 

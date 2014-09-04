@@ -12,6 +12,9 @@ import org.springframework.web.client.RestOperations
 
 import static org.springframework.http.HttpMethod.PUT
 
+/**
+ * Implementation of the {@link org.springframework.http.HttpMethod#PUT method} fluent API
+ */
 @TypeChecked
 class PutMethodBuilder extends LocationFindingExecutor implements PutMethod, RequestHavingPutMethod, ResponseReceivingPutMethod, UrlParameterizablePutMethod, HeadersSetting {
 

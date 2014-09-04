@@ -3,6 +3,9 @@ import groovy.transform.CompileStatic
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 
+/**
+ * Utility class that extracts {@link HttpEntity} from the provided map of passed parameters
+ */
 @CompileStatic
 final class HttpEntityUtils {
     private HttpEntityUtils() {

@@ -6,9 +6,10 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestOperations
 
 /**
- * Contains default configuration related to RestTemplate {@link org.springframework.web.client.RestTemplate}
+ * Contains default configuration related to {@link RestOperations}
  *
  * @see org.springframework.web.client.RestTemplate
+ * @see RestOperations
  */
 @TypeChecked
 @Configuration

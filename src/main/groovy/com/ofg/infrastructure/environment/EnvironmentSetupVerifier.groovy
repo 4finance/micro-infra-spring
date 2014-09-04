@@ -1,10 +1,15 @@
 package com.ofg.infrastructure.environment
-
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent
 import org.springframework.context.ApplicationListener
-
-@TypeChecked
+/**
+ * Spring {@link ApplicationListener} that verifies that you have provided a spring profile upon
+ * application execution (via spring.profiles.active system property). If it's not provided the 
+ * application will close with error.
+ * 
+ * @see ApplicationListener
+ */
+@CompileStatic
 class EnvironmentSetupVerifier implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
 
     private final List<String> allPossibleSpringProfiles

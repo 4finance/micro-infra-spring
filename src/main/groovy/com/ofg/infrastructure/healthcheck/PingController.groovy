@@ -1,16 +1,17 @@
 package com.ofg.infrastructure.healthcheck
-
 import com.wordnik.swagger.annotations.Api
 import com.wordnik.swagger.annotations.ApiOperation
+import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.TypeChecked
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
-
+/**
+ * {@link RestController} that responds with OK when server is alive
+ */
 @RestController
-@TypeChecked
+@CompileStatic
 @PackageScope
 @Api(value = "ping", description = "PING API")
 class PingController {

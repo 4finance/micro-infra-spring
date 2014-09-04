@@ -13,6 +13,15 @@ import javax.servlet.http.HttpServletResponse
 import static com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
 import static org.springframework.util.StringUtils.hasText
 
+/**
+ * Filter that takes the value of the {@link CorrelationIdHolder#CORRELATION_ID_HEADER} header 
+ * from either request or response and sets it in the {@link CorrelationIdHolder}. It also provides
+ * that value in {@link org.apache.log4j.MDC} logging related class so that logger prints the value of
+ * correlation id at each log.
+ * 
+ * @see CorrelationIdHolder
+ * @see org.apache.log4j.MDC
+ */
 @TypeChecked
 @Slf4j
 //inspired by http://taidevcouk.wordpress.com/2014/05/26/implementing-correlation-ids-in-spring-boot/

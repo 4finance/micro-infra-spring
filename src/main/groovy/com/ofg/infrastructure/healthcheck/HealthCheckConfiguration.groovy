@@ -1,10 +1,13 @@
 package com.ofg.infrastructure.healthcheck
-
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-
-@TypeChecked
+/**
+ * Registers {@link PingController} - a health check controller 
+ * 
+ * @see PingController
+ */
+@CompileStatic
 @Configuration
 class HealthCheckConfiguration {
     

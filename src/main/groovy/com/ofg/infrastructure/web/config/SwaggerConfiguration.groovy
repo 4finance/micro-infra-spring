@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 
+/**
+ * Adds configuration enabling Swagger in Spring via {@link SwaggerSpringMvcPlugin}
+ */
 @Configuration
 @ComponentScan('com.mangofactory.swagger')
 @EnableSwagger
@@ -16,21 +19,24 @@ class SwaggerConfiguration {
 
     @Bean
     SwaggerSpringMvcPlugin swaggerSpringMvcPlugin(
-            @Value('${rest.api.version:1.0}') String restApiVersion, SpringSwaggerConfig springSwaggerConfig) {
+            @Value('${rest.api.version:1.0}') String restApiVersion, 
+            SpringSwaggerConfig springSwaggerConfig,
+            @Value('${rest.api.title:Microservice API}') String restApiTitle,
+            @Value('${rest.api.description:APIs for this microservice}') String restApiDescription,
+            @Value('${rest.api.terms:Defined by 4finance internal licences}') String restApiTerms,
+            @Value('${rest.api.contact:info@4finance.com}') String restApiContact,
+            @Value('${rest.api.license.type:4finance internal licence}') String restApiLicenseType,
+            @Value('${rest.api.license.url:http://4finance.com}') String restApiLicenseUrl) {
         return new SwaggerSpringMvcPlugin(springSwaggerConfig)
-                .apiInfo(apiInfo())
+                .apiInfo(new ApiInfo(
+                                    restApiTitle,
+                                    restApiDescription,
+                                    restApiTerms,
+                                    restApiContact,
+                                    restApiLicenseType,
+                                    restApiLicenseUrl))
                 .apiVersion(restApiVersion)
                 .includePatterns(".*")
     }
 
-    private ApiInfo apiInfo() {
-        return new ApiInfo(
-                "Spring Boot Microservice API",
-                "APIs for Spring Boot Microservice template",
-                "Terms Of Service - Use On Your Own Risk",
-                "My Apps API Contact Email",
-                "My Apps API Licence Type",
-                "My Apps API License URL"
-        )
-    }
 }

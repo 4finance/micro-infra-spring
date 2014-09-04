@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Import
  *          <li>{@link ServiceRestClientConfiguration} - RestTemplate abstraction with ServiceDiscovery</li>
  *          <li>{@link ControllerExceptionConfiguration} - default Exception handling</li>
  *          <li>{@link FilterConfiguration} - filter for logging request body</li>
- *          <li>{@link ViewConfiguration} - converts unmapped Views to JSON requests</li>
+ *          <li>{@link ViewConfiguration} - converts unmapped views to JSON requests</li>
  *      </ul>
  *  </li>
  *

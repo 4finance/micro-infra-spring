@@ -11,6 +11,32 @@ import java.util.concurrent.Callable
 
 import static com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
 
+/**
+ * Aspect that adds correlation id to
+ * 
+ * <ul>
+ *     <li>{@link org.springframework.web.bind.annotation.RestController} annotated classes 
+ *     with public {@link Callable} methods</li>
+ *     <li>{@link org.springframework.stereotype.Controller} annotated classes 
+ *     with public {@link Callable} methods</li>
+ *     <li>explicit {@link org.springframework.web.client.RestOperations}.exchange(..) method calls</li> 
+ * </ul>
+ * 
+ * For controllers an around aspect is created that wraps the {@link Callable#call()} method execution
+ * in {@link CorrelationCallable#withCorrelationId(groovy.lang.Closure)} 
+ * 
+ * For {@link org.springframework.web.client.RestOperations} we are wrapping all executions of the
+ * <b>exchange</b> methods and we are extracting {@link HttpHeaders} from the passed {@link HttpEntity}.
+ * Next we are adding correlation id header {@link CorrelationIdHolder#CORRELATION_ID_HEADER} with 
+ * the value taken from {@link CorrelationIdHolder}. Finally the method execution proceeds.
+ * 
+ * @see org.springframework.web.bind.annotation.RestController
+ * @see org.springframework.stereotype.Controller
+ * @see org.springframework.web.client.RestOperations
+ * @see CorrelationIdHolder
+ * @see CorrelationIdFilter
+ * 
+ */
 @Aspect
 @Slf4j
 class CorrelationIdAspect {

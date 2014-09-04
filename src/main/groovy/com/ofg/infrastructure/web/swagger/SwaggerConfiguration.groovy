@@ -1,4 +1,4 @@
-package com.ofg.infrastructure.web.config
+package com.ofg.infrastructure.web.swagger
 
 import com.mangofactory.swagger.configuration.SpringSwaggerConfig
 import com.mangofactory.swagger.plugin.EnableSwagger

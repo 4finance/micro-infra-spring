@@ -20,6 +20,13 @@ interface HeadersSetting<T> extends Executable<T> {
      */
     HeadersSetting<T> accept(List<MediaType> acceptableMediaTypes)
 
+    /**
+     * List of acceptable {@link MediaType} to be set in the {@link HttpHeaders#ACCEPT} header 
+     *
+     * @param acceptableMediaTypes
+     *
+     * @return itself
+     */
     HeadersSetting<T> accept(MediaType... acceptableMediaTypes)
 
     /**

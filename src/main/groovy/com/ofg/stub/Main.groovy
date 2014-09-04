@@ -13,23 +13,30 @@ import static com.ofg.stub.mapping.ProjectMetadataResolver.resolveFromMetadata
 @TypeChecked
 @Slf4j
 class Main {
+    public static StubRunner stubRunner = null
 
     static void main(String[] args) {
         log.debug("Launching StubRunner with args: $args")
         if (args.size() < 5) {
             printUsage()
         }
-        doMain(args)
+        registerShutdownHook()
+        runStubs(args)
     }
 
-    private static void doMain(String[] args) {
+    private static void runStubs(String[] args) {
         File repositoryPath = new File(args[0])
         DescriptorRepository repository = new DescriptorRepository(repositoryPath)
         StubRegistry stubRegistry = new StubRegistry(portNumber(args[2]))
         AvailablePortScanner portScanner = new AvailablePortScanner(portNumber(args[3]), portNumber(args[4]))
         List<ProjectMetadata> projects = resolveProjects(repository, args)
-        StubRunner stubRunner = new StubRunner(portScanner, stubRegistry)
+        stubRunner = new StubRunner(portScanner, stubRegistry)
         stubRunner.runStubs(repository, projects)
+    }
+
+    private static void registerShutdownHook() {
+        Runnable stopAllServers = { stubRunner?.shutdown() }
+        Runtime.runtime.addShutdownHook(new Thread(stopAllServers))
     }
 
     private static List<ProjectMetadata> resolveProjects(DescriptorRepository repository, String[] args) {

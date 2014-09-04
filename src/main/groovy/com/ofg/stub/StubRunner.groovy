@@ -15,6 +15,7 @@ class StubRunner {
 
     private final AvailablePortScanner portScanner
     private final StubRegistry stubRegistry
+    private final List<StubServer> stubServers = []
 
     StubRunner(AvailablePortScanner portScanner, StubRegistry stubRegistry) {
         this.portScanner = portScanner
@@ -22,19 +23,22 @@ class StubRunner {
     }
 
     void runStubs(DescriptorRepository repository, List<ProjectMetadata> projects) {
-        List<StubServer> stubServers = startStubServers(projects, repository)
+        startStubServers(projects, repository)
         stubRegistry.register(stubServers)
         log.info("All stubs are now running and registered in service registry available on port $stubRegistry.port")
     }
 
-    private List<StubServer> startStubServers(List<ProjectMetadata> projects, DescriptorRepository repository) {
-        List<StubServer> stubServers = []
+    void shutdown() {
+        stubRegistry.shutdown()
+        stubServers.each { it.stop() }
+    }
+
+    private void startStubServers(List<ProjectMetadata> projects, DescriptorRepository repository) {
         projects.each {
             List<MappingDescriptor> mappings = repository.getAllProjectDescriptors(it)
             StubServer stubServer = new StubServer(portScanner.nextAvailablePort(), it, mappings)
             stubServer.start()
             stubServers << stubServer
         }
-        return stubServers
     }
 }

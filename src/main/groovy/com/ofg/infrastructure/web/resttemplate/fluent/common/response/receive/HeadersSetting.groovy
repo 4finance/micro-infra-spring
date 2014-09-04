@@ -12,6 +12,8 @@ interface HeadersSetting<T> extends Executable<T> {
 
     HeadersSetting<T> accept(List<MediaType> acceptableMediaTypes)
 
+    HeadersSetting<T> accept(MediaType... acceptableMediaTypes)
+
     HeadersSetting<T> cacheControl(String cacheControl)
 
     HeadersSetting<T> contentType(MediaType mediaType)

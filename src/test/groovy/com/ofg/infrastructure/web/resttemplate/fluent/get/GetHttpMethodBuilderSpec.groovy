@@ -1,14 +1,13 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.get
+
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
-import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 
 import static org.springframework.http.HttpMethod.GET
 
-@TypeChecked
 class GetHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should use only url template without provided service url to retrieve object"() {

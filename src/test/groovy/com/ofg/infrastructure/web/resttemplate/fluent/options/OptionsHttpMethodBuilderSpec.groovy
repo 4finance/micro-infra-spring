@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.options
+
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
-import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -11,7 +11,6 @@ import static org.springframework.http.HttpMethod.DELETE
 import static org.springframework.http.HttpMethod.OPTIONS
 import static org.springframework.http.HttpStatus.OK
 
-@TypeChecked
 class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
 
     public static final String RESPONSE_BODY = '''{"sample":"response"}'''

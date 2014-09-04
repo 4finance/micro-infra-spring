@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.headers
+
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
-import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -9,7 +9,6 @@ import org.springframework.http.MediaType
 import static org.springframework.http.HttpMethod.*
 import static org.springframework.http.MediaType.APPLICATION_JSON
 
-@TypeChecked
 class HeadersSettingSpec extends HttpMethodSpec {
 
     public static final String TEMPLATE_URL = 'http://some.url/api/objects/{objectId}'
@@ -25,7 +24,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
                     .withHeaders()
                         .header('key', 'value')
                         .headers([anotherKey : 'value'])
-                        .accept([APPLICATION_JSON])
+                        .accept(APPLICATION_JSON)
                         .cacheControl('no-cache')
                         .contentType('application/vnd.mymoid-adapter.v1+json')
                         .expires(1000)
@@ -54,7 +53,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
                     .withHeaders()
                         .header('key', 'value')
                         .headers([anotherKey : 'value'])
-                        .accept([APPLICATION_JSON])
+                        .accept(APPLICATION_JSON)
                         .cacheControl('no-cache')
                         .contentType('application/vnd.mymoid-adapter.v1+json')
                         .expires(1000)
@@ -82,7 +81,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
                         .withHeaders()
                             .header('key', 'value')
                             .headers([anotherKey : 'value'])
-                            .accept([APPLICATION_JSON])
+                            .accept(APPLICATION_JSON)
                             .cacheControl('no-cache')
                             .contentType('application/vnd.mymoid-adapter.v1+json')
                             .expires(1000)
@@ -110,7 +109,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
                     .withHeaders()
                         .header('key', 'value')
                         .headers([anotherKey : 'value'])
-                        .accept([APPLICATION_JSON])
+                        .accept(APPLICATION_JSON)
                         .cacheControl('no-cache')
                         .contentType('application/vnd.mymoid-adapter.v1+json')
                         .expires(1000)
@@ -138,7 +137,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
                     .withHeaders()
                         .header('key', 'value')
                         .headers([anotherKey : 'value'])
-                        .accept([APPLICATION_JSON])
+                        .accept(APPLICATION_JSON)
                         .cacheControl('no-cache')
                         .contentType('application/vnd.mymoid-adapter.v1+json')
                         .expires(1000)

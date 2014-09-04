@@ -29,6 +29,11 @@ class WithHeaders<T> implements HeadersSetting<T>, HeadersHaving<T> {
     }
 
     @Override
+    WithHeaders accept(MediaType... acceptableMediaTypes) {
+        return accept(Arrays.asList(acceptableMediaTypes))
+    }
+
+    @Override
     WithHeaders cacheControl(String cacheControl) {
         httpHeaders.setCacheControl(cacheControl)
         updateHeaderParams()

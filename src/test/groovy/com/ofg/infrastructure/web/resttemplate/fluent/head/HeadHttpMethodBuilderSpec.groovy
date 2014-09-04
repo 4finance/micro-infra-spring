@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.head
+
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
-import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity
 import static org.springframework.http.HttpMethod.HEAD
 import static org.springframework.http.HttpStatus.OK
 
-@TypeChecked
 class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should use only url template without provided service url to retrieve response entity"() {

@@ -4,7 +4,7 @@ import groovy.transform.TypeChecked
 import org.springframework.http.HttpMethod
 import org.springframework.web.client.RestOperations
 
-import static HttpEntityUtils.getHttpEntityFrom
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.HttpEntityUtils.getHttpEntityFrom
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.UrlParsingUtils.appendPathToHost
 
 @TypeChecked

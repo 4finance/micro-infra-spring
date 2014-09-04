@@ -2,7 +2,6 @@ package com.ofg.infrastructure.web.resttemplate.fluent.put
 
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
-import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity
 import static org.springframework.http.HttpMethod.PUT
 import static org.springframework.http.HttpStatus.OK
 
-@TypeChecked
 class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     public static final String REQUEST_BODY = '''{"sample":"request"}'''

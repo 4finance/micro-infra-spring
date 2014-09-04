@@ -7,6 +7,11 @@ import org.springframework.http.MediaType
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.http.MediaType.APPLICATION_XML
 
+/**
+ * Default implementation of header setting for requests
+ * 
+ * @param < T > - original class to be returned once header setting has finished
+ */
 @TypeChecked
 class WithHeaders<T> implements HeadersSetting<T>, HeadersHaving<T> {
 

@@ -241,6 +241,9 @@ Imagine that you are entering to a new project and would like to check how does 
 
 That's why we use [Swagger](https://github.com/wordnik/swagger-spec). And you should too - check out their [live demo](http://petstore.swagger.wordnik.com/). It's documenting your API automatically but you can provide more annotations to describe your API even more beautifully.
 
+#### Backend API documentation and Swagger-UI
+Swagger consists of two separate parts - __documenting API (backend)__ and __presentation of the API (swagger-ui)__. The configuraiton presented below shows you how to add the __backend API documentation__. We already provide Swagger-UI for you cause it's placed in __/resources/static/swagger__ folder. That means that you will have it (for Spring Boot) out of the box when you access the http://yourmicroservice.com/swagger/ URL.
+
 ### Example of usage
 
 Below you can find an example of some of Swagger's annotations in action.
@@ -275,9 +278,23 @@ class PingController {
 
 ```
 
+#### Overriding default Swagger-UI settings
+
+When using Swagger-UI you have to provide the URL to which you want to call from your front-end to retrieve the API docs. Until now (05/09/2014) the value where the docs are searched for is fixed. So either you have to provide it yourself manualy or you can create a resource that will be picked up by your resource resolvers (for Spring Boot for example in __/resources/static__ folder)
+
+```
+swagger/swagger-config.js
+```
+
+there you can provide custom config for Swagger - for example:
+
+```
+window.authorizations.add("key", new ApiKeyAuthorization("someHeaderKey", "someHeaderValue", "header"));
+```
+
 ### Module configuration
 
-If you want to setup only this module you have to either
+If you want to setup only this module  you have to either
 
 component scan over __com.ofg.infrastructure.web.swagger__:
 
@@ -293,6 +310,88 @@ or add the configuration explicitly
 ```
 @Configuration
 @Import(com.ofg.infrastructure.web.swagger.SwaggerConfiguration.class)
+class MyModuleConfiguration {
+}
+```
+
+## Controller exceptions handling / JSON View resolving
+
+### Description
+
+Sometimes exceptions roam around like crazy in your system and might forget to catch them. Not to worry - we will come to the rescue! Our __ControllerExceptionHandler__ catches all exceptions there are and will present them in a nice JSON format (assuming that you use our __JsonViewResolver__). 
+
+You are a good programmer so most likely you are using some JSR validation implementations. That's great and we'll be happy to present those errors in a nice way.
+
+### Example of usage
+
+Let's assume that we have a following controller
+
+```
+@TypeChecked
+@RestController
+class TestController {
+    @RequestMapping(value = "/test", produces = "application/json", method = RequestMethod.POST)
+    String test(@RequestBody @Valid TestRequest request, BindingResult result) {
+        checkIfResultHasErrors(result)
+        return "OK"
+    }
+
+    private void checkIfResultHasErrors(BindingResult result) {
+        if (result.hasErrors()) {
+            throw new BadParametersException(result.getAllErrors())
+        }
+    }
+}
+
+class TestRequest {
+    @AssertTrue
+    boolean shouldBeTrue
+}
+
+```
+
+If validation fails we throw __BadParametersException__ that we catch in __ControllerExceptionHandler__ and using __JsonViewResolver__ we can pretty print that JSON for you!
+
+### Module configuration
+
+#### Controller exceptions handling 
+If you want to setup only this module you have to either
+
+component scan over __com.ofg.infrastructure.web.exception__:
+
+```
+@Configuration
+@ComponentScan("com.ofg.infrastructure.web.exception")
+class MyWebAppConfiguration {
+}
+```
+
+or add the configuration explicitly
+
+```
+@Configuration
+@Import(com.ofg.infrastructure.web.exception.ControllerExceptionConfiguration.class)
+class MyModuleConfiguration {
+}
+```
+
+#### JSON View resolving
+If you want to setup only this module you have to either
+
+component scan over __com.ofg.infrastructure.web.view__:
+
+```
+@Configuration
+@ComponentScan("com.ofg.infrastructure.web.view")
+class MyWebAppConfiguration {
+}
+```
+
+or add the configuration explicitly
+
+```
+@Configuration
+@Import(com.ofg.infrastructure.web.view.ViewConfiguration.class)
 class MyModuleConfiguration {
 }
 ```

@@ -3,6 +3,9 @@ package com.ofg.infrastructure.web.filter.correlationid
 import groovy.transform.PackageScope
 import groovy.transform.TypeChecked
 
+/**
+ * Component that stores correlation id using {@link ThreadLocal}
+ */
 @TypeChecked
 //from: https://github.com/daniel-bryant-uk/correlation-id-sync/
 class CorrelationIdHolder {

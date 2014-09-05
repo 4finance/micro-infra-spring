@@ -70,15 +70,12 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.0'
 }
 
-
 if(project.hasProperty("coverage")) {
-    apply plugin: 'codenarc'
     apply plugin: 'jacoco'
-    apply plugin: 'sonar-runner'
     apply plugin: 'com.github.kt3k.coveralls'
 
     jacoco {
-        toolVersion = "0.7.0.201403182114"
+        toolVersion = '0.7.1.201405082137'
     }
 
     jacocoTestReport {
@@ -88,29 +85,7 @@ if(project.hasProperty("coverage")) {
         }
     }
 
-    codenarc {
-        configFile = file('config/codenarc/rules.groovy')
-        maxPriority1Violations = 0
-        maxPriority2Violations = 6
-        maxPriority3Violations = 10
-        reportFormat = 'xml'
-        ignoreFailures = true
-    }
-
-    dependencies {
-        codenarc 'org.codenarc:CodeNarc:0.21'
-    }
-
     test {
         ignoreFailures = true
-        jacoco {
-            excludes = ['*Configuration']
-        }
-    }
-
-    sonarRunner {
-        sonarProperties {
-            //TODO: fill this
-        }
     }
 }

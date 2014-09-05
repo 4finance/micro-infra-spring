@@ -65,7 +65,7 @@ class CorrelationIdFilter extends OncePerRequestFilter {
         if (!hasText(currentCorrId)) {
             currentCorrId = UUID.randomUUID().toString()
             MDC.put(CORRELATION_ID_HEADER, currentCorrId)
-            log.info("Generating new correlationId: " + currentCorrId)
+            log.debug("Generating new correlationId: " + currentCorrId)
         }
         return currentCorrId
     }

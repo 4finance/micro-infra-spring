@@ -18,7 +18,7 @@ class ResponseRethrowingErrorHandler implements ResponseErrorHandler {
 
     @Override
     boolean hasError(ClientHttpResponse response) throws IOException {
-        return HttpStatusVerifier.isError(response.getStatusCode())
+        return HttpStatusVerifier.isError(response.statusCode)
     }
 
     @Override

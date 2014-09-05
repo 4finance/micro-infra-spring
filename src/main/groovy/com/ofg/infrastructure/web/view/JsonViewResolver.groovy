@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.web.view
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.PropertyAccessor
 import groovy.transform.CompileStatic
@@ -14,8 +15,8 @@ class JsonViewResolver implements ViewResolver {
     @Override
     View resolveViewName(String viewName, Locale locale) throws Exception {
         MappingJackson2JsonView view = new MappingJackson2JsonView()
-        view.getObjectMapper().setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-        view.setPrettyPrint(true)
+        view.objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
+        view.prettyPrint = true
         return view
     }
 }

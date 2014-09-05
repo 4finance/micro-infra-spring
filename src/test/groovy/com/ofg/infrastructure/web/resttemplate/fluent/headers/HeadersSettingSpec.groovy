@@ -235,7 +235,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
             1 * restOperations.exchange(TEMPLATE_URL,
                     GET,
                     { HttpEntity httpEntity ->
-                        httpEntity.headers.get('Content-Type') == [MediaType.APPLICATION_JSON_VALUE]
+                        httpEntity.headers['Content-Type'] == [MediaType.APPLICATION_JSON_VALUE]
                     } as HttpEntity,
                     _ as Class,
                     _ as Long)
@@ -257,7 +257,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
         then:
             1 * restOperations.exchange(TEMPLATE_URL,
                     GET,
-                    { HttpEntity httpEntity -> httpEntity.headers.get('Content-Type') == [MediaType.APPLICATION_XML_VALUE] } as HttpEntity,
+                    { HttpEntity httpEntity -> httpEntity.headers['Content-Type'] == [MediaType.APPLICATION_XML_VALUE] } as HttpEntity,
                     _ as Class,
                     _ as Long)
     }

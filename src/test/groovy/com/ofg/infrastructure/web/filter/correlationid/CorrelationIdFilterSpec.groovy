@@ -55,6 +55,6 @@ class CorrelationIdFilterSpec extends MvcIntegrationSpec {
     }
 
     private String getCorrelationIdFromResonseHeader(MvcResult mvcResult) {
-        mvcResult.getResponse().getHeader(CORRELATION_ID_HEADER)
+        mvcResult.response.getHeader(CORRELATION_ID_HEADER)
     }
 }

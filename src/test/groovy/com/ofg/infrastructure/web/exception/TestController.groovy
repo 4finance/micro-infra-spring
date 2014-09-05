@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.web.exception
+
 import groovy.transform.TypeChecked
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.RequestBody
@@ -20,7 +21,7 @@ class TestController {
 
     private void checkIfResultHasErrors(BindingResult result) {
         if (result.hasErrors()) {
-            throw new BadParametersException(result.getAllErrors())
+            throw new BadParametersException(result.allErrors)
         }
     }
 }

@@ -49,6 +49,7 @@ Breaking changes:
 0.0.2
 -----
 New features:
+* Java 7 compatibility
 * default service resolver configuration
 * [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.3.1`
 

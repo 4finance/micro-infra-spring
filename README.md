@@ -2,7 +2,7 @@
 
 micro-infra-spring
 =======================
-Sets up the whole Spring infrastructure stack that will turn your microservice into a beauty.
+Sets up the whole Spring infrastructure stack that will turn your microservice into a beauty. All code examples presented below are in Groovy.
  
 It consists of several different domains (most likely we will modularize it in the future):
 
@@ -33,7 +33,7 @@ or add the configuration explicitly
 
 ```
 @Configuration
-@Import(com.ofg.infrastructure.config.WebAppConfiguration.class)
+@Import(com.ofg.infrastructure.config.WebAppConfiguration)
 class MyWebAppConfiguration {
 }
 ```
@@ -55,7 +55,7 @@ or add the configuration explicitly
 
 ```
 @Configuration
-@Import(com.ofg.infrastructure.metrics.registry.MetricsRegistryConfiguration.class)
+@Import(com.ofg.infrastructure.metrics.registry.MetricsRegistryConfiguration)
 class MyMetricsRegistryConfiguration {
 }
 ```
@@ -97,7 +97,7 @@ or add the configuration explicitly
 
 ```
 @Configuration
-@Import(com.ofg.infrastructure.discovery.ServiceDiscoveryConfiguration.class)
+@Import(com.ofg.infrastructure.discovery.ServiceDiscoveryConfiguration)
 class MyModuleConfiguration {
 }
 ```
@@ -146,7 +146,6 @@ class Profiles {
 }
 ``` 
 
-
 ## Health check
 
 ### Description
@@ -173,7 +172,7 @@ or add the configuration explicitly
 
 ```
 @Configuration
-@Import(com.ofg.infrastructure.healthcheck.HealthCheckConfiguration.class)
+@Import(com.ofg.infrastructure.healthcheck.HealthCheckConfiguration)
 class MyModuleConfiguration {
 }
 ```
@@ -193,7 +192,7 @@ As a Spring bean we are providing __MetricsRegistry__ that each of the metrics r
 Below you can find an example of Groovy configuration of metrics registry (extract from [Bootmicroservice template](https://github.com/4finance/boot-microservice/blob/master/src/main/groovy/com/ofg/microservice/config/MetricsPublishersConfiguration.groovy))
 ```
       @Configuration
-      @Import(MetricsRegistryConfiguration.class)
+      @Import(MetricsRegistryConfiguration)
       @Profile(Profiles.PRODUCTION)
       public class GraphitePublisherConfigration {
            @Autowired MetricRegistry metricsRegistry;
@@ -228,7 +227,7 @@ or add the configuration explicitly
 
 ```
 @Configuration
-@Import(com.ofg.infrastructure.healthcheck.MetricsRegistryConfiguration.class)
+@Import(com.ofg.infrastructure.healthcheck.MetricsRegistryConfiguration)
 class MyModuleConfiguration {
 }
 ```
@@ -309,7 +308,7 @@ or add the configuration explicitly
 
 ```
 @Configuration
-@Import(com.ofg.infrastructure.web.swagger.SwaggerConfiguration.class)
+@Import(com.ofg.infrastructure.web.swagger.SwaggerConfiguration)
 class MyModuleConfiguration {
 }
 ```
@@ -327,7 +326,6 @@ You are a good programmer so most likely you are using some JSR validation imple
 Let's assume that we have a following controller
 
 ```
-@TypeChecked
 @RestController
 class TestController {
     @RequestMapping(value = "/test", produces = "application/json", method = RequestMethod.POST)
@@ -370,7 +368,7 @@ or add the configuration explicitly
 
 ```
 @Configuration
-@Import(com.ofg.infrastructure.web.exception.ControllerExceptionConfiguration.class)
+@Import(com.ofg.infrastructure.web.exception.ControllerExceptionConfiguration)
 class MyModuleConfiguration {
 }
 ```
@@ -391,7 +389,81 @@ or add the configuration explicitly
 
 ```
 @Configuration
-@Import(com.ofg.infrastructure.web.view.ViewConfiguration.class)
+@Import(com.ofg.infrastructure.web.view.ViewConfiguration)
+class MyModuleConfiguration {
+}
+```
+
+## CorrelationId setting
+
+### Description
+
+We are working with microservices. Many microservices. Imagine a series of 20 microservices processing one request - let's say that we want to grant a loan to a Mr Smith. Since we are profesionals we have log collecting tools like [logstash](http://logstash.net/) and [kibana](http://www.elasticsearch.org/overview/kibana/). Now imagine that something broke - an exception occurred. How can you find in those hundreds of lines of logs which ones are related to Mr Smith's case? Correlation id will speed up your work effortlessly.
+
+Since we are using Spring then most likely we can receive or send a request by
+- a __@Controller__ annotated controller
+- a __@RestController__ annotated controller
+- by sending a request via a __RestTemplate__
+
+To deal with all of those approaches we:
+- created a filter __CorrelationIdFilter__ that will set a correlation id header named __correlationId__ on your request
+- created an aspect __CorrelationIdAspect__ that makes it possible to work with Servlet 3.0 async feature (you have to have a controller method that returns a __Callable__)
+- the very same aspect allows checks if you are using a __RestOperations__- base interface of __RestTemplate__. If that is the case then we are setting the __correlationId__ header on the request that you are sending (via __exchange__ method).
+
+### Module configuration
+
+If you want to setup only this module you have to either
+
+component scan over __com.ofg.infrastructure.web.filter.correlationid__:
+
+```
+@Configuration
+@ComponentScan("com.ofg.infrastructure.web.filter.correlationid")
+class MyWebAppConfiguration {
+}
+```
+
+or add the configuration explicitly
+
+```
+@Configuration
+@Import(com.ofg.infrastructure.web.filter.correlationid.CorrelationIdConfiguration)
+class MyModuleConfiguration {
+}
+```
+
+## Request body logging
+
+### Description
+
+This module is responsible for logging request body in debug mode. It registers a __Log4jNestedDiagnosticContextFilter__ extension called __RequestBodyLoggingContextFilter__. 
+
+### Example of usage
+
+You can provide max payload that should be printed in logs by providing a property like presented below (example for a payload of 1000 chars).
+
+```
+request.payload.logging.maxlength:1000
+```
+
+### Module configuration
+
+If you want to setup only this module you have to either
+
+component scan over __com.ofg.infrastructure.web.filter.logging__:
+
+```
+@Configuration
+@ComponentScan("com.ofg.infrastructure.web.filter")
+class MyWebAppConfiguration {
+}
+```
+
+or add the configuration explicitly
+
+```
+@Configuration
+@Import(com.ofg.infrastructure.web.filter.logging.RequestFilterConfiguration)
 class MyModuleConfiguration {
 }
 ```

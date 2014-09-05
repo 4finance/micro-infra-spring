@@ -1,4 +1,4 @@
-package com.ofg.infrastructure.web.filter
+package com.ofg.infrastructure.web.filter.logging
 
 import groovy.transform.TypeChecked
 import org.springframework.web.filter.Log4jNestedDiagnosticContextFilter

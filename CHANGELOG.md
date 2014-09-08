@@ -1,3 +1,12 @@
+0.3.0
+-----
+New features:
+* [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.5.4`
+
+Breaking changes:
+* `service.resolver.connection.retries` property renamed to `service.resolver.connection.retry.times`
+* `service.resolver.connection.timeout` property renamed to `service.resolver.connection.retry.wait`
+
 0.2.2
 -----
 New features:
@@ -36,7 +45,7 @@ New features:
 0.0.4
 -----
 Bug fixes:
-* excluded logging libraries from micro-deps transitive dependencies  
+* excluded logging libraries from micro-deps transitive dependencies
 
 0.0.3
 -----

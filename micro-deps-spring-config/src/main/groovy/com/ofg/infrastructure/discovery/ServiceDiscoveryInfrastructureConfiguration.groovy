@@ -23,12 +23,11 @@ class ServiceDiscoveryInfrastructureConfiguration {
     @PackageScope
     @Bean(initMethod = 'start', destroyMethod = 'close')
     CuratorFramework curatorFramework(@Value('${service.resolver.url:localhost:2181}') String serviceResolverUrl,
-                                      @Value('${service.resolver.connection.retries:5}') int numberOfRetries,
-                                      @Value('${service.resolver.connection.timeout:1000}') int timeout) {
-        return CuratorFrameworkFactory.newClient(serviceResolverUrl, new RetryNTimes(numberOfRetries, timeout))
+                                      @Value('${service.resolver.connection.retry.times:5}') int numberOfRetries,
+                                      @Value('${service.resolver.connection.retry.wait:1000}') int sleepMsBetweenRetries) {
+        return CuratorFrameworkFactory.newClient(serviceResolverUrl, new RetryNTimes(numberOfRetries, sleepMsBetweenRetries))
     }    
-    
-    
+
     @PackageScope
     @Bean
     ServiceInstance serviceInstance(MicroserviceAddressProvider addressProvider,
@@ -47,5 +46,4 @@ class ServiceDiscoveryInfrastructureConfiguration {
                                       ServiceConfigurationResolver serviceConfigurationResolver) {
         return ServiceDiscoveryBuilder.builder(Void).basePath(serviceConfigurationResolver.basePath).client(curatorFramework).thisInstance(serviceInstance).build()
     }            
-    
 }

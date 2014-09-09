@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.discovery
 
+import com.ofg.loans.config.BasicProfiles
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import org.apache.curator.framework.CuratorFramework
@@ -12,12 +13,14 @@ import org.apache.curator.x.discovery.UriSpec
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 
 /**
  * Class holding configuration to Zookeeper server, Zookeeper service instance and to Curator framework
  */
 @CompileStatic
 @Configuration
+@Profile(BasicProfiles.PRODUCTION)
 class ServiceDiscoveryInfrastructureConfiguration {
     
     @PackageScope
@@ -38,7 +41,7 @@ class ServiceDiscoveryInfrastructureConfiguration {
                                         .name(serviceConfigurationResolver.microserviceName)
                                         .build()
     }
-    
+
     @PackageScope
     @Bean(initMethod = 'start', destroyMethod = 'close')
     ServiceDiscovery serviceDiscovery(CuratorFramework curatorFramework, 

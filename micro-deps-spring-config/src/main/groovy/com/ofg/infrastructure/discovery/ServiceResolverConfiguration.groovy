@@ -7,6 +7,4 @@ import org.springframework.context.annotation.Import
 @CompileStatic
 @Import([AddressProviderConfiguration, ServiceDiscoveryInfrastructureConfiguration, DependencyResolutionConfiguration])
 @Configuration
-class ServiceResolverConfiguration {        
-
-}
+class ServiceResolverConfiguration { }

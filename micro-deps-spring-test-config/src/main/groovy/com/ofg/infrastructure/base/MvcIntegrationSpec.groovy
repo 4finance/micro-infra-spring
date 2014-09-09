@@ -1,8 +1,10 @@
 package com.ofg.infrastructure.base
 
 import com.ofg.infrastructure.discovery.StubbedServiceResolver
+import com.ofg.loans.config.BasicProfiles
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -10,6 +12,7 @@ import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
 
 @WebAppConfiguration
+@ActiveProfiles(BasicProfiles.TEST)
 abstract class MvcIntegrationSpec extends Specification {
     
     @Autowired WebApplicationContext webApplicationContext

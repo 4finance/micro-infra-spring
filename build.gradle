@@ -14,7 +14,7 @@ buildscript {
 
 ext {
     projectGroup = 'com.ofg'
-    projectVersion = '0.3.1-SNAPSHOT'
+    projectVersion = '0.4.0-SNAPSHOT'
 
     spockVersion = '0.7-groovy-2.0'
     springVersion = '4.0.7.RELEASE'
@@ -78,7 +78,7 @@ subprojects {
     dependencies {
         compile 'org.codehaus.groovy:groovy-all:2.3.6:indy'
         compile "org.springframework:spring-context:$springVersion"
-        compile('com.ofg:micro-deps:0.5.4') {
+        compile('com.ofg:micro-deps:0.5.5') {
             exclude group: 'log4j'
             exclude group: "org.slf4j", module: "slf4j-log4j12"
             exclude group: "org.slf4j", module: "log4j-over-slf4j"
@@ -133,7 +133,7 @@ subprojects {
     //Workaround for the issue with Java 8u11 and 7u65 - http://www.infoq.com/news/2014/08/Java8-U11-Broke-Tools
     test {
         jvmArgs '-noverify'
-        if (project.hasProperty("coverage")) {            
+        if (project.hasProperty("coverage")) {
             jacoco {
                 enabled = true
             }
@@ -172,7 +172,8 @@ project(':micro-deps-spring-config') {
 project(':micro-deps-spring-test-config') {
     description = 'Microservice dependency manager - Spring test configuration'
 
-    dependencies {        
+    dependencies {
+        compile project(':micro-deps-spring-config')
         compile 'cglib:cglib-nodep:3.1'
         compile 'org.objenesis:objenesis:2.1' // allows mocking of classes without default constructor (together with CGLIB)
         compile 'org.aspectj:aspectjweaver:1.8.2'
@@ -181,8 +182,7 @@ project(':micro-deps-spring-test-config') {
         compile "org.springframework:spring-webmvc:$springVersion"
         compile "org.springframework:spring-test:$springVersion"
         compile 'com.github.tomakehurst:wiremock:1.47'
-        
-        testCompile project(':micro-deps-spring-config')
+
         testCompile 'com.jayway.restassured:rest-assured:2.3.3'
     }
 }

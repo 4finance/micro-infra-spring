@@ -45,15 +45,14 @@ dependencies {
     testCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
 }
 
-tasks.addRule('Pattern: runStubs<Project>: Run stubs for project') { String taskName ->
+tasks.addRule('Pattern: run<Project>Stubs: Run stubs for project') { String taskName ->
     if (taskName == 'runStubs') {
         String skipLoadingMetadataMarker = ''
         executeStubRunner(taskName, [ stubRepositoryPath, skipLoadingMetadataMarker, stubRegistryPort, minStubPortNumber, maxStubPortNumber, context ])
-
-    } else if (taskName.startsWith('runStubs')) {
-        String metadata = taskName - 'runStubs'
-        metadata = metadata[0].toLowerCase() + metadata.substring(1)
-        executeStubRunner(taskName, [ stubRepositoryPath, "${metadata}.json", stubRegistryPort, minStubPortNumber, maxStubPortNumber ])
+    } else if (taskName.startsWith('run') && taskName.endsWith('Stubs')) {
+        String projectName = taskName[3..(taskName.size() - 6)]
+        String metadataFileName = projectName[0].toLowerCase() + projectName.substring(1)
+        executeStubRunner(taskName, [ stubRepositoryPath, "${metadataFileName}.json", stubRegistryPort, minStubPortNumber, maxStubPortNumber ])
     }
 }
 

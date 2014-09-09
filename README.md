@@ -8,9 +8,9 @@ Runs stubs for service collaborators
 ### Running stubs
 
 #### Running specified stubs
-To run stubs execute `gradle runStubs<ProjectMetadataFileWithoutExtension>`.
+To run stubs execute `gradle run<ProjectMetadataFileWithoutExtension>Stubs`.
 
-For example: to run stubs for `healthCheck` project execute `gradle runStubsHealthCheck`.
+For example: to run stubs for `healthCheck` project execute `gradle runHealthCheckStubs`.
 This will:
 * start Zookeeper
 * run stubs for projects defined in healthCheck.json
@@ -41,7 +41,7 @@ Under `ext` block inside `build.gradle` you can configure stub runner with the f
 * maxStubPortNumber
 * context
     
-Project metadata that will be loaded is derived from the executed task name, e.g.: `gradle runStubsHealthCheck` will register collaborators defined in `healthCheck.json`.
+Project metadata that will be loaded is derived from the executed task name, e.g.: `gradle runHealthCheckStubs` will register collaborators defined in `healthCheck.json`.
 
 ### Defining collaborators' stubs
 

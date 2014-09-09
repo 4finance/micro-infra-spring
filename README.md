@@ -6,15 +6,16 @@ Sets up the whole Spring infrastructure stack that will turn your microservice i
  
 It consists of several different domains (most likely we will modularize it in the future):
 
-- Service discovery
-- Spring environment setup
-- Health check
-- Metrics publishing
-- Swagger (API documentation)
-- Controller exceptions handling
-- CorrelationId setting
-- Request body logging
-- Abstraction over RestTemplate (bound with service discovery)
+- [Service discovery](#service-discovery)
+- [Spring environment setup](#spring-environment-setup)
+- [Health check](#health-check)
+- [Metrics publishing](#metrics-publishing)
+- [Swagger - API documentation](#swagger---api-documentation)
+- [Controller exceptions handling](#controller-exceptions-handling)
+- [CorrelationId setting](#correlationid-setting)
+- [Request body logging](#request-body-logging)
+- [Customized rest template](#customized-rest-template)
+- [Abstraction over RestTemplate - bound with service discovery](#abstraction-over-resttemplate--bound-with-service-discovery))
 
 ##How to use all of it?
 
@@ -232,7 +233,7 @@ class MyModuleConfiguration {
 }
 ```
 
-## Swagger (API documentation)
+## Swagger - API documentation
 
 ### Description
 
@@ -464,6 +465,149 @@ or add the configuration explicitly
 ```
 @Configuration
 @Import(com.ofg.infrastructure.web.filter.logging.RequestFilterConfiguration)
+class MyModuleConfiguration {
+}
+```
+
+## Customized rest template
+
+### Description
+
+This module with a customized [RestTemplate](http://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html).
+that gives you:
+
+  - Error handling via __ResponseRethrowingErrorHandler__ - logs error body if it's present and rethrows exception
+  - Request factory (__BufferingClientHttpRequestFactory__)  - so that we can access request's body several times throughout request's processing
+
+
+### Module configuration
+
+If you want to setup only this module you have to either
+
+component scan over __com.ofg.infrastructure.web.resttemplate.custom__:
+
+```
+@Configuration
+@ComponentScan("com.ofg.infrastructure.web.resttemplate.custom")
+class MyWebAppConfiguration {
+}
+```
+
+or add the configuration explicitly
+
+```
+@Configuration
+@Import(com.ofg.infrastructure.web.resttemplate.custom.RestTemplateConfiguration)
+class MyModuleConfiguration {
+}
+```
+
+## Abstraction over RestTemplate - bound with service discovery
+
+### Description
+
+You want to send requests to your collaborators. That's good! But do you want to take care of service discovery and request building
+ manually from scratch? Of course not! That's why we provide a __ServiceRestClient__ that will take care of everything for you and
+ gives you a fluent interface to achieve that.
+ 
+### What does it consist of?
+
+#### ServiceRestClient
+The entry point to the abstraction is __ServiceRestClient__. It takes two parameters to its constructor 
+
+  - [__RestOperations__](http://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestOperations.html) implementation (for example [__RestTemplate__](http://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html))
+  - __ServiceResolver__ which is responsible for find an address entry in Zookeeper for given collaborator. Please check [4finance's micro-deps](https://github.com/4finance/micro-deps) project for more information
+
+Once your __ServiceRestClient__ is created you are ready to send some requests. You have one of two methods to start with
+
+  - __forExternalService()__ - if you want to send a request to an URL (for example http://some.address.com/api/whatever/123)
+  - __forService('cola')__ - if you want to  send a request to your collaborator (for example in your _microservice.json_ you have provided a collaborator by name _cola_)
+
+#### HTTP Methods
+Ok, so we picked either of them and now we can choose which http method we want to call. You can pick either of these:
+
+  - delete
+  - get
+  - head
+  - options
+  - post
+  - put
+    
+#### Request body
+Depending on the method you now can have different methods available. Some HTTP methods accept request bodies others don't. So you may have 
+ the __body()__ method but it's not obligatory.
+     
+#### Request headers
+
+You can use the __withHeaders()__ method to provide additional headers. There are some predefined most commonly used methods, but you can 
+also provide your own custom headers if you want to.
+
+### Response
+
+You can receive a response in a number of ways:
+
+  - __anObject().ofType(String)__ - converts the body of response to String (you can provide any other type)
+  - __aResponseEntity().ofType(String)__ - returns the response as a [ResponseEntity](http://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/ResponseEntity.html) with body of type String (you can provide any other type) 
+  - __ignoringResponse()__ - doesn't return any type of response
+  
+There are also some additional custom response returning methods like __forLocation()__ etc. but they are specific for given HTTP methods.
+
+### Example of usage
+
+For more examples please check the specifications avaliable under __com.ofg.infrastructure.web.resttemplate.fluent__ package under 
+HTTP method named packages.
+
+#### Example of sending to URL
+
+Let's assume that we want to send a request to _http://some.address.com/api/whatever/123_
+
+```
+serviceRestClient.forExternalService()
+                             .post()
+                             .onUrl('http://some.address.com/api/whatever/123')
+                             .body('''{"some":"json"}''')
+                             .withHeaders()
+                                .contentTypeJson()
+                             .andExecuteFor()
+                             .anObject()
+                             .ofType(String)
+```
+
+#### Example of sending to collaborator
+
+Let's assume that we want to send a request to a service 'cola' that has registered itself in Zookeeper at address _http://some.address.com_
+and we want to call it at path _/api/whatever/123_
+
+```
+serviceRestClient.forService('cola')
+                 .post()
+                 .onUrl('/api/whatever/123')
+                 .body('''{"some":"json"}''')
+                 .withHeaders()
+                    .contentTypeJson()
+                 .andExecuteFor()
+                 .anObject()
+                 .ofType(String)
+```
+
+### Module configuration
+
+If you want to setup only this module you have to either
+
+component scan over __com.ofg.infrastructure.web.resttemplate.fluent__:
+
+```
+@Configuration
+@ComponentScan("com.ofg.infrastructure.web.resttemplate.fluent")
+class MyWebAppConfiguration {
+}
+```
+
+or add the configuration explicitly
+
+```
+@Configuration
+@Import(com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClientConfiguration)
 class MyModuleConfiguration {
 }
 ```

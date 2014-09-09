@@ -32,3 +32,59 @@ Micro-deps-spring-test-config
 =================
 
 Default Micro-deps Spring test configuration
+
+## Usage
+
+### Spock Integration test
+
+Just extend the __IntegrationSpec__ specification and you're ready to go!
+
+```groovy
+class AcceptanceSpec extends IntegrationSpec {
+
+}
+```
+
+That way you'll have:
+
+* 'test' profile activated
+* Spring's MVC web app activated
+
+### MVC Spock Integration test
+
+Just extend the __MvcIntegrationSpec__ specification and you're ready to go!
+
+```groovy
+class AcceptanceSpec extends MvcIntegrationSpec {
+
+}
+```
+
+That way you'll have:
+
+* 'test' profile activated
+* Spring's MVC web app activated
+* access to __StubbedServiceResolver__ to control addresses of your collaborators (via service discovery)
+* access to __ApplicationContext__ and __WebApplicationContext__
+* access to __MockMvc__
+
+### MVC Spock Integration test with Wiremock
+
+Just extend the __MvcWiremockIntegrationSpec__ specification and you're ready to go!
+
+```groovy
+class AcceptanceSpec extends MvcWiremockIntegrationSpec {
+
+}
+```
+
+That way you'll have:
+
+* 'test' profile activated
+* Spring's MVC web app activated
+* access to __StubbedServiceResolver__ to control addresses of your collaborators (via service discovery)
+* access to __ApplicationContext__ and __WebApplicationContext__
+* access to __MockMvc__
+* access to __stubInteraction()__ method that allows you to stub __WireMock__. By default all of your collaborators
+ are pointing to microservice.host:microservice.port/COLLABORATOR_NAME_IN_MICROSERVICE_METADATA . So if you need to
+ you can control your collaborators' responses

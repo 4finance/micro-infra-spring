@@ -15,7 +15,20 @@ import org.springframework.context.annotation.Profile
 import org.springframework.core.io.Resource
 
 /**
- * Configuration of microservice's dependencies resolving classes. 
+ * Configuration of microservice's dependencies resolving classes.
+ * 
+ * <ul>
+ *     <li>{@link DependencyWatcher} - checks if dependencies are online on microservice startup. Reacts with {@link DependencyPresenceOnStartupVerifier}</li>
+ *     <li>{@link ZookeeperServiceResolver} - on {@link BasicProfiles#PRODUCTION} tries to connect to production Zookeeper</li>
+ *     <li>{@link StubbedServiceResolver} - on {@link BasicProfiles#DEVELOPMENT} or {@link BasicProfiles#TEST} - creates a stubbed {@link ServiceResolver}</li>
+ *     <li>{@link ServiceConfigurationResolver} - parses the provided microservice metadata</li>
+ * </ul>
+ * 
+ * @see DependencyWatcher
+ * @see ServiceResolver
+ * @see ZookeeperServiceResolver
+ * @see StubbedServiceResolver
+ * @see ServiceConfigurationResolver
  */
 @CompileStatic
 @Configuration

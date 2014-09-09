@@ -2,6 +2,9 @@ package com.ofg.infrastructure.discovery
 
 import groovy.transform.CompileStatic
 
+/**
+ * Holder for microservice's host and port
+ */
 @CompileStatic
 class MicroserviceAddressProvider {
 

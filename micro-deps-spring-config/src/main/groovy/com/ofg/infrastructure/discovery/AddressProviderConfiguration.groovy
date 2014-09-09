@@ -8,6 +8,11 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
 
+/**
+ * Configuration that registers a bean related to microservice's address and port providing. 
+ * 
+ * @see MicroserviceAddressProvider
+ */
 @Configuration
 @CompileStatic
 class AddressProviderConfiguration {

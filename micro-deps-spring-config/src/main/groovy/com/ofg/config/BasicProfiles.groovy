@@ -1,7 +1,10 @@
-package com.ofg.loans.config
+package com.ofg.config
 
 import groovy.transform.CompileStatic
 
+/**
+ * 4finance default Spring profiles
+ */
 @CompileStatic
 interface BasicProfiles {
 

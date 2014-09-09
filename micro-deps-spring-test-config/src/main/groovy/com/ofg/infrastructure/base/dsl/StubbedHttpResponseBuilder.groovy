@@ -5,8 +5,12 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import groovy.transform.CompileStatic
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-//TODO: this needs a usage example (preferably as tests)
 
+
+/**
+ * A class that contains static helper methods that map HTTP responses with different
+ * statuses, content types and contents
+ */
 @CompileStatic
 class StubbedHttpResponseBuilder {
 

@@ -16,7 +16,13 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 
 /**
- * Class holding configuration to Zookeeper server, Zookeeper service instance and to Curator framework
+ * Class holding configuration to Zookeeper server, Zookeeper service instance and to Curator framework.
+ * 
+ * All the beans are available only in the {@link BasicProfiles#PRODUCTION} profile.
+ * 
+ * @see CuratorFramework
+ * @see ServiceInstance
+ * @see ServiceDiscovery
  */
 @CompileStatic
 @Configuration

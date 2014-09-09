@@ -1,9 +1,14 @@
 package com.ofg.infrastructure.base.dsl
+
 import groovy.json.JsonSlurper
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
-//TODO: this needs a usage example (preferably as tests)
+
+/**
+ * A class that contains static helper methods that help you match contents
+ * of the received responses
+ */
 class Matchers {
     
     static Matcher<String> equalsReferenceJson(String referenceJson) {

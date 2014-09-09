@@ -7,7 +7,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static com.ofg.loans.config.BasicProfiles.*
+import static com.ofg.config.BasicProfiles.*
 
 class DependencyResolutionConfigurationSpec extends Specification {
 

@@ -1,9 +1,9 @@
 package com.ofg.infrastructure.discovery
 
+import com.ofg.config.BasicProfiles
 import com.ofg.infrastructure.discovery.config.FailOnMissingDepsConfiguration
 import com.ofg.infrastructure.discovery.config.PropertySourceConfiguration
 import com.ofg.infrastructure.discovery.watcher.presence.checker.NoInstancesRunningException
-import com.ofg.loans.config.BasicProfiles
 import org.apache.curator.test.TestingServer
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import spock.lang.Specification

@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.discovery
+
 import com.google.common.base.Optional
 import com.ofg.infrastructure.discovery.config.PropertySourceConfiguration
-import com.ofg.loans.config.BasicProfiles
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.test.TestingServer
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
@@ -10,13 +10,15 @@ import org.apache.curator.x.discovery.UriSpec
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import spock.lang.Specification
 
-class ServiceResolverSpec extends Specification {    
+import static com.ofg.config.BasicProfiles.PRODUCTION
+
+class ServiceResolverSpec extends Specification {
     
     def 'should resolve urls properly'() {
         given:
             TestingServer testingServer = new TestingServer(2181)
             AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext()
-            applicationContext.environment.setActiveProfiles(BasicProfiles.PRODUCTION)
+            applicationContext.environment.setActiveProfiles(PRODUCTION)
             applicationContext.register(PropertySourceConfiguration, ServiceResolverConfiguration)
             applicationContext.refresh()
         and:

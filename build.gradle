@@ -34,8 +34,7 @@ repositories {
 
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.3.6'
-    compile 'com.github.tomakehurst:wiremock:1.47'
-    compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
+    compile 'com.github.tomakehurst:wiremock:1.48'
     compile "org.apache.curator:curator-x-discovery:$curatorVersion"
     compile "org.apache.curator:curator-test:$curatorVersion"
     compile "org.slf4j:slf4j-api:$slf4jVersion"
@@ -43,6 +42,7 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.1.2'
 
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+    testCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
 }
 
 tasks.addRule('Pattern: runStubs<Project>: Run stubs for project') { String taskName ->
@@ -67,7 +67,7 @@ void executeStubRunner(String taskName, List arguments) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.0'
+    gradleVersion = '2.1'
 }
 
 if(project.hasProperty("coverage")) {

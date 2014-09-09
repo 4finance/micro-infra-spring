@@ -13,16 +13,18 @@ import spock.lang.Specification
 class StubRegistrySpec extends Specification {
     static final int STUB_REGISTRY_PORT = 12181
     static final int HELLO_STUB_SERVER_PORT = 12182
-    static final int BYE_STUB_SERVER_PORT = 12182
-    static final ProjectMetadata HELLO_STUB_METADATA = new ProjectMetadata('com/ofg/ping', 'pl')
-    static final ProjectMetadata BYE_STUB_METADATA = new ProjectMetadata('com/ofg/ping', 'pl')
+    static final int BYE_STUB_SERVER_PORT = 12183
+    static final ProjectMetadata HELLO_STUB_METADATA = new ProjectMetadata('com/ofg/hello', 'pl')
+    static final ProjectMetadata BYE_STUB_METADATA = new ProjectMetadata('com/ofg/bye', 'pl')
 
     StubRegistry stubRegistry = new StubRegistry(STUB_REGISTRY_PORT)
+    StubServer helloStub = new StubServer(HELLO_STUB_SERVER_PORT, HELLO_STUB_METADATA, [])
+    StubServer byeStub = new StubServer(BYE_STUB_SERVER_PORT, BYE_STUB_METADATA, [])
 
     def 'should register stub servers'() {
         given:
-            StubServer helloStub = new StubServer(HELLO_STUB_SERVER_PORT, HELLO_STUB_METADATA, [])
-            StubServer byeStub = new StubServer(BYE_STUB_SERVER_PORT, BYE_STUB_METADATA, [])
+            helloStub.start()
+            byeStub.start()
 
         when:
             stubRegistry.register([helloStub, byeStub])
@@ -41,6 +43,8 @@ class StubRegistrySpec extends Specification {
 
     def cleanup() {
         stubRegistry.shutdown()
+        helloStub.stop()
+        byeStub.stop()
     }
 
     private ServiceInstance resolveStubServerInstanceFromRegistry(StubServer stubServer) {

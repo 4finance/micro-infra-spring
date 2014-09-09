@@ -184,7 +184,7 @@ class MyModuleConfiguration {
 
 We have microservices so we need to monitor our system. Not only whether they are alive or not. We want to measure as much as possible. From every possible angle - amount of requests, technical stuff like how many errors we have or from business perspective - how many loans are issued per minute (or whatever). We collect those measurements in [Graffite](http://graphite.wikidot.com).
 
-If you select this modul we will give you two publishers (Graphite - __GraphitePublisher__ and JMX - __JmxPublisher__) that will provide setup for your metrics to be published in Graphite and as an MBean. 
+If you select this module we will give you two publishers (Graphite - __GraphitePublisher__ and JMX - __JmxPublisher__) that will provide setup for your metrics to be published in Graphite and as an MBean.
 
 As a Spring bean we are providing __MetricsRegistry__ that each of the metrics reporter needs to send upload data to its recipient.
 
@@ -554,7 +554,7 @@ There are also some additional custom response returning methods like __forLocat
 
 ### Example of usage
 
-For more examples please check the specifications avaliable under __com.ofg.infrastructure.web.resttemplate.fluent__ package under 
+For more examples please check the specifications available under __com.ofg.infrastructure.web.resttemplate.fluent__ package under
 HTTP method named packages.
 
 #### Example of sending to URL

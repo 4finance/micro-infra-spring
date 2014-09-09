@@ -4,7 +4,6 @@ import com.ofg.config.BasicProfiles
 import com.ofg.infrastructure.discovery.watcher.DependencyWatcher
 import com.ofg.infrastructure.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
 import com.ofg.infrastructure.discovery.watcher.presence.MissingDependencyLoggingOnStartupVerifier
-import com.ofg.loans.config.BasicProfiles
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import org.apache.curator.x.discovery.ServiceDiscovery

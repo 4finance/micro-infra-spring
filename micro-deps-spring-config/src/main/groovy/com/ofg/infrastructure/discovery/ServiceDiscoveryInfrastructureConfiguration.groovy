@@ -1,7 +1,6 @@
 package com.ofg.infrastructure.discovery
 
 import com.ofg.config.BasicProfiles
-import com.ofg.loans.config.BasicProfiles
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import org.apache.curator.framework.CuratorFramework

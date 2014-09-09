@@ -46,27 +46,27 @@ class HttpMethodBuilder {
         this.serviceUrl = serviceUrl
     }
 
-    public DeleteMethod delete() {
+    DeleteMethod delete() {
         return new DeleteMethodBuilder(serviceUrl, restOperations)
     }
 
-    public GetMethod get() {
+    GetMethod get() {
         return new GetMethodBuilder(serviceUrl, restOperations)
     }
 
-    public HeadMethod head() {
+    HeadMethod head() {
         return new HeadMethodBuilder(serviceUrl, restOperations)
     }
 
-    public OptionsMethod options() {
+    OptionsMethod options() {
         return new OptionsMethodBuilder(serviceUrl, restOperations)
     }
 
-    public PostMethod post() {
+    PostMethod post() {
         return new PostMethodBuilder(serviceUrl, restOperations)
     }
 
-    public PutMethod put() {
+    PutMethod put() {
         return new PutMethodBuilder(serviceUrl, restOperations)
     }
 

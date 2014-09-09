@@ -2,7 +2,7 @@ package com.ofg.infrastructure.web.config
 
 import com.ofg.infrastructure.web.exception.ControllerExceptionConfiguration
 import com.ofg.infrastructure.web.filter.FilterConfiguration
-import com.ofg.infrastructure.web.resttemplate.RestTemplateConfiguration
+import com.ofg.infrastructure.web.resttemplate.custom.RestTemplateConfiguration
 import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClientConfiguration
 import com.ofg.infrastructure.web.view.ViewConfiguration
 import groovy.transform.TypeChecked

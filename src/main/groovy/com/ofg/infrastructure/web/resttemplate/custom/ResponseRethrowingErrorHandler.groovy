@@ -1,4 +1,4 @@
-package com.ofg.infrastructure.web.resttemplate
+package com.ofg.infrastructure.web.resttemplate.custom
 
 import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j

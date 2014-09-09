@@ -1,4 +1,4 @@
-package com.ofg.infrastructure.web.resttemplate
+package com.ofg.infrastructure.web.resttemplate.custom
 
 import groovy.transform.TypeChecked
 import org.springframework.context.annotation.Bean

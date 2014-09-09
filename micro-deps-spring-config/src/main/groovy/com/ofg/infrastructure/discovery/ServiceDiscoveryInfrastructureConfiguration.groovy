@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.discovery
 
+import com.ofg.config.BasicProfiles
 import com.ofg.loans.config.BasicProfiles
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -15,6 +16,8 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 
+import static com.ofg.config.BasicProfiles.*
+
 /**
  * Class holding configuration to Zookeeper server, Zookeeper service instance and to Curator framework.
  * 
@@ -26,7 +29,7 @@ import org.springframework.context.annotation.Profile
  */
 @CompileStatic
 @Configuration
-@Profile(BasicProfiles.PRODUCTION)
+@Profile(PRODUCTION)
 class ServiceDiscoveryInfrastructureConfiguration {
     
     @PackageScope

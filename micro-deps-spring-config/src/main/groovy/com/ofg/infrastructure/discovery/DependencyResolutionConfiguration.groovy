@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.discovery
 
+import com.ofg.config.BasicProfiles
 import com.ofg.infrastructure.discovery.watcher.DependencyWatcher
 import com.ofg.infrastructure.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
 import com.ofg.infrastructure.discovery.watcher.presence.MissingDependencyLoggingOnStartupVerifier
@@ -13,6 +14,8 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.core.io.Resource
+
+import static com.ofg.config.BasicProfiles.*
 
 /**
  * Configuration of microservice's dependencies resolving classes.
@@ -38,19 +41,19 @@ class DependencyResolutionConfiguration {
 
     @PackageScope
     @Bean(initMethod = 'registerDependencies', destroyMethod = 'unregisterDependencies')
-    @Profile(BasicProfiles.PRODUCTION)
+    @Profile(PRODUCTION)
     DependencyWatcher dependencyWatcher(ServiceConfigurationResolver serviceConfigurationResolver, ServiceDiscovery serviceDiscovery) {
         return new DependencyWatcher(serviceConfigurationResolver.dependencies, serviceDiscovery, dependencyPresenceOnStartupVerifier ?: new MissingDependencyLoggingOnStartupVerifier())
     }
 
     @Bean(initMethod = 'start', destroyMethod = 'close')
-    @Profile(BasicProfiles.PRODUCTION)
+    @Profile(PRODUCTION)
     ServiceResolver zooKeeperServiceResolver(ServiceConfigurationResolver serviceConfigurationResolver, ServiceDiscovery serviceDiscovery) {
         return new ZookeeperServiceResolver(serviceConfigurationResolver, serviceDiscovery)
     }
 
     @Bean
-    @Profile([BasicProfiles.DEVELOPMENT, BasicProfiles.TEST])
+    @Profile([DEVELOPMENT, TEST])
     ServiceResolver stubbedServiceResolver(@Value('${wiremock.port:8030}') Integer wiremockPort,
                                            @Value('${wiremock.url:localhost}') String wiremockUrl,
                                            ServiceConfigurationResolver serviceConfigurationResolver) {

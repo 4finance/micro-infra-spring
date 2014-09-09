@@ -15,7 +15,7 @@ It consists of several different domains (most likely we will modularize it in t
 - [CorrelationId setting](#correlationid-setting)
 - [Request body logging](#request-body-logging)
 - [Customized rest template](#customized-rest-template)
-- [Abstraction over RestTemplate - bound with service discovery](#abstraction-over-resttemplate--bound-with-service-discovery))
+- [Abstraction over RestTemplate - bound with service discovery](#abstraction-over-resttemplate--bound-with-service-discovery)
 
 ##How to use all of it?
 

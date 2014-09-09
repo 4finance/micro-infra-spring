@@ -11,7 +11,7 @@ It consists of several different domains (most likely we will modularize it in t
 - [Health check](#health-check)
 - [Metrics publishing](#metrics-publishing)
 - [Swagger - API documentation](#swagger---api-documentation)
-- [Controller exceptions handling](#controller-exceptions-handling)
+- [Controller exceptions handling and JSON View resolving](#controller-exceptions-handling-and-json-view-resolving)
 - [CorrelationId setting](#correlationid-setting)
 - [Request body logging](#request-body-logging)
 - [Customized rest template](#customized-rest-template)
@@ -314,7 +314,7 @@ class MyModuleConfiguration {
 }
 ```
 
-## Controller exceptions handling / JSON View resolving
+## Controller exceptions handling and JSON View resolving
 
 ### Description
 

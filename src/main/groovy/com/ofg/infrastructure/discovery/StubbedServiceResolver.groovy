@@ -16,7 +16,7 @@ class StubbedServiceResolver implements ServiceResolver {
     }
 
     void stubDependency(String dependency, String address) {
-        stubbedDeps << [(dependency) : address]
+        stubbedDeps[dependency] = address
     }
 
     void resetDependencies() {

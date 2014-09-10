@@ -33,9 +33,9 @@ Micro-deps-spring-test-config
 
 Default Micro-deps Spring test configuration
 
-## Usage
+## Spock specifications' base classes
 
-### Spock Integration test
+### Integration tests
 
 Just extend the __IntegrationSpec__ specification and you're ready to go!
 
@@ -48,9 +48,9 @@ class AcceptanceSpec extends IntegrationSpec {
 That way you'll have:
 
 * 'test' profile activated
-* Spring's MVC web app activated
+* __org.springframework.web.context.WebApplicationContext__ loaded
 
-### MVC Spock Integration test
+### MVC integration tests
 
 Just extend the __MvcIntegrationSpec__ specification and you're ready to go!
 
@@ -63,12 +63,13 @@ class AcceptanceSpec extends MvcIntegrationSpec {
 That way you'll have:
 
 * 'test' profile activated
-* Spring's MVC web app activated
-* access to __StubbedServiceResolver__ to control addresses of your collaborators (via service discovery)
-* access to __ApplicationContext__ and __WebApplicationContext__
-* access to __MockMvc__
+* __org.springframework.web.context.WebApplicationContext__ loaded
+* Spring MVC test support enabled
+* access to stubbed service resolver
+* access to application context
+* access to web application context
 
-### MVC Spock Integration test with Wiremock
+### MVC integration tests with [WireMock](http://wiremock.org/)
 
 Just extend the __MvcWiremockIntegrationSpec__ specification and you're ready to go!
 
@@ -81,10 +82,12 @@ class AcceptanceSpec extends MvcWiremockIntegrationSpec {
 That way you'll have:
 
 * 'test' profile activated
-* Spring's MVC web app activated
-* access to __StubbedServiceResolver__ to control addresses of your collaborators (via service discovery)
-* access to __ApplicationContext__ and __WebApplicationContext__
-* access to __MockMvc__
+* __org.springframework.web.context.WebApplicationContext__ loaded
+* Spring MVC test support enabled
+* __WireMock__ server running
+* access to stubbed service resolver
+* access to application context
+* access to web application context
 * access to __stubInteraction()__ method that allows you to stub __WireMock__. By default all of your collaborators
  are pointing to microservice.host:microservice.port/COLLABORATOR_NAME_IN_MICROSERVICE_METADATA . So if you need to
  you can control your collaborators' responses

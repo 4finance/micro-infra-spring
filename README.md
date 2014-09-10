@@ -242,7 +242,7 @@ Imagine that you are entering to a new project and would like to check how does 
 That's why we use [Swagger](https://github.com/wordnik/swagger-spec). And you should too - check out their [live demo](http://petstore.swagger.wordnik.com/). It's documenting your API automatically but you can provide more annotations to describe your API even more beautifully.
 
 #### Backend API documentation and Swagger-UI
-Swagger consists of two separate parts - __documenting API (backend)__ and __presentation of the API (swagger-ui)__. The configuraiton presented below shows you how to add the __backend API documentation__. We already provide Swagger-UI for you cause it's placed in __/resources/static/swagger__ folder. That means that you will have it (for Spring Boot) out of the box when you access the http://yourmicroservice.com/swagger/ URL.
+Swagger consists of two separate parts - __documenting API (backend)__ and __presentation of the API (swagger-ui)__. The configuration presented below shows you how to add the __backend API documentation__. We already provide Swagger-UI for you cause it's placed in __/resources/static/swagger__ folder. That means that you will have it (for Spring Boot) out of the box when you access the http://yourmicroservice.com/swagger/ URL.
 
 ### Example of usage
 
@@ -280,7 +280,7 @@ class PingController {
 
 #### Overriding default Swagger-UI settings
 
-When using Swagger-UI you have to provide the URL to which you want to call from your front-end to retrieve the API docs. Until now (05/09/2014) the value where the docs are searched for is fixed. So either you have to provide it yourself manualy or you can create a resource that will be picked up by your resource resolvers (for Spring Boot for example in __/resources/static__ folder)
+When using Swagger-UI you have to provide the URL to which you want to call from your front-end to retrieve the API docs. Until now (05/09/2014) the value where the docs are searched for is fixed. So either you have to provide it yourself manually or you can create a resource that will be picked up by your resource resolvers (for Spring Boot for example in __/resources/static__ folder)
 
 ```
 swagger/swagger-config.js
@@ -399,7 +399,7 @@ class MyModuleConfiguration {
 
 ### Description
 
-We are working with microservices. Many microservices. Imagine a series of 20 microservices processing one request - let's say that we want to grant a loan to a Mr Smith. Since we are profesionals we have log collecting tools like [logstash](http://logstash.net/) and [kibana](http://www.elasticsearch.org/overview/kibana/). Now imagine that something broke - an exception occurred. How can you find in those hundreds of lines of logs which ones are related to Mr Smith's case? Correlation id will speed up your work effortlessly.
+We are working with microservices. Many microservices. Imagine a series of 20 microservices processing one request - let's say that we want to grant a loan to a Mr Smith. Since we are professionals we have log collecting tools like [logstash](http://logstash.net/) and [kibana](http://www.elasticsearch.org/overview/kibana/). Now imagine that something broke - an exception occurred. How can you find in those hundreds of lines of logs which ones are related to Mr Smith's case? Correlation id will speed up your work effortlessly.
 
 Since we are using Spring then most likely we can receive or send a request by
 - a __@Controller__ annotated controller

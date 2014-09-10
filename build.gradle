@@ -14,7 +14,7 @@ buildscript {
 
 ext {
     projectGroup = 'com.ofg'
-    projectVersion = '0.4.0-SNAPSHOT'
+    projectVersion = '0.4.0'
 
     spockVersion = '0.7-groovy-2.0'
     springVersion = '4.0.7.RELEASE'
@@ -161,10 +161,6 @@ subprojects {
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.0'
-}
-
 project(':micro-deps-spring-config') {
     description = 'Microservice dependency manager - default Spring configuration'
 }
@@ -181,7 +177,7 @@ project(':micro-deps-spring-test-config') {
         compile "org.spockframework:spock-spring:$spockVersion"
         compile "org.springframework:spring-webmvc:$springVersion"
         compile "org.springframework:spring-test:$springVersion"
-        compile 'com.github.tomakehurst:wiremock:1.47'
+        compile 'com.github.tomakehurst:wiremock:1.48'
 
         testCompile 'com.jayway.restassured:rest-assured:2.3.3'
     }

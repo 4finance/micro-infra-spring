@@ -1,3 +1,15 @@
+0.1.0
+-----
+New features:
+* [micro-deps-spring-config](https://github.com/4finance/micro-deps) upgraded to version `0.4.0`
+* configuration for all request filters and request logging filter  
+
+Breaking changes:
+* REST Template classes moved to `com.ofg.infrastructure.web.resttemplate.custom` package
+* `RequestBodyLoggingContextFilter` moved to `com.ofg.infrastructure.web.filter.logging` package
+* `SwaggerConfiguration` moved to `com.ofg.infrastructure.web.swagger` package
+* `accept(MediaType... acceptableMediaTypes)` method added to `com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting` interface
+
 0.0.9
 -----
 New features:

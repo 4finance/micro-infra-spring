@@ -26,12 +26,12 @@ ext {
     metricsVersion = '3.0.2'
     jacksonMapper = '1.9.13'
     aspectjVersion = '1.8.2'
-    microDepsSpringConfigVersion = '0.2.2'
+    microDepsSpringConfigVersion = '0.4.0'
 }
 
 group = 'com.ofg'
 description = 'Microservice default infrastructure Spring configuration'
-version = '0.0.10-SNAPSHOT'
+version = '0.1.0'
 sourceCompatibility = 1.7
 
 task addHashFile << {

@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.metrics.publishing
+
 import com.codahale.metrics.JmxReporter
 import com.codahale.metrics.MetricFilter
 import com.codahale.metrics.MetricRegistry
@@ -7,7 +8,7 @@ import groovy.transform.CompileStatic
 import java.util.concurrent.TimeUnit
 
 /**
- * Makes it possible to view metrics via JMS.
+ * Makes it possible to view metrics via JMX.
  */
 @CompileStatic
 class JmxPublisher implements MetricsPublishing {

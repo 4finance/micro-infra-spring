@@ -1,3 +1,13 @@
+0.2.0
+-----
+New features:
+* [Issue 17](https://github.com/4finance/micro-infra-spring/issues/17) Moved metrics path generation from 'bluecash-adapter' to micro-infra-spring
+* [Issue 16](https://github.com/4finance/micro-infra-spring/issues/16) Copied MetricsPublishingConfiguration in BootMicroservice to micro-infra-spring
+
+Breaking changes:
+* `MetricsRegistryConfiguration` renamed to `MetricsConfiguration`
+* `MetricRegistry` bean is in fact our custom implementation called `PathPrependingMetricRegistry`. The way metric name is created has changed.
+
 0.1.0
 -----
 New features:

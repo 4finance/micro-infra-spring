@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.metrics.publishing
+
 import com.codahale.metrics.MetricFilter
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.graphite.Graphite
@@ -6,6 +7,7 @@ import com.codahale.metrics.graphite.GraphiteReporter
 import groovy.transform.CompileStatic
 
 import java.util.concurrent.TimeUnit
+
 /**
  * A publisher to <a href="http://graphite.wikidot.com/">Graphite</a>. Creates a {@link GraphiteReporter} instance
  * that in a given {@link com.ofg.infrastructure.metrics.publishing.GraphitePublisher.PublishingInterval} publishes
@@ -13,7 +15,7 @@ import java.util.concurrent.TimeUnit
  * 
  * @see GraphiteReporter
  * @see com.ofg.infrastructure.metrics.publishing.GraphitePublisher.PublishingInterval
- * @see com.ofg.infrastructure.metrics.registry.MetricsRegistryConfiguration
+ * @see com.ofg.infrastructure.metrics.registry.MetricsConfiguration
  */
 @CompileStatic
 class GraphitePublisher implements MetricsPublishing {

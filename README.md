@@ -182,33 +182,46 @@ class MyModuleConfiguration {
 
 ### Description
 
-We have microservices so we need to monitor our system. Not only whether they are alive or not. We want to measure as much as possible. From every possible angle - amount of requests, technical stuff like how many errors we have or from business perspective - how many loans are issued per minute (or whatever). We collect those measurements in [Graffite](http://graphite.wikidot.com).
+We have microservices so we need to monitor our system. Not only whether they are alive or not. We want to measure as much as possible. From every possible angle - amount of requests, technical stuff like how many errors we have or from business perspective - how many loans are issued per minute (or whatever). We collect those measurements in [Graphite](http://graphite.wikidot.com).
 
 If you select this module we will give you two publishers (Graphite - __GraphitePublisher__ and JMX - __JmxPublisher__) that will provide setup for your metrics to be published in Graphite and as an MBean.
 
-As a Spring bean we are providing __MetricsRegistry__ that each of the metrics reporter needs to send upload data to its recipient.
+As a Spring bean we are providing beans (including __MetricRegistry__ that is required by all metrics) that will take care of the metric name standards that we have in 4finance:
+
+```
+ (root-name).(environment).(country).(application-name).(metric-name)
+```
 
 ### Example of usage
 
-Below you can find an example of Groovy configuration of metrics registry (extract from [Bootmicroservice template](https://github.com/4finance/boot-microservice/blob/master/src/main/groovy/com/ofg/microservice/config/MetricsPublishersConfiguration.groovy))
+
+Sample metric gathering class (extract from [Boot microservice template](https://github.com/4finance/boot-microservice/)):
+
 ```
-      @Configuration
-      @Import(MetricsRegistryConfiguration)
-      @Profile(Profiles.PRODUCTION)
-      public class GraphitePublisherConfigration {
-           @Autowired MetricRegistry metricsRegistry;
- 
-           @Bean
-           Graphite graphite(@Value("${graphite.host:graphite.4finance.net}") String hostname, @Value("${graphite.port:2003}") int port) {
-                return new Graphite(new InetSocketAddress(hostname, port));
-           }
- 
-           @Bean(initMethod = "start", destroyMethod = "stop")
-           GraphitePublisher graphitePublisher(Graphite graphite, MetricRegistry metricRegistry) {
-           PublishingInterval publishingInterval = new PublishingInterval(15, SECONDS);
-                return new GraphitePublisher(graphite, publishingInterval, metricRegistry, MINUTES, MILLISECONDS);
-           }
-      }
+class MatchProbabilityMetrics {
+
+    private final Map<PlaceResolutionProbability, Meter> probabilityMeters = [:]
+
+    MatchProbabilityMetrics(MetricRegistry metricRegistry) {
+        registerProbabilityMetrics(metricRegistry)
+    }
+
+    void update(PlaceResolutionProbability probability) {
+        probabilityMeters[probability].mark()
+    }
+
+    private void registerProbabilityMetrics(MetricRegistry metricRegistry) {
+        PlaceResolutionProbability.values().each { probability ->
+            probabilityMeters[probability] = metricRegistry.meter("twitter.places.analyzed.probability.$probability")
+        }
+    }
+}
+```
+
+Example of a metric path (for different measurements of high probability of locations of tweets)
+
+```
+apps.test.pl.twitter-places-analyzer.places.analyzed.probability.high
 ```
 
 ### Module configuration
@@ -228,7 +241,7 @@ or add the configuration explicitly
 
 ```
 @Configuration
-@Import(com.ofg.infrastructure.healthcheck.MetricsRegistryConfiguration)
+@Import(com.ofg.infrastructure.metrics.registry.MetricsConfiguration)
 class MyModuleConfiguration {
 }
 ```

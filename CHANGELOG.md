@@ -1,3 +1,13 @@
+0.2.2
+-----
+Bug fixes:
+* Issues with looking for an implementation instead of a registered interface related to Metrics
+
+0.2.1
+-----
+New features:
+* [Issue 19](https://github.com/4finance/micro-infra-spring/issues/17) PingController handles now also the HEAD request
+
 0.2.0
 -----
 New features:

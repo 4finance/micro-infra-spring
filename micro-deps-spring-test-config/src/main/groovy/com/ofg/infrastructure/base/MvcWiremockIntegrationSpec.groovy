@@ -33,7 +33,7 @@ class MvcWiremockIntegrationSpec extends MvcIntegrationSpec {
     
     void setup() {
         wireMock = new WireMock(wiremockUrl, httpMockServer.port())
-        wireMock.resetMappings()
+        wireMock.resetToDefaultMappings()
     }
 
     protected void stubInteraction(MappingBuilder mapping, ResponseDefinitionBuilder response) {

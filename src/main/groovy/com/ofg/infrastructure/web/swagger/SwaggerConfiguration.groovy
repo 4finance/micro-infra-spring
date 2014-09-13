@@ -1,5 +1,4 @@
 package com.ofg.infrastructure.web.swagger
-
 import com.mangofactory.swagger.configuration.SpringSwaggerConfig
 import com.mangofactory.swagger.plugin.EnableSwagger
 import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
-
 /**
  * Adds configuration enabling Swagger in Spring via {@link SwaggerSpringMvcPlugin}
  */
@@ -26,7 +24,8 @@ class SwaggerConfiguration {
             @Value('${rest.api.terms:Defined by 4finance internal licences}') String restApiTerms,
             @Value('${rest.api.contact:info@4finance.com}') String restApiContact,
             @Value('${rest.api.license.type:4finance internal licence}') String restApiLicenseType,
-            @Value('${rest.api.license.url:http://4finance.com}') String restApiLicenseUrl) {
+            @Value('${rest.api.license.url:http://4finance.com}') String restApiLicenseUrl,
+            @Value('${rest.api.urls.to.list:.*}') String urlsToList) {
         return new SwaggerSpringMvcPlugin(springSwaggerConfig)
                 .apiInfo(new ApiInfo(
                                     restApiTitle,
@@ -36,7 +35,7 @@ class SwaggerConfiguration {
                                     restApiLicenseType,
                                     restApiLicenseUrl))
                 .apiVersion(restApiVersion)
-                .includePatterns(".*")
+                .includePatterns(urlsToList)
     }
 
 }

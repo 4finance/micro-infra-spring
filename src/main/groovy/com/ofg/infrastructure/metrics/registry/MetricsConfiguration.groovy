@@ -33,7 +33,7 @@ class MetricsConfiguration {
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     @Profile([PRODUCTION, DEVELOPMENT])
-    JmxPublisher jmxPublisher(PathPrependingMetricRegistry metricRegistry) {
+    JmxPublisher jmxPublisher(MetricRegistry metricRegistry) {
         return new JmxPublisher(metricRegistry, MINUTES, MILLISECONDS)
     }
 
@@ -45,7 +45,7 @@ class MetricsConfiguration {
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     @Profile(PRODUCTION)
-    GraphitePublisher graphitePublisher(Graphite graphite, PathPrependingMetricRegistry metricRegistry,
+    GraphitePublisher graphitePublisher(Graphite graphite, MetricRegistry metricRegistry,
                                         @Value('${graphite.publishing.interval:15000}') long publishingIntervalInMs) {
         GraphitePublisher.PublishingInterval publishingInterval = new GraphitePublisher.PublishingInterval(publishingIntervalInMs, MILLISECONDS)
         return new GraphitePublisher(graphite, publishingInterval, metricRegistry, MINUTES, MILLISECONDS)

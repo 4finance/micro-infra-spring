@@ -14,7 +14,7 @@ buildscript {
 
 ext {
     projectGroup = 'com.ofg'
-    projectVersion = '0.4.1'
+    projectVersion = '0.4.2-SNAPSHOT'
 
     spockVersion = '0.7-groovy-2.0'
     springVersion = '4.1.0.RELEASE'

@@ -2,12 +2,12 @@ package com.ofg.stub.registry
 
 import com.ofg.stub.mapping.ProjectMetadata
 import com.ofg.stub.server.StubServer
-import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
 import org.apache.curator.retry.RetryNTimes
 import org.apache.curator.x.discovery.ServiceDiscovery
 import org.apache.curator.x.discovery.ServiceInstance
 import org.apache.curator.x.discovery.ServiceProvider
+import spock.lang.AutoCleanup
 import spock.lang.Specification
 
 class StubRegistrySpec extends Specification {
@@ -17,9 +17,9 @@ class StubRegistrySpec extends Specification {
     static final ProjectMetadata HELLO_STUB_METADATA = new ProjectMetadata('com/ofg/hello', 'pl')
     static final ProjectMetadata BYE_STUB_METADATA = new ProjectMetadata('com/ofg/bye', 'pl')
 
-    StubRegistry stubRegistry = new StubRegistry(STUB_REGISTRY_PORT)
-    StubServer helloStub = new StubServer(HELLO_STUB_SERVER_PORT, HELLO_STUB_METADATA, [])
-    StubServer byeStub = new StubServer(BYE_STUB_SERVER_PORT, BYE_STUB_METADATA, [])
+    @AutoCleanup('stop') StubServer helloStub = new StubServer(HELLO_STUB_SERVER_PORT, HELLO_STUB_METADATA, [])
+    @AutoCleanup('stop') StubServer byeStub = new StubServer(BYE_STUB_SERVER_PORT, BYE_STUB_METADATA, [])
+    @AutoCleanup('shutdown') StubRegistry stubRegistry = new StubRegistry(STUB_REGISTRY_PORT)
 
     def 'should register stub servers'() {
         given:
@@ -30,33 +30,26 @@ class StubRegistrySpec extends Specification {
             stubRegistry.register([helloStub, byeStub])
 
         then:
-            ServiceInstance helloStubInstance = resolveStubServerInstanceFromRegistry(helloStub)
-            helloStubInstance.name == HELLO_STUB_METADATA.projectName
-            helloStubInstance.address == 'localhost'
-            helloStubInstance.port == HELLO_STUB_SERVER_PORT
+            with(resolveStubServerInstanceFromRegistry(helloStub)) {
+                name == HELLO_STUB_METADATA.projectName
+                address == 'localhost'
+                port == HELLO_STUB_SERVER_PORT
+            }
         and:
-            ServiceInstance byeStubInstance = resolveStubServerInstanceFromRegistry(byeStub)
-            byeStubInstance.name == BYE_STUB_METADATA.projectName
-            byeStubInstance.address == 'localhost'
-            byeStubInstance.port == BYE_STUB_SERVER_PORT
-    }
-
-    def cleanup() {
-        stubRegistry.shutdown()
-        helloStub.stop()
-        byeStub.stop()
+            with(resolveStubServerInstanceFromRegistry(byeStub)) {
+                name == BYE_STUB_METADATA.projectName
+                address == 'localhost'
+                port == BYE_STUB_SERVER_PORT
+            }
     }
 
     private ServiceInstance resolveStubServerInstanceFromRegistry(StubServer stubServer) {
-        CuratorFramework client = CuratorFrameworkFactory.newClient("localhost:$STUB_REGISTRY_PORT", new RetryNTimes(5, 10))
-        try {
-            client.start()
-            ServiceDiscovery serviceDiscovery = StubRegistry.serviceDiscoveryFor(stubServer, client)
+        CuratorFrameworkFactory.newClient("localhost:$STUB_REGISTRY_PORT", new RetryNTimes(5, 10)).withCloseable {
+            it.start()
+            ServiceDiscovery serviceDiscovery = StubRegistry.serviceDiscoveryFor(stubServer, it)
             ServiceProvider serviceProvider = serviceDiscovery.serviceProviderBuilder().serviceName(stubServer.projectMetadata.projectName).build()
             serviceProvider.start()
             return serviceProvider.instance
-        } finally {
-            client.close()
         }
     }
 }

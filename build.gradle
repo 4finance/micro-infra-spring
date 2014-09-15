@@ -42,7 +42,6 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.1.2'
 
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
-    testCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
 }
 
 tasks.addRule('Pattern: run<Project>Stubs: Run stubs for project') { String taskName ->

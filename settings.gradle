@@ -1,1 +1,6 @@
+include 'base'
+include 'reactor'
+include 'swagger/swagger'
+include 'swagger/swagger-ui'
+
 rootProject.name = 'micro-infra-spring'

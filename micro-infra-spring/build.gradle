@@ -1,0 +1,7 @@
+description = 'Default set-up for 4finance microservices'
+
+dependencies {
+    compile project(':micro-infra-spring-base')
+    compile project(':swagger:micro-infra-spring-swagger')
+    compile project(':swagger:micro-infra-spring-swagger-ui')
+}

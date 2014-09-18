@@ -12,7 +12,7 @@ buildscript {
 }
 
 ext {
-    microInfraSpringVersion = '0.3.0'
+    microInfraSpringVersion = '0.3.1-SNAPSHOT'
 
     groovyVersion = '2.3.6'
     spockVersion = '0.7-groovy-2.0'

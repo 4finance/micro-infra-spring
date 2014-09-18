@@ -1,1 +1,7 @@
-rootProject.name = 'micro-infra-spring'
+include 'micro-infra-spring-base'
+include 'micro-infra-spring-reactor'
+include ':swagger:micro-infra-spring-swagger'
+include ':swagger:micro-infra-spring-swagger-ui'
+include 'micro-infra-spring'
+
+rootProject.name = 'micro-infra-spring-root'

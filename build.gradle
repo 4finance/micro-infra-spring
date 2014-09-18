@@ -35,7 +35,7 @@ subprojects {
     apply plugin: 'groovy'
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
-    apply plugin: 'com.jfrog.bintray'
+    if (project.name != 'swagger') { apply plugin: 'com.jfrog.bintray' }
     apply plugin: 'com.ofg.uptodate'
 
     sourceCompatibility = 1.7

@@ -1,5 +1,4 @@
 package com.ofg.infrastructure.reactor
-
 import com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
@@ -17,6 +16,7 @@ import spock.lang.Specification
 import java.util.concurrent.atomic.AtomicReference
 
 import static com.jayway.awaitility.Awaitility.await
+import static org.hamcrest.Matchers.equalTo
 
 @ContextConfiguration(classes = Config, loader = SpringApplicationContextLoader)
 class ReactorAspectSpec extends Specification {
@@ -30,15 +30,17 @@ class ReactorAspectSpec extends Specification {
         given:
             correlationIdIsSet()
         when:
-            mySender.sendMessage()
+            mySender.sendsEvent()
         then:
-            await().until {
-                mySubscriber.correlationIdSetTo('asda')
-            }
+            correlationIdShouldBeSetFromSentEventHeader()
     }
 
     void correlationIdIsSet() {
         CorrelationIdHolder.set(EXPECTED_CORRELATION_ID)
+    }
+
+    private String correlationIdShouldBeSetFromSentEventHeader() {
+        await().untilAtomic(mySubscriber.atomicReference, equalTo(EXPECTED_CORRELATION_ID))
     }
 
     @Configuration
@@ -61,10 +63,6 @@ class ReactorAspectSpec extends Specification {
             atomicReference.set(CorrelationIdHolder.get())
         }
 
-        boolean correlationIdSetTo(String correlationId) {
-            return atomicReference.get() == correlationId
-        }
-
         Reactor getReactor() {
             return reactor
         }
@@ -75,7 +73,7 @@ class ReactorAspectSpec extends Specification {
         @Autowired
         public Reactor reactor
 
-        void sendMessage() {
+        void sendsEvent() {
             reactor.notify('key', ReactorEvent.wrap('data'))
         }
     }

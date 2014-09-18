@@ -1,4 +1,4 @@
-package com.ofg.infrastructure.reactor
+package com.ofg.infrastructure.reactor.aspect
 
 import com.ofg.infrastructure.web.filter.correlationid.CorrelationIdUpdater
 import groovy.transform.CompileStatic
@@ -16,6 +16,46 @@ import static com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolde
  * It will ensure that before the logic of the event processing gets executed, the
  * correlationId will be retrieved from {@link Event.Headers} and all the necessary
  * components will get updated with new correlationId.
+ *
+ * Example of usage for the following scenario:
+ * <ul>
+ *     <li>We have a <b>Config</b> class for SpringBoot autoconfiguration</li>
+ *     <li>We have a <b>MySender</b> class that sends an {@link com.ofg.infrastructure.reactor.event.ReactorEvent} using Reactor</li>
+ *     <li>We have a <b>MySubscriber</b> class that subscribes to 'key' channel and executes logic from the annotated method</li>
+ * </ul>
+ *
+ * And the code:
+ * <pre>
+ *     @Configuration
+ *     @EnableReactor
+ *     @ComponentScan
+ *     @EnableAutoConfiguration
+ *     class Config {
+ *     }
+ *
+ *     @Component
+ *     class MySender {
+ *          @Autowired public Reactor reactor
+ *
+ *          void sendsEvent() {
+ *              reactor.notify('key', ReactorEvent.wrap('data'))
+ *          }
+ *     }
+ *
+ *     @Component
+ *     class MySubscriber {
+ *          @Autowired public Reactor reactor
+ *
+ *          @Selector('key')
+ *          void receive(Event<String> event) {
+ *             // do some logic upon receiving messages
+ *          }
+ *
+ *          Reactor getReactor() {
+ *              return reactor
+ *          }
+ *     }
+ * </pre>
  *
  * @see CorrelationIdUpdater
  */

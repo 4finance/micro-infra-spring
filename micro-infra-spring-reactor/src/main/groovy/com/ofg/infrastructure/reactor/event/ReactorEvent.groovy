@@ -1,4 +1,4 @@
-package com.ofg.infrastructure.reactor
+package com.ofg.infrastructure.reactor.event
 import com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j

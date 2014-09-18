@@ -1,3 +1,8 @@
+0.3.0
+-----
+New features:
+* [Issue 24](https://github.com/4finance/micro-infra-spring/issues/24) Make correlationId pass when dealing with Spring Reactor
+
 0.2.2
 -----
 Bug fixes:

@@ -4,22 +4,50 @@ micro-infra-spring
 =======================
 Sets up the whole Spring infrastructure stack that will turn your microservice into a beauty. All code examples presented below are in Groovy.
  
-It consists of several different domains (most likely we will modularize it in the future):
+It consists of several different domains (those domains are available under different modules):
+
+### Core modules 
+
+#### Base modules (micro-infra-spring-base)
 
 - [Service discovery](#service-discovery)
 - [Spring environment setup](#spring-environment-setup)
 - [Health check](#health-check)
 - [Metrics publishing](#metrics-publishing)
-- [Swagger - API documentation](#swagger---api-documentation)
 - [Controller exceptions handling and JSON View resolving](#controller-exceptions-handling-and-json-view-resolving)
 - [CorrelationId setting](#correlationid-setting)
 - [Request body logging](#request-body-logging)
 - [Customized rest template](#customized-rest-template)
 - [Abstraction over RestTemplate - bound with service discovery](#abstraction-over-resttemplate---bound-with-service-discovery)
 
-##How to use all of it?
+#### Swagger modules (micro-infra-spring-swagger / micro-infra-spring-swagger-ui)
 
-If you want to just profit from the whole stack presented above either
+- [Swagger - API documentation](#swagger---api-documentation) - module __micro-infra-spring-swagger__ 
+- [Swagger - API documentation](#swagger---api-documentation) - module __micro-infra-spring-swagger-ui__
+
+### Additional modules
+
+#### Reactor modules (micro-infra-spring-reactor)
+
+- [CorrelationId setting for Spring Reactor](#correlationid-setting-for-spring-reactor)
+ 
+## How to use all of the core parts of the system?
+
+### With Swagger
+
+If you want to profit from the whole core stack presented above just add a dependency:
+
+```
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.ofg:micro-infra-spring:0.3.0'
+}
+```
+
+and either
 
 component scan over __com.ofg.infrastructure__:
 
@@ -35,6 +63,40 @@ or add the configuration explicitly
 ```
 @Configuration
 @Import(com.ofg.infrastructure.config.WebAppConfiguration)
+class MyWebAppConfiguration {
+}
+```
+
+### Without Swagger
+
+If you don't want to add Swagger and still want to have the whole base functionality just add a dependency:
+
+```
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+}
+```
+
+and either
+
+component scan over __com.ofg.infrastructure__:
+
+```
+@Configuration
+@ComponentScan("com.ofg.infrastructure")
+class MyWebAppConfiguration {
+}
+```
+
+or add the configuration explicitly
+
+```
+@Configuration
+@Import(com.ofg.infrastructure.config.BaseWebAppConfiguration)
 class MyWebAppConfiguration {
 }
 ```
@@ -83,7 +145,19 @@ To put it briefly we are setting up via __ServiceDiscoveryConfiguration__ that i
 
 ### Module configuration
 
-If you want to setup only this module you have to either
+If you want to use only this module just add a dependency:
+
+```
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+}
+```
+
+and the you have to either:
 
 component scan over __com.ofg.infrastructure.discovery__:
 
@@ -147,6 +221,20 @@ class Profiles {
 }
 ``` 
 
+### Module configuration
+
+If you want to use only this module just add a dependency:
+
+```
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+}
+```
+
 ## Health check
 
 ### Description
@@ -158,7 +246,19 @@ In __HealthCheckConfiguration__ we are registering a __PingController__ that if 
 
 ### Module configuration
 
-If you want to setup only this module you have to either
+If you want to use only this module just add a dependency:
+
+```
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+}
+```
+
+and either
 
 component scan over __com.ofg.infrastructure.healthcheck__:
 
@@ -224,9 +324,48 @@ Example of a metric path (for different measurements of high probability of loca
 apps.test.pl.twitter-places-analyzer.places.analyzed.probability.high
 ```
 
+### Metrics properties 
+
+Below you can find properties with its default values:
+ 
+```
+# Host where Graphite is deployed
+graphite.host=graphite.4finance.net
+
+# Port for Graphite
+graphite.port=2003
+
+# Publishing interval in ms 
+graphite.publishing.interval=15000
+
+# Root metrics param of 'apps'
+metrics.path.root=apps
+
+# Environment to which you deploy application ('test', 'stage', 'prod')
+metrics.path.environment=test
+
+# Country for which you deploy your app
+metrics.path.country=pl
+
+# Your app name
+metrics.path.app=service-name
+```
+
 ### Module configuration
 
-If you want to setup only this module you have to either
+If you want to use only this module just add a dependency:
+
+```
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+}
+```
+
+and either
 
 component scan over __com.ofg.infrastructure.metrics.publishing__:
 
@@ -254,8 +393,9 @@ Imagine that you are entering to a new project and would like to check how does 
 
 That's why we use [Swagger](https://github.com/wordnik/swagger-spec). And you should too - check out their [live demo](http://petstore.swagger.wordnik.com/). It's documenting your API automatically but you can provide more annotations to describe your API even more beautifully.
 
-#### Backend API documentation and Swagger-UI
-Swagger consists of two separate parts - __documenting API (backend)__ and __presentation of the API (swagger-ui)__. The configuration presented below shows you how to add the __backend API documentation__. We already provide Swagger-UI for you cause it's placed in __/resources/static/swagger__ folder. That means that you will have it (for Spring Boot) out of the box when you access the http://yourmicroservice.com/swagger/ URL.
+#### Backend API documentation
+
+Swagger consists of two separate parts - __documenting API (backend)__ and __presentation of the API (swagger-ui)__. The configuration presented below shows you how to add the __backend API documentation__.
 
 ### Example of usage
 
@@ -291,7 +431,51 @@ class PingController {
 
 ```
 
-#### Overriding default Swagger-UI settings
+### Module configuration
+
+If you want to use only this module just add a dependency:
+
+```
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.ofg:micro-infra-spring-swagger:0.3.0'
+}
+```
+
+and either
+
+component scan over __com.ofg.infrastructure.metrics.publishing__:
+
+```
+@Configuration
+@ComponentScan("com.ofg.infrastructure.web.swagger")
+class MyWebAppConfiguration {
+}
+```
+
+or add the configuration explicitly
+
+```
+@Configuration
+@Import(com.ofg.infrastructure.web.swagger.SwaggerConfiguration)
+class MyModuleConfiguration {
+}
+```
+
+## Swagger UI
+
+### Description
+
+If you are too lazy to add the swagger-ui resources manually - don't worry, we've already done that for you. Just add this module  
+
+#### Backend API documentation
+
+Swagger UI resources are placed in __/resources/static/swagger__ folder. That means that you will have it (for Spring Boot) out of the box when you access the http://yourmicroservice.com/swagger/ URL.
+
+#### Overriding default Swagger-UI
 
 When using Swagger-UI you have to provide the URL to which you want to call from your front-end to retrieve the API docs. Until now (05/09/2014) the value where the docs are searched for is fixed. So either you have to provide it yourself manually or you can create a resource that will be picked up by your resource resolvers (for Spring Boot for example in __/resources/static__ folder)
 
@@ -307,23 +491,15 @@ window.authorizations.add("key", new ApiKeyAuthorization("someHeaderKey", "someH
 
 ### Module configuration
 
-If you want to setup only this module  you have to either
-
-component scan over __com.ofg.infrastructure.web.swagger__:
+If you want to use only this module just add a dependency:
 
 ```
-@Configuration
-@ComponentScan("com.ofg.infrastructure.web.swagger")
-class MyWebAppConfiguration {
+repositories {
+    jcenter()
 }
-```
 
-or add the configuration explicitly
-
-```
-@Configuration
-@Import(com.ofg.infrastructure.web.swagger.SwaggerConfiguration)
-class MyModuleConfiguration {
+dependencies {
+    compile 'com.ofg:micro-infra-spring-swagger-ui:0.3.0'
 }
 ```
 
@@ -365,6 +541,18 @@ class TestRequest {
 If validation fails we throw __BadParametersException__ that we catch in __ControllerExceptionHandler__ and using __JsonViewResolver__ we can pretty print that JSON for you!
 
 ### Module configuration
+
+If you want to use only this module just add a dependency:
+
+```
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+}
+```
 
 #### Controller exceptions handling 
 If you want to setup only this module you have to either
@@ -426,7 +614,19 @@ To deal with all of those approaches we:
 
 ### Module configuration
 
-If you want to setup only this module you have to either
+If you want to use only this module just add a dependency:
+
+```
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+}
+```
+
+and either
 
 component scan over __com.ofg.infrastructure.web.filter.correlationid__:
 
@@ -462,7 +662,19 @@ request.payload.logging.maxlength:1000
 
 ### Module configuration
 
-If you want to setup only this module you have to either
+If you want to use only this module just add a dependency:
+
+```
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+}
+```
+
+and either
 
 component scan over __com.ofg.infrastructure.web.filter.logging__:
 
@@ -482,6 +694,8 @@ class MyModuleConfiguration {
 }
 ```
 
+also you have to explicitly provide __DEBUG__ logging level for this component.
+
 ## Customized rest template
 
 ### Description
@@ -495,7 +709,19 @@ that gives you:
 
 ### Module configuration
 
-If you want to setup only this module you have to either
+If you want to use only this module just add a dependency:
+
+```
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+}
+```
+
+and either
 
 component scan over __com.ofg.infrastructure.web.resttemplate.custom__:
 
@@ -526,6 +752,7 @@ You want to send requests to your collaborators. That's good! But do you want to
 ### What does it consist of?
 
 #### ServiceRestClient
+
 The entry point to the abstraction is __ServiceRestClient__. It takes two parameters to its constructor 
 
   - [__RestOperations__](http://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestOperations.html) implementation (for example [__RestTemplate__](http://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html))
@@ -537,6 +764,7 @@ Once your __ServiceRestClient__ is created you are ready to send some requests. 
   - __forService('cola')__ - if you want to  send a request to your collaborator (for example in your _microservice.json_ you have provided a collaborator by name _cola_)
 
 #### HTTP Methods
+
 Ok, so we picked either of them and now we can choose which http method we want to call. You can pick either of these:
 
   - delete
@@ -547,6 +775,7 @@ Ok, so we picked either of them and now we can choose which http method we want 
   - put
     
 #### Request body
+
 Depending on the method you now can have different methods available. Some HTTP methods accept request bodies others don't. So you may have 
  the __body()__ method but it's not obligatory.
      
@@ -605,7 +834,19 @@ serviceRestClient.forService('cola')
 
 ### Module configuration
 
-If you want to setup only this module you have to either
+If you want to use only this module just add a dependency:
+
+```
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+}
+```
+
+and either
 
 component scan over __com.ofg.infrastructure.web.resttemplate.fluent__:
 
@@ -621,6 +862,93 @@ or add the configuration explicitly
 ```
 @Configuration
 @Import(com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClientConfiguration)
+class MyModuleConfiguration {
+}
+```
+
+Additional modules
+=======================================
+
+## CorrelationId setting for Spring Reactor
+
+### Description
+
+You're using Spring Reactor? Good for you! Are you using __ringBuffer__ as your default dispatcher? Great! Did you remember to pass correlationId
+  to your new thread? Most likely not. With our approach you will never have to worry about it.
+  
+__NOTE!!__
+
+>> This approach works only for Spring Reactor Java based approach!!!
+
+### Example of usage
+
+Example of usage for the following scenario:
+   - We have a __Config__ class for SpringBoot autoconfiguration
+   - We have a __MySender__ class that sends an __com.ofg.infrastructure.reactor.event.ReactorEvent__ using Reactor
+   - We have a __MySubscriber__ class that subscribes to 'key' channel and executes logic from the annotated method
+   
+```
+@Configuration
+@EnableReactor
+@ComponentScan
+@EnableAutoConfiguration
+class Config {
+}
+
+@Component
+class MySender {
+     @Autowired public Reactor reactor
+ 
+     void sendsEvent() {
+         reactor.notify('key', ReactorEvent.wrap('data'))
+     }
+}
+
+@Component
+class MySubscriber {
+     @Autowired public Reactor reactor
+
+     @Selector('key')
+     void receive(Event<String> event) {
+        // do some logic upon receiving messages
+     }
+  
+     Reactor getReactor() {
+         return reactor
+     }
+}
+```
+
+### Module configuration
+
+If you want to use only this module just add a dependency:
+
+```
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.ofg:micro-infra-spring-reactor:0.3.0'
+}
+```
+
+and either
+
+component scan over __com.ofg.infrastructure.reactor__:
+
+```
+@Configuration
+@ComponentScan("com.ofg.infrastructure.reactor")
+class MyWebAppConfiguration {
+}
+```
+
+or add the configuration explicitly
+
+```
+@Configuration
+@Import(com.ofg.infrastructure.reactor.aspect.ReactorAspectConfiguration)
 class MyModuleConfiguration {
 }
 ```

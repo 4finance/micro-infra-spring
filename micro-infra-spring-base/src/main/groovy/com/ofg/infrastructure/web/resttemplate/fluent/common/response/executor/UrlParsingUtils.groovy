@@ -34,8 +34,8 @@ final class UrlParsingUtils {
     private static boolean isUriAbsolute(String uri) {
         try {
             new URI(removeVariableSignsFromUri(uri)).absolute
-        } catch(URISyntaxException uriSytaxException) {
-            log.trace("Passed uri [$uri] is not a valid uri. Exception [$uriSytaxException] occurred while trying to parse it")
+        } catch(URISyntaxException uriSyntaxException) {
+            log.trace("Passed uri [$uri] is not a valid uri. Exception [$uriSyntaxException] occurred while trying to parse it")
             return false
         }
     }

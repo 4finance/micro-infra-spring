@@ -40,9 +40,18 @@ abstract class ResponseTypeRelatedRequestsExecutor<T> {
 
     ResponseEntity<T> exchange() {
         if (params.url) {  
-            return restOperations.exchange(new URI(appendPathToHost(params.host as String, params.url as URI)), getHttpMethod(), getHttpEntityFrom(params), responseType)
+            return restOperations.exchange(
+                    new URI(appendPathToHost(params.host as String, params.url as URI)),
+                    getHttpMethod(),
+                    getHttpEntityFrom(params),
+                    responseType)
         } else if (params.urlTemplate) {
-            return restOperations.exchange(appendPathToHost(params.host as String, params.urlTemplate as String), getHttpMethod(), getHttpEntityFrom(params), responseType, params.urlVariablesArray as Object[] ?: params.urlVariablesMap as Map<String, ?>)
+            return restOperations.exchange(
+                    appendPathToHost(params.host as String, params.urlTemplate as String),
+                    getHttpMethod(),
+                    getHttpEntityFrom(params),
+                    responseType,
+                    params.urlVariablesArray as Object[] ?: params.urlVariablesMap as Map<String, ?>)
         }
         throw new InvalidHttpMethodParametersException(params)
     }

@@ -1,5 +1,4 @@
 package com.ofg.infrastructure.web.exception
-
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.ConfigurationWithoutServiceDiscovery
 import com.ofg.infrastructure.base.MvcIntegrationSpec
@@ -12,12 +11,11 @@ import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.lang.Void as Should
 
 @ContextConfiguration(classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery], loader = SpringApplicationContextLoader)
 class CustomControllerAdviceMvcSpec extends MvcIntegrationSpec {
 
-    Should "apply custom logic when application uses its own @ControllerAdvice"() {
+    def "should apply custom logic when application uses its own @ControllerAdvice"() {
         expect:
             mockMvc.perform(get("/testLowestPrecedence"))
                 .andExpect(status().is(SERVICE_UNAVAILABLE.value()))

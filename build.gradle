@@ -31,11 +31,11 @@ task addHashFile << {
     new File("commitHash.txt").withWriter { it << proc.in.text }
 }
 
-subprojects {
+configure(subprojects - project(':swagger')) {
     apply plugin: 'groovy'
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
-    if (project.name != 'swagger') { apply plugin: 'com.jfrog.bintray' }
+    apply plugin: 'com.jfrog.bintray'
     apply plugin: 'com.ofg.uptodate'
 
     sourceCompatibility = 1.7

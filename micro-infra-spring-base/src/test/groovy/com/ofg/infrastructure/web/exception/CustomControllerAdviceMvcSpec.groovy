@@ -8,24 +8,20 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ContextConfiguration
 
-import static org.hamcrest.Matchers.equalTo
-import static org.springframework.http.HttpStatus.BAD_REQUEST
-import static org.springframework.http.MediaType.APPLICATION_JSON
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.lang.Void as Should
 
 @ContextConfiguration(classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery], loader = SpringApplicationContextLoader)
-class ExceptionHandlingMvcSpec extends MvcIntegrationSpec {
-    
-    Should "return bad request error for invalid field"() {
+class CustomControllerAdviceMvcSpec extends MvcIntegrationSpec {
+
+    Should "apply custom logic when application uses its own @ControllerAdvice"() {
         expect:
-            mockMvc.perform(post("/test").contentType(APPLICATION_JSON)
-                .content('{}'))
-                .andExpect(status().is(BAD_REQUEST.value()))
-                .andExpect(jsonPath('$[0].field', equalTo("shouldBeTrue")))
-                .andExpect(jsonPath('$[0].message', equalTo("must be true")))
+            mockMvc.perform(get("/testLowestPrecedence"))
+                .andExpect(status().is(SERVICE_UNAVAILABLE.value()))
+                .andExpect(header().string("Retry-After", "1000"))
     }
 
     @Configuration
@@ -34,5 +30,11 @@ class ExceptionHandlingMvcSpec extends MvcIntegrationSpec {
         TestController testController() {
             return new TestController()
         }
+
+        @Bean
+        CustomControllerAdvice customControllerAdvice() {
+            return new CustomControllerAdvice()
+        }
     }
+
 }

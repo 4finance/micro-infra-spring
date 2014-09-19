@@ -2,6 +2,8 @@ package com.ofg.infrastructure.web.exception
 
 import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j
+import org.springframework.core.Ordered
+import org.springframework.core.annotation.Order
 import org.springframework.validation.ObjectError
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -23,6 +25,7 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST
 @Slf4j
 @ControllerAdvice
 @TypeChecked
+@Order(Ordered.LOWEST_PRECEDENCE)
 class ControllerExceptionHandler {
 
     private static final String INTERNAL_ERROR = "internal error"

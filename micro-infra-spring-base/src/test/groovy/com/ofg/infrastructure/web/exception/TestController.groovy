@@ -13,10 +13,16 @@ import javax.validation.constraints.AssertTrue
 @TypeChecked
 @RestController
 class TestController {
+
     @RequestMapping(value = "/test", produces = "application/json", method = RequestMethod.POST)
     String test(@RequestBody @Valid TestRequest request, BindingResult result) {
         checkIfResultHasErrors(result)
         return "OK"
+    }
+
+    @RequestMapping(value = "/testLowestPrecedence", produces = "application/json", method = RequestMethod.GET)
+    String testLowestPrecedence() throws Exception {
+        throw new Exception()
     }
 
     private void checkIfResultHasErrors(BindingResult result) {

@@ -3,7 +3,7 @@ package com.ofg.infrastructure.metrics.publishing
 /**
  * Interface for metrics publishing. 
  * 
- * You can publish metrics to different places including those predfined:
+ * You can publish metrics to different places including those predefined:
  * <ul>
  *     <li>Console - ConsoleReporter (com.codahale.metrics)</li>
  *     <li>Slf4j - Slf4jReporter (com.codahale.metrics)</li>

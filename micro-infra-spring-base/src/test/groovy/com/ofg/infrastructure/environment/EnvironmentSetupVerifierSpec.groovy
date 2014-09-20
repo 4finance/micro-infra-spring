@@ -13,7 +13,7 @@ import spock.lang.Unroll
 class EnvironmentSetupVerifierSpec extends Specification {
 
     private static final List<String> POSSIBLE_PROFILES = ['dev', 'prod', 'test']
-    private static final String UNKOWN_PROFILE = 'unknownProfile'
+    private static final String UNKNOWN_PROFILE = 'unknownProfile'
 
     @Rule private final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
@@ -41,7 +41,7 @@ class EnvironmentSetupVerifierSpec extends Specification {
         then:
             thrown(CheckExitCalled)
         where:
-            activeProfiles << [ [UNKOWN_PROFILE], [POSSIBLE_PROFILES.first(), UNKOWN_PROFILE] ]
+            activeProfiles << [ [UNKNOWN_PROFILE], [POSSIBLE_PROFILES.first(), UNKNOWN_PROFILE] ]
     }
 
 }

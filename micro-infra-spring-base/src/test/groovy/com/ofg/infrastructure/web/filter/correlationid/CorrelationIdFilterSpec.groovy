@@ -20,7 +20,7 @@ class CorrelationIdFilterSpec extends MvcIntegrationSpec {
             MvcResult mvcResult = sendPingWithoutCorrelationId()
 
         then:
-            getCorrelationIdFromResonseHeader(mvcResult) != null
+            getCorrelationIdFromResponseHeader(mvcResult) != null
     }
 
     def "when correlationId is sent, should not create a new one, but return the existing one instead"() {
@@ -31,7 +31,7 @@ class CorrelationIdFilterSpec extends MvcIntegrationSpec {
             MvcResult mvcResult = sendPingWithCorrelationId(passedCorrelationId)
 
         then:
-            getCorrelationIdFromResonseHeader(mvcResult) == passedCorrelationId
+            getCorrelationIdFromResponseHeader(mvcResult) == passedCorrelationId
     }
 
     def "should clean up MDC after the call"() {
@@ -54,7 +54,7 @@ class CorrelationIdFilterSpec extends MvcIntegrationSpec {
         mockMvc.perform(MockMvcRequestBuilders.get('/ping').accept(MediaType.TEXT_PLAIN)).andReturn()
     }
 
-    private String getCorrelationIdFromResonseHeader(MvcResult mvcResult) {
+    private String getCorrelationIdFromResponseHeader(MvcResult mvcResult) {
         mvcResult.response.getHeader(CORRELATION_ID_HEADER)
     }
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.PropertyAccessor
 import groovy.transform.TypeChecked
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
 import org.springframework.http.converter.HttpMessageConverter
@@ -27,18 +26,17 @@ class ViewConfiguration extends WebMvcConfigurerAdapter {
     @Autowired
     Environment environment
 
-    @Bean
-    public MappingJackson2HttpMessageConverter jacksonConverter() {
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        super.configureMessageConverters(converters);
+        converters.add(buildJacksonConverter());
+    }
+
+    private MappingJackson2HttpMessageConverter buildJacksonConverter() {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter()
         converter.setPrettyPrint(prettyPrintingBasedOnProfile())
         converter.objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
         return converter
-    }
-
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        super.configureMessageConverters(converters);
-        converters.add(jacksonConverter());
     }
 
     private boolean prettyPrintingBasedOnProfile() {

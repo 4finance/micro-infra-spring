@@ -14,12 +14,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import java.lang.Void as Should
 
 @ContextConfiguration(classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery], loader = SpringApplicationContextLoader)
 class ExceptionHandlingMvcSpec extends MvcIntegrationSpec {
     
-    Should "return bad request error for invalid field"() {
+    def "should return bad request error for invalid field"() {
         expect:
             mockMvc.perform(post("/test").contentType(APPLICATION_JSON)
                 .content('{}'))

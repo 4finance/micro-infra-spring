@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.web.exception
 
+import groovy.transform.PackageScope
 import groovy.transform.TypeChecked
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.RequestBody
@@ -12,6 +13,12 @@ import javax.validation.constraints.AssertTrue
 
 @TypeChecked
 @RestController
+@PackageScope
+/**
+ *  Example of controller with methods throwing various exceptions (needed to test exception handling).
+ *
+ *  Note that this class is created only for tests and is located in test scope (not packaged into jar)!
+ */
 class TestController {
 
     @RequestMapping(value = "/test", produces = "application/json", method = RequestMethod.POST)
@@ -32,6 +39,7 @@ class TestController {
     }
 }
 
+@PackageScope
 class TestRequest {
     @AssertTrue
     boolean shouldBeTrue

@@ -19,7 +19,7 @@ class CustomControllerAdviceMvcSpec extends MvcIntegrationSpec {
         expect:
             mockMvc.perform(get("/testLowestPrecedence"))
                 .andExpect(status().is(SERVICE_UNAVAILABLE.value()))
-                .andExpect(header().string("Retry-After", "1000"))
+                .andExpect(header().string("SAMPLE_HEADER", "SAMPLE_HEADER_VALUE"))
     }
 
     @Configuration

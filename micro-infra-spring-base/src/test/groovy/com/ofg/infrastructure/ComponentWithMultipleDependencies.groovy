@@ -24,12 +24,14 @@ class ComponentWithMultipleDependencies {
     }
 
     boolean hasDependenciesInjectedCorrectly() {
-        return serviceRestClient != null &&
-                    restOperations != null &&
-                        restOperationsImplementedBySpring()
+        return nonNullDependencies() && restOperationsImplementedBySpring()
     }
 
     private boolean restOperationsImplementedBySpring() {
-        restOperations.getClass() == RestTemplate
+        return restOperations.getClass() == RestTemplate
+    }
+
+    private boolean nonNullDependencies() {
+        return serviceRestClient != null && restOperations != null
     }
 }

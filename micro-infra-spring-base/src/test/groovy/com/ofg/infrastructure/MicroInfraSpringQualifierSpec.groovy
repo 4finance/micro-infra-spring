@@ -20,9 +20,9 @@ import org.springframework.web.client.RestTemplate
 class MicroInfraSpringQualifierSpec extends MvcIntegrationSpec {
 
     @Autowired
-    ComponentWithMultipleDependencies componentWithMultipleDependencies
+    ComponentWithTwoDifferentRestOperationsImplementations componentWithMultipleDependencies
 
-    def "Application can create its own RestOperations without NoUniqueBeanDefinitionException being raised"() {
+    def "should allow to create additional, custom RestOperations implementation when there is already one registered in Spring context"() {
         expect:
             componentWithMultipleDependencies.hasDependenciesInjectedCorrectly()
     }
@@ -35,20 +35,17 @@ class MicroInfraSpringQualifierSpec extends MvcIntegrationSpec {
 
         @Bean
         @Qualifier("CustomApplicationQualifier")
-        //Application creates its own RestTemplate
-        RestOperations applicationRestOperations() {
+        RestOperations customRestOperationsImplementation() {
             return new RestTemplate()
         }
 
         @Bean
-        //Application has a component using both: its own RestOperations and ServiceRestClient
-        ComponentWithMultipleDependencies componentWithMultipleDependencies() {
-            return new ComponentWithMultipleDependencies(serviceRestClient, applicationRestOperations())
+        ComponentWithTwoDifferentRestOperationsImplementations componentWithTwoDifferentRestOperationsImplementations() {
+            return new ComponentWithTwoDifferentRestOperationsImplementations(serviceRestClient, customRestOperationsImplementation())
         }
 
         @Bean
-        //Stubbing ServiceResolver (it's required by ServiceRestClient)
-        ServiceResolver serviceResolver() {
+        ServiceResolver stubForServiceResolver() {
             [:] as ServiceResolver
         }
     }

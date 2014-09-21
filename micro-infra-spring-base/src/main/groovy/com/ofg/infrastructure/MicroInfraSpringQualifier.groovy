@@ -15,9 +15,9 @@ class MicroInfraSpringQualifier {
     /**
      * Library specific value for @Qualifier annotation
      */
-    static final String VALUE = "micro-infra-spring"
+    public static final String VALUE = "micro-infra-spring"
 
     private MicroInfraSpringQualifier() {
-        //Empty and private by design
+        throw new UnsupportedOperationException("Class should not be instantiated!")
     }
 }

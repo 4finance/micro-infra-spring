@@ -6,28 +6,23 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.web.client.RestOperations
 import org.springframework.web.client.RestTemplate
 
-/**
- * Component used by tests that has multiple dependencies: RestOperations and ServiceRestClient
- *
- * Note that this class is created only for test and is located in test scope (not packaged into jar)!
- */
-class ComponentWithMultipleDependencies {
+class ComponentWithTwoDifferentRestOperationsImplementations {
 
     private ServiceRestClient serviceRestClient
     private RestOperations restOperations
 
     @Autowired
-    ComponentWithMultipleDependencies(ServiceRestClient serviceRestClient,
+    ComponentWithTwoDifferentRestOperationsImplementations(ServiceRestClient serviceRestClient,
                        @Qualifier("CustomApplicationQualifier") RestOperations restOperations) {
         this.serviceRestClient = serviceRestClient
         this.restOperations = restOperations
     }
 
     boolean hasDependenciesInjectedCorrectly() {
-        return nonNullDependencies() && restOperationsImplementedBySpring()
+        return nonNullDependencies() && qualifierAnnotatedRestOperationsWasInjected()
     }
 
-    private boolean restOperationsImplementedBySpring() {
+    private boolean qualifierAnnotatedRestOperationsWasInjected() {
         return restOperations.getClass() == RestTemplate
     }
 

@@ -19,9 +19,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(PRODUCTION)
 class NoPrettyPrintingInProductionEnvironmentSpec extends MvcIntegrationSpec {
 
-    private String NOT_PRETTY_PRINTED_RESULT = new ClassPathResource("notPrettyPrinted.json").inputStream.text.trim()
+    String NOT_PRETTY_PRINTED_RESULT = new ClassPathResource("notPrettyPrinted.json").inputStream.text.trim()
 
-    def "In production environment pretty printing is not desirable"() {
+    def "should return non-pretty JSON when production profile is active"() {
         expect:
             mockMvc.perform(get("/test"))
                 .andExpect(content().string(NOT_PRETTY_PRINTED_RESULT))

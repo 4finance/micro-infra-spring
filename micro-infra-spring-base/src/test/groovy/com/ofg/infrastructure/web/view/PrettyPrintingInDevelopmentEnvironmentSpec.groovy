@@ -19,9 +19,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(DEVELOPMENT)
 class PrettyPrintingInDevelopmentEnvironmentSpec extends MvcIntegrationSpec {
 
-    private String PRETTY_PRINTED_RESULT = new ClassPathResource("prettyPrinted.json").inputStream.text.trim()
+    String PRETTY_PRINTED_RESULT = new ClassPathResource("prettyPrinted.json").inputStream.text.trim()
 
-    def "In development environment pretty printed JSON should be returned"() {
+    def "should return pretty JSON when development profile is active"() {
         expect:
             mockMvc.perform(get("/test"))
                 .andExpect(content().string(PRETTY_PRINTED_RESULT))

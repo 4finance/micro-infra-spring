@@ -28,13 +28,13 @@ class ViewConfiguration extends WebMvcConfigurerAdapter {
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        super.configureMessageConverters(converters);
-        converters.add(buildJacksonConverter());
+        super.configureMessageConverters(converters)
+        converters.add(buildJacksonConverter())
     }
 
     private MappingJackson2HttpMessageConverter buildJacksonConverter() {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter()
-        converter.setPrettyPrint(prettyPrintingBasedOnProfile())
+        converter.prettyPrint = prettyPrintingBasedOnProfile()
         converter.objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
         return converter
     }

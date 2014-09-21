@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod
  * Test controller that returns {@link SampleBean } which is then serialized to JSON.
  * In development or test environment JSON is supposed to be pretty printed.
  * In production environment JSON should not be pretty printed.
- *
- * Note that this class is created only for tests and is located in test scope (not packaged into jar)!
  */
 class TestController {
 

@@ -1,6 +1,9 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
+
+import com.ofg.infrastructure.MicroInfraSpringQualifier
 import com.ofg.infrastructure.discovery.ServiceResolver
 import groovy.transform.TypeChecked
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.client.RestOperations
@@ -16,7 +19,8 @@ import org.springframework.web.client.RestOperations
 class ServiceRestClientConfiguration {
 
     @Bean
-    ServiceRestClient serviceRestClient(RestOperations restOperations, ServiceResolver serviceResolver) {
+    ServiceRestClient serviceRestClient(@Qualifier(MicroInfraSpringQualifier.VALUE) RestOperations restOperations,
+                                        ServiceResolver serviceResolver) {
         return new ServiceRestClient(restOperations, serviceResolver)
     }
 

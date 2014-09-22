@@ -1,8 +1,16 @@
+0.4.1
+-----
+Bug fixes:
+* [WireMock.resetMappings() deletes mappings taken from files](https://github.com/4finance/micro-deps-spring-config/issues/3)
+
 0.4.0
 -----
 New features:
 * default profiles
 * [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.5.5`
+
+Bug fixes:
+* [Log4j stuff included in fatJar even though there are excludes present](https://github.com/4finance/micro-deps-spring-config/issues/1)
 
 Breaking changes:
 * in dev & test profiles `com.ofg.infrastructure.discovery.StubbedServiceResolver` is used in place of `com.ofg.infrastructure.discovery.ZookeeperServiceResolver`

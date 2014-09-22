@@ -52,8 +52,7 @@ class ServiceRestClient {
     private final RestOperations restOperations
     private final ServiceResolver serviceResolver
 
-    ServiceRestClient(RestOperations restOperations,
-                      ServiceResolver serviceResolver) {
+    ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver) {
         this.restOperations = restOperations
         this.serviceResolver = serviceResolver
     }

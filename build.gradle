@@ -1,5 +1,7 @@
 apply plugin: 'groovy'
 apply plugin: 'com.ofg.uptodate'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
 
 buildscript {
     repositories {
@@ -9,11 +11,16 @@ buildscript {
 
     dependencies {
         classpath 'com.ofg:uptodate-gradle-plugin:1.1.0'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
     }
 }
 
 sourceCompatibility = 1.7
+
+group = 'com.ofg'
+description = 'Runs stubs for service collaborators'
+version = '0.0.1'
 
 ext {
     stubRepositoryPath = 'repository'
@@ -68,6 +75,60 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.1'
 }
 
+task addHashFile << {
+    String gitCmd = "git log --pretty=format:'%H' -n 1"
+    def proc = gitCmd.execute()
+    proc.waitFor()
+    new File("commitHash.txt").withWriter { it << proc.in.text }
+}
+
+bintrayUpload.dependsOn 'build'
+
+bintray {
+    user = System.properties['bintrayUser']
+    key = System.properties['bintrayKey']
+
+    publications = ['mavenJava']
+    pkg {
+        repo = 'micro'
+        userOrg = '4finance'
+        name = project.name
+        desc = project.description
+        licenses = ['Apache-2.0']
+        labels = ['microservice']
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+jar {
+    dependsOn addHashFile
+    from "commitHash.txt"
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: groovydoc) {
+    classifier = 'javadoc'
+    from groovydoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
 if(project.hasProperty("coverage")) {
     apply plugin: 'jacoco'
     apply plugin: 'com.github.kt3k.coveralls'
@@ -87,3 +148,4 @@ if(project.hasProperty("coverage")) {
         ignoreFailures = true
     }
 }
+

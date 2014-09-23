@@ -2,7 +2,6 @@ package com.ofg.infrastructure.web.config
 
 import com.ofg.infrastructure.web.exception.ControllerExceptionConfiguration
 import com.ofg.infrastructure.web.filter.FilterConfiguration
-import com.ofg.infrastructure.web.resttemplate.custom.RestTemplateConfiguration
 import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClientConfiguration
 import com.ofg.infrastructure.web.view.ViewConfiguration
 import groovy.transform.TypeChecked
@@ -13,7 +12,6 @@ import org.springframework.context.annotation.Import
  * Configuration related to default web application setup. Imports:
  *  <li>
  *      <ul>
- *          <li>{@link RestTemplateConfiguration} - default RestTemplate with custom error handling</li>
  *          <li>{@link ServiceRestClientConfiguration} - RestTemplate abstraction with ServiceDiscovery</li>
  *          <li>{@link ControllerExceptionConfiguration} - default Exception handling</li>
  *          <li>{@link FilterConfiguration} - filter for logging request body</li>
@@ -21,7 +19,6 @@ import org.springframework.context.annotation.Import
  *      </ul>
  *  </li>
  *
- * @see RestTemplateConfiguration
  * @see ServiceRestClientConfiguration
  * @see ControllerExceptionConfiguration
  * @see FilterConfiguration
@@ -29,8 +26,7 @@ import org.springframework.context.annotation.Import
  */
 @Configuration
 @TypeChecked
-@Import([RestTemplateConfiguration,
-        ServiceRestClientConfiguration,
+@Import([ServiceRestClientConfiguration,
         ControllerExceptionConfiguration,
         FilterConfiguration,
         ViewConfiguration])

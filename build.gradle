@@ -1,0 +1,120 @@
+apply plugin: 'groovy'
+apply plugin: 'com.ofg.uptodate'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.ofg:uptodate-gradle-plugin:1.1.0'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
+        if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
+    }
+}
+
+sourceCompatibility = 1.7
+
+group = 'com.ofg'
+description = 'Spring configuration for stub-runner'
+version = '0.0.1-SNAPSHOT'
+
+ext {
+    curatorVersion = '2.6.0'
+    slf4jVersion = '1.7.7'
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.3.6'
+    compile 'com.github.tomakehurst:wiremock:1.48'
+    compile "org.apache.curator:curator-x-discovery:$curatorVersion"
+    compile "org.apache.curator:curator-test:$curatorVersion"
+    compile "org.slf4j:slf4j-api:$slf4jVersion"
+    compile "org.slf4j:log4j-over-slf4j:$slf4jVersion"
+    compile 'ch.qos.logback:logback-classic:1.1.2'
+
+    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+}
+
+task addHashFile << {
+    String gitCmd = "git log --pretty=format:'%H' -n 1"
+    def proc = gitCmd.execute()
+    proc.waitFor()
+    new File("commitHash.txt").withWriter { it << proc.in.text }
+}
+
+bintrayUpload.dependsOn 'build'
+
+bintray {
+    user = System.properties['bintrayUser']
+    key = System.properties['bintrayKey']
+
+    publications = ['mavenJava']
+    pkg {
+        repo = 'micro'
+        userOrg = '4finance'
+        name = project.name
+        desc = project.description
+        licenses = ['Apache-2.0']
+        labels = ['microservice']
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+jar {
+    dependsOn addHashFile
+    from "commitHash.txt"
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: groovydoc) {
+    classifier = 'javadoc'
+    from groovydoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+if(project.hasProperty("coverage")) {
+    apply plugin: 'jacoco'
+    apply plugin: 'com.github.kt3k.coveralls'
+
+    jacoco {
+        toolVersion = '0.7.1.201405082137'
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled = true // coveralls plugin depends on xml format report
+            html.enabled = true
+        }
+    }
+
+    test {
+        ignoreFailures = true
+    }
+}
+

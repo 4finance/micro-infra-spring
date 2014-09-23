@@ -1,4 +1,4 @@
-0.4.0
+0.4.0-SNAPSHOT
 -----
 New features:
 * [Issue 14](https://github.com/4finance/micro-infra-spring/issues/14) Make swagger's UI access microservice's port from properties and not from string

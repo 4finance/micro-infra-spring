@@ -5,6 +5,8 @@ import groovy.transform.CompileStatic
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
+import static com.ofg.stub.mapping.MappingDescriptor.MappingType.GLOBAL
+
 @CompileStatic
 @EqualsAndHashCode
 @ToString
@@ -14,7 +16,7 @@ class MappingDescriptor {
 
     MappingDescriptor(File mappingDescriptor) {
         this.descriptor = mappingDescriptor
-        this.mappingType = MappingType.GLOBAL
+        this.mappingType = GLOBAL
     }
 
     MappingDescriptor(File mappingDescriptor, MappingType mappingType) {

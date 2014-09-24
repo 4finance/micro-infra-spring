@@ -45,7 +45,7 @@ class StubRegistry {
     private static void registerInstance(StubServer stubServer, CuratorFramework client) {
         ServiceDiscovery serviceDiscovery = serviceDiscoveryFor(stubServer, client)
         serviceDiscovery.start()
-        log.debug("Registered stub server for project ${stubServer.projectMetadata.projectName} in ${stubServer.projectMetadata.context} context")
+        log.debug("Registered stub server for project ${stubServer.projectMetadata.projectRelativePath} in ${stubServer.projectMetadata.context} context")
     }
 
     @PackageScope
@@ -63,7 +63,7 @@ class StubRegistry {
                 .uriSpec(URI_SPEC)
                 .address('localhost')
                 .port(stubServer.port)
-                .name(stubServer.projectMetadata.projectName)
+                .name(stubServer.projectMetadata.projectRelativePath)
                 .build()
     }
 }

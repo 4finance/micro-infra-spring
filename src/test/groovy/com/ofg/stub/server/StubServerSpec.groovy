@@ -8,7 +8,7 @@ class StubServerSpec extends Specification {
     static final int STUB_SERVER_PORT = 12180
 
     File repository = new File('src/test/resources/repository')
-    ProjectMetadata projectMetadata = new ProjectMetadata('com/ofg/bye', 'pl')
+    ProjectMetadata projectMetadata = new ProjectMetadata('bye', 'com/ofg/bye', 'pl')
 
     def 'should register stub mappings upon server start'() {
         given:

@@ -26,7 +26,7 @@ class StubServer {
 
     void start() {
         wireMockServer.start()
-        log.info("Started stub server for project $projectMetadata.projectName on port ${wireMockServer.port()}")
+        log.info("Started stub server for project $projectMetadata.projectRelativePath on port ${wireMockServer.port()}")
         registerStubMappings()
     }
 

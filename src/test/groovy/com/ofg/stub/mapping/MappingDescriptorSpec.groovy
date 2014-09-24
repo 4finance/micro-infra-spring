@@ -5,7 +5,7 @@ import spock.lang.Specification
 import static com.github.tomakehurst.wiremock.http.RequestMethod.GET
 
 class MappingDescriptorSpec extends Specification {
-    static final File MAPPING_DESCRIPTOR = new File('src/test/resources/repository/com/ofg/ping/ping.json')
+    public static final File MAPPING_DESCRIPTOR = new File('src/test/resources/repository/mappings/com/ofg/ping/ping.json')
 
     def 'should describe stub mapping'() {
         given:

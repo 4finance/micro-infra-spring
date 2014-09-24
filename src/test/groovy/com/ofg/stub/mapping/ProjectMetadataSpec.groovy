@@ -6,12 +6,13 @@ class ProjectMetadataSpec extends Specification {
 
     def 'should build full path with context'() {
         given:
-            String projectName = 'com/ofg/ping'
+            String projectName = 'ping'
+            String projectPath = 'com/ofg/ping'
             String context = 'lv'
-            ProjectMetadata projectMetadata = new ProjectMetadata(projectName, context)
+            ProjectMetadata projectMetadata = new ProjectMetadata(projectName, projectPath, context)
         when:
-            String actualFullPath = projectMetadata.getFullPath()
+            String actualFullPath = projectMetadata.getPathWithContext()
         then:
-            "$context/$projectName" == actualFullPath
+            actualFullPath == "$context/$projectPath"
     }
 }

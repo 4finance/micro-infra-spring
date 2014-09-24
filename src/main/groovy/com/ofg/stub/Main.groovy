@@ -1,5 +1,4 @@
 package com.ofg.stub
-
 import com.ofg.stub.mapping.DescriptorRepository
 import com.ofg.stub.mapping.ProjectMetadata
 import com.ofg.stub.registry.StubRegistry
@@ -9,6 +8,7 @@ import groovy.util.logging.Slf4j
 
 import static com.ofg.stub.mapping.ProjectMetadataResolver.resolveAllProjectsFromRepository
 import static com.ofg.stub.mapping.ProjectMetadataResolver.resolveFromMetadata
+import static org.apache.commons.lang.StringUtils.isNotBlank
 
 @TypeChecked
 @Slf4j
@@ -40,7 +40,7 @@ class Main {
     }
 
     private static List<ProjectMetadata> resolveProjects(DescriptorRepository repository, String[] args) {
-        if (args[1]) {
+        if (isNotBlank(args[1])) {
             File metadata = new File(repository.location.path, args[1])
             return resolveFromMetadata(metadata)
         } else {

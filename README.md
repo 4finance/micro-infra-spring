@@ -13,7 +13,7 @@ To run stubs execute `gradle run<ProjectMetadataFileWithoutExtension>Stubs`.
 For example: to run stubs for `healthCheck` project execute `gradle runHealthCheckStubs`.
 This will:
 * start Zookeeper
-* run stubs for projects defined in healthCheck.json
+* run stubs for projects defined in healthCheck.json from both global nad realm specific context
 * register stubs in Zookeeper
 
 #### Running all stubs
@@ -64,7 +64,37 @@ Example:
 }
 ```
 
-By default project metadata definitions are stored at stub repository root
+By default project metadata definitions are stored at stub repository root. 
+
+#### Global vs Realm specific stubs
+
+Assuming the following metadata configuration:
+
+```
+{
+    "pl": [
+        "com/ofg/foo",
+        "com/ofg/bar"
+    ]
+}
+```
+
+You can define global stubbing behaviour (Wiremock will be fed with those stubs for all contexts) under the folder: 
+
+```
+com/ofg/foo
+```
+
+To override existing or add new behaviour just place your mappings under:
+
+```
+pl/com/ofg/foo
+```
+
+We ensure such ordering:
+
+* Global mappings will be registered in Wiremock
+* Afterwards realm specific stubs will get registered
 
 #### Stubbing collaborators
 

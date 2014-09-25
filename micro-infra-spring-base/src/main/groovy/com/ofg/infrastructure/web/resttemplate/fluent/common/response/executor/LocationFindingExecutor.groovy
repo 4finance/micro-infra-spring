@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
 
 import groovy.transform.TypeChecked
+import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.web.client.RestOperations
 
@@ -25,11 +26,24 @@ abstract class LocationFindingExecutor implements LocationReceiving {
 
     @Override
     URI forLocation() {
-        if(params.url) {
-            return restOperations.exchange(new URI(appendPathToHost(params.host as String, params.url as URI)), getHttpMethod(), getHttpEntityFrom(params), params.request.class)?.headers?.getLocation()
-        } else if(params.urlTemplate) {
-            return restOperations.exchange(appendPathToHost(params.host as String, params.urlTemplate as String), getHttpMethod(), getHttpEntityFrom(params), params.request.class, params.urlVariablesArray as Object[] ?: params.urlVariablesMap as Map<String, ?>)?.headers?.getLocation()
+        if (params.url) {
+            return getLocation(restOperations.exchange(
+                    new URI(appendPathToHost(params.host as String, params.url as URI)),
+                    getHttpMethod(),
+                    getHttpEntityFrom(params),
+                    params.request.class))
+        } else if (params.urlTemplate) {
+            return getLocation(restOperations.exchange(
+                    appendPathToHost(params.host as String, params.urlTemplate as String),
+                    getHttpMethod(),
+                    getHttpEntityFrom(params),
+                    params.request.class,
+                    params.urlVariablesArray as Object[] ?: params.urlVariablesMap as Map<String, ?>))
         }
         throw new InvalidHttpMethodParametersException(params)
+    }
+
+    private static URI getLocation(HttpEntity entity) {
+        entity?.headers?.getLocation()
     }
 }

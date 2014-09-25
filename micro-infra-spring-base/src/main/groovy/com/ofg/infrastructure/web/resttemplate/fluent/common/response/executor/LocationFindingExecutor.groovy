@@ -44,6 +44,6 @@ abstract class LocationFindingExecutor implements LocationReceiving {
     }
 
     private static URI getLocation(HttpEntity entity) {
-        entity?.headers?.getLocation()
+        return entity?.headers?.getLocation()
     }
 }

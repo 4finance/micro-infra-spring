@@ -3,6 +3,9 @@
 New features:
 * [Issue 14](https://github.com/4finance/micro-infra-spring/issues/14) Make swagger's UI access microservice's port from properties and not from string
 
+Bug fixes:
+* [Issue 30](https://github.com/4finance/micro-infra-spring/issues/30) NoUniqueBeanDefinitionException of type RestOperations
+
 0.3.0
 -----
 New features:
@@ -20,7 +23,7 @@ New features:
 
 0.2.0
 -----
-New features:
+New features:ServiceRestClientConfiguration
 * [Issue 17](https://github.com/4finance/micro-infra-spring/issues/17) Moved metrics path generation from 'bluecash-adapter' to micro-infra-spring
 * [Issue 16](https://github.com/4finance/micro-infra-spring/issues/16) Copied MetricsPublishingConfiguration in BootMicroservice to micro-infra-spring
 

@@ -721,25 +721,7 @@ dependencies {
 }
 ```
 
-and either
-
-component scan over __com.ofg.infrastructure.web.resttemplate.custom__:
-
-```
-@Configuration
-@ComponentScan("com.ofg.infrastructure.web.resttemplate.custom")
-class MyWebAppConfiguration {
-}
-```
-
-or add the configuration explicitly
-
-```
-@Configuration
-@Import(com.ofg.infrastructure.web.resttemplate.custom.RestTemplateConfiguration)
-class MyModuleConfiguration {
-}
-```
+and you can extend this __RestTemplate__ and use it in your own code.
 
 ## Abstraction over RestTemplate - bound with service discovery
 

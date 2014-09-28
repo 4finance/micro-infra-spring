@@ -1,4 +1,9 @@
-0.4.0-SNAPSHOT
+0.4.1
+-----
+Bug fixes:
+* [Issue 39](https://github.com/4finance/micro-infra-spring/issues/39) Version 0.4.0 introduced an exception that broke JSON serialization
+
+0.4.0
 -----
 New features:
 * [Issue 14](https://github.com/4finance/micro-infra-spring/issues/14) Make swagger's UI access microservice's port from properties and not from string

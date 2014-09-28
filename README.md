@@ -43,7 +43,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.ofg:micro-infra-spring:0.3.0'
+    compile 'com.ofg:micro-infra-spring:0.4.1'
 }
 ```
 
@@ -77,7 +77,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+    compile 'com.ofg:micro-infra-spring-base:0.4.1'
 }
 ```
 
@@ -153,7 +153,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+    compile 'com.ofg:micro-infra-spring-base:0.4.1'
 }
 ```
 
@@ -231,7 +231,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+    compile 'com.ofg:micro-infra-spring-base:0.4.1'
 }
 ```
 
@@ -254,7 +254,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+    compile 'com.ofg:micro-infra-spring-base:0.4.1'
 }
 ```
 
@@ -361,7 +361,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+    compile 'com.ofg:micro-infra-spring-base:0.4.1'
 }
 ```
 
@@ -441,7 +441,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.ofg:micro-infra-spring-swagger:0.3.0'
+    compile 'com.ofg:micro-infra-spring-swagger:0.4.1'
 }
 ```
 
@@ -499,7 +499,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.ofg:micro-infra-spring-swagger-ui:0.3.0'
+    compile 'com.ofg:micro-infra-spring-swagger-ui:0.4.1'
 }
 ```
 
@@ -550,7 +550,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+    compile 'com.ofg:micro-infra-spring-base:0.4.1'
 }
 ```
 
@@ -622,7 +622,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+    compile 'com.ofg:micro-infra-spring-base:0.4.1'
 }
 ```
 
@@ -670,7 +670,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+    compile 'com.ofg:micro-infra-spring-base:0.4.1'
 }
 ```
 
@@ -717,7 +717,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+    compile 'com.ofg:micro-infra-spring-base:0.4.1'
 }
 ```
 
@@ -824,7 +824,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.ofg:micro-infra-spring-base:0.3.0'
+    compile 'com.ofg:micro-infra-spring-base:0.4.1'
 }
 ```
 
@@ -911,7 +911,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.ofg:micro-infra-spring-reactor:0.3.0'
+    compile 'com.ofg:micro-infra-spring-reactor:0.4.1'
 }
 ```
 

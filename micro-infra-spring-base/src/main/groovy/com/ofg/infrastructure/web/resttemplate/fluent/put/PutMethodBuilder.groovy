@@ -75,7 +75,8 @@ class PutMethodBuilder extends LocationFindingExecutor implements PutMethod, Req
 
     @Override
     ResponseReceivingPutMethod body(Object request) {
-        params.request = request
+        Object requestToSet = (request instanceof GString ? request.toString() : request)
+        params.request = requestToSet
         return this
     }
 

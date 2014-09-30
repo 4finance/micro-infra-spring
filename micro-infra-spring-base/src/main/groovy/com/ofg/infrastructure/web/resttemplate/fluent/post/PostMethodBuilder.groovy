@@ -75,7 +75,8 @@ class PostMethodBuilder extends LocationFindingExecutor implements PostMethod, R
 
     @Override
     ResponseReceivingPostMethod body(Object request) {
-        params.request = request
+        Object requestToSet = (request instanceof GString ? request.toString() : request)
+        params.request = requestToSet
         return this
     }
 

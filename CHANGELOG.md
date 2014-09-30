@@ -1,3 +1,8 @@
+0.4.2
+-----
+Bug fixes:
+* [Issue 40](https://github.com/4finance/micro-infra-spring/issues/40) Using micro-infra-spring-swagger adds unnecessary dependencies (transitively) to project's runtime classpath
+
 0.4.1
 -----
 Bug fixes:

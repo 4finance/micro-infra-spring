@@ -11,27 +11,22 @@ class CorrelationIdInterceptorSpec extends Specification {
 
     def "should set new correlationId header in request inbound message if missing"() {
         given:
-        Exchange exchange = defaultExchange()
-
-
+            Exchange exchange = defaultExchange()
         when:
-        new CorrelationIdInterceptor().process(exchange)
-
+            new CorrelationIdInterceptor().process(exchange)
         then:
-        exchange.getIn().getHeader(CorrelationIdHolder.CORRELATION_ID_HEADER) != null
+            exchange.getIn().getHeader(CorrelationIdHolder.CORRELATION_ID_HEADER) != null
     }
 
     def "should set correlationId in holder from header of inbound message"() {
         given:
-        Exchange exchange = defaultExchange()
-        def correlationIdValue = UUID.randomUUID().toString()
-        exchange.getIn().setHeader(CorrelationIdHolder.CORRELATION_ID_HEADER, correlationIdValue)
-
+            Exchange exchange = defaultExchange()
+            def correlationIdValue = UUID.randomUUID().toString()
+            exchange.getIn().setHeader(CorrelationIdHolder.CORRELATION_ID_HEADER, correlationIdValue)
         when:
-        new CorrelationIdInterceptor().process(exchange)
-
+            new CorrelationIdInterceptor().process(exchange)
         then:
-        CorrelationIdHolder.get() == correlationIdValue
+            CorrelationIdHolder.get() == correlationIdValue
     }
 
     Exchange defaultExchange() {

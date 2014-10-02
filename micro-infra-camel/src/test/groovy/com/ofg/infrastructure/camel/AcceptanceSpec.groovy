@@ -2,6 +2,7 @@ package com.ofg.infrastructure.camel
 
 import com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder
 import org.springframework.test.annotation.DirtiesContext
+import spock.lang.AutoCleanup
 
 import static com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder.*
 import groovy.util.logging.Slf4j
@@ -22,14 +23,10 @@ import spock.lang.Specification
 @Slf4j
 class AcceptanceSpec extends Specification {
 
-    @Autowired
-    private ModelCamelContext camelContext
-
-    @Autowired
-    private RouteBuilder routeBuilder
-
-    private MockEndpoint resultEndpoint;
-    private ProducerTemplate template;
+    @Autowired ModelCamelContext camelContext
+    @Autowired RouteBuilder routeBuilder
+    MockEndpoint resultEndpoint;
+    @AutoCleanup ProducerTemplate template;
 
     def setup() {
         camelContext.addRoutes(routeBuilder)
@@ -41,50 +38,39 @@ class AcceptanceSpec extends Specification {
     }
 
     def cleanup() {
-        template?.stop()
         removeRouteDefinitions()
     }
 
-    @DirtiesContext
     def "should set correlationId from header of input message"() {
         given:
-        String correlationIdValue = UUID.randomUUID().toString();
-
+            String correlationIdValue = UUID.randomUUID().toString();
         when:
-        template.sendBodyAndHeader("<message/>", CORRELATION_ID_HEADER, correlationIdValue);
-
+            template.sendBodyAndHeader("<message/>", CORRELATION_ID_HEADER, correlationIdValue);
         then:
-        CorrelationIdHolder.get() == correlationIdValue
+            CorrelationIdHolder.get() == correlationIdValue
     }
 
-    @DirtiesContext
     def "should set new correlationId if header in input message is empty"() {
         when:
-        template.sendBody("<message/>");
-
+            template.sendBody("<message/>");
         then:
-        CorrelationIdHolder.get() != null
+            CorrelationIdHolder.get() != null
     }
 
-    @DirtiesContext
     def "should set correlationId in output message when it is missing on the input"() {
         when:
-        template.sendBody("<message/>");
-
+            template.sendBody("<message/>");
         then:
-        resultEndpoint.message(0).header(CORRELATION_ID_HEADER).isNotNull()
+            resultEndpoint.message(0).header(CORRELATION_ID_HEADER).isNotNull()
     }
 
-    @DirtiesContext
     def "should copy correlationId from header of input message to the output"() {
         given:
-        String correlationIdValue = UUID.randomUUID().toString();
-
+            String correlationIdValue = UUID.randomUUID().toString();
         when:
-        template.sendBodyAndHeader("<message/>", CORRELATION_ID_HEADER, correlationIdValue);
-
+            template.sendBodyAndHeader("<message/>", CORRELATION_ID_HEADER, correlationIdValue);
         then:
-        resultEndpoint.message(0).header(CORRELATION_ID_HEADER).isEqualTo(correlationIdValue)
+            resultEndpoint.message(0).header(CORRELATION_ID_HEADER).isEqualTo(correlationIdValue)
     }
 
     private void removeRouteDefinitions() {

@@ -26,7 +26,7 @@ class AcceptanceSpec extends Specification {
     @Autowired ModelCamelContext camelContext
     @Autowired RouteBuilder routeBuilder
     MockEndpoint resultEndpoint;
-    @AutoCleanup ProducerTemplate template;
+    @AutoCleanup('stop') ProducerTemplate template;
 
     def setup() {
         camelContext.addRoutes(routeBuilder)

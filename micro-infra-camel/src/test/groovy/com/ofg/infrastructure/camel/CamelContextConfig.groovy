@@ -17,7 +17,7 @@ class CamelContextConfig extends SingleRouteCamelConfiguration {
     private class TestRouteBuilder extends CorrelationIdRouteBuilder {
         public void configure() {
             super.configure()
-            from("direct:start").to("mock:result").routeId("route-1");
+            from("direct:start").to("mock:result").routeId("route-1")
         }
     }
 }

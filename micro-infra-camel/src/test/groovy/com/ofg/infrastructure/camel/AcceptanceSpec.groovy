@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.camel
 
 import com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder
+import org.apache.camel.model.RouteDefinition
 import org.springframework.test.annotation.DirtiesContext
 import spock.lang.AutoCleanup
 
@@ -25,8 +26,8 @@ class AcceptanceSpec extends Specification {
 
     @Autowired ModelCamelContext camelContext
     @Autowired RouteBuilder routeBuilder
-    MockEndpoint resultEndpoint;
-    @AutoCleanup('stop') ProducerTemplate template;
+    MockEndpoint resultEndpoint
+    @AutoCleanup('stop') ProducerTemplate template
 
     def setup() {
         camelContext.addRoutes(routeBuilder)
@@ -43,38 +44,38 @@ class AcceptanceSpec extends Specification {
 
     def "should set correlationId from header of input message"() {
         given:
-            String correlationIdValue = UUID.randomUUID().toString();
+            String correlationIdValue = UUID.randomUUID().toString()
         when:
-            template.sendBodyAndHeader("<message/>", CORRELATION_ID_HEADER, correlationIdValue);
+            template.sendBodyAndHeader("<message/>", CORRELATION_ID_HEADER, correlationIdValue)
         then:
             CorrelationIdHolder.get() == correlationIdValue
     }
 
     def "should set new correlationId if header in input message is empty"() {
         when:
-            template.sendBody("<message/>");
+            template.sendBody("<message/>")
         then:
             CorrelationIdHolder.get() != null
     }
 
     def "should set correlationId in output message when it is missing on the input"() {
         when:
-            template.sendBody("<message/>");
+            template.sendBody("<message/>")
         then:
             resultEndpoint.message(0).header(CORRELATION_ID_HEADER).isNotNull()
     }
 
     def "should copy correlationId from header of input message to the output"() {
         given:
-            String correlationIdValue = UUID.randomUUID().toString();
+            String correlationIdValue = UUID.randomUUID().toString()
         when:
-            template.sendBodyAndHeader("<message/>", CORRELATION_ID_HEADER, correlationIdValue);
+            template.sendBodyAndHeader("<message/>", CORRELATION_ID_HEADER, correlationIdValue)
         then:
             resultEndpoint.message(0).header(CORRELATION_ID_HEADER).isEqualTo(correlationIdValue)
     }
 
     private void removeRouteDefinitions() {
-        def routeDefinitions = camelContext.getRouteDefinitions()
+        List<RouteDefinition> routeDefinitions = camelContext.getRouteDefinitions()
         camelContext.removeRouteDefinitions(routeDefinitions)
     }
 }

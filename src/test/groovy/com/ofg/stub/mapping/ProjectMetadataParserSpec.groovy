@@ -5,13 +5,13 @@ import spock.lang.Specification
 class ProjectMetadataParserSpec extends Specification {
     public static final String PL_CONTEXT = 'pl'
     public static final File METADATA = new File('src/test/resources/repository/projects/metadata.json')
-    public static final ProjectMetadata PL_HELLO_PROJECT = new ProjectMetadata('hello', 'com/ofg/hello', PL_CONTEXT)
-    public static final ProjectMetadata PL_BYE_PROJECT = new ProjectMetadata('bye', 'com/ofg/bye', PL_CONTEXT)
-    public static final ProjectMetadata LV_PING_PROJECT = new ProjectMetadata('ping', 'com/ofg/ping', 'lv')
+    public static final ProjectMetadata PL_HELLO_PROJECT = new ProjectMetadata('metadata', 'com/ofg/hello', PL_CONTEXT)
+    public static final ProjectMetadata PL_BYE_PROJECT = new ProjectMetadata('metadata', 'com/ofg/bye', PL_CONTEXT)
+    public static final ProjectMetadata LV_PING_PROJECT = new ProjectMetadata('metadata', 'com/ofg/ping', 'lv')
 
     public static final ProjectMetadata PL_DESCRIPTOR_PROJECT = new ProjectMetadata('descriptor', '', PL_CONTEXT)
     public static final ProjectMetadata PL_BROKER_PROJECT = new ProjectMetadata('brokers', 'brokers', PL_CONTEXT)
-    public static final ProjectMetadata PL_ANOTHER_DESCRIPTOR_PROJECT = new ProjectMetadata('nested', 'brokers/nested', PL_CONTEXT)
+    public static final ProjectMetadata PL_ANOTHER_DESCRIPTOR_PROJECT = new ProjectMetadata('anotherDescriptor', 'brokers/nested', PL_CONTEXT)
     public static final File ROOT_STUB_REPOSITORY = new File('src/test/resources/anotherRepository/')
 
     def 'should parse project metadata'() {

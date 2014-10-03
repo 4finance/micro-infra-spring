@@ -11,7 +11,10 @@ class ProjectMetadataResolver {
         List<ProjectMetadata> projects = []
         new JsonSlurper().parse(metadata).each { context, projectNames ->
             projectNames.each {
-                projects << new ProjectMetadata(metadata.name, it, context)
+                String name = metadata.name.with {
+                    return substring(0, lastIndexOf('.'))
+                }
+                projects << new ProjectMetadata(name, it, context)
             }
         }
         return projects

@@ -9,10 +9,20 @@ import groovy.util.logging.Slf4j
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
 
+/**
+ * Interceptor class that ensures the correlationId header is present in {@Exchange}.
+ */
 @Slf4j
 @CompileStatic
 class CorrelationIdInterceptor implements Processor {
 
+    /**
+     * Ensures correlationId header is set in incoming message (if is missing a new correlationId is created and set).
+     *
+     * @param exchange Camel's container holding received message
+     *
+     * @throws Exception if an internal processing error has occurred
+     */
     @Override
     void process(Exchange exchange) throws Exception {
         String correlationIdHeader = getCorrelationId(exchange)

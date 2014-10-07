@@ -10,8 +10,8 @@ import org.apache.camel.builder.RouteBuilder
 @CompileStatic
 class CamelRouteModifier {
 
-    static final String ANY = '*'
-    CamelContext camelContext
+    private static final String ANY = '*'
+    private final CamelContext camelContext
 
     CamelRouteModifier(CamelContext camelContext) {
         this.camelContext = camelContext
@@ -19,7 +19,6 @@ class CamelRouteModifier {
 
     void addCorrelationIdInterception() {
         log.debug('Modifying routes defined in Camel context...')
-
         camelContext.getRouteDefinitions().each {
             it.adviceWith(camelContext, new RouteBuilder() {
                 @Override

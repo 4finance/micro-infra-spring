@@ -27,12 +27,10 @@ import spock.lang.Specification
 class AcceptanceSpec extends Specification {
 
     @Autowired ModelCamelContext camelContext
-    @Autowired RouteBuilder routeBuilder
     @AutoCleanup('stop') ProducerTemplate template
     MockEndpoint resultEndpoint
 
     def setup() {
-        camelContext.addRoutes(routeBuilder)
         resultEndpoint =
                 ((InterceptSendToEndpoint)camelContext.getEndpoint('mock:result')).getDelegate()
         template = new DefaultProducerTemplate(

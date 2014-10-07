@@ -8,12 +8,12 @@ import org.apache.camel.builder.RouteBuilder
 
 @Slf4j
 @CompileStatic
-class CamelRouteModifier {
+class CorrelationIdOnCamelRouteSetter {
 
     private static final String ANY = '*'
     private final CamelContext camelContext
 
-    CamelRouteModifier(CamelContext camelContext) {
+    CorrelationIdOnCamelRouteSetter(CamelContext camelContext) {
         this.camelContext = camelContext
     }
 

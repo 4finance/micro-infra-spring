@@ -10,6 +10,7 @@ import org.apache.camel.builder.RouteBuilder
 @CompileStatic
 class CamelRouteModifier {
 
+    static final String ANY = '*'
     CamelContext camelContext
 
     CamelRouteModifier(CamelContext camelContext) {
@@ -25,7 +26,7 @@ class CamelRouteModifier {
                 void configure() throws Exception {
                     Processor correlationIdInterceptor = new CorrelationIdInterceptor()
                     interceptFrom().process(correlationIdInterceptor)
-                    interceptSendToEndpoint('*').process(correlationIdInterceptor)
+                    interceptSendToEndpoint(ANY).process(correlationIdInterceptor)
                 }
             })
         }

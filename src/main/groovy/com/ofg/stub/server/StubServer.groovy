@@ -1,4 +1,5 @@
 package com.ofg.stub.server
+
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.ofg.stub.mapping.MappingDescriptor
@@ -7,12 +8,11 @@ import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
+import static com.ofg.stub.mapping.MappingDescriptor.MappingType.GLOBAL
 
 @CompileStatic
 @Slf4j
 class StubServer {
-    private static final MAPPING_ENDPOINT = '/__admin/mappings/new'
-
     private WireMockServer wireMockServer
 
     final ProjectMetadata projectMetadata
@@ -44,17 +44,17 @@ class StubServer {
         registerStubs(sortedMappings, wireMock)
     }
 
-    private Iterable<MappingDescriptor> registerStubs(List<MappingDescriptor> sortedMappings, WireMock wireMock) {
+    private void registerStubs(List<MappingDescriptor> sortedMappings, WireMock wireMock) {
         sortedMappings.each {
             wireMock.register(it.mapping)
             log.debug("Registered stub mappings from $it.descriptor")
         }
     }
 
-    private Closure byGlobalMappingsFirst() {
+    private static Closure byGlobalMappingsFirst() {
         return {
             MappingDescriptor first, MappingDescriptor other ->
-                first.mappingType == MappingDescriptor.MappingType.GLOBAL ? -1 : 1
+                first.mappingType == GLOBAL ? -1 : 1
         }
     }
 }

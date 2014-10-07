@@ -1,21 +1,25 @@
 package com.ofg.stub.mapping
 
 import com.ofg.stub.mapping.MappingDescriptor.MappingType
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 
-import static com.ofg.stub.mapping.DescriptorConstants.MAPPINGS_FOLDER_NAME
 import static com.ofg.stub.mapping.MappingDescriptor.MappingType.GLOBAL
 import static com.ofg.stub.mapping.MappingDescriptor.MappingType.REALM_SPECIFIC
 
-@TypeChecked
+@PackageScope
+@CompileStatic
 class DescriptorRepository {
-    private final File repositoryRoot
+    private final File path
 
-    DescriptorRepository(File repositoryRoot) {
-        this.repositoryRoot = repositoryRoot
+    DescriptorRepository(File repository) {
+        if (!repository.isDirectory()) {
+            throw new InvalidRepositoryLayout('missing descriptor repository')
+        }
+        path = repository
     }
 
-    List<MappingDescriptor> getAllProjectDescriptors(ProjectMetadata project) {
+    List<MappingDescriptor> getProjectDescriptors(ProjectMetadata project) {
         List<MappingDescriptor> mappingDescriptors = []
         mappingDescriptors.addAll(globalContextDescriptorsFrom(project))
         mappingDescriptors.addAll(realmContextDescriptorsFrom(project))
@@ -23,24 +27,18 @@ class DescriptorRepository {
     }
 
     private List<MappingDescriptor> globalContextDescriptorsFrom(ProjectMetadata project) {
-        File filesToIterate = new File(appendMappingsSuffix(repositoryRoot.path), project.projectRelativePath)
-        if (!filesToIterate.exists()) {
-            return []
-        }
-        return collectMappingDescriptors(filesToIterate, GLOBAL)
+        File descriptorsDirectory = new File(path, project.projectRelativePath)
+        return descriptorsDirectory.exists()? collectMappingDescriptors(descriptorsDirectory, GLOBAL) : []
     }
 
     private List<MappingDescriptor> realmContextDescriptorsFrom(ProjectMetadata project) {
-        File filesToIterate = new File(appendMappingsSuffix(repositoryRoot.path), project.pathWithContext)
-        if (!filesToIterate.exists()) {
-            return []
-        }
-        return collectMappingDescriptors(filesToIterate, REALM_SPECIFIC)
+        File descriptorsDirectory = new File(path, project.pathWithContext)
+        return descriptorsDirectory.exists() ? collectMappingDescriptors(descriptorsDirectory, REALM_SPECIFIC) : []
     }
 
-    private List<MappingDescriptor> collectMappingDescriptors(File filesToIterate, MappingType mappingType) {
+    private List<MappingDescriptor> collectMappingDescriptors(File descriptorsDirectory, MappingType mappingType) {
         List<MappingDescriptor> mappingDescriptors = []
-        filesToIterate.eachFileRecurse { File file ->
+        descriptorsDirectory.eachFileRecurse { File file ->
             if (isMappingDescriptor(file)) {
                 mappingDescriptors << new MappingDescriptor(file, mappingType)
             }
@@ -48,15 +46,7 @@ class DescriptorRepository {
         return mappingDescriptors
     }
 
-    URI getLocation() {
-        return repositoryRoot.toURI()
-    }
-
     private static boolean isMappingDescriptor(File file) {
         return file.isFile() && file.name.endsWith('.json')
-    }
-
-    private static String appendMappingsSuffix(String path) {
-        return "$path/$MAPPINGS_FOLDER_NAME"
     }
 }

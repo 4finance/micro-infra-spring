@@ -26,7 +26,7 @@ class ProjectMetadataParserSpec extends Specification {
 
     def 'should parse project metadata files that resides under default folder'() {
         given:
-            DescriptorRepository repository = new DescriptorRepository(ROOT_STUB_REPOSITORY)
+            StubRepository repository = new StubRepository(ROOT_STUB_REPOSITORY)
             List<ProjectMetadata> expectedProjects = [PL_DESCRIPTOR_PROJECT, PL_BROKER_PROJECT, PL_ANOTHER_DESCRIPTOR_PROJECT]
         when:
             List<ProjectMetadata> projects = ProjectMetadataResolver.resolveAllProjectsFromRepository(repository, PL_CONTEXT)
@@ -38,20 +38,10 @@ class ProjectMetadataParserSpec extends Specification {
     def 'should throw exception for empty context when creating meta data for all stubs'() {
         given:
             String emptyContext = ''
-            DescriptorRepository repository = new DescriptorRepository(ROOT_STUB_REPOSITORY)
+            StubRepository repository = new StubRepository(ROOT_STUB_REPOSITORY)
         when:
             ProjectMetadataResolver.resolveAllProjectsFromRepository(repository, emptyContext)
         then:
             thrown(NoContextProvidedException)
-    }
-
-    def 'should throw exception if there is no default directory for projects'() {
-        given:
-            File nonExistingFolder = new File('path/to/non/existing/folder')
-            DescriptorRepository repository = new DescriptorRepository(nonExistingFolder)
-        when:
-            ProjectMetadataResolver.resolveAllProjectsFromRepository(repository, 'someContext')
-        then:
-            thrown(ProjectFolderMissingException)
     }
 }

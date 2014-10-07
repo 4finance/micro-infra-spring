@@ -1,15 +1,15 @@
 package com.ofg.stub
 
-import com.ofg.stub.mapping.DescriptorRepository
 import com.ofg.stub.mapping.MappingDescriptor
 import com.ofg.stub.mapping.ProjectMetadata
+import com.ofg.stub.mapping.StubRepository
 import com.ofg.stub.registry.StubRegistry
 import com.ofg.stub.server.AvailablePortScanner
 import com.ofg.stub.server.StubServer
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
-@TypeChecked
+@CompileStatic
 @Slf4j
 class StubRunner {
 
@@ -22,7 +22,7 @@ class StubRunner {
         this.stubRegistry = stubRegistry
     }
 
-    void runStubs(DescriptorRepository repository, List<ProjectMetadata> projects) {
+    void runStubs(StubRepository repository, List<ProjectMetadata> projects) {
         startStubServers(projects, repository)
         stubRegistry.register(stubServers)
         log.info("All stubs are now running and registered in service registry available on port $stubRegistry.port")
@@ -33,9 +33,9 @@ class StubRunner {
         stubServers.each { it.stop() }
     }
 
-    private void startStubServers(List<ProjectMetadata> projects, DescriptorRepository repository) {
+    private void startStubServers(List<ProjectMetadata> projects, StubRepository repository) {
         projects.each {
-            List<MappingDescriptor> mappings = repository.getAllProjectDescriptors(it)
+            List<MappingDescriptor> mappings = repository.getProjectDescriptors(it)
             StubServer stubServer = new StubServer(portScanner.nextAvailablePort(), it, mappings)
             stubServer.start()
             stubServers << stubServer

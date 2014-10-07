@@ -1,9 +1,9 @@
 package com.ofg.stub.server
 
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
-@TypeChecked
+@CompileStatic
 @Slf4j
 class AvailablePortScanner {
 

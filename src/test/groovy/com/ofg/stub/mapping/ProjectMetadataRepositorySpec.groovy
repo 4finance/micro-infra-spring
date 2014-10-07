@@ -4,15 +4,15 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
-class DescriptorRepositorySpec extends Specification {
+class ProjectMetadataRepositorySpec extends Specification {
 
     @Rule public TemporaryFolder tempPath = new TemporaryFolder();
 
-    def 'should fail to initialize stub repository when descriptors directory is missing'() {
+    def 'should fail to initialize repository when projects metadata directory is missing'() {
         given:
             File doesNotExists = new File(tempPath.newFolder(), 'doesNotExists')
         when:
-            new DescriptorRepository(doesNotExists)
+            new ProjectMetadataRepository(doesNotExists)
         then:
             thrown(InvalidRepositoryLayout)
     }

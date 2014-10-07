@@ -3,39 +3,30 @@ package com.ofg.stub.mapping
 import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 
-import static com.ofg.stub.mapping.DescriptorConstants.PROJECTS_FOLDER_NAME
-
 @Slf4j
 class ProjectMetadataResolver {
     static List<ProjectMetadata> resolveFromMetadata(File metadata) {
         List<ProjectMetadata> projects = []
-        new JsonSlurper().parse(metadata).each { context, projectNames ->
-            projectNames.each {
-                String name = metadata.name.with {
-                    return substring(0, lastIndexOf('.'))
-                }
-                projects << new ProjectMetadata(name, it, context)
+        new JsonSlurper().parse(metadata).each { context, projectPaths ->
+            projectPaths.each { projectPath ->
+                projects << new ProjectMetadata(getProjectName(metadata), projectPath, context)
             }
         }
         return projects
     }
 
-    static List<ProjectMetadata> resolveAllProjectsFromRepository(DescriptorRepository repository, String context) {
+    static List<ProjectMetadata> resolveAllProjectsFromRepository(StubRepository stubRepository, String context) {
         checkIfContextIsProvided(context)
-        File projectFolder = new File("${repository.location.path}/$PROJECTS_FOLDER_NAME")
-        checkIfProjectFolderExists(projectFolder)
-        return collectProjectsFromProjectsFolder(projectFolder, context)
+        return collectProjectsFromProjectsFolder(stubRepository.projectMetadataRepository.path, context)
+    }
+
+    private static String getProjectName(File metadata) {
+        return metadata.name.substring(0, metadata.name.lastIndexOf('.'))
     }
 
     private static void checkIfContextIsProvided(String context) {
         if (!context) {
             throw new NoContextProvidedException()
-        }
-    }
-
-    private static void checkIfProjectFolderExists(File projectFolder) {
-        if (!projectFolder.exists()) {
-            throw new ProjectFolderMissingException()
         }
     }
 

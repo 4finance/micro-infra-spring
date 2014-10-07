@@ -24,7 +24,6 @@ class MappingDescriptor {
         this.mappingType = mappingType
     }
 
-
     StubMapping getMapping() {
         return StubMapping.buildFrom(descriptor.text)
     }

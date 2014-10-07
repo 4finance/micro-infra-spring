@@ -1,7 +1,8 @@
 package com.ofg.stub.server
-import com.ofg.stub.mapping.DescriptorRepository
+
 import com.ofg.stub.mapping.MappingDescriptor
 import com.ofg.stub.mapping.ProjectMetadata
+import com.ofg.stub.mapping.StubRepository
 import spock.lang.Specification
 
 class StubServerSpec extends Specification {
@@ -12,7 +13,7 @@ class StubServerSpec extends Specification {
 
     def 'should register stub mappings upon server start'() {
         given:
-            List<MappingDescriptor> mappingDescriptors = new DescriptorRepository(repository).getAllProjectDescriptors(projectMetadata)
+            List<MappingDescriptor> mappingDescriptors = new StubRepository(repository).getProjectDescriptors(projectMetadata)
             StubServer pingStubServer = new StubServer(STUB_SERVER_PORT, projectMetadata, mappingDescriptors)
         when:
             pingStubServer.start()

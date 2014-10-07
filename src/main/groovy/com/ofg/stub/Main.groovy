@@ -1,6 +1,7 @@
 package com.ofg.stub
-import com.ofg.stub.mapping.DescriptorRepository
+
 import com.ofg.stub.mapping.ProjectMetadata
+import com.ofg.stub.mapping.StubRepository
 import com.ofg.stub.registry.StubRegistry
 import com.ofg.stub.server.AvailablePortScanner
 import groovy.transform.TypeChecked
@@ -8,7 +9,6 @@ import groovy.util.logging.Slf4j
 
 import static com.ofg.stub.mapping.ProjectMetadataResolver.resolveAllProjectsFromRepository
 import static com.ofg.stub.mapping.ProjectMetadataResolver.resolveFromMetadata
-import static org.apache.commons.lang.StringUtils.isNotBlank
 
 @TypeChecked
 @Slf4j
@@ -26,7 +26,7 @@ class Main {
 
     private static void runStubs(String[] args) {
         File repositoryPath = new File(args[0])
-        DescriptorRepository repository = new DescriptorRepository(repositoryPath)
+        StubRepository repository = new StubRepository(repositoryPath)
         StubRegistry stubRegistry = new StubRegistry(portNumber(args[2]))
         AvailablePortScanner portScanner = new AvailablePortScanner(portNumber(args[3]), portNumber(args[4]))
         List<ProjectMetadata> projects = resolveProjects(repository, args)
@@ -39,9 +39,9 @@ class Main {
         Runtime.runtime.addShutdownHook(new Thread(stopAllServers))
     }
 
-    private static List<ProjectMetadata> resolveProjects(DescriptorRepository repository, String[] args) {
-        if (isNotBlank(args[1])) {
-            File metadata = new File(repository.location.path, args[1])
+    private static List<ProjectMetadata> resolveProjects(StubRepository repository, String[] args) {
+        if (args[1]) {
+            File metadata = new File(repository.getProjectMetadataLocation(args[1]))
             return resolveFromMetadata(metadata)
         } else {
             return resolveAllProjectsFromRepository(repository, getContext(args))

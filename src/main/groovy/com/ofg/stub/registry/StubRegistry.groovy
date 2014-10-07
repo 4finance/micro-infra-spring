@@ -1,8 +1,8 @@
 package com.ofg.stub.registry
 
 import com.ofg.stub.server.StubServer
+import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j
 import org.apache.curator.RetryPolicy
 import org.apache.curator.framework.CuratorFramework
@@ -14,7 +14,7 @@ import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
 import org.apache.curator.x.discovery.ServiceInstance
 import org.apache.curator.x.discovery.UriSpec
 
-@TypeChecked
+@CompileStatic
 @Slf4j
 class StubRegistry {
     private static final UriSpec URI_SPEC = new UriSpec('{scheme}://{address}:{port}')

@@ -11,6 +11,6 @@ dependencies {
     testRuntime("org.spockframework:spock-spring:$spockVersion") {
         exclude group: 'org.spockframework', module: 'spock-core'
     }
-    testCompile 'org.springframework:spring-test:4.1.0.RELEASE'
+    testCompile "org.springframework:spring-test:$springTestVersion"
     testCompile 'com.jayway.awaitility:awaitility:1.6.1'
 }

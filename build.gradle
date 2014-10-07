@@ -17,6 +17,7 @@ ext {
     groovyVersion = '2.3.7'
     spockVersion = '0.7-groovy-2.0'
     springBootVersion = '1.1.7.RELEASE'
+    springTestVersion = '4.1.0.RELEASE'
 }
 
 allprojects {

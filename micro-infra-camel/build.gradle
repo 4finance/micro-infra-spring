@@ -16,4 +16,5 @@ dependencies {
     }
 
     testCompile "org.apache.camel:camel-test-spring:$camelVersion"
+    testCompile "org.springframework:spring-test:$springTestVersion"
 }

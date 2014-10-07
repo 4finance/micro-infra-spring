@@ -1,11 +1,9 @@
 package com.ofg.infrastructure.config
 
-import com.ofg.infrastructure.healthcheck.HealthCheckConfiguration
 import com.ofg.infrastructure.web.swagger.SwaggerConfiguration
 import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
-
 /**
  * Configuration that gives you the full stack of microservice infrastructure with Swagger API documentation.
  * Below you can find a list of imported configurations and their purpose
@@ -17,7 +15,6 @@ import org.springframework.context.annotation.Import
  * </ul>
  *
  * @see BaseWebAppConfiguration
- * @see HealthCheckConfiguration
  */
 @Configuration
 @CompileStatic

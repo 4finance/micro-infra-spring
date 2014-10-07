@@ -1,9 +1,12 @@
-description = 'Microservice infrastructure related to Spring Reactor'
+description = 'Utility controlling presence of correlationId in message flow.'
+
+ext {
+    camelVersion = '2.10.3'
+}
 
 dependencies {
     compile project(':micro-infra-spring-base')
-    compile "org.projectreactor:reactor-core:1.1.4.RELEASE"
-    compile "org.projectreactor:reactor-spring:1.0.1.RELEASE"
+    compile "org.apache.camel:camel-spring-javaconfig:$camelVersion"
 
     testCompile("org.spockframework:spock-core:$spockVersion") {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
@@ -11,6 +14,7 @@ dependencies {
     testRuntime("org.spockframework:spock-spring:$spockVersion") {
         exclude group: 'org.spockframework', module: 'spock-core'
     }
+
+    testCompile "org.apache.camel:camel-test-spring:$camelVersion"
     testCompile "org.springframework:spring-test:$springTestVersion"
-    testCompile 'com.jayway.awaitility:awaitility:1.6.1'
 }

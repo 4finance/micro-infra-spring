@@ -64,7 +64,7 @@ Example:
 }
 ```
 
-By default project metadata definitions are stored at stub repository root. 
+By default project metadata definitions are stored in `projects` directory inside stub repository.
 
 #### Global vs Realm specific stubs
 
@@ -95,6 +95,8 @@ We ensure such ordering:
 
 * Global mappings will be registered in Wiremock
 * Afterwards realm specific stubs will get registered
+
+By default stub definitions are stored in `mappings` directory inside stub repository.
 
 #### Stubbing collaborators
 

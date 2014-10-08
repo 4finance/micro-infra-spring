@@ -5,10 +5,11 @@ import spock.lang.Unroll
 
 class MetricPathProviderSpec extends Specification {
 
-    public static final ROOT_NAME = 'apps'
-    public static final ENV = 'test' 
-    public static final COUNTRY = 'pl' 
-    public static final SERVICE_NAME = 'bluecash-adapter'
+    private static final ROOT_NAME = 'apps'
+    private static final ENV = 'test'
+    private static final COUNTRY = 'pl'
+    private static final SERVICE_NAME = 'bluecash-adapter'
+    private static final METRIC_PATH_PREFIX = "${ROOT_NAME}.${ENV}.${COUNTRY}.${SERVICE_NAME}"
 
     MetricPathProvider metricPathProvider = new MetricPathProvider(ROOT_NAME, ENV, COUNTRY, SERVICE_NAME)
     
@@ -17,10 +18,10 @@ class MetricPathProviderSpec extends Specification {
         expect:
             alreadyPrepended == metricPathProvider.isPathPrepended(metricName)
         where:
-            metricName                                                   || alreadyPrepended
-            'some_metric'                                                || false
-            "${ROOT_NAME}.${ENV}.${COUNTRY}.${SERVICE_NAME}.some_metric" || true
-            
+            metricName                          || alreadyPrepended
+            'some_metric'                       || false
+            "${METRIC_PATH_PREFIX}.some_metric" || true
+
     }
     
     @Unroll
@@ -28,9 +29,9 @@ class MetricPathProviderSpec extends Specification {
         expect:
             metricPath == metricPathProvider.getMetricPath(metricName)
         where:
-            metricName                                                   || metricPath
-            'some_metric'                                                || "${ROOT_NAME}.${ENV}.${COUNTRY}.${SERVICE_NAME}.some_metric"
-            "${ROOT_NAME}.${ENV}.${COUNTRY}.${SERVICE_NAME}.some_metric" || "${ROOT_NAME}.${ENV}.${COUNTRY}.${SERVICE_NAME}.some_metric"
+            metricName                          || metricPath
+            'some_metric'                       || "${METRIC_PATH_PREFIX}.some_metric"
+            "${METRIC_PATH_PREFIX}.some_metric" || "${METRIC_PATH_PREFIX}.some_metric"
     }
 
 }

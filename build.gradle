@@ -20,7 +20,7 @@ sourceCompatibility = 1.7
 
 group = 'com.ofg'
 description = 'Runs stubs for service collaborators'
-version = '0.1.0-SNAPSHOT'
+version = '0.1.0'
 
 ext {
     stubRepositoryPath = 'repository'
@@ -40,8 +40,8 @@ repositories {
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.3.6'
-    compile 'com.github.tomakehurst:wiremock:1.48'
+    compile 'org.codehaus.groovy:groovy-all:2.3.7'
+    compile 'com.github.tomakehurst:wiremock:1.51'
     compile "org.apache.curator:curator-x-discovery:$curatorVersion"
     compile "org.apache.curator:curator-test:$curatorVersion"
     compile "org.slf4j:slf4j-api:$slf4jVersion"

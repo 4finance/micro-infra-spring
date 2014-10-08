@@ -3,7 +3,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent.common.request
 /**
  * Starting point of the fluent interface.
  * 
- * If sending a request to an external service thr passed URLs must be treated as absolute paths 
+ * If sending a request to an external service the passed URLs must be treated as absolute paths
  * i.e. url: http://4finance.net should send to http://4finance.net.
  *
  * If sending to a collaborator will be treated as a part of path 

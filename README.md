@@ -3,7 +3,9 @@
 Stub-runner
 ===========
 
-Runs stubs for service collaborators
+Runs stubs for service collaborators.
+
+Treating stubs as contracts of services allows to use stub-runner as an implementation of Consumer Driven Contracts.
 
 ### Running stubs
 
@@ -85,7 +87,7 @@ You can define global stubbing behaviour (Wiremock will be fed with those stubs 
 com/ofg/foo
 ```
 
-To override existing or add new behaviour just place your mappings under:
+To override existing or add new behaviour that is specific to this realm just place your mappings under:
 
 ```
 pl/com/ofg/foo

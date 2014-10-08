@@ -29,13 +29,13 @@ abstract class LocationFindingExecutor implements LocationReceiving {
         if (params.url) {
             return getLocation(restOperations.exchange(
                     new URI(appendPathToHost(params.host as String, params.url as URI)),
-                    getHttpMethod(),
+                    httpMethod,
                     getHttpEntityFrom(params),
                     params.request.class))
         } else if (params.urlTemplate) {
             return getLocation(restOperations.exchange(
                     appendPathToHost(params.host as String, params.urlTemplate as String),
-                    getHttpMethod(),
+                    httpMethod,
                     getHttpEntityFrom(params),
                     params.request.class,
                     params.urlVariablesArray as Object[] ?: params.urlVariablesMap as Map<String, ?>))

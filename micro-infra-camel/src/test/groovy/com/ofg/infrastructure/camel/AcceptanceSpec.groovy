@@ -1,16 +1,12 @@
 package com.ofg.infrastructure.camel
 
 import com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder
-import org.apache.camel.Processor
 import org.apache.camel.model.RouteDefinition
-import org.springframework.test.annotation.DirtiesContext
 import spock.lang.AutoCleanup
-import spock.lang.Ignore
 
 import static com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder.*
 import groovy.util.logging.Slf4j
 import org.apache.camel.ProducerTemplate
-import org.apache.camel.builder.RouteBuilder
 import org.apache.camel.component.mock.MockEndpoint
 import org.apache.camel.impl.DefaultProducerTemplate
 import org.apache.camel.impl.InterceptSendToEndpoint
@@ -31,8 +27,7 @@ class AcceptanceSpec extends Specification {
     MockEndpoint resultEndpoint
 
     def setup() {
-        resultEndpoint =
-                ((InterceptSendToEndpoint)camelContext.getEndpoint('mock:result')).getDelegate()
+        resultEndpoint = ((InterceptSendToEndpoint) camelContext.getEndpoint('mock:result')).delegate
         template = new DefaultProducerTemplate(
                 camelContext,
                 camelContext.getEndpoint('direct:start'))
@@ -76,7 +71,7 @@ class AcceptanceSpec extends Specification {
     }
 
     private void removeRouteDefinitions() {
-        List<RouteDefinition> routeDefinitions = camelContext.getRouteDefinitions()
+        List<RouteDefinition> routeDefinitions = camelContext.routeDefinitions
         camelContext.removeRouteDefinitions(routeDefinitions)
     }
 }

@@ -44,10 +44,10 @@ class MetricPathProvider {
         if (isPathPrepended(metricName)) {
             return metricName
         }
-        return Joiner.on('.').join(getRootMetricPath(), metricName)
+        return Joiner.on('.').join(rootMetricPath, metricName)
     }
 
     boolean isPathPrepended(String metricName) {
-        return metricName.startsWith(getRootMetricPath())
+        return metricName.startsWith(rootMetricPath)
     }
 }

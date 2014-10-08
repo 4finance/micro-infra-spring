@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
+
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import groovy.transform.TypeChecked
@@ -31,7 +32,7 @@ class ServiceRestClientConfiguration {
     }
 
     @Bean
-    RestTemplateAutowireCandidateFalsePostProcessor autoWireCandidateFalse() {
+    static RestTemplateAutowireCandidateFalsePostProcessor disableMicroInfraSpringRestTemplateAutowiring() {
         return new RestTemplateAutowireCandidateFalsePostProcessor()
     }
 
@@ -47,5 +48,4 @@ class ServiceRestClientConfiguration {
             return HIGHEST_PRECEDENCE
         }
     }
-
 }

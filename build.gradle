@@ -12,12 +12,12 @@ buildscript {
 }
 
 ext {
-    microInfraSpringVersion = '0.4.3-SNAPSHOT'
+    microInfraSpringVersion = '0.4.3'
 
     groovyVersion = '2.3.7'
     spockVersion = '0.7-groovy-2.0'
     springBootVersion = '1.1.7.RELEASE'
-    springTestVersion = '4.1.0.RELEASE'
+    springTestVersion = '4.1.1.RELEASE'
 }
 
 allprojects {

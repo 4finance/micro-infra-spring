@@ -42,13 +42,13 @@ abstract class ResponseTypeRelatedRequestsExecutor<T> {
         if (params.url) {  
             return restOperations.exchange(
                     new URI(appendPathToHost(params.host as String, params.url as URI)),
-                    getHttpMethod(),
+                    httpMethod,
                     getHttpEntityFrom(params),
                     responseType)
         } else if (params.urlTemplate) {
             return restOperations.exchange(
                     appendPathToHost(params.host as String, params.urlTemplate as String),
-                    getHttpMethod(),
+                    httpMethod,
                     getHttpEntityFrom(params),
                     responseType,
                     params.urlVariablesArray as Object[] ?: params.urlVariablesMap as Map<String, ?>)

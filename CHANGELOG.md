@@ -1,3 +1,11 @@
+0.4.3
+-----
+New features:
+* micro-infra-camel module with correlation ID interceptor for camel routes
+
+Bug fixes:
+* [Issue 59](https://github.com/4finance/micro-infra-spring/issues/59) Possible container lifecycle issues
+
 0.4.2
 -----
 Bug fixes:

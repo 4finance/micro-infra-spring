@@ -31,7 +31,7 @@ class CorrelationIdInterceptor implements Processor {
     }
 
     private String getCorrelationId(Exchange exchange) {
-        String correlationIdHeader = exchange.getIn().getHeader(CORRELATION_ID_HEADER)
+        String correlationIdHeader = exchange.in.getHeader(CORRELATION_ID_HEADER)
         if (!correlationIdHeader) {
             log.debug('No correlationId has been set in request inbound message. Creating new one.')
             correlationIdHeader = UUID.randomUUID().toString()
@@ -40,7 +40,7 @@ class CorrelationIdInterceptor implements Processor {
     }
 
     private void setCorrelationIdHeaderIfMissing(Exchange exchange, String correlationIdHeader) {
-        Message inboundMessage = exchange.getIn()
+        Message inboundMessage = exchange.in
         if (!inboundMessage.headers.containsKey(CORRELATION_ID_HEADER)) {
             log.debug("Setting correlationId [$correlationIdHeader] in header of inbound message")
             inboundMessage.setHeader(CORRELATION_ID_HEADER, correlationIdHeader)

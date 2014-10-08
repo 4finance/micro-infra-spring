@@ -25,7 +25,7 @@ class CorrelationIdOnCamelRouteSetter {
      */
     void addCorrelationIdInterception() {
         log.debug('Modifying routes defined in Camel context...')
-        camelContext.getRouteDefinitions().each {
+        camelContext.routeDefinitions.each {
             it.adviceWith(camelContext, new RouteBuilder() {
                 @Override
                 void configure() throws Exception {

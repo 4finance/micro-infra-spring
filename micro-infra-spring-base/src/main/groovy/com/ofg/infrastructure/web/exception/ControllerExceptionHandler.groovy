@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.web.exception
 
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
@@ -24,7 +24,7 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST
  */
 @Slf4j
 @ControllerAdvice
-@TypeChecked
+@CompileStatic
 @Order(Ordered.LOWEST_PRECEDENCE)
 class ControllerExceptionHandler {
 
@@ -47,8 +47,8 @@ class ControllerExceptionHandler {
 
     private List<BadParameterError> getListOfBindErrors(BadParametersException exception) {
         List<BadParameterError> bindErrorList = []
-        exception.errors.each {
-            bindErrorList.add(getBindError(it))
+        exception.errors.each { ObjectError error ->
+            bindErrorList.add(getBindError(error))
         }
         return bindErrorList
     }

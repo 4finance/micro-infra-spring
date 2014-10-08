@@ -15,7 +15,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@ContextConfiguration(classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery], loader = SpringApplicationContextLoader)
+@ContextConfiguration(
+        classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery, ControllerExceptionConfiguration],
+        loader = SpringApplicationContextLoader)
 class ExceptionHandlingMvcSpec extends MvcIntegrationSpec {
     
     def "should return bad request error for invalid field"() {

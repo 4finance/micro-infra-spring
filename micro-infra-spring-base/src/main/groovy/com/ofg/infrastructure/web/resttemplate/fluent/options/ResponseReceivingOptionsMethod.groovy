@@ -10,6 +10,8 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.Re
  * Additionally it gives the possibility to easily retrieve the {@link org.springframework.http.HttpHeaders#ALLOW}
  * header via {@link AllowHeaderReceiving} interface.
  */
-interface ResponseReceivingOptionsMethod extends HeadersHaving<ResponseReceivingOptionsMethod>, ResponseExtracting, AllowHeaderReceiving, Executable<ResponseReceivingOptionsMethod>, HttpEntitySending<ResponseReceivingOptionsMethod> {
+interface ResponseReceivingOptionsMethod extends
+        HeadersHaving<ResponseReceivingOptionsMethod>, ResponseExtracting, AllowHeaderReceiving,
+        Executable<ResponseReceivingOptionsMethod>, HttpEntitySending<ResponseReceivingOptionsMethod> {
 
 }

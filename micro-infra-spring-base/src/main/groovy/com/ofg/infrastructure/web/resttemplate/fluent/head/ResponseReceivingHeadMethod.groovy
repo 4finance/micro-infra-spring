@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity
  * {@link org.springframework.http.HttpMethod#HEAD} method doesn't have a response
  * so this interface provides a {@link ResponseEntity} result or {@link HttpHeaders} to get headers
  */
-interface ResponseReceivingHeadMethod extends HeadersHaving<ResponseReceivingHeadMethod>, Executable<ResponseReceivingHeadMethod>, HttpEntitySending<ResponseReceivingHeadMethod>, ResponseIgnoring {
+interface ResponseReceivingHeadMethod extends
+        HeadersHaving<ResponseReceivingHeadMethod>, Executable<ResponseReceivingHeadMethod>,
+        HttpEntitySending<ResponseReceivingHeadMethod>, ResponseIgnoring {
     
     ResponseEntity aResponseEntity()
 

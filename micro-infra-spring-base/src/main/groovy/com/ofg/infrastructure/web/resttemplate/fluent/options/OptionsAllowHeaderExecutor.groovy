@@ -3,6 +3,7 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.I
 import groovy.transform.PackageScope
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpMethod
+import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.HttpEntityUtils.getHttpEntityFrom
@@ -27,9 +28,14 @@ class OptionsAllowHeaderExecutor implements AllowHeaderReceiving {
     @Override
     Set<HttpMethod> allow() {
         if(params.url) {
-            return restOperations.exchange(params.url as URI, OPTIONS, getHttpEntityFrom(params), Object).headers.getAllow()
+            ResponseEntity response = restOperations.exchange(
+                    params.url as URI, OPTIONS, getHttpEntityFrom(params), Object)
+            return response.headers.getAllow()
         } else if(params.urlTemplate) {
-            return restOperations.exchange("${params.host}${params.urlTemplate}", OPTIONS, getHttpEntityFrom(params), Object, params.urlVariablesArray as Object[] ?: params.urlVariablesMap as Map<String, ?>).headers.getAllow()
+            ResponseEntity response = restOperations.exchange(
+                    "${params.host}${params.urlTemplate}", OPTIONS, getHttpEntityFrom(params),
+                    Object, params.urlVariablesArray as Object[] ?: params.urlVariablesMap as Map<String, ?>)
+            return response.headers.getAllow()
         }
         throw new InvalidHttpMethodParametersException(params)
     }

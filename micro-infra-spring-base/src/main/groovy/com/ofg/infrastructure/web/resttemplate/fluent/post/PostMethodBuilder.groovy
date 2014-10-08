@@ -16,7 +16,9 @@ import static org.springframework.http.HttpMethod.POST
  * Implementation of the {@link org.springframework.http.HttpMethod#POST method} fluent API
  */
 @TypeChecked
-class PostMethodBuilder extends LocationFindingExecutor implements PostMethod, RequestHavingPostMethod, ResponseReceivingPostMethod, UrlParameterizablePostMethod, HeadersSetting {
+class PostMethodBuilder extends LocationFindingExecutor implements
+        PostMethod, RequestHavingPostMethod, ResponseReceivingPostMethod,
+        UrlParameterizablePostMethod, HeadersSetting {
 
     public static final String EMPTY_HOST = ''
     

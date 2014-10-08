@@ -12,7 +12,9 @@ import org.springframework.web.client.RestOperations
  * Implementation of the {@link org.springframework.http.HttpMethod#HEAD method} fluent API
  */
 @TypeChecked
-class OptionsMethodBuilder implements OptionsMethod, UrlParameterizableOptionsMethod, ResponseReceivingOptionsMethod, HeadersHaving, AllowHeaderReceiving {
+class OptionsMethodBuilder implements
+        OptionsMethod, UrlParameterizableOptionsMethod,
+        ResponseReceivingOptionsMethod, HeadersHaving, AllowHeaderReceiving {
 
     public static final String EMPTY_HOST = ''
 

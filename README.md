@@ -78,7 +78,7 @@ class AcceptanceSpec extends MvcWiremockIntegrationSpec {
 
 }
 ```
-## JUnit specifications' base classes
+## JUnit specifications' base classes (since 0.4.3)
 
 ### Integration tests
 

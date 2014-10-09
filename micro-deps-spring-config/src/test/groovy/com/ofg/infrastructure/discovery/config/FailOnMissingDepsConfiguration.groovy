@@ -2,12 +2,12 @@ package com.ofg.infrastructure.discovery.config
 
 import com.ofg.infrastructure.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
 import com.ofg.infrastructure.discovery.watcher.presence.FailOnMissingDependencyOnStartupVerifier
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
-@TypeChecked
 @Configuration
+@CompileStatic
 class FailOnMissingDepsConfiguration {
 
     @Bean

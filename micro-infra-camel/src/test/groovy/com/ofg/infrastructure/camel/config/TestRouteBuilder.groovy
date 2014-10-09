@@ -1,11 +1,14 @@
-package com.ofg.infrastructure.camel.config;
+package com.ofg.infrastructure.camel.config
 
-import org.apache.camel.builder.RouteBuilder;
+import groovy.transform.CompileStatic
+import org.apache.camel.builder.RouteBuilder
 
+@CompileStatic
 class TestRouteBuilder extends RouteBuilder {
 
-    public void configure() {
-        log.info('route builder configuration')
+    @Override
+    void configure() throws Exception {
+        log.info('Route builder bean configuration...')
         from('direct:start').to('mock:result').routeId('route-1')
     }
 

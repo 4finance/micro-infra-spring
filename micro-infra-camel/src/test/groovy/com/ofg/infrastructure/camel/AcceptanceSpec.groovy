@@ -1,6 +1,8 @@
 package com.ofg.infrastructure.camel
 
+import com.ofg.infrastructure.camel.config.CamelRouteAsBeanConfiguration
 import com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder
+import org.apache.camel.model.ModelCamelContext
 import org.apache.camel.model.RouteDefinition
 import spock.lang.AutoCleanup
 
@@ -10,16 +12,12 @@ import org.apache.camel.ProducerTemplate
 import org.apache.camel.component.mock.MockEndpoint
 import org.apache.camel.impl.DefaultProducerTemplate
 import org.apache.camel.impl.InterceptSendToEndpoint
-import org.apache.camel.model.ModelCamelContext
-import org.apache.camel.spring.javaconfig.test.JavaConfigContextLoader
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 
-@ContextConfiguration(
-        locations = ['com.ofg.infrastructure.camel.config.CamelContextConfig', 'com.ofg.infrastructure.camel.CamelRouteConfiguration'],
-        loader = JavaConfigContextLoader.class)
 @Slf4j
+@ContextConfiguration(classes = [CamelRouteAsBeanConfiguration.class])
 class AcceptanceSpec extends Specification {
 
     @Autowired ModelCamelContext camelContext
@@ -27,7 +25,8 @@ class AcceptanceSpec extends Specification {
     MockEndpoint resultEndpoint
 
     def setup() {
-        resultEndpoint = ((InterceptSendToEndpoint) camelContext.getEndpoint('mock:result')).delegate
+        resultEndpoint =
+                ((InterceptSendToEndpoint)camelContext.getEndpoint('mock:result')).getDelegate()
         template = new DefaultProducerTemplate(
                 camelContext,
                 camelContext.getEndpoint('direct:start'))
@@ -71,7 +70,7 @@ class AcceptanceSpec extends Specification {
     }
 
     private void removeRouteDefinitions() {
-        List<RouteDefinition> routeDefinitions = camelContext.routeDefinitions
+        List<RouteDefinition> routeDefinitions = camelContext.getRouteDefinitions()
         camelContext.removeRouteDefinitions(routeDefinitions)
     }
 }

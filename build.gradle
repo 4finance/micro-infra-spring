@@ -86,6 +86,7 @@ subprojects {
         testCompile "org.spockframework:spock-core:$spockVersion"
         testCompile "org.spockframework:spock-spring:$spockVersion"
         testCompile "org.springframework:spring-test:$springVersion"
+        testCompile 'org.slf4j:slf4j-api:1.7.7'
     }
 
     bintrayUpload.dependsOn 'build'

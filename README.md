@@ -31,7 +31,7 @@ You can further configure micro-deps with the following properties:
 Micro-deps-spring-test-config
 =================
 
-Default Micro-deps Spring test configuration
+Default Micro-deps Spring test configuration - both for JUnit and Spock
 
 ## Spock specifications' base classes
 
@@ -78,6 +78,53 @@ class AcceptanceSpec extends MvcWiremockIntegrationSpec {
 
 }
 ```
+## JUnit specifications' base classes
+
+### Integration tests
+
+Just extend the __IntegrationTest__ class and you're ready to go!
+
+```groovy
+class AcceptanceTest extends IntegrationTest {
+
+}
+```
+
+That way you'll have:
+
+* 'test' profile activated
+* __org.springframework.web.context.WebApplicationContext__ loaded
+
+### MVC integration tests
+
+Just extend the __MvcIntegrationTest__ class and you're ready to go!
+
+```groovy
+class AcceptanceTest extends MvcIntegrationTest {
+
+}
+```
+
+That way you'll have:
+
+* 'test' profile activated
+* __org.springframework.web.context.WebApplicationContext__ loaded
+* Spring MVC test support enabled
+* access to stubbed service resolver
+* access to application context
+* access to web application context
+
+### MVC integration tests with [WireMock](http://wiremock.org/)
+
+Just extend the __MvcWiremockIntegrationTest__ class and you're ready to go!
+
+```groovy
+class AcceptanceTest extends MvcWiremockIntegrationTest {
+
+}
+``
+
+## Why?
 
 That way you'll have:
 

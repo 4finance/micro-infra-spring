@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.base
-
 import com.google.common.base.Optional as GuavaOptional
 import com.ofg.infrastructure.BaseConfiguration
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.discovery.ServiceResolverConfiguration
 import com.ofg.infrastructure.discovery.web.MockServerConfiguration
@@ -17,10 +17,15 @@ import static org.springframework.http.HttpStatus.OK
 class ServiceDiscoveryWiremockIntegrationSpec extends MvcWiremockIntegrationSpec {
    
     @Autowired ServiceResolver serviceResolver
-    
+    @Autowired ServiceConfigurationResolver serviceConfigurationResolver
+
     def 'should inject wiremock properties'() {
         expect:
             wiremockUrl != null
+    }
+
+    def setup() {
+        stubbedServiceResolver.stubDependenciesFrom(serviceConfigurationResolver)
     }
     
     def "should bind zookeeper stub's address with wiremock"() {
@@ -33,7 +38,7 @@ class ServiceDiscoveryWiremockIntegrationSpec extends MvcWiremockIntegrationSpec
             String microserviceUrl = resolvedDependency.get()
             get(microserviceUrl).then().statusCode(OK.value())
     }
-    
+
     def 'should reset address stubbing'() {
         given:
             stubbedServiceResolver.resetDependencies()
@@ -55,5 +60,5 @@ class ServiceDiscoveryWiremockIntegrationSpec extends MvcWiremockIntegrationSpec
             resolvedDependency.isPresent()
             resolvedDependency.get() == stubbedUrl
     }
-    
+
 }

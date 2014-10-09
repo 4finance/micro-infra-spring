@@ -1,13 +1,3 @@
-0.4.2
------
-New features:
-* [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.5.6`
-
-0.4.1
------
-Bug fixes:
-* [WireMock.resetMappings() deletes mappings taken from files](https://github.com/4finance/micro-deps-spring-config/issues/3)
-
 0.4.0
 -----
 New features:

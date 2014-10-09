@@ -1,6 +1,6 @@
 0.4.4
 -----
-Bug fixes:
+New features:
 * [Issue 18](https://github.com/4finance/micro-infra-spring/issues/18) Add correlationId to headers of a JMS message
 
 0.4.3

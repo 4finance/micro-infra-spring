@@ -1,8 +1,8 @@
 package com.ofg.infrastructure.discovery.watcher
 
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 
-@TypeChecked
+@CompileStatic
 enum DependencyState {
     CONNECTED,
     DISCONNECTED

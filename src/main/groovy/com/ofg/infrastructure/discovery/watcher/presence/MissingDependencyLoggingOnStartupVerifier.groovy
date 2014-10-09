@@ -2,9 +2,9 @@ package com.ofg.infrastructure.discovery.watcher.presence
 
 import com.ofg.infrastructure.discovery.watcher.presence.checker.LogMissingDependencyChecker
 import com.ofg.infrastructure.discovery.watcher.presence.checker.PresenceChecker
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 
-@TypeChecked
+@CompileStatic
 class MissingDependencyLoggingOnStartupVerifier extends DependencyPresenceOnStartupVerifier {
 
     private static final PresenceChecker DEFAULT_PRESENCE_CHECKER = new LogMissingDependencyChecker()

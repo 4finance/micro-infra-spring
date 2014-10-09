@@ -1,10 +1,11 @@
 package com.ofg.infrastructure.discovery
+
 import com.google.common.base.Optional
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import org.apache.curator.x.discovery.ServiceDiscovery
 import org.apache.curator.x.discovery.ServiceProvider
 
-@TypeChecked
+@CompileStatic
 class ZookeeperServiceResolver implements ServiceResolver {
     private final ServiceConfigurationResolver serviceConfigurationResolver
     private final ServiceDiscovery serviceDiscovery
@@ -32,10 +33,24 @@ class ZookeeperServiceResolver implements ServiceResolver {
     }
 
     @Override
-    Optional<String> getUrl(String dependency) {
-        ServiceProvider serviceProvider = services[dependency]
-        checkIfDependencyNotDefinedInConfig(serviceProvider, dependency)
-        return Optional.fromNullable(serviceProvider?.instance?.buildUriSpec())
+    Optional<String> getUrl(String service) {
+        return Optional.fromNullable(resolveServiceAddress(service))
+    }
+
+    @Override
+    String fetchUrl(String service) {
+        String serviceAddress = resolveServiceAddress(service)
+        if (serviceAddress) {
+            return serviceAddress
+        } else {
+            throw new ServiceNotFoundException("could not resolve $service address")
+        }
+    }
+
+    private String resolveServiceAddress(String service) {
+        ServiceProvider serviceProvider = services[service]
+        checkIfDependencyNotDefinedInConfig(serviceProvider, service)
+        return serviceProvider?.instance?.buildUriSpec()
     }
 
     private void checkIfDependencyNotDefinedInConfig(ServiceProvider serviceProvider, String dependency) {

@@ -1,10 +1,12 @@
 package com.ofg.infrastructure.discovery.watcher
 
 import com.ofg.infrastructure.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
+import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import org.apache.curator.x.discovery.ServiceCache
 import org.apache.curator.x.discovery.ServiceDiscovery
 
+@CompileStatic
 class DependencyWatcher {
 
     private final Map<String, String> dependencies

@@ -1,10 +1,10 @@
 package com.ofg.infrastructure.discovery.watcher.presence.checker
 
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.apache.curator.x.discovery.ServiceInstance
 
-@TypeChecked
+@CompileStatic
 @Slf4j
 class LogMissingDependencyChecker implements PresenceChecker {
     @Override

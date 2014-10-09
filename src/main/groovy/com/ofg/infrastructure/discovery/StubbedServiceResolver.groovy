@@ -35,6 +35,15 @@ class StubbedServiceResolver implements ServiceResolver {
     }
 
     @Override
+    String fetchUrl(String service) {
+        if (stubbedDeps[service]) {
+            return stubbedDeps[service]
+        } else {
+            throw new ServiceNotFoundException("$service service not found")
+        }
+    }
+
+    @Override
     void start() { }
 
     @Override

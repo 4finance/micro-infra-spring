@@ -1,9 +1,9 @@
 package com.ofg.infrastructure.discovery.watcher.presence.checker
 
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import org.apache.curator.x.discovery.ServiceInstance
 
-@TypeChecked
+@CompileStatic
 class FailOnMissingDependencyChecker implements PresenceChecker {
     @Override
     void checkPresence(String dependencyName, List<ServiceInstance> serviceInstances) {

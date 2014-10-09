@@ -1,14 +1,14 @@
 package com.ofg.infrastructure.discovery.watcher
 
+import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.TypeChecked
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.state.ConnectionState
 import org.apache.curator.x.discovery.ServiceCache
 import org.apache.curator.x.discovery.details.ServiceCacheListener
 
-@TypeChecked
 @PackageScope
+@CompileStatic
 class DependencyStateChangeListenerRegistry implements ServiceCacheListener {
 
     private final List<DependencyWatcherListener> listeners

@@ -20,7 +20,7 @@ sourceCompatibility = 1.7
 
 group = 'com.ofg'
 description = 'Microservice dependency manager'
-version = '0.5.6-SNAPSHOT'
+version = '0.5.6'
 
 repositories {
     mavenLocal()
@@ -29,7 +29,7 @@ repositories {
 }
 
 ext {
-    groovyVersion = '2.3.6'
+    groovyVersion = '2.3.7'
     spockVersion = '0.7-groovy-2.0'
     curatorVersion = '2.6.0'
     undertowVersion = '1.0.16.Final'
@@ -44,7 +44,7 @@ dependencies {
     compile "org.codehaus.groovy:groovy-all:$groovyVersion:indy"
     compile "org.apache.curator:curator-x-discovery:$curatorVersion"
     compile "org.apache.curator:curator-test:$curatorVersion"
-    compile 'org.jboss.resteasy:resteasy-undertow:3.0.8.Final'
+    compile 'org.jboss.resteasy:resteasy-undertow:3.0.9.Final'
     compile "io.undertow:undertow-core:$undertowVersion"
     compile "io.undertow:undertow-servlet:$undertowVersion"
     compile 'org.apache.ivy:ivy:2.3.0'

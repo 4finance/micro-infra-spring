@@ -39,7 +39,7 @@ class StubbedServiceResolver implements ServiceResolver {
         if (stubbedDeps[service]) {
             return stubbedDeps[service]
         } else {
-            throw new ServiceNotFoundException("$service service not found")
+            throw new ServiceUnavailableException(service)
         }
     }
 

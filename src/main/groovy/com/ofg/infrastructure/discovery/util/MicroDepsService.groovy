@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.discovery.util
+
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.discovery.ZookeeperServiceResolver
@@ -17,6 +18,8 @@ import org.apache.curator.x.discovery.UriSpec
 
 @TypeChecked
 class MicroDepsService {
+    private  static final RetryNTimes DEFAULT_RETRY_POLICY = new RetryNTimes(20, 5000)
+
     private ServiceConfigurationResolver configurationResolver
     private DependencyWatcher dependencyWatcher
     private CuratorFramework curatorFramework
@@ -30,7 +33,7 @@ class MicroDepsService {
                      int microservicePort,
                      String microserviceConfig = MicroDepsService.class.getResourceAsStream("/microservice.json").text,
                      String uriSpec = "{scheme}://{address}:{port}/$microserviceContext",
-                     RetryPolicy retryPolicy = new RetryNTimes(20, 5000)) {
+                     RetryPolicy retryPolicy = DEFAULT_RETRY_POLICY) {
         curatorFramework = CuratorFrameworkFactory.newClient(zookeeperUrl, retryPolicy)
         configurationResolver = new ServiceConfigurationResolver(microserviceConfig)
         serviceInstance = ServiceInstance.builder().uriSpec(new UriSpec(uriSpec))
@@ -39,8 +42,7 @@ class MicroDepsService {
                 .name(configurationResolver.microserviceName)
                 .build()
         serviceDiscovery = ServiceDiscoveryBuilder.builder(Void).basePath(configurationResolver.basePath).client(curatorFramework).thisInstance(serviceInstance).build()
-        dependencyWatcher = new DependencyWatcher(configurationResolver.dependencies, serviceDiscovery,
-                new FailOnMissingDependencyOnStartupVerifier())
+        dependencyWatcher = new DependencyWatcher(configurationResolver.dependencies, serviceDiscovery, new FailOnMissingDependencyOnStartupVerifier())
         serviceResolver = new ZookeeperServiceResolver(configurationResolver, serviceDiscovery)
     }
 

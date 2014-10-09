@@ -43,7 +43,7 @@ class ZookeeperServiceResolver implements ServiceResolver {
         if (serviceAddress) {
             return serviceAddress
         } else {
-            throw new ServiceNotFoundException("could not resolve $service address")
+            throw new ServiceUnavailableException(service)
         }
     }
 

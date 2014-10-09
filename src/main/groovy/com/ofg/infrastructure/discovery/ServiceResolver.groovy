@@ -23,9 +23,9 @@ interface ServiceResolver extends AutoCloseable {
      *
      * @param service - alias from microservice configuration {@see ServiceConfigurationResolver}
      * @return address of the microservice
-     * @throws ServiceNotFoundException - if microservice instance cannot be found
+     * @throws ServiceUnavailableException - if microservice is unavailable
      */
-    String fetchUrl(String service)
+    String fetchUrl(String service) throws ServiceUnavailableException
 
     /**
      * Start service resolver (e.g. start all service providers)

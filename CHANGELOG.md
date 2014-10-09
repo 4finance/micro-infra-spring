@@ -1,4 +1,4 @@
-0.4.3-SNAPSHOT
+0.4.3
 -----
 New features:
 * default JUnit test classes

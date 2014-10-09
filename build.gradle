@@ -20,7 +20,7 @@ sourceCompatibility = 1.7
 
 group = 'com.ofg'
 description = 'Microservice dependency manager'
-version = '0.5.6'
+version = '0.5.7-SNAPSHOT'
 
 repositories {
     mavenLocal()
@@ -121,8 +121,4 @@ if(project.hasProperty("coverage")) {
     test {
         ignoreFailures = true
     }
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.0'
 }

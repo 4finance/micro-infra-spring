@@ -10,9 +10,7 @@ class ProjectMetadataSpec extends Specification {
             String projectPath = 'com/ofg/ping'
             String context = 'lv'
             ProjectMetadata projectMetadata = new ProjectMetadata(projectName, projectPath, context)
-        when:
-            String actualFullPath = projectMetadata.getPathWithContext()
-        then:
-            actualFullPath == "$context/$projectPath"
+        expect:
+            projectMetadata.pathWithContext == "$context/$projectPath"
     }
 }

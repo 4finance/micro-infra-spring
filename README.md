@@ -124,3 +124,7 @@ Example:
 
 Stub definitions are stored in stub repository under the same path as collaborator fully qualified name.
 Paths (as long it's inside the directory mentioned above) and names of documents containing stub definitions not play any other role than describing stubs' role / purpose.
+
+#### Viewing registered mappings
+
+Every stubbed collaborator exposes list of defined mappings under `__/admin/` endpoint.

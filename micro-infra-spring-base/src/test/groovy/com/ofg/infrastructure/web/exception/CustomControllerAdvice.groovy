@@ -22,8 +22,8 @@ class CustomControllerAdvice {
      * SAMPLE_HEADER with value SAMPLE_HEADER_VALUE to demonstrate custom logic that can be applied.
      */
     @ExceptionHandler(Exception)
-    ResponseEntity customExceptionHandling(Exception ex) {
-        return new ResponseEntity(customHeader(), HttpStatus.SERVICE_UNAVAILABLE)
+    ResponseEntity<Object> customExceptionHandling(Exception ex) {
+        return new ResponseEntity<Object>(customHeader(), HttpStatus.SERVICE_UNAVAILABLE)
     }
 
     static HttpHeaders customHeader() {

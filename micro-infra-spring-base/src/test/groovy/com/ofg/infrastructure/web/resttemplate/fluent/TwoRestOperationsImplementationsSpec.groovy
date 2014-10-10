@@ -3,6 +3,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcIntegrationSpec
 import com.ofg.infrastructure.discovery.ServiceResolver
+import com.ofg.infrastructure.discovery.ServiceUnavailableException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.context.annotation.Bean
@@ -38,7 +39,27 @@ class TwoRestOperationsImplementationsSpec extends MvcIntegrationSpec {
 
         @Bean
         ServiceResolver stubForServiceResolver() {
-            [:] as ServiceResolver
+            new ServiceResolver() {
+                @Override
+                com.google.common.base.Optional<String> getUrl(String service) {
+                    return null
+                }
+
+                @Override
+                String fetchUrl(String service) throws ServiceUnavailableException {
+                    return null
+                }
+
+                @Override
+                void start() {
+
+                }
+
+                @Override
+                void close() {
+
+                }
+            }
         }
     }
 

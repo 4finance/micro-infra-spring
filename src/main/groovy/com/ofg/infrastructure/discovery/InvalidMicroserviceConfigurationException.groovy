@@ -5,5 +5,5 @@ import groovy.transform.InheritConstructors
 
 @CompileStatic
 @InheritConstructors
-class BadConfigurationException extends RuntimeException {
+class InvalidMicroserviceConfigurationException extends RuntimeException {
 }

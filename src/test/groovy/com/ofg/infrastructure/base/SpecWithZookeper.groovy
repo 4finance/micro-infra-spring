@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.base
+
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
@@ -9,6 +10,8 @@ import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
 import org.apache.curator.x.discovery.ServiceInstance
 import org.apache.curator.x.discovery.UriSpec
 import spock.lang.Specification
+
+import static com.ofg.infrastructure.discovery.MicroserviceConfiguration.VALID_CONFIGURATION
 
 class SpecWithZookeper extends Specification {
 
@@ -28,7 +31,7 @@ class SpecWithZookeper extends Specification {
     }
 
     private void setupZookeeper(TestingServer server) {
-        serviceConfigurationResolver = new ServiceConfigurationResolver(Samples.MICROSERVICE_CONFIG)
+        serviceConfigurationResolver = new ServiceConfigurationResolver(VALID_CONFIGURATION)
         serviceInstance = ServiceInstance.builder().uriSpec(new UriSpec("{scheme}://{address}:{port}/"))
                 .address('anyUrl')
                 .port(10)

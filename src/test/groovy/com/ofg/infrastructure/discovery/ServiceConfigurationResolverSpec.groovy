@@ -2,80 +2,44 @@ package com.ofg.infrastructure.discovery
 
 import spock.lang.Specification
 
+import static com.ofg.infrastructure.discovery.MicroserviceConfiguration.*
+
 class ServiceConfigurationResolverSpec extends Specification {
     
-    def "should parse proper json"() {
-        given:
-            String json = """
-                            {
-                                "microservice": {
-                                    "this": "pl/payments/20",
-                                    "dependencies": {
-                                        "clients": "pl/clients/10",
-                                        "loans": "pl/loans/15"
-                                    }
-                                }
-                            }
-                            """
+    def 'should parse valid configuration'() {
         when:
-            def resolver = new ServiceConfigurationResolver(json)    
+            def resolver = new ServiceConfigurationResolver(VALID_CONFIGURATION)
         then:
-            resolver.basePath == "microservice"
-            resolver.microserviceName == "pl/payments/20"
-            resolver.dependencies == ["clients": "pl/clients/10",
-                                      "loans": "pl/loans/15"]
+            resolver.basePath == 'pl'
+            resolver.microserviceName == 'com/ofg/service'
+            resolver.dependencies == ['ping': 'com/ofg/ping', 'pong': 'com/ofg/pong']
     }
     
-    def "should fail when 'this' element is not present "() {
-        given:
-            String json = """
-                            {
-                                "microservice": {
-                                    "dependencies": {
-                                        "clients": "pl/clients/10",
-                                        "loans": "pl/loans/15"
-                                    }
-                                }
-                            }
-                            """
+    def 'should fail on missing "this"" element'() {
         when:
-            new ServiceConfigurationResolver(json)
+            new ServiceConfigurationResolver(MISSING_THIS_ELEMENT)
         then:
-            thrown(BadConfigurationException)
+            thrown(InvalidMicroserviceConfigurationException)
     }
     
-    def "should fail when 'dependencies' element is not present "() {
-        given:
-            String json = """
-                            {
-                                "microservice": {
-                                    "this": "pl/payments/20"
-                                }
-                            }
-                            """
+    def 'should fail on invalid dependencies'() {
         when:
-            new ServiceConfigurationResolver(json)
+            new ServiceConfigurationResolver(INVALID_DEPENDENCIES_ELEMENT)
         then:
-            thrown(BadConfigurationException)
+            thrown(InvalidMicroserviceConfigurationException)
     }
     
-    def "should fail on multiple root elements"() {
-        given:
-            String json = """
-                            {
-                                "microservice": {
-                                    "this": "pl/payments/20",
-                                    "dependencies": {
-                                        "clients": "pl/clients/10",
-                                        "loans": "pl/loans/15"
-                                    }
-                                },
-                                "everything": 1
-                            }
-                            """
+    def 'should fail on multiple root elements'() {
         when:
-            new ServiceConfigurationResolver(json)
+            new ServiceConfigurationResolver(MULTIPLE_ROOT_ELEMENTS)
         then:
-            thrown(BadConfigurationException)
+            thrown(InvalidMicroserviceConfigurationException)
+    }
+
+    def 'should set default values for missing optional elements'() {
+        when:
+            def resolver = new ServiceConfigurationResolver(ONLY_REQUIRED_ELEMENTS)
+        then:
+            resolver.dependencies == [:]
     }
 }

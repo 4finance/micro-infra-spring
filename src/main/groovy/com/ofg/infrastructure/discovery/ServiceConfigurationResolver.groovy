@@ -7,7 +7,7 @@ class ServiceConfigurationResolver {
     final String basePath
     private final Object parsedConfiguration
 
-    ServiceConfigurationResolver(String configuration) throws BadConfigurationException {
+    ServiceConfigurationResolver(String configuration) throws InvalidMicroserviceConfigurationException {
         (basePath, parsedConfiguration) = parseConfig(configuration)
     }
 
@@ -15,21 +15,31 @@ class ServiceConfigurationResolver {
         Map json = new JsonSlurper().parseText(config)
         checkThatJsonHasOneRootElement(json)
         String basePath = json.keySet().first()
-        def root = json[basePath]
-        checkThatObligatoryElementsArePresent(root)
-        return [basePath, json[basePath]]
+        def serviceMetadata = json[basePath]
+        checkThatServiceMetadataContainsValidElements(serviceMetadata)
+        setDefaultsForMissingOptionalElements(serviceMetadata)
+        return [basePath, serviceMetadata]
     }
 
     private static void checkThatJsonHasOneRootElement(Map json) {
         if (json.size() != 1) {
-            throw new BadConfigurationException('Microservice configuration should have exactly one root element')
+            throw new InvalidMicroserviceConfigurationException('multiple root elements')
         }
     }
 
-    private static void checkThatObligatoryElementsArePresent(root) {
-        if (!(root.this instanceof String && root.dependencies instanceof Map)) {
-            throw new BadConfigurationException('Microservice configuration must contain "this" and "dependencies" elements')
+    private static void checkThatServiceMetadataContainsValidElements(serviceMetadata) {
+        if (!(serviceMetadata.this && serviceMetadata.this instanceof String)) {
+            throw new InvalidMicroserviceConfigurationException('invalid or missing "this" element')
         }
+        if (serviceMetadata.dependencies != null && !(serviceMetadata.dependencies instanceof Map)) {
+            throw new InvalidMicroserviceConfigurationException('invalid "dependencies" element')
+        }
+    }
+
+   private  static void setDefaultsForMissingOptionalElements(serviceMetadata) {
+       if (serviceMetadata.dependencies == null) {
+           serviceMetadata.dependencies = [:]
+       }
     }
 
     String getMicroserviceName() {

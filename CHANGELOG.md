@@ -1,6 +1,6 @@
 0.4.4
 ------
-New features:
+Notable changes:
 * [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.6.0`
 
 0.4.3
@@ -10,7 +10,7 @@ New features:
 
 0.4.2
 ------
-New features:
+Notable changes:
 * [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.5.6`
 
 0.4.1
@@ -22,6 +22,8 @@ Bug fixes:
 -----
 New features:
 * default profiles
+
+Notable changes:
 * [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.5.5`
 
 Bug fixes:
@@ -33,7 +35,7 @@ Breaking changes:
 
 0.3.0
 -----
-New features:
+Notable changes:
 * [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.5.4`
 
 Breaking changes:
@@ -42,27 +44,27 @@ Breaking changes:
 
 0.2.2
 -----
-New features:
+Notable changes:
 * Groovy sources compiled with Java-style compile time checks 
 
 0.2.1
 -----
-New features:
+Notable changes:
 * [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.5.1`
 
 0.2.0
 -----
-New features:
+Notable changes:
 * [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.5.0`
 
 0.0.8
 -----
-New features:
+Notable changes:
 * `micro-deps-spring-test-config` artifact 
 
 0.0.7
 -----
-New features:
+Notable changes:
 * `MicroserviceAddressProvider` scope changed to public
 
 0.0.6
@@ -82,7 +84,7 @@ Bug fixes:
 
 0.0.3
 -----
-New features:
+Notable changes:
 * microservice context removed from instance uri spec
 
 Breaking changes:
@@ -91,8 +93,10 @@ Breaking changes:
 0.0.2
 -----
 New features:
-* Java 7 compatibility
 * default service resolver configuration
+
+Notable changes:
+* Java 7 compatibility
 * [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.3.1`
 
 0.0.1

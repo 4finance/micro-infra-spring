@@ -1,5 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
+
 import com.ofg.infrastructure.discovery.ServiceResolver
+import com.ofg.infrastructure.discovery.ServiceUnavailableException
 import org.springframework.http.HttpEntity
 import org.springframework.web.client.RestOperations
 import spock.lang.Specification
@@ -16,12 +18,11 @@ class ServiceRestClientSpec extends Specification {
     
     def "should send a request to provided URL with appending host when calling service"() {
         given:
-            String host = 'http://localhost:1234'
-            String path = 'some/url'
-            String expectedUrlAsString = "$host/$path"
-            URI expectedUri = new URI(expectedUrlAsString)            
+            String serviceUrl = 'http://localhost:1234'
+            String path = 'some/serviceUrl'
+            URI expectedUri = new URI("$serviceUrl/$path")
         and:
-            serviceResolver.getUrl(COLA_COLLABORATOR_NAME) >> com.google.common.base.Optional.of(host)
+            serviceResolver.fetchUrl(COLA_COLLABORATOR_NAME) >> serviceUrl
         when:
             serviceRestClient.forService(COLA_COLLABORATOR_NAME).get().onUrl(path).ignoringResponse()
         then:
@@ -30,7 +31,7 @@ class ServiceRestClientSpec extends Specification {
     
     def "should throw an exception when trying to access an unavailable service"() {
         given:
-            serviceResolver.getUrl(COLA_COLLABORATOR_NAME) >> com.google.common.base.Optional.absent()
+            serviceResolver.fetchUrl(COLA_COLLABORATOR_NAME) >> { throw new ServiceUnavailableException(COLA_COLLABORATOR_NAME) }
         when:
             serviceRestClient.forService(COLA_COLLABORATOR_NAME).get().onUrl('').ignoringResponse()
         then:

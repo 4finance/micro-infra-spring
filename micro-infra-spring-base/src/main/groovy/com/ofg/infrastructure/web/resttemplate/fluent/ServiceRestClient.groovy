@@ -2,6 +2,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent
 
 import com.google.common.base.Optional
 import com.ofg.infrastructure.discovery.ServiceResolver
+import com.ofg.infrastructure.discovery.ServiceUnavailableException
 import groovy.transform.CompileStatic
 import org.springframework.web.client.RestOperations
 
@@ -64,11 +65,7 @@ class ServiceRestClient {
      * @return builder for the specified HttpMethod
      */
     public HttpMethodBuilder forService(String serviceName) {
-        Optional<String> serviceUrl = serviceResolver.getUrl(serviceName)
-        if (serviceUrl.isPresent()) {
-            return new HttpMethodBuilder(serviceUrl.get(), restOperations)
-        }
-        throw new ServiceUnavailableException(serviceName)
+        return new HttpMethodBuilder(serviceResolver.fetchUrl(serviceName), restOperations)
     }
 
     /**
@@ -79,5 +76,4 @@ class ServiceRestClient {
     public HttpMethodBuilder forExternalService() {
         return new HttpMethodBuilder(restOperations)
     }
-
 }

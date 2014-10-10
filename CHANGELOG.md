@@ -1,7 +1,13 @@
-0.4.4
+0.4.4-SNAPSHOT
 -----
 New features:
 * [Issue 18](https://github.com/4finance/micro-infra-spring/issues/18) Add correlationId to headers of a JMS message
+* [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.4.4`
+
+Breaking changes:
+- REST template methods throw `com.ofg.infrastructure.discovery.ServiceUnavailableException` instead of `com.ofg.infrastructure.web.resttemplate.fluent.ServiceUnavailableException` when target microservice is unavailable
+- removed `ControllerExceptionConfiguration` import from `WebInfrastructureConfiguration`
+- removed `ControllerExceptionConfiguration` import from `ConfigurationWithoutServiceDiscovery`
 
 0.4.3
 -----
@@ -36,6 +42,9 @@ New features:
 
 0.2.2
 -----
+New features:
+* [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.4.1`
+
 Bug fixes:
 * Issues with looking for an implementation instead of a registered interface related to Metrics
 

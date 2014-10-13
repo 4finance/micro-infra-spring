@@ -30,7 +30,7 @@ Having such a folder structure
 - /com/ofg/foo/bar/bar.json
 ```
 
-it will register stubs in the __/com/ofg/foo/bar/__ folder while ignoring the __foo.json__ file
+it will register stubs defined in all folders by picking up JSON files.
 
 * register stubs in Zookeeper
 

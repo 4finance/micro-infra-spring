@@ -60,7 +60,7 @@ class StubRunner implements Closeable, StubRunning {
     StubRunner(Arguments arguments, StubRegistry stubRegistry) {
         this.arguments = arguments
         this.stubRegistry = stubRegistry
-        this.stubRepository = new StubRepository(new File(repositoryPath))
+        this.stubRepository = new StubRepository(new File(arguments.repositoryPath))
     }
 
     private void printErrorMessage(CmdLineException e, CmdLineParser parser) {

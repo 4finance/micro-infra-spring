@@ -6,6 +6,7 @@ import com.ofg.infrastructure.metrics.publishing.GraphitePublisher
 import com.ofg.infrastructure.metrics.publishing.JmxPublisher
 import com.ofg.infrastructure.metrics.registry.MetricPathProvider
 import com.ofg.infrastructure.metrics.registry.PathPrependingMetricRegistry
+import com.ofg.infrastructure.metrics.publishing.PublishingInterval
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -48,7 +49,7 @@ class MetricsConfiguration {
     @Profile(PRODUCTION)
     GraphitePublisher graphitePublisher(Graphite graphite, MetricRegistry metricRegistry,
                                         @Value('${graphite.publishing.interval:15000}') long publishingIntervalInMs) {
-        GraphitePublisher.PublishingInterval publishingInterval = new GraphitePublisher.PublishingInterval(publishingIntervalInMs, MILLISECONDS)
+        PublishingInterval publishingInterval = new PublishingInterval(publishingIntervalInMs, MILLISECONDS)
         return new GraphitePublisher(graphite, publishingInterval, metricRegistry, MINUTES, MILLISECONDS)
     }
 

@@ -10,11 +10,11 @@ import java.util.concurrent.TimeUnit
 
 /**
  * A publisher to <a href="http://graphite.wikidot.com/">Graphite</a>. Creates a {@link GraphiteReporter} instance
- * that in a given {@link com.ofg.infrastructure.metrics.publishing.GraphitePublisher.PublishingInterval} publishes
+ * that in a given {@link com.ofg.infrastructure.metrics.publishing.PublishingInterval} publishes
  * data to Graphite. 
  * 
  * @see GraphiteReporter
- * @see com.ofg.infrastructure.metrics.publishing.GraphitePublisher.PublishingInterval
+ * @see com.ofg.infrastructure.metrics.publishing.PublishingInterval
  */
 @CompileStatic
 class GraphitePublisher implements MetricsPublishing {
@@ -51,15 +51,5 @@ class GraphitePublisher implements MetricsPublishing {
     @Override
     void stop() throws IOException {
         graphiteReporter?.stop()
-    }
-
-    static class PublishingInterval {
-        final long interval
-        final TimeUnit timeUnit
-
-        PublishingInterval(long interval, TimeUnit timeUnit) {
-            this.interval = interval
-            this.timeUnit = timeUnit
-        }
     }
 }

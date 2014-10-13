@@ -71,7 +71,7 @@ class AcceptanceSpec extends Specification {
     }
 
     private void removeRouteDefinitions() {
-        List<RouteDefinition> routeDefinitions = camelContext.getRouteDefinitions()
+        List<RouteDefinition> routeDefinitions = camelContext.routeDefinitions
         camelContext.removeRouteDefinitions(routeDefinitions)
     }
 }

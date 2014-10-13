@@ -1,8 +1,12 @@
-0.5.0-SNAPSHOT
+0.5.0
 -----
 New features:
 * [Issue 18](https://github.com/4finance/micro-infra-spring/issues/18) Add correlationId to headers of a JMS message
+* CSV metrics publisher
+
+Notable changes:
 * [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.4.4`
+* JMX metrics publisher is run also in TEST profile
 
 Breaking changes:
 - removed `FilterConfiguration` - all necessary filter configurations can be imported separately
@@ -18,6 +22,7 @@ Breaking changes:
 - `CorrelationIdAspect` moved to `com.ofg.infrastructure.web.correlationid` package
 - `CorrelationIdFilter` moved to `com.ofg.infrastructure.web.correlationid` package
 - `CorrelationIdConfiguration` moved to `com.ofg.infrastructure.web.correlationid` package
+- `GraphitePublisher.PublishingInterval` inner class moved to separate `PublishingInterval` class
 
 0.4.3
 -----
@@ -52,7 +57,7 @@ New features:
 
 0.2.2
 -----
-New features:
+Notable changes:
 * [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.4.1`
 
 Bug fixes:
@@ -65,9 +70,9 @@ New features:
 
 0.2.0
 -----
-New features:ServiceRestClientConfiguration
-* [Issue 17](https://github.com/4finance/micro-infra-spring/issues/17) Moved metrics path generation from 'bluecash-adapter' to micro-infra-spring
-* [Issue 16](https://github.com/4finance/micro-infra-spring/issues/16) Copied MetricsPublishingConfiguration in BootMicroservice to micro-infra-spring
+New features:
+* [Issue 17](https://github.com/4finance/micro-infra-spring/issues/17) metrics path configuration
+* [Issue 16](https://github.com/4finance/micro-infra-spring/issues/16) `MetricsConfiguration` configuration
 
 Breaking changes:
 * `MetricsRegistryConfiguration` renamed to `MetricsConfiguration`
@@ -76,8 +81,10 @@ Breaking changes:
 0.1.0
 -----
 New features:
-* [micro-deps-spring-config](https://github.com/4finance/micro-deps) upgraded to version `0.4.0`
 * configuration for all request filters and request logging filter  
+
+Notable changes:
+* [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.4.0`
 
 Breaking changes:
 * REST Template classes moved to `com.ofg.infrastructure.web.resttemplate.custom` package
@@ -137,7 +144,7 @@ New features:
 
 0.0.2
 -----
-New features:
+Notable changes:
 * Java 7 compatibility
 
 0.0.1

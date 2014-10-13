@@ -34,6 +34,24 @@ it will register stubs in the __/com/ofg/foo/bar/__ folder while ignoring the __
 
 * register stubs in Zookeeper
 
+#### Running from fat jar
+
+We deploy the stub-runner project as a JAR in jCenter. Since version 0.2.0 we provide easier way of providing options via Args4J library.
+You can set the following options to the main class:
+
+```
+java -jar stub-runner.jar [options...] 
+ -a (--runAllStubs) VAL : Switch that signifies that you want to run all stubs (e.g. 'true')
+ -c (--context) VAL     : Context for which the project should be run (e.g. 'pl', 'lt')
+ -maxp (--maxPort) N    : Maximum port value to be assigned to the Wiremock instance (e.g. 12345)
+ -minp (--minPort) N    : Minimal port value to be assigned to the Wiremock instance (e.g. 12345)
+ -p (--projectPath) VAL : Relative path to the project which you want to run (e.g. '/com/ofg/foo/barProject.json')
+ -r (--repository) VAL  : Path to repository containing the 'repository' folder 
+                          with 'project' and 'mapping' subfolders (e.g.
+                          '/home/4finance/stubs/')
+ -z (--zookeeperPort) N : Port of the zookeeper instance (e.g. 2181)
+```
+
 ### Stub runner configuration
 
 Under `ext` block inside `build.gradle` you can configure stub runner with the following properties:

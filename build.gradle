@@ -2,6 +2,7 @@ apply plugin: 'groovy'
 apply plugin: 'com.ofg.uptodate'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
+apply plugin: 'spring-boot'
 
 buildscript {
     repositories {
@@ -12,6 +13,7 @@ buildscript {
     dependencies {
         classpath 'com.ofg:uptodate-gradle-plugin:1.1.0'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.8.RELEASE'
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
     }
 }
@@ -20,7 +22,7 @@ sourceCompatibility = 1.7
 
 group = 'com.ofg'
 description = 'Runs stubs for service collaborators'
-version = '0.1.1-SNAPSHOT'
+version = '0.2.0'
 
 ext {
     stubRepositoryPath = 'repository'
@@ -39,6 +41,12 @@ repositories {
     mavenCentral()
 }
 
+project.gradle.projectsEvaluated {
+    applicationDefaultJvmArgs = project.gradle.startParameter.systemPropertiesArgs.entrySet().collect {
+        "-D${it.key}=${it.value}"
+    }
+}
+
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.3.7'
     compile 'com.github.tomakehurst:wiremock:1.51'
@@ -47,26 +55,26 @@ dependencies {
     compile "org.slf4j:slf4j-api:$slf4jVersion"
     compile "org.slf4j:log4j-over-slf4j:$slf4jVersion"
     compile 'ch.qos.logback:logback-classic:1.1.2'
+    compile 'args4j:args4j:2.0.29'
 
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
 }
 
 tasks.addRule('Pattern: run<Project>Stubs: Run stubs for project') { String taskName ->
     if (taskName == 'runStubs') {
-        String skipLoadingMetadataMarker = ''
-        executeStubRunner(taskName, [ stubRepositoryPath, skipLoadingMetadataMarker, stubRegistryPort, minStubPortNumber, maxStubPortNumber, context ])
+        executeStubRunner(taskName, "-r $stubRepositoryPath -a true -z $stubRegistryPort -minp $minStubPortNumber -maxp $maxStubPortNumber -c $context")
     } else if (taskName.startsWith('run') && taskName.endsWith('Stubs')) {
         String projectName = taskName[3..(taskName.size() - 6)]
         String metadataFileName = projectName[0].toLowerCase() + projectName.substring(1)
-        executeStubRunner(taskName, [ stubRepositoryPath, "${metadataFileName}.json", stubRegistryPort, minStubPortNumber, maxStubPortNumber ])
+        executeStubRunner(taskName, "-r $stubRepositoryPath -p ${metadataFileName}.json -z $stubRegistryPort -minp $minStubPortNumber -maxp $maxStubPortNumber")
     }
 }
 
-void executeStubRunner(String taskName, List arguments) {
+void executeStubRunner(String taskName, String arguments) {
     task (taskName, type: JavaExec, dependsOn: classes) {
-        main = 'com.ofg.stub.Main'
+        main = 'com.ofg.stub.StubRunner'
         classpath = sourceSets.main.output + configurations.compile
-        args = arguments
+        args(arguments.split(' '))
         println "Running task with args $args"
     }
 }
@@ -105,13 +113,28 @@ publishing {
             from components.java
             artifact sourcesJar
             artifact javadocJar
+            artifact fatJar {
+                classifier "fatJar"
+            }
         }
     }
+}
+
+
+springBoot {
+    backupSource = false
+}
+
+bootRepackage {
+    classifier = 'fatJar'
 }
 
 jar {
     dependsOn addHashFile
     from "commitHash.txt"
+    from('repository') {
+        into 'repository'
+    }
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -124,10 +147,27 @@ task javadocJar(type: Jar, dependsOn: groovydoc) {
     from groovydoc.destinationDir
 }
 
+task fatJar(type: Jar) {
+    classifier = 'fatJar'
+    from sourceSets.main.output
+}
+
+task fatJarBoot(type: BootRepackage, dependsOn: fatJar) {
+    withJarTask = fatJar
+}
+
+task bootJars(dependsOn: build)
+
+bootJars {
+    dependsOn = [sourcesJar, javadocJar, fatJarBoot]
+}
+
 artifacts {
     archives sourcesJar
     archives javadocJar
 }
+
+project.tasks.findAll { it.name.startsWith('publish') || it.name == 'bintrayUpload' }*.dependsOn(bootJars)
 
 if(project.hasProperty("coverage")) {
     apply plugin: 'jacoco'
@@ -139,7 +179,7 @@ if(project.hasProperty("coverage")) {
 
     jacocoTestReport {
         reports {
-            xml.enabled = true // coveralls plugin depends on xml format report
+            xml.enabled = true
             html.enabled = true
         }
     }

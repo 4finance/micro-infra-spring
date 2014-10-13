@@ -1,3 +1,9 @@
+0.2.0
+-----
+New features:
+* Added Spring Boot plugin for fat jar creation
+* Added Args4j for options setting
+
 0.1.0
 -----
 New features:

@@ -26,11 +26,15 @@ class StubRegistry {
         zookeeperServer = new TestingServer(port)
     }
 
+    StubRegistry(TestingServer testingServer) {
+        zookeeperServer = testingServer
+    }
+
     void register(Collection<StubServer> stubServers) {
         CuratorFramework client = CuratorFrameworkFactory.newClient(zookeeperServer.connectString, RETRY_POLICY)
         client.start()
-        stubServers.each {
-            registerInstance(it, client)
+        stubServers.each { StubServer stubServer ->
+            registerInstance(stubServer, client)
         }
     }
 

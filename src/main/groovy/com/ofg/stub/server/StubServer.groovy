@@ -45,9 +45,9 @@ class StubServer {
     }
 
     private void registerStubs(List<MappingDescriptor> sortedMappings, WireMock wireMock) {
-        sortedMappings.each {
-            wireMock.register(it.mapping)
-            log.debug("Registered stub mappings from $it.descriptor")
+        sortedMappings.each { MappingDescriptor mappingDescriptor ->
+            wireMock.register(mappingDescriptor.mapping)
+            log.debug("Registered stub mappings from $mappingDescriptor.descriptor")
         }
     }
 

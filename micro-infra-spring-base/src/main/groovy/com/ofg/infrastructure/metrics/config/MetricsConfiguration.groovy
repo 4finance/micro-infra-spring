@@ -12,8 +12,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 
-import static com.ofg.config.BasicProfiles.DEVELOPMENT
-import static com.ofg.config.BasicProfiles.PRODUCTION
+import static com.ofg.config.BasicProfiles.*
 import static java.util.concurrent.TimeUnit.MILLISECONDS
 import static java.util.concurrent.TimeUnit.MINUTES
 
@@ -34,7 +33,7 @@ import static java.util.concurrent.TimeUnit.MINUTES
 class MetricsConfiguration {
 
     @Bean(initMethod = "start", destroyMethod = "stop")
-    @Profile([PRODUCTION, DEVELOPMENT])
+    @Profile([PRODUCTION, DEVELOPMENT, TEST])
     JmxPublisher jmxPublisher(MetricRegistry metricRegistry) {
         return new JmxPublisher(metricRegistry, MINUTES, MILLISECONDS)
     }

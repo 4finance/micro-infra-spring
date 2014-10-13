@@ -5,9 +5,9 @@ New features:
 * [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.4.4`
 
 Breaking changes:
-- REST template methods throw `com.ofg.infrastructure.discovery.ServiceUnavailableException` instead of `com.ofg.infrastructure.web.resttemplate.fluent.ServiceUnavailableException` when target microservice is unavailable
-- removed `ControllerExceptionConfiguration` import from `WebInfrastructureConfiguration`
-- removed `ControllerExceptionConfiguration` import from `ConfigurationWithoutServiceDiscovery`
+- `com.ofg.infrastructure.web.resttemplate.fluent.ServiceUnavailableException` moved to `com.ofg.infrastructure.discovery` package
+- removed `ControllerExceptionConfiguration` import all configurations
+- removed `RequestFilterConfiguration` import all configurations
 
 0.4.3
 -----

@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.reactor
 
 import com.ofg.infrastructure.reactor.event.ReactorEvent
-import com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder
+import com.ofg.infrastructure.correlationid.CorrelationIdHolder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.SpringApplicationContextLoader

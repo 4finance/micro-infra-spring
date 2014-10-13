@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.web.config
 
-import com.ofg.infrastructure.web.filter.FilterConfiguration
+import com.ofg.infrastructure.web.correlationid.CorrelationIdConfiguration
 import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClientConfiguration
 import com.ofg.infrastructure.web.view.ViewConfiguration
 import groovy.transform.CompileStatic
@@ -12,19 +12,19 @@ import org.springframework.context.annotation.Import
  *  <li>
  *      <ul>
  *          <li>{@link ServiceRestClientConfiguration} - RestTemplate abstraction with ServiceDiscovery</li>
- *          <li>{@link FilterConfiguration} - filter for logging request body</li>
+ *          <li>{@link CorrelationIdConfiguration} - adds correlation id to requests</li>
  *          <li>{@link ViewConfiguration} - converts unmapped views to JSON requests</li>
  *      </ul>
  *  </li>
  *
  * @see ServiceRestClientConfiguration
- * @see FilterConfiguration
+ * @see CorrelationIdConfiguration
  * @see ViewConfiguration
  */
 @Configuration
 @CompileStatic
 @Import([ServiceRestClientConfiguration,
-        FilterConfiguration,
+        CorrelationIdConfiguration,
         ViewConfiguration])
 class WebInfrastructureConfiguration {
 

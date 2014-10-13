@@ -1,4 +1,4 @@
-package com.ofg.infrastructure.web.filter.correlationid
+package com.ofg.infrastructure.web.correlationid
 
 import com.ofg.infrastructure.discovery.web.HttpMockServer
 import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClient

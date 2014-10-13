@@ -1,4 +1,4 @@
-package com.ofg.infrastructure.web.filter.correlationid
+package com.ofg.infrastructure.web.correlationid
 
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.ConfigurationWithoutServiceDiscovery
@@ -10,7 +10,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 
-import static com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
 
 @ContextConfiguration(classes = [BaseConfiguration, ConfigurationWithoutServiceDiscovery], loader = SpringApplicationContextLoader)
 class CorrelationIdFilterSpec extends MvcIntegrationSpec {

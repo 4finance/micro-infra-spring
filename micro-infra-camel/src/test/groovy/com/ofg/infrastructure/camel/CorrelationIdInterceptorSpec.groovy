@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.camel
 
-import com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder
+import com.ofg.infrastructure.correlationid.CorrelationIdHolder
 import org.apache.camel.CamelContext
 import org.apache.camel.Exchange
 import org.apache.camel.impl.DefaultCamelContext

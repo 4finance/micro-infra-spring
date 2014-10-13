@@ -1,4 +1,4 @@
-package com.ofg.infrastructure.web.filter.correlationid
+package com.ofg.infrastructure.correlationid
 
 import groovy.transform.TypeChecked
 

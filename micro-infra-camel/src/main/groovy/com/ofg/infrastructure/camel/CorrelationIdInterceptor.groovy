@@ -3,8 +3,8 @@ package com.ofg.infrastructure.camel
 import groovy.transform.CompileStatic
 import org.apache.camel.Message
 
-import static com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
-import com.ofg.infrastructure.web.filter.correlationid.CorrelationIdUpdater
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
+import com.ofg.infrastructure.correlationid.CorrelationIdUpdater
 import groovy.util.logging.Slf4j
 import org.apache.camel.Exchange
 import org.apache.camel.Processor

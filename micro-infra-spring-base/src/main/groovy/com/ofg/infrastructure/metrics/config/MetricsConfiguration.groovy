@@ -1,9 +1,11 @@
-package com.ofg.infrastructure.metrics.registry
+package com.ofg.infrastructure.metrics.config
 
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.graphite.Graphite
 import com.ofg.infrastructure.metrics.publishing.GraphitePublisher
 import com.ofg.infrastructure.metrics.publishing.JmxPublisher
+import com.ofg.infrastructure.metrics.registry.MetricPathProvider
+import com.ofg.infrastructure.metrics.registry.PathPrependingMetricRegistry
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean

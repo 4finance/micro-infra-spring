@@ -1,4 +1,4 @@
-package com.ofg.infrastructure.web.filter.correlationid
+package com.ofg.infrastructure.web.correlationid
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MicroserviceMvcWiremockSpec
 import com.ofg.infrastructure.discovery.web.HttpMockServer
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*
-import static com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
 
 @ActiveProfiles('aspect')
 @ContextConfiguration(classes = [BaseConfiguration, CorrelationIdAspectSpecConfiguration], loader = SpringApplicationContextLoader)

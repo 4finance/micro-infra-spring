@@ -1,4 +1,4 @@
-package com.ofg.infrastructure.web.filter.correlationid
+package com.ofg.infrastructure.web.correlationid
 import groovy.transform.TypeChecked
 import org.springframework.boot.context.embedded.FilterRegistrationBean
 import org.springframework.context.annotation.Bean

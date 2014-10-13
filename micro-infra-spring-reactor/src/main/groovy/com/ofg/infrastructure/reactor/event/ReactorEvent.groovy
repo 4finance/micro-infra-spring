@@ -1,11 +1,11 @@
 package com.ofg.infrastructure.reactor.event
-import com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder
+import com.ofg.infrastructure.correlationid.CorrelationIdHolder
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import reactor.event.Event
 import reactor.function.Consumer
 
-import static com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
+import static CorrelationIdHolder.CORRELATION_ID_HEADER
 
 /**
  * Extension to {@link Event} that ensures that {@link CorrelationIdHolder#CORRELATION_ID_HEADER} header ({@link Event.Headers}

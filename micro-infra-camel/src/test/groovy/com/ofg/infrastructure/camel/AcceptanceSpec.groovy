@@ -1,12 +1,11 @@
 package com.ofg.infrastructure.camel
 
 import com.ofg.infrastructure.camel.config.CamelRouteAsBeanConfiguration
-import com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder
+import com.ofg.infrastructure.correlationid.CorrelationIdHolder
 import org.apache.camel.model.ModelCamelContext
 import org.apache.camel.model.RouteDefinition
 import spock.lang.AutoCleanup
 
-import static com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder.*
 import groovy.util.logging.Slf4j
 import org.apache.camel.ProducerTemplate
 import org.apache.camel.component.mock.MockEndpoint
@@ -15,6 +14,8 @@ import org.apache.camel.impl.InterceptSendToEndpoint
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
+
+import static CorrelationIdHolder.CORRELATION_ID_HEADER
 
 @Slf4j
 @ContextConfiguration(classes = [CamelRouteAsBeanConfiguration.class])

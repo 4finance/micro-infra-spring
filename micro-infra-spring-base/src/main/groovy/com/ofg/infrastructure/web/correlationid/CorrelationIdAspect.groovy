@@ -1,4 +1,7 @@
-package com.ofg.infrastructure.web.filter.correlationid
+package com.ofg.infrastructure.web.correlationid
+
+import com.ofg.infrastructure.correlationid.CorrelationCallable
+import com.ofg.infrastructure.correlationid.CorrelationIdHolder
 import groovy.util.logging.Slf4j
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
@@ -9,7 +12,7 @@ import org.springframework.http.HttpHeaders
 
 import java.util.concurrent.Callable
 
-import static com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
 
 /**
  * Aspect that adds correlation id to
@@ -23,17 +26,17 @@ import static com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolde
  * </ul>
  * 
  * For controllers an around aspect is created that wraps the {@link Callable#call()} method execution
- * in {@link CorrelationCallable#withCorrelationId(groovy.lang.Closure)} 
+ * in {@link com.ofg.infrastructure.correlationid.CorrelationCallable#withCorrelationId(groovy.lang.Closure)}
  * 
  * For {@link org.springframework.web.client.RestOperations} we are wrapping all executions of the
  * <b>exchange</b> methods and we are extracting {@link HttpHeaders} from the passed {@link HttpEntity}.
- * Next we are adding correlation id header {@link CorrelationIdHolder#CORRELATION_ID_HEADER} with 
- * the value taken from {@link CorrelationIdHolder}. Finally the method execution proceeds.
+ * Next we are adding correlation id header {@link com.ofg.infrastructure.correlationid.CorrelationIdHolder#CORRELATION_ID_HEADER} with
+ * the value taken from {@link com.ofg.infrastructure.correlationid.CorrelationIdHolder}. Finally the method execution proceeds.
  * 
  * @see org.springframework.web.bind.annotation.RestController
  * @see org.springframework.stereotype.Controller
  * @see org.springframework.web.client.RestOperations
- * @see CorrelationIdHolder
+ * @see com.ofg.infrastructure.correlationid.CorrelationIdHolder
  * @see CorrelationIdFilter
  * 
  */

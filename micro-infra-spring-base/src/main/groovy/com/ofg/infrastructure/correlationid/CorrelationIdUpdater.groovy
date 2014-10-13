@@ -1,11 +1,11 @@
-package com.ofg.infrastructure.web.filter.correlationid
+package com.ofg.infrastructure.correlationid
 
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.slf4j.MDC
 import org.springframework.util.StringUtils
 
-import static com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
+import static CorrelationIdHolder.CORRELATION_ID_HEADER
 
 /**
  * Class that takes care of updating all necessary components with new value

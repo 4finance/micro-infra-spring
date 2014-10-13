@@ -1,13 +1,23 @@
-0.4.4-SNAPSHOT
+0.5.0-SNAPSHOT
 -----
 New features:
 * [Issue 18](https://github.com/4finance/micro-infra-spring/issues/18) Add correlationId to headers of a JMS message
 * [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.4.4`
 
 Breaking changes:
-- `com.ofg.infrastructure.web.resttemplate.fluent.ServiceUnavailableException` moved to `com.ofg.infrastructure.discovery` package
+- removed `FilterConfiguration` - all necessary filter configurations can be imported separately
 - removed `ControllerExceptionConfiguration` import all configurations
 - removed `RequestFilterConfiguration` import all configurations
+- `RequestFilterConfiguration` renamed to `RequestLoggingConfiguration` and moved to `com.ofg.infrastructure.web.logging` package
+- `RequestBodyLoggingContextFilter` moved to `com.ofg.infrastructure.web.logging` package
+- `MetricsConfiguration` moved to `com.ofg.infrastructure.metrics.config` package
+- `ServiceUnavailableException` moved to `com.ofg.infrastructure.discovery` package
+- `CorrelationCallable` moved to `com.ofg.infrastructure.correlationid` package
+- `CorrelationIdHolder` moved to `com.ofg.infrastructure.correlationid` package
+- `CorrelationIdUpdater` moved to `com.ofg.infrastructure.correlationid` package
+- `CorrelationIdAspect` moved to `com.ofg.infrastructure.web.correlationid` package
+- `CorrelationIdFilter` moved to `com.ofg.infrastructure.web.correlationid` package
+- `CorrelationIdConfiguration` moved to `com.ofg.infrastructure.web.correlationid` package
 
 0.4.3
 -----

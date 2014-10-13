@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.reactor.aspect
 
-import com.ofg.infrastructure.web.filter.correlationid.CorrelationIdUpdater
+import com.ofg.infrastructure.correlationid.CorrelationIdUpdater
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.aspectj.lang.ProceedingJoinPoint
@@ -9,7 +9,7 @@ import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Pointcut
 import reactor.event.Event
 
-import static com.ofg.infrastructure.web.filter.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
 
 /**
  * Aspect around public methods annotated with {@link reactor.spring.annotation.Selector}

@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit
  * 
  * @see GraphiteReporter
  * @see com.ofg.infrastructure.metrics.publishing.GraphitePublisher.PublishingInterval
- * @see com.ofg.infrastructure.metrics.registry.MetricsConfiguration
  */
 @CompileStatic
 class GraphitePublisher implements MetricsPublishing {

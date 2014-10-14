@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/4finance/stub-runner-spring.svg?branch=master)](https://travis-ci.org/4finance/stub-runner-spring) [![Coverage Status](http://img.shields.io/coveralls/4finance/stub-runner-spring/master.svg)](https://coveralls.io/r/4finance/stub-runner-spring) [Download](https://api.bintray.com/packages/4finance/micro/stub-runner-spring/images/download.svg) ](https://bintray.com/4finance/micro/stub-runner-spring/_latestVersion)
+[![Build Status](https://travis-ci.org/4finance/stub-runner-spring.svg?branch=master)](https://travis-ci.org/4finance/stub-runner-spring) [![Coverage Status](http://img.shields.io/coveralls/4finance/stub-runner-spring/master.svg)](https://coveralls.io/r/4finance/stub-runner-spring)  [ ![Download](https://api.bintray.com/packages/4finance/micro/stub-runner-spring/images/download.svg) ](https://bintray.com/4finance/micro/stub-runner-spring/_latestVersion)
 
 stub-runner-spring
 =======================

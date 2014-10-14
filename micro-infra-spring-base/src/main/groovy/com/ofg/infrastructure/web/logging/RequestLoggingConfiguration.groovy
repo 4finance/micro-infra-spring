@@ -1,11 +1,12 @@
 package com.ofg.infrastructure.web.logging
 
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 import javax.servlet.Filter
+
 /**
  * Configuration that registers a bean that will automatically if DEBUG level of logging is set on
  * {@link com.ofg.infrastructure.web.logging.RequestBodyLoggingContextFilter}
@@ -13,13 +14,12 @@ import javax.servlet.Filter
  * 
  * @see com.ofg.infrastructure.web.logging.RequestBodyLoggingContextFilter
  */
-@TypeChecked
 @Configuration
+@CompileStatic
 class RequestLoggingConfiguration {
 
     @Bean
     Filter requestBodyLoggingContextFilter(@Value('${request.payload.logging.maxlength:2000}') int maxPayloadLength) {
         return new RequestBodyLoggingContextFilter(maxPayloadLength)
     }
-
 }

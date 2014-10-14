@@ -1,9 +1,9 @@
 package com.ofg.infrastructure.web.exception
 
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import org.springframework.validation.ObjectError
 
-@TypeChecked
+@CompileStatic
 class BadParametersException extends RuntimeException {
     List<ObjectError> errors
 

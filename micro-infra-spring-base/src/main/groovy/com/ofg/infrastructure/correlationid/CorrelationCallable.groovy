@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.correlationid
 
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 
 import java.util.concurrent.Callable
 
@@ -17,7 +17,7 @@ import java.util.concurrent.Callable
  * @see CorrelationIdHolder
  * @see ThreadLocal
  */
-@TypeChecked
+@CompileStatic
 class CorrelationCallable<T> implements Callable<T> {
     private String correlationId
     private Callable<T> callable

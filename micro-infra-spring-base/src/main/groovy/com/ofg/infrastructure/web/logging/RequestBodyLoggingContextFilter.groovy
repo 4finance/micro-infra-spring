@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.web.logging
 
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import org.springframework.web.filter.Log4jNestedDiagnosticContextFilter
 
 /**
@@ -10,7 +10,7 @@ import org.springframework.web.filter.Log4jNestedDiagnosticContextFilter
  * 
  * @see Log4jNestedDiagnosticContextFilter
  */
-@TypeChecked
+@CompileStatic
 class RequestBodyLoggingContextFilter extends Log4jNestedDiagnosticContextFilter {
     RequestBodyLoggingContextFilter(int maxPayloadLength) {
         this.includePayload = true

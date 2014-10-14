@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.web.correlationid
 
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.slf4j.MDC
 import org.springframework.web.filter.OncePerRequestFilter
@@ -23,8 +23,8 @@ import static org.springframework.util.StringUtils.hasText
  * @see com.ofg.infrastructure.correlationid.CorrelationIdHolder
  * @see org.apache.log4j.MDC
  */
-@TypeChecked
 @Slf4j
+@CompileStatic
 //inspired by http://taidevcouk.wordpress.com/2014/05/26/implementing-correlation-ids-in-spring-boot/
 class CorrelationIdFilter extends OncePerRequestFilter {
     @Override

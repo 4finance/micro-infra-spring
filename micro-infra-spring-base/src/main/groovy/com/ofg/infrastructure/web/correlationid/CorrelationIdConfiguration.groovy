@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.web.correlationid
-import groovy.transform.TypeChecked
+
+import groovy.transform.CompileStatic
 import org.springframework.boot.context.embedded.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -10,8 +11,8 @@ import org.springframework.context.annotation.Configuration
  * @see CorrelationIdAspect
  * @see CorrelationIdFilter
  */
-@TypeChecked
 @Configuration
+@CompileStatic
 class CorrelationIdConfiguration {
 
     @Bean
@@ -23,5 +24,4 @@ class CorrelationIdConfiguration {
     FilterRegistrationBean correlationHeaderFilter() {
         return new FilterRegistrationBean(new CorrelationIdFilter())
     }
-
 }

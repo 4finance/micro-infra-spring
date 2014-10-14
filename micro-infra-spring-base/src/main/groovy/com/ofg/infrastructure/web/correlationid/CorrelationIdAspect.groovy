@@ -2,6 +2,7 @@ package com.ofg.infrastructure.web.correlationid
 
 import com.ofg.infrastructure.correlationid.CorrelationCallable
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
@@ -42,6 +43,7 @@ import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATI
  */
 @Aspect
 @Slf4j
+@CompileStatic
 class CorrelationIdAspect {
 
     private static final int HTTP_ENTITY_PARAM_INDEX = 2
@@ -98,5 +100,4 @@ class CorrelationIdAspect {
         }
         return newArgs
     }
-
 }

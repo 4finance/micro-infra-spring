@@ -1,8 +1,8 @@
 package com.ofg.infrastructure.web.exception
 
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 
-@TypeChecked
+@CompileStatic
 class BadParameterError {
     String field
     String message

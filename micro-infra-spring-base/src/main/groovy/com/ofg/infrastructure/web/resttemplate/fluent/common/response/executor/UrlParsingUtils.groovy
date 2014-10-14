@@ -1,11 +1,11 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
 
+import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
-import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j
 
-@TypeChecked
 @Slf4j
+@CompileStatic
 final class UrlParsingUtils {
 
     public static final String SLASH = "/"

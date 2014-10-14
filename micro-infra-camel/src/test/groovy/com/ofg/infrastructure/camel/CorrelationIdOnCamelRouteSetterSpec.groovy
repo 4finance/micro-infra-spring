@@ -50,19 +50,11 @@ class CorrelationIdOnCamelRouteSetterSpec extends Specification {
     }
 
     private ProcessorDefinition<?> sendToInterceptionOnCorrelationId(InterceptSendToEndpointDefinition it, RouteContext routeCtx) {
-        if (interceptionOnAnyEndpoint(it)) {
-            it.outputs.find {
-                return processorContainingCorrelationIdInterception(it, routeCtx)
-            }
-        } else {
-            null
-        }
+        return interceptionOnAnyEndpoint(it) ? interceptionOnCorrelationId(it, routeCtx): null
     }
 
     private ProcessorDefinition<?> interceptionOnCorrelationId(OutputDefinition it, RouteContext routeCtx) {
-        it.outputs.find {
-            return processorContainingCorrelationIdInterception(it, routeCtx)
-        }
+        return it.outputs.find { processorContainingCorrelationIdInterception(it, routeCtx) }
     }
 
     private Processor processorContainingCorrelationIdInterception(ProcessorDefinition<?> it, RouteContext routeCtx) {
@@ -77,5 +69,4 @@ class CorrelationIdOnCamelRouteSetterSpec extends Specification {
     private boolean interceptionOnAnyEndpoint(InterceptSendToEndpointDefinition it) {
         it.uri == ANY_ENDPOINT_URI
     }
-
 }

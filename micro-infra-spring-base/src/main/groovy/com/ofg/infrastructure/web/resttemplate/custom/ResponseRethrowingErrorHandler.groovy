@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.web.resttemplate.custom
 
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.springframework.http.client.ClientHttpResponse
 import org.springframework.web.client.ResponseErrorHandler
@@ -12,8 +12,8 @@ import org.springframework.web.client.ResponseErrorHandler
  * @see org.springframework.web.client.RestTemplate
  * @see ResponseErrorHandler
  */
-@TypeChecked
 @Slf4j
+@CompileStatic
 class ResponseRethrowingErrorHandler implements ResponseErrorHandler {
 
     @Override
@@ -32,5 +32,4 @@ class ResponseRethrowingErrorHandler implements ResponseErrorHandler {
         log.error("Response error: status code [$response.statusCode] body [$responseBody]")
         return responseBody
     }
-
 }

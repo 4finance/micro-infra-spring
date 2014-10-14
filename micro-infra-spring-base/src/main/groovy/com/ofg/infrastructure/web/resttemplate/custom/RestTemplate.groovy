@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.web.resttemplate.custom
-import groovy.transform.TypeChecked
+
+import groovy.transform.CompileStatic
 import org.springframework.http.client.BufferingClientHttpRequestFactory
 import org.springframework.http.client.SimpleClientHttpRequestFactory
 
@@ -20,12 +21,11 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory
  * @see BufferingClientHttpRequestFactory
  * @see org.springframework.http.client.ClientHttpRequestFactory
  */
-@TypeChecked
+@CompileStatic
 class RestTemplate extends org.springframework.web.client.RestTemplate {
     
     RestTemplate() {
         errorHandler = new ResponseRethrowingErrorHandler()
         requestFactory = new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory())
     }
-
 }

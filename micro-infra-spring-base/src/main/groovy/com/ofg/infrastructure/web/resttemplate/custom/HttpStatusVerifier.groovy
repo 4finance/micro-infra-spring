@@ -1,10 +1,9 @@
 package com.ofg.infrastructure.web.resttemplate.custom
 
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import org.springframework.http.HttpStatus
 
-
-@TypeChecked
+@CompileStatic
 class HttpStatusVerifier {
     /**
      * Verifies whether the passed {@link HttpStatus} is either client or server error

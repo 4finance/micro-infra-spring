@@ -1,7 +1,8 @@
 package com.ofg.infrastructure.web.view
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.PropertyAccessor
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
@@ -12,13 +13,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 import static com.ofg.config.BasicProfiles.DEVELOPMENT
 import static com.ofg.config.BasicProfiles.TEST
+
 /**
  * Configures JSON serialization for objects returned by controllers' methods.
  * Pretty printing setting is based on active profile:
  * - in production environment pretty printing is set to false,
  * - in test or development environment pretty printing is set to true.
  */
-@TypeChecked
+@CompileStatic
 @Configuration
 class ViewConfiguration extends WebMvcConfigurerAdapter {
 

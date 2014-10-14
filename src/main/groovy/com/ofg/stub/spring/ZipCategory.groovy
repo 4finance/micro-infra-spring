@@ -4,7 +4,11 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
 /**
- * Taken from https://github.com/timyates/groovy-common-extensions
+ * Based on <a href="https://github.com/timyates/groovy-common-extensions">https://github.com/timyates/groovy-common-extensions</a>.
+ *
+ * Category for {@link File} that adds a method that allows you to unzip
+ * a given file to a specified location
+ *
  */
 class ZipCategory {
 
@@ -15,7 +19,7 @@ class ZipCategory {
      *
      * @param self
      * @param destination (optional), the destination directory where this file's content will be unzipped to.
-     * @return a {@link java.util.Collection} of unzipped {@link java.io.File} objects.
+     * @return a {@link Collection} of unzipped {@link File} objects.
      */
     static Collection<File> unzipTo(File self, File destination) {
         checkUnzipDestination(destination)

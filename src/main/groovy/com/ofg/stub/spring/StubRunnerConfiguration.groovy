@@ -1,4 +1,5 @@
 package com.ofg.stub.spring
+
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.stub.Arguments
 import com.ofg.stub.StubRunner
@@ -15,8 +16,9 @@ import static groovy.grape.Grape.addResolver
 import static groovy.grape.Grape.resolve
 import static groovy.io.FileType.FILES
 import static java.nio.file.Files.createTempDirectory
+
 /**
- * Configuration that initializes a {@link com.ofg.stub.spring.StubRunnerConfiguration.BatchStubRunner} that loads
+ * Configuration that initializes a {@link StubRunnerConfiguration.BatchStubRunner} that loads
  * as many {@link StubRunner} instances as there are dependencies for the microservice.
  *
  * Properties that can be set are
@@ -39,7 +41,7 @@ import static java.nio.file.Files.createTempDirectory
  *     <li>{@link StubRunner} takes the mappings from the unpacked JAR file</li>
  * </ul>
  *
- * @see com.ofg.stub.spring.StubRunnerConfiguration.BatchStubRunner
+ * @see StubRunnerConfiguration.BatchStubRunner
  * @see TestingServer
  * @see ServiceConfigurationResolver
  */
@@ -52,15 +54,16 @@ class StubRunnerConfiguration {
 
     /**
      * Bean that initializes stub runners, runs them and on shutdown closes them. Upon its instantiation
-     * JAR with stubs is downloaded and unpacked to a temporary folder
+     * JAR with stubs is downloaded and unpacked to a temporary folder. Next, {@link StubRunner} instance are
+     * registered for each collaborator.
      *
-     * @param minPortValue - min port value of the Wiremock instance for the given collaborator
-     * @param maxPortValue - max port value of the Wiremock instance for the given collaborator
-     * @param stubRepositoryRoot - root URL from where the JAR with stub mappings will be downloaded
-     * @param stubsGroup - group name of the dependency containing stub mappings
-     * @param stubsModule - module name of the dependency containing stub mappings
-     * @param testingServer - test instance of Zookeper
-     * @param serviceConfigurationResolver - object that wraps the microservice configuration
+     * @param minPortValue min port value of the Wiremock instance for the given collaborator
+     * @param maxPortValue max port value of the Wiremock instance for the given collaborator
+     * @param stubRepositoryRoot root URL from where the JAR with stub mappings will be downloaded
+     * @param stubsGroup group name of the dependency containing stub mappings
+     * @param stubsModule module name of the dependency containing stub mappings
+     * @param testingServer test instance of Zookeper
+     * @param serviceConfigurationResolver object that wraps the microservice configuration
      */
     @Bean(initMethod = 'runStubs', destroyMethod = 'close')
     BatchStubRunner batchStubRunner(@Value('${stubrunner.port.range.min:10000}') Integer minPortValue,
@@ -113,7 +116,7 @@ class StubRunnerConfiguration {
     /**
      * Test instance of Zookeeper
      *
-     * @param serviceResolverUrl
+     * @param serviceResolverUrl - host with port where your application where search for Zookeeper instance
      */
     @Bean(destroyMethod = 'close')
     TestingServer testingServer(@Value('${service.resolver.url:localhost:2181}') String serviceResolverUrl) {

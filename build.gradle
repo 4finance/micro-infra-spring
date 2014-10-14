@@ -20,7 +20,7 @@ sourceCompatibility = 1.7
 
 group = 'com.ofg'
 description = 'Spring configuration for stub-runner'
-version = '0.0.1'
+version = '0.0.2-SNAPSHOT'
 
 ext {
     curatorVersion = '2.6.0'

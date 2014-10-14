@@ -9,9 +9,9 @@ Notable changes:
 * JMX metrics publisher is run also in TEST profile
 
 Breaking changes:
-- removed `FilterConfiguration` - all necessary filter configurations can be imported separately
-- removed `ControllerExceptionConfiguration` import all configurations
-- removed `RequestFilterConfiguration` import all configurations
+- removed `FilterConfiguration` - import `CorrelationIdConfiguration` and/or `RequestFilterConfiguration` directly when needed
+- removed `ControllerExceptionConfiguration` import from all configurations
+- removed `RequestFilterConfiguration` import from all configurations
 - `RequestFilterConfiguration` renamed to `RequestLoggingConfiguration` and moved to `com.ofg.infrastructure.web.logging` package
 - `RequestBodyLoggingContextFilter` moved to `com.ofg.infrastructure.web.logging` package
 - `MetricsConfiguration` moved to `com.ofg.infrastructure.metrics.config` package

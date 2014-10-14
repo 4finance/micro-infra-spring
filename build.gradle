@@ -22,7 +22,7 @@ sourceCompatibility = 1.7
 
 group = 'com.ofg'
 description = 'Runs stubs for service collaborators'
-version = '0.2.1-SNAPSHOT'
+version = '0.2.2-SNAPSHOT'
 
 ext {
     stubRepositoryPath = 'repository'

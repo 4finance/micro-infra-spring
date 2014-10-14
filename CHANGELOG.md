@@ -1,3 +1,8 @@
+0.2.1
+-----
+Bug fixes:
+* Fixed a bug related to picking up repositoryPath from field instead of arguments
+
 0.2.0
 -----
 New features:

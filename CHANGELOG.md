@@ -1,3 +1,8 @@
+0.5.1
+-----
+Notable changes:
+* [stub-runner-spring](https://github.com/4finance/stub-runner-spring) added Consumer Driven Contracts
+
 0.5.0
 -----
 New features:

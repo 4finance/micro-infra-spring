@@ -1,31 +1,30 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
+
+import com.ofg.config.BasicProfiles
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcWiremockIntegrationSpec
 import com.ofg.infrastructure.base.ServiceDiscoveryStubbingApplicationConfiguration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.http.ResponseEntity
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*
-
+@ActiveProfiles(['stub', BasicProfiles.TEST])
 @ContextConfiguration(classes = [BaseConfiguration, ServiceDiscoveryStubbingApplicationConfiguration], loader = SpringApplicationContextLoader)
 class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
 
-    public static final String COLLABORATOR_NAME = 'users'
-    public static final String PATH = 'some/url'
-    public static final String FULL_COLLABORATOR_WIREMOCK_PATH = "/$COLLABORATOR_NAME/$PATH"
-    public static final String RESPONSE_XML = '''<response>body</response>'''
+    public static final String COLLABORATOR_NAME = 'foo-bar'
+    public static final String PATH = '/pl/foobar'
+    public static final String CONTEXT_SPECIFIC_FOOBAR = 'foobar Poland'
     
     @Autowired ServiceRestClient serviceRestClient
     
     def "should send a request to provided URL with appending host when calling service"() {
-        given:
-            stubInteraction(get(urlEqualTo(FULL_COLLABORATOR_WIREMOCK_PATH)), aResponse().withBody(RESPONSE_XML).withStatus(200))
         when:
-            ResponseEntity<String> result = serviceRestClient.forService(COLLABORATOR_NAME).get().onUrl(PATH).withHeaders().contentTypeXml().andExecuteFor().aResponseEntity().ofType(String)
+            ResponseEntity<String> result = serviceRestClient.forService(COLLABORATOR_NAME).get().onUrl(PATH).andExecuteFor().aResponseEntity().ofType(String)
         then:
-            result.body == RESPONSE_XML
+            result.body == CONTEXT_SPECIFIC_FOOBAR
     }
     
 }

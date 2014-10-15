@@ -1,4 +1,5 @@
 package com.ofg.stub
+
 import com.ofg.stub.mapping.ProjectMetadata
 import com.ofg.stub.mapping.ProjectMetadataResolver
 import com.ofg.stub.mapping.StubRepository
@@ -10,12 +11,11 @@ import org.kohsuke.args4j.CmdLineException
 import org.kohsuke.args4j.CmdLineParser
 import org.kohsuke.args4j.Option
 
-import static org.apache.commons.lang.StringUtils.isNotBlank
 import static org.kohsuke.args4j.OptionHandlerFilter.ALL
 
 @TypeChecked
 @Slf4j
-class StubRunner implements Closeable, StubRunning {
+class StubRunner implements StubRunning {
 
     private static final ThreadLocal<StubRunnerExecutor> stubRunner = new ThreadLocal<>()
 
@@ -98,7 +98,7 @@ class StubRunner implements Closeable, StubRunning {
     private List<ProjectMetadata> resolveProjects(StubRepository repository, Arguments args) {
         if (arguments.projects) {
             return arguments.projects
-        } else if (isNotBlank(args.projectRelativePath)) {
+        } else if (args.projectRelativePath) {
             File metadata = new File(repository.getProjectMetadataLocation(args.projectRelativePath))
             return ProjectMetadataResolver.resolveFromMetadata(metadata)
         } else {
@@ -110,5 +110,4 @@ class StubRunner implements Closeable, StubRunning {
     void close() throws IOException {
         stubRunner.get()?.shutdown()
     }
-
 }

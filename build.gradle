@@ -22,7 +22,7 @@ sourceCompatibility = 1.7
 
 group = 'com.ofg'
 description = 'Runs stubs for service collaborators'
-version = '0.2.2-SNAPSHOT'
+version = '0.2.2'
 
 ext {
     stubRepositoryPath = 'repository'
@@ -74,7 +74,7 @@ void executeStubRunner(String taskName, String arguments) {
     task (taskName, type: JavaExec, dependsOn: classes) {
         main = 'com.ofg.stub.StubRunner'
         classpath = sourceSets.main.output + configurations.compile
-        args(arguments.split(' '))
+        args = arguments.split(' ') as List
         println "Running task with args $args"
     }
 }
@@ -119,7 +119,6 @@ publishing {
         }
     }
 }
-
 
 springBoot {
     backupSource = false

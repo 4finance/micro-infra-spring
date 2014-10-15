@@ -1,5 +1,5 @@
 package com.ofg.stub
 
-interface StubRunning {
+interface StubRunning extends Closeable {
     void runStubs()
 }

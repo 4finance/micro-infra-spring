@@ -1,3 +1,8 @@
+0.2.2
+-----
+Notable changes:
+* `StubRunning` interface extends `Closeable` interface
+
 0.2.1
 -----
 Bug fixes:

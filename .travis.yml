@@ -8,7 +8,7 @@ before_script:
  - "export JAVA_OPTS=-Xmx512m"
 
 script:
-- ./gradlew clean build --debug
+- ./gradlew clean build --info --stacktrace
 
 after_success:
 - ./gradlew test jacocoTestReport coveralls -Pcoverage

@@ -1,5 +1,7 @@
 package com.ofg.stub.spring
 
+import groovy.transform.CompileStatic
+
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
@@ -10,8 +12,8 @@ import java.util.zip.ZipInputStream
  * a given file to a specified location
  *
  */
+@CompileStatic
 class ZipCategory {
-
 
     /**
      * Unzips this file. If the <tt>destination</tt>
@@ -51,5 +53,4 @@ class ZipCategory {
     private static void checkUnzipDestination(File file) {
         if (file && !file.isDirectory()) throw new IllegalArgumentException("'destination' has to be a directory.")
     }
-
 }

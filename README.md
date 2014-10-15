@@ -7,7 +7,8 @@ Runs stubs for service collaborators.
 
 Treating stubs as contracts of services allows to use stub-runner as an implementation of Consumer Driven Contracts.
 
-### Running stubs
+### Running stubs [![Download](https://api.bintray.com/packages/4finance/micro/stub-runner/images/download.png) ](https://bintray.com/4finance/micro/stub-runner/_latestVersion)
+
 
 #### Running specified stubs
 To run stubs execute `gradle run<ProjectMetadataFileWithoutExtension>Stubs`.

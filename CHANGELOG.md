@@ -1,3 +1,13 @@
+0.4.6
+------
+Bug fixes:
+* Fixed bugs related to Consumer Driven Contracts
+
+0.4.5
+------
+Notable changes:
+* [stub-runner-spring](https://github.com/4finance/stub-runner-spring) added Consumer Driven Contracts
+
 0.4.4
 ------
 Notable changes:

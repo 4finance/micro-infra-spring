@@ -2,10 +2,10 @@ package com.ofg.infrastructure.discovery
 
 import com.ofg.config.BasicProfiles
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
 import org.apache.curator.retry.RetryNTimes
+import org.apache.curator.test.TestingServer
 import org.apache.curator.x.discovery.ServiceDiscovery
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
 import org.apache.curator.x.discovery.ServiceInstance
@@ -13,9 +13,12 @@ import org.apache.curator.x.discovery.UriSpec
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Profile
 
-import static com.ofg.config.BasicProfiles.*
+import static com.ofg.config.BasicProfiles.DEVELOPMENT
+import static com.ofg.config.BasicProfiles.PRODUCTION
+import static com.ofg.config.BasicProfiles.TEST
 
 /**
  * Class holding configuration to Zookeeper server, Zookeeper service instance and to Curator framework.
@@ -27,19 +30,39 @@ import static com.ofg.config.BasicProfiles.*
  * @see ServiceDiscovery
  */
 @CompileStatic
+@Import(ConsumerDrivenContractConfiguration)
 @Configuration
-@Profile(PRODUCTION)
 class ServiceDiscoveryInfrastructureConfiguration {
-    
-    @PackageScope
+
     @Bean(initMethod = 'start', destroyMethod = 'close')
-    CuratorFramework curatorFramework(@Value('${service.resolver.url:localhost:2181}') String serviceResolverUrl,
+    CuratorFramework curatorFramework(ZookeeperConnector zookeeperConnector,
                                       @Value('${service.resolver.connection.retry.times:5}') int numberOfRetries,
                                       @Value('${service.resolver.connection.retry.wait:1000}') int sleepMsBetweenRetries) {
-        return CuratorFrameworkFactory.newClient(serviceResolverUrl, new RetryNTimes(numberOfRetries, sleepMsBetweenRetries))
-    }    
+        return CuratorFrameworkFactory.newClient(zookeeperConnector.serviceResolverUrl, new RetryNTimes(numberOfRetries, sleepMsBetweenRetries))
+    }
 
-    @PackageScope
+    @Bean
+    @Profile(PRODUCTION)
+    ZookeeperConnector productionZookeeperConnector(@Value('${service.resolver.url:localhost:2181}') String serviceResolverUrl) {
+        return new ZookeeperConnector() {
+            @Override
+            String getServiceResolverUrl() {
+                return serviceResolverUrl
+            }
+        }
+    }
+
+    @Bean
+    @Profile([TEST, DEVELOPMENT])
+    ZookeeperConnector testingZookeeperConnector(TestingServer testingServer) {
+        return new ZookeeperConnector() {
+            @Override
+            String getServiceResolverUrl() {
+                return testingServer.connectString
+            }
+        }
+    }
+
     @Bean
     ServiceInstance serviceInstance(MicroserviceAddressProvider addressProvider,
                                     ServiceConfigurationResolver serviceConfigurationResolver) {
@@ -50,7 +73,6 @@ class ServiceDiscoveryInfrastructureConfiguration {
                                         .build()
     }
 
-    @PackageScope
     @Bean(initMethod = 'start', destroyMethod = 'close')
     ServiceDiscovery serviceDiscovery(CuratorFramework curatorFramework, 
                                       ServiceInstance serviceInstance,

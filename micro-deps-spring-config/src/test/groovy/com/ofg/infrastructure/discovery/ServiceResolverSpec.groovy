@@ -1,24 +1,20 @@
 package com.ofg.infrastructure.discovery
-
-import com.google.common.base.Optional
 import com.ofg.infrastructure.discovery.config.PropertySourceConfiguration
 import org.apache.curator.framework.CuratorFramework
-import org.apache.curator.test.TestingServer
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
 import org.apache.curator.x.discovery.ServiceInstance
 import org.apache.curator.x.discovery.UriSpec
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import spock.lang.Specification
 
-import static com.ofg.config.BasicProfiles.PRODUCTION
+import static com.ofg.config.BasicProfiles.TEST
 
 class ServiceResolverSpec extends Specification {
     
     def 'should resolve urls properly'() {
         given:
-            TestingServer testingServer = new TestingServer(2181)
             AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext()
-            applicationContext.environment.setActiveProfiles(PRODUCTION)
+            applicationContext.environment.setActiveProfiles(TEST)
             applicationContext.register(PropertySourceConfiguration, ServiceResolverConfiguration)
             applicationContext.refresh()
         and:
@@ -29,10 +25,9 @@ class ServiceResolverSpec extends Specification {
             setupStubs(serviceConfigurationResolver, curatorFramework)
             serviceResolver.start()
         expect:
-            serviceResolver.getUrl("collerator") == Optional.of('http://localhost:8030/collerator')
+            serviceResolver.getUrl("foo-bar").isPresent()
         cleanup:
             applicationContext.close()
-            testingServer.close()
     }
     
     void setupStubs(ServiceConfigurationResolver serviceConfigurationResolver, CuratorFramework curatorFramework) {

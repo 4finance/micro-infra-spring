@@ -12,7 +12,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class HttpMockServer extends WireMockServer {
 
-    static final int DEFAULT_PORT = 8030
+    public static final int DEFAULT_PORT = 8030
 
     HttpMockServer(int port) {
         super(port)

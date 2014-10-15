@@ -1,0 +1,8 @@
+{
+    "pl": {
+        "this": "com/ofg/stub-runner/tester",
+        "dependencies": {
+            "foo-bar": "com/ofg/foo/bar"
+        }
+    }
+}

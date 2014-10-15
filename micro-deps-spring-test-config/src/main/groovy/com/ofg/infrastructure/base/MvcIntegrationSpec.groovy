@@ -1,6 +1,5 @@
 package com.ofg.infrastructure.base
 
-import com.ofg.infrastructure.discovery.StubbedServiceResolver
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
@@ -15,12 +14,11 @@ import static com.ofg.config.BasicProfiles.TEST
 
 /**
  * Base for specifications that use Spring's {@link MockMvc}. Provides also {@link WebApplicationContext}, 
- * {@link ApplicationContext} and {@link StubbedServiceResolver}. The latter you can use to specify what
+ * {@link ApplicationContext}. The latter you can use to specify what
  * kind of address should be returned for a given dependency name. 
  * 
  * @see WebApplicationContext
  * @see ApplicationContext
- * @see StubbedServiceResolver
  */
 @CompileStatic
 @WebAppConfiguration
@@ -29,7 +27,6 @@ abstract class MvcIntegrationSpec extends Specification {
     
     @Autowired WebApplicationContext webApplicationContext
     @Autowired ApplicationContext applicationContext
-    @Autowired StubbedServiceResolver stubbedServiceResolver
     protected MockMvc mockMvc
     
     void setup() {

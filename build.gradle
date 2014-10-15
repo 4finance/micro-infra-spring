@@ -14,7 +14,7 @@ buildscript {
 
 ext {
     projectGroup = 'com.ofg'
-    projectVersion = '0.4.5-SNAPSHOT'
+    projectVersion = '0.4.5'
 
     spockVersion = '0.7-groovy-2.0'
     springVersion = '4.1.1.RELEASE'
@@ -76,16 +76,20 @@ subprojects {
     }
 
     dependencies {
-        compile 'org.codehaus.groovy:groovy-all:2.3.7:indy'
+        compile 'org.codehaus.groovy:groovy-all:2.3.7'
         compile "org.springframework:spring-context:$springVersion"
         compile('com.ofg:micro-deps:0.6.0') {
             exclude group: 'log4j'
             exclude group: "org.slf4j", module: "slf4j-log4j12"
             exclude group: "org.slf4j", module: "log4j-over-slf4j"
         }
+        compile 'com.ofg:stub-runner-spring:0.0.1'
+
         testCompile "org.spockframework:spock-core:$spockVersion"
         testCompile "org.spockframework:spock-spring:$spockVersion"
         testCompile "org.springframework:spring-test:$springVersion"
+        testCompile "org.springframework:spring-webmvc:$springVersion"
+        testCompile 'com.jayway.restassured:rest-assured:2.3.4'
         testCompile 'org.slf4j:slf4j-api:1.7.7'
     }
 

@@ -1,11 +1,13 @@
-package com.ofg.stub.spring
+package com.ofg.stub.config
 
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.stub.Arguments
 import com.ofg.stub.BatchStubRunner
 import com.ofg.stub.StubRunner
+import com.ofg.stub.StubRunning
 import com.ofg.stub.mapping.ProjectMetadata
 import com.ofg.stub.registry.StubRegistry
+import com.ofg.stub.spring.ZipCategory
 import groovy.grape.Grape
 import org.apache.curator.test.TestingServer
 import org.springframework.beans.factory.annotation.Value
@@ -67,7 +69,7 @@ class StubRunnerConfiguration {
      * @param serviceConfigurationResolver object that wraps the microservice configuration
      */
     @Bean(initMethod = 'runStubs', destroyMethod = 'close')
-    BatchStubRunner batchStubRunner(@Value('${stubrunner.port.range.min:10000}') Integer minPortValue,
+    StubRunning batchStubRunner(@Value('${stubrunner.port.range.min:10000}') Integer minPortValue,
                                     @Value('${stubrunner.port.range.max:15000}') Integer maxPortValue,
                                     @Value('${stubrunner.stubs.repository.root:http://nexus.4finance.net/content/repositories/Pipeline}') String stubRepositoryRoot,
                                     @Value('${stubrunner.stubs.group:com.ofg}') String stubsGroup,

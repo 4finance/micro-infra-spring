@@ -8,7 +8,7 @@ import groovy.transform.CompileStatic
  * * @see StubRunner
  */
 @CompileStatic
-class BatchStubRunner implements StubRunning, Closeable {
+class BatchStubRunner implements StubRunning {
 
     private final List<StubRunner> stubRunners
 

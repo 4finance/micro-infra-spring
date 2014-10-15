@@ -1,4 +1,4 @@
-package com.ofg.stub.spring
+package com.ofg.stub.config
 
 import groovy.transform.CompileStatic
 import org.apache.curator.test.TestingServer

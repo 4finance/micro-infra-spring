@@ -32,7 +32,7 @@ microservice.host=InetAddress.getLocalHost().getHostAddress()
 microservice.port=if not configured then 'port' system property or 'server.port' environment variable is used (in the mentioned order) and if that fails defaults to port '8080'
 
 # service resolver URL
-service.resolver.url='localhost:2181'
+service.resolver.url=localhost:2181
 
 # number of connection retries
 service.resolver.connection.retry.times=5

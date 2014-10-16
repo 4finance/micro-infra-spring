@@ -5,7 +5,7 @@ import groovy.transform.CompileStatic
 import groovy.transform.ToString
 
 @CompileStatic
-@ToString
+@ToString(includeNames = true)
 class Arguments {
     final String repositoryPath
     final String projectRelativePath

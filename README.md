@@ -22,18 +22,45 @@ This will:
 #### Running all stubs
 To run all stubs execute `gradle runStubs`.
 
-This will:
-* start Zookeeper
-* run stubs for projects defined in folders that don't have any children inside - for example:
+Having the following *project* files:
+
+fooBar.json
+
 ```
-Having such a folder structure
-- /com/ofg/foo/foo.json
-- /com/ofg/foo/bar/bar.json
+{
+    "pl": [
+        "com/ofg/foo/bar"
+    ]
+}
 ```
 
-it will register stubs defined in all folders by picking up JSON files.
+healthCheck.json
 
-* register stubs in Zookeeper
+```
+{
+    "pl": [
+        "com/ofg/ping"
+    ]
+}
+```
+
+and the following *mappings* folder structure:
+
+
+```
+/com/ofg/foo/bar/foobar.json
+/pl/com/ofg/foo/bar/foobar.json
+/com/ofg/ping/ping.json
+/com/ofg/another/mapping.json
+
+```
+
+will result in:
+
+* Loading one Zookeeper instance
+* Setting up Wiremock instance with stubs from */com/ofg/ping/ping.json* since it's described in *healthCheck.json*
+* Setting up Wiremock instance with stubs loading first */com/ofg/foo/bar/foobar.json* and then */pl/com/ofg/foo/bar/pl_foobar.json* since it's described in *fooBar.json*
+and they share common root path whereas there are some context specific mappings
 
 #### Running from fat jar
 

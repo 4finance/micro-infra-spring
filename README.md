@@ -19,13 +19,47 @@ class YourApplicationConfiguration {...}
 
 ## Configuration
 
-You can further configure micro-deps with the following properties:
-* microservice.config.file - microservice metadata file,  defaults to `classpath:microservice.json`
-* microservice.host - microservice host, defaults to `InetAddress.getLocalHost().getHostAddress()`
-* microservice.port - microservice port, if not configured then `port` system property or `server.port` environment variable is used (in the mentioned order) and if that fails defaults to port `8080`
-* service.resolver.url - service resolver URL, defaults to `localhost:2181`
-* service.resolver.connection.retry.times - number of connection retries, defaults to `5`
-* service.resolver.connection.retry.wait - wait time in milliseconds between consecutive connection retries, defaults to `1000`
+You can further configure micro-deps with the following properties (we present description and default values):
+
+```
+# microservice metadata file
+microservice.config.file=classpath:microservice.json
+
+# microservice host
+microservice.host=InetAddress.getLocalHost().getHostAddress()
+
+# microservice port
+microservice.port=if not configured then 'port' system property or 'server.port' environment variable is used (in the mentioned order) and if that fails defaults to port '8080'
+
+# service resolver URL
+service.resolver.url='localhost:2181'
+
+# number of connection retries
+service.resolver.connection.retry.times=5
+
+# wait time in milliseconds between consecutive connection retries
+service.resolver.connection.retry.wait=1000
+```
+
+Take a look at [stub-runner-spring project](https://github.com/4finance/stub-runner-spring/wiki/How-to-use-it) for more information on our [Consumer Driven Contracts](http://martinfowler.com/articles/consumerDrivenContracts.html) implementation. Below you can find the properties that you can set in that regard together with default values:
+
+```
+# minPortValue min port value of the Wiremock instance for the given collaborator
+stubrunner.port.range.min=10000
+
+# maxPortValue max port value of the Wiremock instance for the given collaborator
+stubrunner.port.range.max=15000
+
+# stubRepositoryRoot root URL from where the JAR with stub mappings will be downloaded
+stubrunner.stubs.repository.root=http://nexus.4finance.net/content/repositories/Pipeline
+
+# stubsGroup group name of the dependency containing stub mappings
+stubrunner.stubs.group=com.ofg
+
+# stubsModule module name of the dependency containing stub mappings
+stubrunner.stubs.module=stub-definitions
+
+```
 
 [ ![Download](https://api.bintray.com/packages/4finance/micro-deps/micro-deps-spring-test-config/images/download.png) ](https://bintray.com/4finance/micro-deps/micro-deps-spring-test-config/_latestVersion)
 Micro-deps-spring-test-config
@@ -65,7 +99,6 @@ That way you'll have:
 * 'test' profile activated
 * __org.springframework.web.context.WebApplicationContext__ loaded
 * Spring MVC test support enabled
-* access to stubbed service resolver
 * access to application context
 * access to web application context
 
@@ -110,7 +143,6 @@ That way you'll have:
 * 'test' profile activated
 * __org.springframework.web.context.WebApplicationContext__ loaded
 * Spring MVC test support enabled
-* access to stubbed service resolver
 * access to application context
 * access to web application context
 
@@ -132,9 +164,6 @@ That way you'll have:
 * __org.springframework.web.context.WebApplicationContext__ loaded
 * Spring MVC test support enabled
 * __WireMock__ server running
-* access to stubbed service resolver
 * access to application context
 * access to web application context
-* access to __stubInteraction()__ method that allows you to stub __WireMock__. By default all of your collaborators
- are pointing to microservice.host:microservice.port/COLLABORATOR_NAME_IN_MICROSERVICE_METADATA . So if you need to
- you can control your collaborators' responses
+* access to __stubInteraction()__ method that allows you to stub __WireMock__.

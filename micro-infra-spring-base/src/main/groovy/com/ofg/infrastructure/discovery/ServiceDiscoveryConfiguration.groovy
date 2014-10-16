@@ -1,8 +1,14 @@
 package com.ofg.infrastructure.discovery
 
+import com.ofg.infrastructure.discovery.watcher.DependencyWatcher
 import groovy.transform.CompileStatic
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
+import org.springframework.context.annotation.Profile
+
+import static com.ofg.config.BasicProfiles.PRODUCTION
+
 /**
  * This configuration imports configurations related to service discovery
  *
@@ -12,4 +18,11 @@ import org.springframework.context.annotation.Import
 @Configuration
 @Import(ServiceResolverConfiguration)
 class ServiceDiscoveryConfiguration {
+
+    @Bean
+    @Profile(PRODUCTION)
+    CollaboratorsConnectivityController collaboratorsConnectivityController(DependencyWatcher dependencyWatcher) {
+        return new CollaboratorsConnectivityController(dependencyWatcher)
+    }
+
 }

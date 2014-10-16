@@ -1,3 +1,8 @@
+0.5.2
+-----
+Bug fixes:
+* Fixed micro-infra-camel module
+
 0.5.1
 -----
 Notable changes:

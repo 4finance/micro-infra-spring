@@ -79,10 +79,6 @@ void executeStubRunner(String taskName, String arguments) {
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.1'
-}
-
 task addHashFile << {
     String gitCmd = "git log --pretty=format:'%H' -n 1"
     def proc = gitCmd.execute()

@@ -89,13 +89,13 @@ class StubRunner implements StubRunning {
     @Override
     void runStubs() {
         AvailablePortScanner portScanner = new AvailablePortScanner(arguments.minPortValue, arguments.maxPortValue)
-        List<ProjectMetadata> projects = resolveProjects(stubRepository, arguments)
+        Collection<ProjectMetadata> projects = resolveProjects(stubRepository, arguments)
         StubRunnerExecutor localStubRunner = new StubRunnerExecutor(portScanner, stubRegistry)
         stubRunner.set(localStubRunner)
         localStubRunner.runStubs(stubRepository, projects)
     }
 
-    private List<ProjectMetadata> resolveProjects(StubRepository repository, Arguments args) {
+    private Collection<ProjectMetadata> resolveProjects(StubRepository repository, Arguments args) {
         if (arguments.projects) {
             return arguments.projects
         } else if (args.projectRelativePath) {

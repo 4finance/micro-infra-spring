@@ -5,17 +5,27 @@ import groovy.util.logging.Slf4j
 
 @Slf4j
 class ProjectMetadataResolver {
-    static List<ProjectMetadata> resolveFromMetadata(File metadata) {
-        List<ProjectMetadata> projects = []
-        new JsonSlurper().parse(metadata).each { context, projectPaths ->
-            projectPaths.each { projectPath ->
-                projects << new ProjectMetadata(getProjectName(metadata), projectPath, context)
-            }
-        }
+
+    private static final Closure PASSING_THROUGH_FILTER = { String context, Collection<String> projectPaths -> true }
+
+    static Collection<ProjectMetadata> resolveFromMetadata(File metadata) {
+        return resolveFromMetadataWithFilter(metadata, PASSING_THROUGH_FILTER)
+    }
+
+    private static Collection<ProjectMetadata> resolveFromMetadataWithFilter(File metadata, Closure<Boolean> projectMatchesRequirements) {
+        Set<ProjectMetadata> projects = []
+        new JsonSlurper().parse(metadata)
+                         .findAll { context, projectPaths -> projectMatchesRequirements(context, projectPaths) }
+                         .each { context, projectPaths ->
+                                     projectPaths.each { projectPath ->
+                                         projects << new ProjectMetadata(getProjectName(metadata), projectPath, context)
+                                     }
+                         }
         return projects
     }
 
-    static List<ProjectMetadata> resolveAllProjectsFromRepository(StubRepository stubRepository, String context) {
+
+    static Collection<ProjectMetadata> resolveAllProjectsFromRepository(StubRepository stubRepository, String context) {
         checkIfContextIsProvided(context)
         return collectProjectsFromProjectsFolder(stubRepository.projectMetadataRepository.path, context)
     }
@@ -30,16 +40,29 @@ class ProjectMetadataResolver {
         }
     }
 
-    private static List<ProjectMetadata> collectProjectsFromProjectsFolder(File projectFolder, String context) {
-        List<ProjectMetadata> projects = []
+    private static Collection<ProjectMetadata> collectProjectsFromProjectsFolder(File projectFolder, String providedContext) {
+        Set<ProjectMetadata> projects = []
         projectFolder.eachFileRecurse { File file ->
             if (!file.isDirectory()) {
-                String relativePathToDirectory = new File(projectFolder.toURI().relativize(file.parentFile.toURI()).toString())
-                ProjectMetadata project = new ProjectMetadata(file.name.replaceFirst(~/\.[^\.]+$/, ''), relativePathToDirectory, context)
-                log.debug("Adding project [$project] to list of found projects")
-                projects << project
+                Collection<ProjectMetadata> resolvedProjects = resolveFromMetadataWithFilter(file, passMatchingProjects(providedContext))
+                if (resolvedProjects.empty) {
+                    log.debug("No matches found for context [$providedContext] and file [$file]")
+                    return
+                }
+                projects << appendProject(resolvedProjects)
             }
         }
         return projects
     }
+
+    private static ProjectMetadata appendProject(Collection<ProjectMetadata> resolvedProjects) {
+        ProjectMetadata resolvedProject = resolvedProjects.first()
+        log.debug("Adding project [$resolvedProject] to list of found projects")
+        return resolvedProject
+    }
+
+    private static Closure passMatchingProjects(String providedContext) {
+        return { String context, Collection<String> projectPaths -> context == providedContext }
+    }
+
 }

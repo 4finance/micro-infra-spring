@@ -22,7 +22,7 @@ class StubRunnerExecutor {
         this.stubRegistry = stubRegistry
     }
 
-    void runStubs(StubRepository repository, List<ProjectMetadata> projects) {
+    void runStubs(StubRepository repository, Collection<ProjectMetadata> projects) {
         startStubServers(projects, repository)
         stubRegistry.register(stubServers)
         log.info("All stubs are now running and registered in service registry available on port $stubRegistry.port")
@@ -33,7 +33,7 @@ class StubRunnerExecutor {
         stubServers.each { StubServer stubServer -> stubServer.stop() }
     }
 
-    private void startStubServers(List<ProjectMetadata> projects, StubRepository repository) {
+    private void startStubServers(Collection<ProjectMetadata> projects, StubRepository repository) {
         projects.each { ProjectMetadata projectMetadata ->
             List<MappingDescriptor> mappings = repository.getProjectDescriptors(projectMetadata)
             StubServer stubServer = new StubServer(portScanner.nextAvailablePort(), projectMetadata, mappings)

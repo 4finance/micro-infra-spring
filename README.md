@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/4finance/stub-runner.svg?branch=master)](https://travis-ci.org/4finance/stub-runner)[![Coverage Status](http://img.shields.io/coveralls/4finance/stub-runner/master.svg)](https://coveralls.io/r/4finance/stub-runner)
+[![Build Status](https://travis-ci.org/4finance/stub-runner.svg?branch=master)](https://travis-ci.org/4finance/stub-runner)[![Coverage Status](http://img.shields.io/coveralls/4finance/stub-runner/master.svg)](https://coveralls.io/r/4finance/stub-runner)  [ ![Download](https://api.bintray.com/packages/4finance/micro/stub-runner/images/download.svg) ](https://bintray.com/4finance/micro/stub-runner/_latestVersion)
 
 Stub-runner
 ===========
@@ -7,7 +7,7 @@ Runs stubs for service collaborators.
 
 Treating stubs as contracts of services allows to use stub-runner as an implementation of Consumer Driven Contracts.
 
-### Running stubs [![Download](https://api.bintray.com/packages/4finance/micro/stub-runner/images/download.png) ](https://bintray.com/4finance/micro/stub-runner/_latestVersion)
+### Running stubs
 
 
 #### Running specified stubs

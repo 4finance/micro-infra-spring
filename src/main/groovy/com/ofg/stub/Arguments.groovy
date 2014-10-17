@@ -13,9 +13,10 @@ class Arguments {
     final Integer minPortValue
     final Integer maxPortValue
     final String context
+    final String localZookeeperPath
     final List<ProjectMetadata> projects
 
-    Arguments(String repositoryPath, String projectRelativePath, Integer testingZookeeperPort, Integer minPortValue, Integer maxPortValue, String context, List<ProjectMetadata> projects) {
+    Arguments(String repositoryPath, String projectRelativePath, Integer testingZookeeperPort, Integer minPortValue, Integer maxPortValue, String context, String localZookeeperPath, List<ProjectMetadata> projects) {
         this.repositoryPath = repositoryPath
         this.projectRelativePath = projectRelativePath
         this.testingZookeeperPort = testingZookeeperPort
@@ -23,10 +24,11 @@ class Arguments {
         this.maxPortValue = maxPortValue
         this.context = context
         this.projects = projects
+        this.localZookeeperPath = localZookeeperPath
     }
 
-    Arguments(String repositoryPath, String projectRelativePath, Integer testingZookeeperPort, Integer minPortValue, Integer maxPortValue, String context) {
-        this(repositoryPath, projectRelativePath, testingZookeeperPort, minPortValue, maxPortValue, context, null)
+    Arguments(String repositoryPath, String projectRelativePath, Integer testingZookeeperPort, Integer minPortValue, Integer maxPortValue, String context, String localZookeeperPath) {
+        this(repositoryPath, projectRelativePath, testingZookeeperPort, minPortValue, maxPortValue, context, localZookeeperPath, null)
     }
 
 }

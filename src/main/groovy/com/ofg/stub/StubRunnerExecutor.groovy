@@ -25,7 +25,7 @@ class StubRunnerExecutor {
     void runStubs(StubRepository repository, Collection<ProjectMetadata> projects) {
         startStubServers(projects, repository)
         stubRegistry.register(stubServers)
-        log.info("All stubs are now running and registered in service registry available on port $stubRegistry.port")
+        log.info("All stubs are now running and registered in service registry available at [$stubRegistry.connectString]")
     }
 
     void shutdown() {

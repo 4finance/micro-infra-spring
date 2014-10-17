@@ -1,19 +1,17 @@
 package com.ofg.stub
-
 import com.ofg.stub.mapping.ProjectMetadata
 import com.ofg.stub.mapping.ProjectMetadataResolver
 import com.ofg.stub.mapping.StubRepository
 import com.ofg.stub.registry.StubRegistry
 import com.ofg.stub.server.AvailablePortScanner
-import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j
 import org.kohsuke.args4j.CmdLineException
 import org.kohsuke.args4j.CmdLineParser
 import org.kohsuke.args4j.Option
 
+import static org.apache.commons.lang.StringUtils.isNotBlank
 import static org.kohsuke.args4j.OptionHandlerFilter.ALL
 
-@TypeChecked
 @Slf4j
 class StubRunner implements StubRunning {
 
@@ -28,8 +26,11 @@ class StubRunner implements StubRunning {
     @Option(name = "-a", aliases = ['--runAllStubs'], usage = "Switch that signifies that you want to run all stubs (e.g. 'true')", forbids = ['-p'])
     private String runAllStubs
 
-    @Option(name = "-z", aliases = ['--zookeeperPort'], usage = "Port of the zookeeper instance (e.g. 2181)")
+    @Option(name = "-z", aliases = ['--zookeeperPort'], usage = "Port of the zookeeper instance (e.g. 2181)", forbids = ['lz'])
     private Integer testingZookeeperPort = 2181
+
+    @Option(name = "-zl", aliases = ['--zookeeperLocation'], usage = "Location of local Zookeeper you want to connect to (e.g. localhost:23456)", forbids = ['-z'])
+    private String zookeeperLocation
 
     @Option(name = "-minp", aliases = ['--minPort'], usage = "Minimal port value to be assigned to the Wiremock instance (e.g. 12345)", required = true)
     private Integer minPortValue
@@ -48,13 +49,22 @@ class StubRunner implements StubRunning {
         CmdLineParser parser = new CmdLineParser(this)
         try {
             parser.parseArgument(args)
-            this.arguments = new Arguments(repositoryPath, projectRelativePath, testingZookeeperPort, minPortValue, maxPortValue, context)
-            this.stubRegistry = new StubRegistry(testingZookeeperPort)
+            this.arguments = new Arguments(repositoryPath, projectRelativePath, testingZookeeperPort, minPortValue, maxPortValue, context, zookeeperLocation)
+            this.stubRegistry = resolveStubRegistry()
             this.stubRepository = new StubRepository(new File(repositoryPath))
         } catch (CmdLineException e) {
             printErrorMessage(e, parser)
             throw e
         }
+    }
+
+    private StubRegistry resolveStubRegistry() {
+        if (isNotBlank(zookeeperLocation)) {
+            return new StubRegistry(zookeeperLocation)
+        } else if (testingZookeeperPort) {
+            return new StubRegistry(testingZookeeperPort)
+        }
+        throw new IllegalArgumentException('You have to provide either Zookeeper port or a path to a local Zookeeper')
     }
 
     StubRunner(Arguments arguments, StubRegistry stubRegistry) {

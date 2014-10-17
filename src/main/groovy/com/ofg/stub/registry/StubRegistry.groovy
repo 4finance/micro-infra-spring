@@ -4,6 +4,7 @@ import com.ofg.stub.server.StubServer
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.util.logging.Slf4j
+import org.apache.commons.lang.StringUtils
 import org.apache.curator.RetryPolicy
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
@@ -20,30 +21,39 @@ class StubRegistry {
     private static final UriSpec URI_SPEC = new UriSpec('{scheme}://{address}:{port}')
     private static final RetryPolicy RETRY_POLICY = new RetryNTimes(50, 100)
 
-    private final TestingServer zookeeperServer
+    private TestingServer zookeeperServer
+    private String localZookeeperPath
 
     StubRegistry(int port) {
-        zookeeperServer = new TestingServer(port)
+        this.zookeeperServer = new TestingServer(port)
+    }
+
+    StubRegistry(String localZookeeperPath) {
+        this.localZookeeperPath = localZookeeperPath
     }
 
     StubRegistry(TestingServer testingServer) {
-        zookeeperServer = testingServer
+        this.zookeeperServer = testingServer
     }
 
     void register(Collection<StubServer> stubServers) {
-        CuratorFramework client = CuratorFrameworkFactory.newClient(zookeeperServer.connectString, RETRY_POLICY)
+        CuratorFramework client = CuratorFrameworkFactory.newClient(getConnectString(), RETRY_POLICY)
         client.start()
         stubServers.each { StubServer stubServer ->
             registerInstance(stubServer, client)
         }
     }
 
-    void shutdown() {
-        zookeeperServer.close()
+    String getConnectString() {
+        String connectString = zookeeperServer ? zookeeperServer.connectString : localZookeeperPath
+        if (StringUtils.isBlank(connectString)) {
+            throw new IllegalArgumentException('You have to provide either Zookeeper port or a path to a local Zookeeper')
+        }
+        return connectString
     }
 
-    int getPort() {
-        return zookeeperServer.port
+    void shutdown() {
+        zookeeperServer.close()
     }
 
     private static void registerInstance(StubServer stubServer, CuratorFramework client) {

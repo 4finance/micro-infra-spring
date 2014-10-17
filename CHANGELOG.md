@@ -1,3 +1,11 @@
+0.3.0
+-----
+New features:
+* [Issue 10](https://github.com/4finance/stub-runner/issues/10) Testing zookeeper should be enabled/disabled on a switch
+
+Bug fixes:
+* [Issue 12](https://github.com/4finance/stub-runner/issues/12) Incorrect mappings are registered when running gradle runStubs
+
 0.2.2
 -----
 Notable changes:

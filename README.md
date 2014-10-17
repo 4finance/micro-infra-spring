@@ -193,6 +193,6 @@ Paths (as long it's inside the directory mentioned above) and names of documents
 
 Every stubbed collaborator exposes list of defined mappings under `__/admin/` endpoint.
 
-# Other project basing on *stub-runner*
+## Other projects basing on *stub-runner*
 
 - [Stub Runner Spring](https://github.com/4finance/stub-runner-spring) - adds automatic downloading of the newest versions of stubs to your tests

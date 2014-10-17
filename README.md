@@ -69,16 +69,34 @@ You can set the following options to the main class:
 
 ```
 java -jar stub-runner.jar [options...] 
- -a (--runAllStubs) VAL : Switch that signifies that you want to run all stubs (e.g. 'true')
- -c (--context) VAL     : Context for which the project should be run (e.g. 'pl', 'lt')
- -maxp (--maxPort) N    : Maximum port value to be assigned to the Wiremock instance (e.g. 12345)
- -minp (--minPort) N    : Minimal port value to be assigned to the Wiremock instance (e.g. 12345)
- -p (--projectPath) VAL : Relative path to the project which you want to run (e.g. '/com/ofg/foo/barProject.json')
- -r (--repository) VAL  : Path to repository containing the 'repository' folder 
-                          with 'project' and 'mapping' subfolders (e.g.
-                          '/home/4finance/stubs/')
- -z (--zookeeperPort) N : Port of the zookeeper instance (e.g. 2181)
+ -a (--runAllStubs) VAL        : Switch that signifies that you want to run all
+                                 stubs (e.g. 'true')
+ -c (--context) VAL            : Context for which the project should be run
+                                 (e.g. 'pl', 'lt')
+ -maxp (--maxPort) N           : Maximum port value to be assigned to the
+                                 Wiremock instance (e.g. 12345)
+ -minp (--minPort) N           : Minimal port value to be assigned to the
+                                 Wiremock instance (e.g. 12345)
+ -p (--projectPath) VAL        : Relative path to the project which you want to
+                                 run (e.g. '/com/ofg/foo/barProject.json')
+ -r (--repository) VAL         : Path to repository containing the 'repository'
+                                 folder with 'project' and 'mapping' subfolders
+                                 (e.g. '/home/4finance/stubs/')
+ -z (--zookeeperPort) N        : Port of the zookeeper instance (e.g. 2181)
+ -zl (--zookeeperLocation) VAL : Location of local Zookeeper you want to
+                                 connect to (e.g. localhost:23456)
 ```
+
+##### Running on an environment with already existing Zookeeper
+
+When you want to register your stubs against an already existing Zookeeper instance it's enough to provide a switch
+
+```
+-zl localhost:1234
+```
+
+that will point to the place where the Zookeper instance can be found
+
 
 ### Stub runner configuration
 

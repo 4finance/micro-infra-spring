@@ -1,3 +1,8 @@
+0.5.3-SNAPSHOT
+-----
+New features:
+* micro-infra-spring-test module
+
 0.5.2
 -----
 Bug fixes:

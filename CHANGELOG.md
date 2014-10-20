@@ -41,7 +41,7 @@ Bug fixes:
 
 Breaking changes:
 * in dev & test profiles `com.ofg.infrastructure.discovery.StubbedServiceResolver` is used in place of `com.ofg.infrastructure.discovery.ZookeeperServiceResolver`
-* removed `com.ofg.infrastructure.discovery.ServiceDiscoveryStubbingConfiguration`
+* removed `com.ofg.infrastructure.discovery.ServiceDiscoveryStubbingConfiguration`, use `DependencyResolutionConfiguration` instead
 
 0.3.0
 -----

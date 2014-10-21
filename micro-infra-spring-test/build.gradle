@@ -1,0 +1,5 @@
+description = 'Microservice testing utilities'
+
+dependencies {
+    compile "com.ofg:micro-deps-spring-test-config:$microDepsSpringConfigVersion"
+}

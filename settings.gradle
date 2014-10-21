@@ -1,5 +1,6 @@
 include 'micro-infra-spring-base'
 include 'micro-infra-spring-reactor'
+include 'micro-infra-spring-test'
 include 'micro-infra-camel'
 include ':swagger:micro-infra-spring-swagger'
 include ':swagger:micro-infra-spring-swagger-ui'

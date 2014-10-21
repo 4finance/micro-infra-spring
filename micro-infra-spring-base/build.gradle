@@ -4,7 +4,6 @@ ext {
     metricsVersion = '3.0.2'
     jacksonMapper = '1.9.13'
     aspectjVersion = '1.8.2'
-    microDepsSpringConfigVersion = '0.4.6'
 }
 
 dependencies {
@@ -31,8 +30,5 @@ dependencies {
     testCompile 'org.hibernate:hibernate-validator:5.1.2.Final'
     testCompile 'com.jayway.jsonpath:json-path-assert:0.9.1'
     testCompile 'com.github.stefanbirkner:system-rules:1.7.0'
-    testCompile("com.ofg:micro-deps-spring-test-config:$microDepsSpringConfigVersion") {
-        exclude group: 'org.slf4j'
-        exclude group: 'log4j'
-    }
+    testCompile project(':micro-infra-spring-test')
 }

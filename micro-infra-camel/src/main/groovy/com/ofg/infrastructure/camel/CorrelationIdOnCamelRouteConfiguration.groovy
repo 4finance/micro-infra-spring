@@ -18,5 +18,4 @@ class CorrelationIdOnCamelRouteConfiguration {
     CorrelationIdOnCamelRouteAspect correlationIdOnCamelRouteAspect() {
         return new CorrelationIdOnCamelRouteAspect()
     }
-
 }

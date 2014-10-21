@@ -7,11 +7,7 @@ import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Component;
-
-import static org.slf4j.LoggerFactory.*;
+import org.aspectj.lang.annotation.Aspect
 
 /**
  * Aspect that adds {@link CorrelationIdInterceptor} to {@link RouteBuilder} for all incoming messages

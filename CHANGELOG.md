@@ -1,3 +1,7 @@
+0.5.5
+-----
+* [Issue 61](https://github.com/4finance/micro-infra-spring/issues/61) When action is triggered by a scheduler CorrelationID is NOT SET
+
 0.5.4
 -----
 New features:
@@ -22,7 +26,6 @@ Notable changes:
 -----
 New features:
 * [Issue 18](https://github.com/4finance/micro-infra-spring/issues/18) Add correlationId to headers of a JMS message
-* [Issue 61](https://github.com/4finance/micro-infra-spring/issues/61) When action is triggered by a scheduler CorrelationID is NOT SET
 * CSV metrics publisher
 
 Notable changes:

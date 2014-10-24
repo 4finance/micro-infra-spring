@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET
 
+/**
+ * {@link RestController} providing connection state with services the microservice depends upon.
+ */
 @Slf4j
 @RestController
 @CompileStatic

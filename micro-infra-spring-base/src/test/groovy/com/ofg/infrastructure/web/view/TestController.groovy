@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.web.view
+
 import groovy.transform.PackageScope
 import groovy.transform.ToString
 import groovy.util.logging.Slf4j

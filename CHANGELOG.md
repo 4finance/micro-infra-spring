@@ -1,3 +1,8 @@
+0.5.4
+-----
+New features:
+* [Issue 42](https://github.com/4finance/micro-infra-spring/issues/42)Create a controller that checks the health of collaborators
+
 0.5.3
 -----
 New features:

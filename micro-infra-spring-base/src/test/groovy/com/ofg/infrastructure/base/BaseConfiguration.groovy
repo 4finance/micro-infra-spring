@@ -13,5 +13,5 @@ class BaseConfiguration {
     static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer()
     }
-    
+
 }

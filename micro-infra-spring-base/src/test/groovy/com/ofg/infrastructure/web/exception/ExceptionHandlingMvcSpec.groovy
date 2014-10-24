@@ -2,7 +2,7 @@ package com.ofg.infrastructure.web.exception
 
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.ConfigurationWithoutServiceDiscovery
-import com.ofg.infrastructure.base.MvcIntegrationSpec
+import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(
         classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery, ControllerExceptionConfiguration],
         loader = SpringApplicationContextLoader)
-class ExceptionHandlingMvcSpec extends MvcIntegrationSpec {
+class ExceptionHandlingMvcSpec extends MvcCorrelationIdSettingIntegrationSpec {
     
     def "should return bad request error for invalid field"() {
         expect:

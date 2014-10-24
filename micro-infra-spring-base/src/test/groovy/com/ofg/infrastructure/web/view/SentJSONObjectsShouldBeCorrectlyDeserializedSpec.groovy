@@ -2,7 +2,7 @@ package com.ofg.infrastructure.web.view
 
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.ConfigurationWithoutServiceDiscovery
-import com.ofg.infrastructure.base.MvcIntegrationSpec
+import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ContextConfiguration(classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery],
         loader = SpringApplicationContextLoader)
-class SentJSONObjectsShouldBeCorrectlyDeserializedSpec extends MvcIntegrationSpec {
+class SentJSONObjectsShouldBeCorrectlyDeserializedSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
     def "should correctly deserialize request to SampleBean instance when valid JSON document is sent to controller"() {
         expect:

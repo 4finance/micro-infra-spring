@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.web.exception
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.ConfigurationWithoutServiceDiscovery
-import com.ofg.infrastructure.base.MvcIntegrationSpec
+import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @ContextConfiguration(classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery], loader = SpringApplicationContextLoader)
-class CustomControllerAdviceMvcSpec extends MvcIntegrationSpec {
+class CustomControllerAdviceMvcSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
     def "should apply custom logic when application uses its own @ControllerAdvice"() {
         expect:

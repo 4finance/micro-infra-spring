@@ -7,11 +7,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
 
-@WebAppConfiguration
-class MvcIntegrationSpec extends Specification {
-
-    @Autowired WebApplicationContext webApplicationContext
-    protected MockMvc mockMvc
+class MvcCorrelationIdSettingIntegrationSpec extends MvcIntegrationSpec {
 
     void setup() {
         mockMvc = MockMvcBuilders.

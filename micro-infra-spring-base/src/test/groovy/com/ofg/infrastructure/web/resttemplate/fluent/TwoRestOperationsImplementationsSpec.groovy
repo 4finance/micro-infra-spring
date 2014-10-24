@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
 
 import com.ofg.infrastructure.base.BaseConfiguration
-import com.ofg.infrastructure.base.MvcIntegrationSpec
+import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.discovery.ServiceUnavailableException
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,7 +13,7 @@ import org.springframework.web.client.RestOperations
 
 @ContextConfiguration(classes = [Config, BaseConfiguration, ServiceRestClientConfiguration],
         loader = SpringApplicationContextLoader)
-class TwoRestOperationsImplementationsSpec extends MvcIntegrationSpec {
+class TwoRestOperationsImplementationsSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
     @Autowired
     ComponentWithTwoRestOperationsImplementations componentWithTwoRestOperationsImplementations
@@ -48,6 +48,11 @@ class TwoRestOperationsImplementationsSpec extends MvcIntegrationSpec {
                 @Override
                 String fetchUrl(String service) throws ServiceUnavailableException {
                     return null
+                }
+
+                @Override
+                Set<String> fetchAllServiceNames() {
+                    return [] as Set
                 }
 
                 @Override

@@ -7,9 +7,10 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 /**
- * Registers {@link PingController} - a health check controller 
+ * Registers {@link PingController} (the microservice health check controller) and {@link CollaboratorsConnectivityController} (provider of a state of microservice connection with dependent services).
  *
  * @see PingController
+ * @see CollaboratorsConnectivityController
  */
 @CompileStatic
 @Configuration

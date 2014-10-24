@@ -1,3 +1,8 @@
+0.6.1
+-----
+New features:
+* new controller providing current status of connection with services the microservice depends upon
+
 0.6.0
 -----
 New features:

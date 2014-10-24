@@ -44,7 +44,7 @@ dependencies {
     compile "org.codehaus.groovy:groovy-all:$groovyVersion:indy"
     compile "org.apache.curator:curator-x-discovery:$curatorVersion"
     compile "org.apache.curator:curator-test:$curatorVersion"
-    compile 'org.jboss.resteasy:resteasy-undertow:3.0.9.Final'
+    compile 'org.jboss.resteasy:resteasy-undertow:3.0.10.Final'
     compile "io.undertow:undertow-core:$undertowVersion"
     compile "io.undertow:undertow-servlet:$undertowVersion"
     compile 'org.apache.ivy:ivy:2.3.0'
@@ -56,7 +56,7 @@ dependencies {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
 
-    testCompile ('com.jayway.awaitility:awaitility-groovy:1.6.1') {
+    testCompile ('com.jayway.awaitility:awaitility-groovy:1.6.2') {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
 }

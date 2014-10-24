@@ -28,6 +28,13 @@ interface ServiceResolver extends AutoCloseable {
     String fetchUrl(String service) throws ServiceUnavailableException
 
     /**
+     * Returns names of microservices this service depends on
+     *
+     * @return names of microservices
+     */
+    Set<String> fetchAllServiceNames();
+
+    /**
      * Start service resolver (e.g. start all service providers)
      */
     void start()

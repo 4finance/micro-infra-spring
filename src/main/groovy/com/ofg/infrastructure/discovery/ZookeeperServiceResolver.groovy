@@ -47,6 +47,11 @@ class ZookeeperServiceResolver implements ServiceResolver {
         }
     }
 
+    @Override
+    Set<String> fetchAllServiceNames() {
+        return services.keySet()
+    }
+
     private String resolveServiceAddress(String service) {
         ServiceProvider serviceProvider = services[service]
         checkIfDependencyNotDefinedInConfig(serviceProvider, service)

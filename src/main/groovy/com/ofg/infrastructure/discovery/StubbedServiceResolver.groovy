@@ -44,6 +44,11 @@ class StubbedServiceResolver implements ServiceResolver {
     }
 
     @Override
+    Set<String> fetchAllServiceNames() {
+        return stubbedDeps.keySet()
+    }
+
+    @Override
     void start() { }
 
     @Override

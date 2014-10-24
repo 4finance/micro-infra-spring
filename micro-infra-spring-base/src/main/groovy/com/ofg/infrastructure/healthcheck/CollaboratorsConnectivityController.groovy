@@ -31,6 +31,12 @@ class CollaboratorsConnectivityController {
         this.serviceResolver = serviceResolver
     }
 
+    /**
+     * Returns information about connection status of microservice with other microservices.
+     * For properly connected service <b>CONNECTED</b> state is provided and <b>DISCONNECTED</b> otherwise.
+     *
+     * @return connection status
+     */
     @RequestMapping(value = "/collaborators", method = GET, produces = MediaType.APPLICATION_JSON_VALUE)
     String getCollaboratorsConnectivityInfo() {
         Set<String> urls = serviceResolver.fetchAllServiceNames()

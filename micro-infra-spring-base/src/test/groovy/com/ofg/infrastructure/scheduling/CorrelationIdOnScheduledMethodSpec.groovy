@@ -11,10 +11,10 @@ class CorrelationIdOnScheduledMethodSpec extends Specification {
     @Autowired TestBeanWithScheduledMethod beanWithScheduledMethod
 
     def "should have correlationId set after scheduled method has been called"() {
-        def conditions = new PollingConditions(timeout: 1.5, initialDelay: 0.1, factor: 1.05)
+        PollingConditions conditions = new PollingConditions(timeout: 1.5, initialDelay: 0.1, factor: 1.05)
         expect:
             conditions.eventually {
-                assert beanWithScheduledMethod.correlationId != null
+                beanWithScheduledMethod.correlationId != null
             }
     }
 

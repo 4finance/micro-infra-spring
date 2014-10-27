@@ -7,7 +7,7 @@ class TestBeanWithScheduledMethod {
 
     String correlationId
 
-    @Scheduled(fixedDelay=100L)
+    @Scheduled(fixedDelay=50L)
     void scheduledMethod() {
         correlationId = CorrelationIdHolder.get()
     }

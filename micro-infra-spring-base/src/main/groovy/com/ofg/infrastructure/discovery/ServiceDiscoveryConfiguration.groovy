@@ -19,10 +19,4 @@ import static com.ofg.config.BasicProfiles.PRODUCTION
 @Import(ServiceResolverConfiguration)
 class ServiceDiscoveryConfiguration {
 
-    @Bean
-    @Profile(PRODUCTION)
-    CollaboratorsConnectivityController collaboratorsConnectivityController(DependencyWatcher dependencyWatcher) {
-        return new CollaboratorsConnectivityController(dependencyWatcher)
-    }
-
 }

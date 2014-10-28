@@ -3,6 +3,7 @@ package com.ofg.infrastructure.config
 import com.ofg.infrastructure.discovery.ServiceDiscoveryConfiguration
 import com.ofg.infrastructure.healthcheck.HealthCheckConfiguration
 import com.ofg.infrastructure.metrics.config.MetricsConfiguration
+import com.ofg.infrastructure.scheduling.TaskSchedulingConfiguration
 import com.ofg.infrastructure.web.config.WebInfrastructureConfiguration
 import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Configuration
@@ -27,6 +28,6 @@ import org.springframework.context.annotation.Import
  */
 @CompileStatic
 @Configuration
-@Import([WebInfrastructureConfiguration, ServiceDiscoveryConfiguration, MetricsConfiguration, HealthCheckConfiguration])
+@Import([WebInfrastructureConfiguration, ServiceDiscoveryConfiguration, MetricsConfiguration, HealthCheckConfiguration, TaskSchedulingConfiguration])
 class BaseWebAppConfiguration {
 }

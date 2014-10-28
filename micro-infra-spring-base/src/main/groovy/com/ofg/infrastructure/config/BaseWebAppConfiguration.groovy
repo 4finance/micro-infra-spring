@@ -28,6 +28,6 @@ import org.springframework.context.annotation.Import
  */
 @CompileStatic
 @Configuration
-@Import([WebInfrastructureConfiguration, ServiceDiscoveryConfiguration, MetricsConfiguration, HealthCheckConfiguration, TaskSchedulingConfiguration])
+@Import([WebInfrastructureConfiguration, ServiceDiscoveryConfiguration, MetricsConfiguration, HealthCheckConfiguration])
 class BaseWebAppConfiguration {
 }

@@ -8,14 +8,15 @@ import org.springframework.http.HttpStatus
 class ResponseException extends RuntimeException {
 
     HttpStatus httpStatus
+    String body
 
-    ResponseException(HttpStatus httpStatus, String message) {
-        super(message)
+    ResponseException(HttpStatus httpStatus, String body) {
         this.httpStatus = httpStatus
+        this.body = body
     }
 
     String getMessage() {
-        return "Status code [$httpStatus], Body: ${super.getMessage()}";
+        return "Status code [$httpStatus], Body: $body";
     }
 
 }

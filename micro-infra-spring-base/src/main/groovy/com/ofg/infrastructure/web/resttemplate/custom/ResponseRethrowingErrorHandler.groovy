@@ -24,7 +24,7 @@ class ResponseRethrowingErrorHandler implements ResponseErrorHandler {
     @Override
     void handleError(ClientHttpResponse response) throws IOException {
         String responseBody = getLoggedErrorResponseBody(response)
-        throw new ResponseException(String.format("Body: [%s]", responseBody))
+        throw new ResponseException(response.statusCode, responseBody)
     }
 
     protected String getLoggedErrorResponseBody(ClientHttpResponse response) {

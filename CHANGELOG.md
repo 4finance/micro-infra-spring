@@ -1,5 +1,8 @@
 0.6.0
 -----
+Bug fixes:
+* [Issue 21](https://github.com/4finance/micro-infra-spring/issues/21) /swagger should redirect to /swagger/index.html 
+
 Breaking changes:
 * `TaskSchedulingConfiguration` import removed from `BaseWebAppConfiguration` configuration
 

@@ -1,3 +1,7 @@
+0.6.1-SNAPSHOT
+-----
+* [Issue 67](https://github.com/4finance/micro-infra-spring/issues/67) ResponseException should also provide the thrown status (not only body)
+
 0.6.0
 -----
 Bug fixes:

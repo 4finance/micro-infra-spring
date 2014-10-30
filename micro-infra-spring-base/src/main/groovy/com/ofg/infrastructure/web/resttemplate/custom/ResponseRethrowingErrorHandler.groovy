@@ -24,12 +24,12 @@ class ResponseRethrowingErrorHandler implements ResponseErrorHandler {
     @Override
     void handleError(ClientHttpResponse response) throws IOException {
         String responseBody = getLoggedErrorResponseBody(response)
-        throw new ResponseException(response.statusCode, responseBody)
+        throw new ResponseException(response.statusCode, responseBody, response.headers)
     }
 
     protected String getLoggedErrorResponseBody(ClientHttpResponse response) {
         String responseBody = response.body?.text
-        log.error("Response error: status code [$response.statusCode] body [$responseBody]")
+        log.error("Response error: status code [$response.statusCode], headers [$response.headers], body [$responseBody]")
         return responseBody
     }
 }

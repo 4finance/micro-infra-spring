@@ -5,7 +5,7 @@ import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.discovery.ZookeeperServiceResolver
 import com.ofg.infrastructure.discovery.watcher.DependencyWatcher
 import com.ofg.infrastructure.discovery.watcher.DependencyWatcherListener
-import com.ofg.infrastructure.discovery.watcher.presence.FailOnMissingDependencyOnStartupVerifier
+import com.ofg.infrastructure.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
 import groovy.transform.TypeChecked
 import org.apache.curator.RetryPolicy
 import org.apache.curator.framework.CuratorFramework
@@ -42,7 +42,7 @@ class MicroDepsService {
                 .name(configurationResolver.microserviceName)
                 .build()
         serviceDiscovery = ServiceDiscoveryBuilder.builder(Void).basePath(configurationResolver.basePath).client(curatorFramework).thisInstance(serviceInstance).build()
-        dependencyWatcher = new DependencyWatcher(configurationResolver.dependencies, serviceDiscovery, new FailOnMissingDependencyOnStartupVerifier())
+        dependencyWatcher = new DependencyWatcher(configurationResolver.dependencies, serviceDiscovery, new DependencyPresenceOnStartupVerifier())
         serviceResolver = new ZookeeperServiceResolver(configurationResolver, serviceDiscovery)
     }
 

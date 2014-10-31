@@ -31,7 +31,7 @@ class SpecWithZookeper extends Specification {
     }
 
     private void setupZookeeper(TestingServer server) {
-        serviceConfigurationResolver = new ServiceConfigurationResolver(VALID_CONFIGURATION)
+        serviceConfigurationResolver = new ServiceConfigurationResolver(serviceConfig())
         serviceInstance = ServiceInstance.builder().uriSpec(new UriSpec("{scheme}://{address}:{port}/"))
                 .address('anyUrl')
                 .port(10)
@@ -47,6 +47,9 @@ class SpecWithZookeper extends Specification {
         serviceDiscovery.start()
     }
 
+    String serviceConfig() {
+        return VALID_CONFIGURATION
+    }
 
     def cleanup() {
         server.close()

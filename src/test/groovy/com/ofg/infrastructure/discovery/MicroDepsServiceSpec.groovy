@@ -17,8 +17,8 @@ class MicroDepsServiceSpec extends Specification {
 {
     "test": {
         "this": "com/test/microA",
-        "dependencies": {
-        }
+        "dependencies": [
+        ]
     }
 }
     """
@@ -27,9 +27,10 @@ class MicroDepsServiceSpec extends Specification {
 {
     "test": {
         "this": "com/test/microB",
-        "dependencies": {
-            "microA": "com/test/microA"
-        }
+        "dependencies": [{
+            "name" : "microA",
+            "path": "com/test/microA"
+        }]
     }
 }
     """

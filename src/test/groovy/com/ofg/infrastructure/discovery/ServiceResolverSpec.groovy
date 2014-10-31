@@ -1,17 +1,24 @@
 package com.ofg.infrastructure.discovery
+
 import com.ofg.infrastructure.base.SpecWithZookeper
 import com.ofg.infrastructure.discovery.watcher.DependencyWatcher
-import com.ofg.infrastructure.discovery.watcher.presence.FailOnMissingDependencyOnStartupVerifier
+import com.ofg.infrastructure.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
 import com.ofg.infrastructure.discovery.watcher.presence.checker.NoInstancesRunningException
 
 import static org.codehaus.groovy.runtime.StackTraceUtils.extractRootCause
+import static com.ofg.infrastructure.discovery.MicroserviceConfiguration.REQUIRED_DEPENDENCY
 
 class ServiceResolverSpec extends SpecWithZookeper {
-    
+
+    @Override
+    String serviceConfig() {
+        return REQUIRED_DEPENDENCY
+    }
+
     def 'should throw exception if obligatory dependencies are missing'() {
         given:            
             DependencyWatcher dependencyWatcher = new DependencyWatcher(serviceConfigurationResolver.dependencies, serviceDiscovery, 
-                    new FailOnMissingDependencyOnStartupVerifier() )
+                    new DependencyPresenceOnStartupVerifier() )
         when:
             dependencyWatcher.registerDependencies()    
         then:

@@ -18,6 +18,7 @@ class ServiceConfigurationResolver {
         def serviceMetadata = json[basePath]
         checkThatServiceMetadataContainsValidElements(serviceMetadata)
         setDefaultsForMissingOptionalElements(serviceMetadata)
+        serviceMetadata.dependencies = convertDependenciesToMapWithNameAsKey(serviceMetadata.dependencies)
         return [basePath, serviceMetadata]
     }
 
@@ -27,31 +28,42 @@ class ServiceConfigurationResolver {
         }
     }
 
+    private static Map<String, Map<String, String>> convertDependenciesToMapWithNameAsKey(List<Map<String, String>> dependencies) {
+        Map<String, Map<String, String>> convertedDependencies = [:]
+        dependencies.each {convertedDependencies[it['name']] = it}
+        return convertedDependencies
+    }
+
     private static void checkThatServiceMetadataContainsValidElements(serviceMetadata) {
         if (!(serviceMetadata.this && serviceMetadata.this instanceof String)) {
             throw new InvalidMicroserviceConfigurationException('invalid or missing "this" element')
         }
-        if (serviceMetadata.dependencies != null && !(serviceMetadata.dependencies instanceof Map)) {
+        if (serviceMetadata.dependencies && !(serviceMetadata.dependencies instanceof List)) {
             throw new InvalidMicroserviceConfigurationException('invalid "dependencies" element')
         }
     }
 
-   private  static void setDefaultsForMissingOptionalElements(serviceMetadata) {
-       if (serviceMetadata.dependencies == null) {
-           serviceMetadata.dependencies = [:]
-       }
+    private static void setDefaultsForMissingOptionalElements(serviceMetadata) {
+        if (serviceMetadata.dependencies == null) {
+            serviceMetadata.dependencies = [] as List
+        }
+        serviceMetadata.dependencies.each {
+            if (!it['required']) {
+                it['required'] == false
+            }
+        }
     }
 
     String getMicroserviceName() {
         return parsedConfiguration.this
     }
-    
-    Map<String, String> getDependencies() {
+
+    Map<String, Map<String, String>> getDependencies() {
         return parsedConfiguration.dependencies
     }
-    
+
     String getDependencyConfigByName(String dependencyName) {
         return parsedConfiguration[dependencyName]
     }
-    
+
 } 

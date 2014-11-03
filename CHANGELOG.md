@@ -1,3 +1,11 @@
+0.6.2
+-----
+Bug fixes:
+- fixed service cache changes log message
+
+Breaking changes:
+* `ServiceResolver.fetchAllServiceNames` method renamed to `fetchCollaboratorsNames`
+
 0.6.1
 -----
 New features:

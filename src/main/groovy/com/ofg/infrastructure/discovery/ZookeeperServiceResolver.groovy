@@ -48,7 +48,7 @@ class ZookeeperServiceResolver implements ServiceResolver {
     }
 
     @Override
-    Set<String> fetchAllServiceNames() {
+    Set<String> fetchCollaboratorsNames() {
         return services.keySet()
     }
 

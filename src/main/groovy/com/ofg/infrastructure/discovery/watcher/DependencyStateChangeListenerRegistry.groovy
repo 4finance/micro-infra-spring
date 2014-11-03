@@ -35,7 +35,7 @@ class DependencyStateChangeListenerRegistry implements ServiceCacheListener {
     }
 
     private void logCurrentState(DependencyState dependencyState) {
-        log.info("State of '${dependencyName}' service changed to ${dependencyState}.")
+        log.info("Service cache state change for '$dependencyName' instances, current service state: $dependencyState")
     }
 
     @Override

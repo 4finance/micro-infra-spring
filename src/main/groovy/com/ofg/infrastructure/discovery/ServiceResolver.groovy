@@ -32,7 +32,7 @@ interface ServiceResolver extends AutoCloseable {
      *
      * @return names of microservices
      */
-    Set<String> fetchAllServiceNames();
+    Set<String> fetchCollaboratorsNames()
 
     /**
      * Start service resolver (e.g. start all service providers)

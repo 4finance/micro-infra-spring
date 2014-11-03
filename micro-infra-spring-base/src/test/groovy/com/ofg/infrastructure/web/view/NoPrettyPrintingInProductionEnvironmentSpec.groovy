@@ -10,7 +10,6 @@ import org.springframework.core.io.ClassPathResource
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import static com.ofg.config.BasicProfiles.PRODUCTION
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
@@ -25,7 +24,6 @@ class NoPrettyPrintingInProductionEnvironmentSpec extends MvcIntegrationSpec {
     def "should return non-pretty JSON when production profile is active"() {
         expect:
             mockMvc.perform(get("/test"))
-                .andDo(print())
                 .andExpect(content().string(NOT_PRETTY_PRINTED_RESULT))
     }
 

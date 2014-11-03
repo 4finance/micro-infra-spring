@@ -39,8 +39,8 @@ class CollaboratorsConnectivityController {
      */
     @RequestMapping(value = "/collaborators", method = GET, produces = MediaType.APPLICATION_JSON_VALUE)
     String getCollaboratorsConnectivityInfo() {
-        Set<String> urls = serviceResolver.fetchAllServiceNames()
-        Map collaboratorsState = urls.collectEntries { it -> ["${it}": checkConnectionStatus(it.toString())] }
+        Set<String> collaborators = serviceResolver.fetchCollaboratorsNames()
+        Map collaboratorsState = collaborators.collectEntries { String collaborator -> ["$collaborator": checkConnectionStatus(collaborator)] }
         JsonBuilder json = new JsonBuilder()
         json collaboratorsState
         return json.toString()

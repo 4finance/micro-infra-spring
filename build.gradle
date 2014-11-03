@@ -14,7 +14,7 @@ buildscript {
 ext {
     microInfraSpringVersion = '0.5.5-SNAPSHOT'
 
-    microDepsSpringConfigVersion = '0.4.7'
+    microDepsSpringConfigVersion = '0.4.8'
     groovyVersion = '2.3.7'
     spockVersion = '0.7-groovy-2.0'
     springBootVersion = '1.1.8.RELEASE'

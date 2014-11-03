@@ -3,7 +3,7 @@ description = 'Microservice base infrastructure registered in Spring'
 ext {
     metricsVersion = '3.0.2'
     jacksonMapper = '1.9.13'
-    aspectjVersion = '1.8.2'
+    aspectjVersion = '1.8.3'
 }
 
 dependencies {
@@ -17,7 +17,7 @@ dependencies {
     compile "com.codahale.metrics:metrics-core:$metricsVersion"
     compile "com.codahale.metrics:metrics-graphite:$metricsVersion"
 
-    runtime 'org.aspectj:aspectjweaver:1.8.2'
+    runtime "org.aspectj:aspectjweaver:$aspectjVersion"
 
     testCompile("org.spockframework:spock-core:$spockVersion") {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
@@ -27,7 +27,7 @@ dependencies {
     }
     testCompile "org.springframework:spring-test:$springTestVersion"
     testCompile 'org.hamcrest:hamcrest-library:1.3'
-    testCompile 'org.hibernate:hibernate-validator:5.1.2.Final'
+    testCompile 'org.hibernate:hibernate-validator:5.1.3.Final'
     testCompile 'com.jayway.jsonpath:json-path-assert:0.9.1'
     testCompile 'com.github.stefanbirkner:system-rules:1.7.0'
     testCompile project(':micro-infra-spring-test')

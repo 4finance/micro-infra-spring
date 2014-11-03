@@ -51,7 +51,7 @@ class TwoRestOperationsImplementationsSpec extends MvcCorrelationIdSettingIntegr
                 }
 
                 @Override
-                Set<String> fetchAllServiceNames() {
+                Set<String> fetchCollaboratorsNames() {
                     return [] as Set
                 }
 

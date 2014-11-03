@@ -1,14 +1,13 @@
-0.6.1-SNAPSHOT
+0.5.6-SNAPSHOT
 -----
+New features:
 * [Issue 67](https://github.com/4finance/micro-infra-spring/issues/67) ResponseException should also provide the thrown status (not only body)
 
-0.6.0
------
 Bug fixes:
 * [Issue 21](https://github.com/4finance/micro-infra-spring/issues/21) /swagger should redirect to /swagger/index.html 
 
-Breaking changes:
-* `TaskSchedulingConfiguration` import removed from `BaseWebAppConfiguration` configuration
+Notable changes:
+* [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.4.8`
 
 0.5.5
 -----
@@ -18,6 +17,9 @@ Breaking changes:
 -----
 New features:
 * [Issue 42](https://github.com/4finance/micro-infra-spring/issues/42)Create a controller that checks the health of collaborators
+
+Notable changes:
+* [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.4.7`
 
 0.5.3
 -----
@@ -31,8 +33,11 @@ Bug fixes:
 
 0.5.1
 -----
-Notable changes:
+New features:
 * [stub-runner-spring](https://github.com/4finance/stub-runner-spring) added Consumer Driven Contracts
+
+Notable changes:
+* [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.4.6`
 
 0.5.0
 -----

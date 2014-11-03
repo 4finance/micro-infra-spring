@@ -8,9 +8,9 @@ import org.springframework.http.HttpStatus
 @CompileStatic
 class ResponseException extends RuntimeException {
 
-    HttpStatus httpStatus
-    HttpHeaders headers
-    String body
+    final HttpStatus httpStatus
+    final HttpHeaders headers
+    final String body
 
     ResponseException(HttpStatus httpStatus, String body, HttpHeaders headers) {
         this.httpStatus = httpStatus

@@ -1,6 +1,5 @@
 package com.ofg.infrastructure.discovery
 
-import com.ofg.infrastructure.discovery.config.FailOnMissingDepsConfiguration
 import com.ofg.infrastructure.discovery.config.PropertySourceConfiguration
 import com.ofg.infrastructure.discovery.watcher.presence.checker.NoInstancesRunningException
 import org.apache.curator.test.TestingServer
@@ -18,7 +17,7 @@ class ApplicationContextStartupSpec extends Specification {
         and:
             AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext()
             applicationContext.environment.setActiveProfiles(PRODUCTION)
-            applicationContext.register(PropertySourceConfiguration, FailOnMissingDepsConfiguration, ServiceResolverConfiguration)
+            applicationContext.register(PropertySourceConfiguration, DependencyVerifierConfiguration, ServiceResolverConfiguration)
         when:            
             applicationContext.refresh()
         then:    

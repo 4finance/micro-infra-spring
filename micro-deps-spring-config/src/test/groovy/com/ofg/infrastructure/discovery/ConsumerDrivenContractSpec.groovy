@@ -1,7 +1,8 @@
 package com.ofg.infrastructure.discovery
 
 import com.ofg.infrastructure.discovery.config.PropertySourceConfiguration
-import com.ofg.stub.spring.StubRunnerConfiguration
+import com.ofg.stub.BatchStubRunner
+import com.ofg.stub.config.StubRunnerConfiguration
 import org.apache.curator.test.TestingServer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ActiveProfiles
@@ -14,7 +15,7 @@ import static com.jayway.restassured.RestAssured.get
 import static com.ofg.config.BasicProfiles.TEST
 import static org.hamcrest.Matchers.equalTo
 
-@ContextConfiguration(classes = [PropertySourceConfiguration, StubRunnerConfiguration, ServiceResolverConfiguration])
+@ContextConfiguration(classes = [PropertySourceConfiguration, DependencyVerifierConfiguration, StubRunnerConfiguration, ServiceResolverConfiguration])
 @ActiveProfiles(TEST)
 @WebAppConfiguration
 class ConsumerDrivenContractSpec extends Specification {
@@ -26,7 +27,7 @@ class ConsumerDrivenContractSpec extends Specification {
         //System.setProperty("ivy.message.logger.level", '4')
     }
 
-    @Autowired StubRunnerConfiguration.BatchStubRunner batchStubRunner
+    @Autowired BatchStubRunner batchStubRunner
     @Autowired TestingServer testingServer
     @Autowired WebApplicationContext webApplicationContext
     @Autowired ServiceResolver serviceResolver

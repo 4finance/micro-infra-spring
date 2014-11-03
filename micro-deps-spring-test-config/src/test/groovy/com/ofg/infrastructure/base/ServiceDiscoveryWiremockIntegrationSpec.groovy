@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.base
+
 import com.ofg.infrastructure.BaseConfiguration
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver

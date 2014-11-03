@@ -1,3 +1,8 @@
+0.4.8
+------
+Notable changes:
+* [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.6.2`
+
 0.4.7
 ------
 Notable changes:

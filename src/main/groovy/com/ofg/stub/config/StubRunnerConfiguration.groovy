@@ -79,7 +79,8 @@ class StubRunnerConfiguration {
         URI stubJarUri = findGrabbedStubJars(stubRepositoryRoot, stubsGroup, stubsModule)
         File unzippedStubsDir = unpackStubJarToATemporaryFolder(stubJarUri)
         String context = serviceConfigurationResolver.basePath
-        List<StubRunner> stubRunners = serviceConfigurationResolver.dependencies.collect { String alias, String dependencyMappingsPath ->
+        List<StubRunner> stubRunners = serviceConfigurationResolver.dependencies.collect { String alias, Map<String, String> dependencyConfig ->
+            String dependencyMappingsPath = dependencyConfig['path']
             List<ProjectMetadata> projects = [new ProjectMetadata(alias, dependencyMappingsPath, serviceConfigurationResolver.basePath)]
             Arguments arguments = new Arguments(unzippedStubsDir.path, dependencyMappingsPath, testingServer.port, minPortValue, maxPortValue, context, projects)
             return new StubRunner(arguments, new StubRegistry(testingServer))

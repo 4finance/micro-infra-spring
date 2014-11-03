@@ -2,6 +2,8 @@ package com.ofg.infrastructure.discovery
 
 import groovy.json.JsonSlurper
 
+import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.*
+
 class ServiceConfigurationResolver {
 
     final String basePath
@@ -30,7 +32,7 @@ class ServiceConfigurationResolver {
 
     private static Map<String, Map<String, String>> convertDependenciesToMapWithNameAsKey(List<Map<String, String>> dependencies) {
         Map<String, Map<String, String>> convertedDependencies = [:]
-        dependencies.each {convertedDependencies[it['name']] = it}
+        dependencies.each {convertedDependencies[it[NAME]] = it}
         return convertedDependencies
     }
 
@@ -48,8 +50,8 @@ class ServiceConfigurationResolver {
             serviceMetadata.dependencies = [] as List
         }
         serviceMetadata.dependencies.each {
-            if (!it['required']) {
-                it['required'] == false
+            if (!it[REQUIRED]) {
+                it[REQUIRED] == false
             }
         }
     }

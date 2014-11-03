@@ -25,5 +25,5 @@ class ServiceResolverSpec extends SpecWithZookeper {
             Throwable thrown = thrown(Throwable)
             extractRootCause(thrown).class == NoInstancesRunningException
     }
-    
+
 }

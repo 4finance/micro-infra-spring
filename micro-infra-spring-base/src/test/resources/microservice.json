@@ -1,11 +1,23 @@
 {
     "pl": {
         "this": "foo/bar/registration",
-        "dependencies": {
-            "users": "foo/bar/users",
-            "newsletter": "foo/bar/comms/newsletter",
-            "confirmation": "foo/bar/security/confirmation",
-            "foo-bar": "com/ofg/foo/bar"
-        }
+        "dependencies": [
+            {
+                "name": "users",
+                "path": "foo/bar/users"
+            },
+            {
+                "name": "newsletter",
+                "path": "foo/bar/comms/newsletter"
+            },
+            {
+                "name": "confirmation",
+                "path": "foo/bar/security/confirmation"
+            },
+            {
+                "name": "foo-bar",
+                "path": "com/ofg/foo/bar"
+            }
+        ]
     }
 }

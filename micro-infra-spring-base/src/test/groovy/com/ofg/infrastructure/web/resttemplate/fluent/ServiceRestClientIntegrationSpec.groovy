@@ -4,6 +4,7 @@ import com.ofg.config.BasicProfiles
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcWiremockIntegrationSpec
 import com.ofg.infrastructure.base.ServiceDiscoveryStubbingApplicationConfiguration
+import com.ofg.infrastructure.discovery.DependencyVerifierConfiguration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.http.ResponseEntity
@@ -11,7 +12,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 
 @ActiveProfiles(['stub', BasicProfiles.TEST])
-@ContextConfiguration(classes = [BaseConfiguration, ServiceDiscoveryStubbingApplicationConfiguration], loader = SpringApplicationContextLoader)
+@ContextConfiguration(classes = [BaseConfiguration, DependencyVerifierConfiguration, ServiceDiscoveryStubbingApplicationConfiguration], loader = SpringApplicationContextLoader)
 class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
 
     public static final String COLLABORATOR_NAME = 'foo-bar'

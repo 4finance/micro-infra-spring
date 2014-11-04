@@ -1,8 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
 
-import com.google.common.base.Optional
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
-import com.ofg.infrastructure.discovery.ServiceUnavailableException
 import groovy.transform.CompileStatic
 import org.springframework.web.client.RestOperations
 
@@ -52,8 +51,10 @@ class ServiceRestClient {
 
     private final RestOperations restOperations
     private final ServiceResolver serviceResolver
+    private final ServiceConfigurationResolver configurationResolver
 
-    ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver) {
+    ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver) {
+        this.configurationResolver = configurationResolver
         this.restOperations = restOperations
         this.serviceResolver = serviceResolver
     }

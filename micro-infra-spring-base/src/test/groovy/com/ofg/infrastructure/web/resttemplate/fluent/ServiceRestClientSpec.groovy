@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
 
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.discovery.ServiceUnavailableException
 import org.springframework.http.HttpEntity
@@ -13,8 +14,9 @@ class ServiceRestClientSpec extends Specification {
     public static final String COLA_COLLABORATOR_NAME = 'cola'
     RestOperations restOperations = Mock()
     ServiceResolver serviceResolver = Mock()
+    ServiceConfigurationResolver configurationResolver = Mock()
     
-    ServiceRestClient serviceRestClient = new ServiceRestClient(restOperations, serviceResolver)
+    ServiceRestClient serviceRestClient = new ServiceRestClient(restOperations, serviceResolver, configurationResolver)
     
     def "should send a request to provided URL with appending host when calling service"() {
         given:

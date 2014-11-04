@@ -2,13 +2,16 @@ package com.ofg.infrastructure.web.resttemplate.fluent
 
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.discovery.ServiceUnavailableException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
+import org.springframework.core.io.Resource
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.web.client.RestOperations
 
@@ -31,6 +34,11 @@ class TwoRestOperationsImplementationsSpec extends MvcCorrelationIdSettingIntegr
         @Bean
         RestOperations customRestOperationsImplementation() {
             return new TestRestTemplate()
+        }
+
+        @Bean
+        ServiceConfigurationResolver serviceConfigurationResolver(@Value('${microservice.config.file:classpath:microservice.json}') Resource microserviceConfig) {
+            return new ServiceConfigurationResolver(microserviceConfig.inputStream.text)
         }
 
         @Bean

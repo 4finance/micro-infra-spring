@@ -2,18 +2,18 @@ package com.ofg.infrastructure.metrics.config
 
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.graphite.Graphite
+import com.ofg.config.BasicProfiles
 import com.ofg.infrastructure.metrics.publishing.GraphitePublisher
 import com.ofg.infrastructure.metrics.publishing.JmxPublisher
+import com.ofg.infrastructure.metrics.publishing.PublishingInterval
 import com.ofg.infrastructure.metrics.registry.MetricPathProvider
 import com.ofg.infrastructure.metrics.registry.PathPrependingMetricRegistry
-import com.ofg.infrastructure.metrics.publishing.PublishingInterval
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 
-import static com.ofg.config.BasicProfiles.*
 import static java.util.concurrent.TimeUnit.MILLISECONDS
 import static java.util.concurrent.TimeUnit.MINUTES
 
@@ -34,19 +34,19 @@ import static java.util.concurrent.TimeUnit.MINUTES
 class MetricsConfiguration {
 
     @Bean(initMethod = "start", destroyMethod = "stop")
-    @Profile([PRODUCTION, DEVELOPMENT, TEST])
+    @Profile([BasicProfiles.PRODUCTION, BasicProfiles.DEVELOPMENT, BasicProfiles.TEST])
     JmxPublisher jmxPublisher(MetricRegistry metricRegistry) {
         return new JmxPublisher(metricRegistry, MINUTES, MILLISECONDS)
     }
 
     @Bean
-    @Profile(PRODUCTION)
+    @Profile(BasicProfiles.PRODUCTION)
     Graphite graphite(@Value('${graphite.host:graphite.4finance.net}') String hostname, @Value('${graphite.port:2003}') int port) {
         return new Graphite(new InetSocketAddress(hostname, port))
     }
 
     @Bean(initMethod = "start", destroyMethod = "stop")
-    @Profile(PRODUCTION)
+    @Profile(BasicProfiles.PRODUCTION)
     GraphitePublisher graphitePublisher(Graphite graphite, MetricRegistry metricRegistry,
                                         @Value('${graphite.publishing.interval:15000}') long publishingIntervalInMs) {
         PublishingInterval publishingInterval = new PublishingInterval(publishingIntervalInMs, MILLISECONDS)

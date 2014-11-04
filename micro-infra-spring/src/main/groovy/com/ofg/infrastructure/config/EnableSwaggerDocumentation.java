@@ -7,9 +7,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Import(WebAppConfiguration.class)
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+@Import(WebAppConfiguration.class)
 public @interface EnableSwaggerDocumentation {
 
 }

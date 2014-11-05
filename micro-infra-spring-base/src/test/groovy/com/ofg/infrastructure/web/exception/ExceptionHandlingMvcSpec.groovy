@@ -3,9 +3,13 @@ package com.ofg.infrastructure.web.exception
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.ConfigurationWithoutServiceDiscovery
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
+import com.ofg.infrastructure.base.ServiceDiscoveryStubbingApplicationConfiguration
+import com.ofg.infrastructure.healthcheck.EnableHealthCheck
+import com.ofg.infrastructure.web.correlationid.EnableCorrelationId
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 import org.springframework.test.context.ContextConfiguration
 
 import static org.hamcrest.Matchers.equalTo
@@ -15,9 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@ContextConfiguration(
-        classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery, ControllerExceptionConfiguration],
-        loader = SpringApplicationContextLoader)
+@ContextConfiguration(classes = TestConfig, loader = SpringApplicationContextLoader)
 class ExceptionHandlingMvcSpec extends MvcCorrelationIdSettingIntegrationSpec {
     
     def "should return bad request error for invalid field"() {
@@ -35,5 +37,12 @@ class ExceptionHandlingMvcSpec extends MvcCorrelationIdSettingIntegrationSpec {
         TestController testController() {
             return new TestController()
         }
+    }
+
+    @Configuration
+    @EnableControllerException
+    @Import([Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery])
+    static class TestConfig {
+
     }
 }

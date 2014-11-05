@@ -4,6 +4,8 @@ import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
 import com.ofg.infrastructure.base.ServiceDiscoveryStubbingApplicationConfiguration
 import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 import org.springframework.http.HttpMethod
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
@@ -13,7 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@ContextConfiguration(classes = [BaseConfiguration, ServiceDiscoveryStubbingApplicationConfiguration, HealthCheckConfiguration], loader = SpringApplicationContextLoader)
+@ContextConfiguration(classes = TestConfig, loader = SpringApplicationContextLoader)
 class PingControllerMvcSpec extends MvcCorrelationIdSettingIntegrationSpec {
     
     def "should return OK on ping for Zabbix"() {
@@ -36,6 +38,13 @@ class PingControllerMvcSpec extends MvcCorrelationIdSettingIntegrationSpec {
      */
     public static MockHttpServletRequestBuilder head(String urlTemplate, Object... urlVariables) {
         return new MockHttpServletRequestBuilder(HttpMethod.HEAD, urlTemplate, urlVariables);
+    }
+
+    @Configuration
+    @EnableHealthCheck
+    @Import([BaseConfiguration, ServiceDiscoveryStubbingApplicationConfiguration])
+    static class TestConfig {
+
     }
 
 }

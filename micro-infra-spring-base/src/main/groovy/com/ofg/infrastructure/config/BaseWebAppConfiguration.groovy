@@ -1,9 +1,11 @@
 package com.ofg.infrastructure.config
 
+import com.ofg.infrastructure.discovery.EnableServiceDiscovery
 import com.ofg.infrastructure.discovery.ServiceDiscoveryConfiguration
+import com.ofg.infrastructure.healthcheck.EnableHealthCheck
 import com.ofg.infrastructure.healthcheck.HealthCheckConfiguration
+import com.ofg.infrastructure.metrics.config.EnableMetrics
 import com.ofg.infrastructure.metrics.config.MetricsConfiguration
-import com.ofg.infrastructure.scheduling.TaskSchedulingConfiguration
 import com.ofg.infrastructure.web.config.WebInfrastructureConfiguration
 import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Configuration
@@ -16,18 +18,25 @@ import org.springframework.context.annotation.Import
  * Imports:
  * <ul>
  *  <li>{@link WebInfrastructureConfiguration} - contains configurations related to filter, service communication and web application setup</li>
- *  <li>{@link ServiceDiscoveryConfiguration} - contains configurations related to service discovery</li>
- *  <li>{@link MetricsConfiguration} - contains configurations with registry of metrics instances
- *  <li>{@link HealthCheckConfiguration} - contains configurations related to Health check verification
+ * </ul>
+ *
+ * Enables:
+ * <ul>
+ *  <lI>{@link com.ofg.infrastructure.discovery.EnableServiceDiscovery}</lI>
+ *  <lI>{@link com.ofg.infrastructure.metrics.config.EnableMetrics}</lI>
+ *  <lI>{@link com.ofg.infrastructure.healthcheck.EnableHealthCheck}</lI>
  * </ul>
  *
  * @see WebInfrastructureConfiguration
- * @see ServiceDiscoveryConfiguration
- * @see MetricsConfiguration
- * @see HealthCheckConfiguration
+ * @see EnableServiceDiscovery
+ * @see EnableMetrics
+ * @see EnableHealthCheck
  */
 @CompileStatic
 @Configuration
-@Import([WebInfrastructureConfiguration, ServiceDiscoveryConfiguration, MetricsConfiguration, HealthCheckConfiguration])
+@EnableHealthCheck
+@EnableMetrics
+@EnableServiceDiscovery
+@Import([WebInfrastructureConfiguration])
 class BaseWebAppConfiguration {
 }

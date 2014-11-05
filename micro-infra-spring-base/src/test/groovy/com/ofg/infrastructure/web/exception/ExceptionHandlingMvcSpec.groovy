@@ -3,9 +3,6 @@ package com.ofg.infrastructure.web.exception
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.ConfigurationWithoutServiceDiscovery
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
-import com.ofg.infrastructure.base.ServiceDiscoveryStubbingApplicationConfiguration
-import com.ofg.infrastructure.healthcheck.EnableHealthCheck
-import com.ofg.infrastructure.web.correlationid.EnableCorrelationId
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -40,7 +37,7 @@ class ExceptionHandlingMvcSpec extends MvcCorrelationIdSettingIntegrationSpec {
     }
 
     @Configuration
-    @EnableControllerException
+    @EnableExceptionHandler
     @Import([Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery])
     static class TestConfig {
 

@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.web.client.RestOperations
 
-@ContextConfiguration(classes = [Config, BaseConfiguration, ServiceRestClientConfiguration],
-        loader = SpringApplicationContextLoader)
+@ContextConfiguration(classes = TestConfig, loader = SpringApplicationContextLoader)
 class TwoRestOperationsImplementationsSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
     @Autowired
@@ -66,6 +66,13 @@ class TwoRestOperationsImplementationsSpec extends MvcCorrelationIdSettingIntegr
                 }
             }
         }
+    }
+
+    @Configuration
+    @Import([Config, BaseConfiguration])
+    @EnableServiceRestClient
+    static class TestConfig {
+
     }
 
 }

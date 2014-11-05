@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.web.config
 
 import com.ofg.infrastructure.web.correlationid.CorrelationIdConfiguration
+import com.ofg.infrastructure.web.correlationid.EnableCorrelationId
 import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClientConfiguration
 import com.ofg.infrastructure.web.view.ViewConfiguration
 import groovy.transform.CompileStatic
@@ -9,13 +10,11 @@ import org.springframework.context.annotation.Import
 
 /**
  * Configuration related to default web application setup. Imports:
- *  <li>
- *      <ul>
- *          <li>{@link ServiceRestClientConfiguration} - RestTemplate abstraction with ServiceDiscovery</li>
- *          <li>{@link CorrelationIdConfiguration} - adds correlation id to requests</li>
- *          <li>{@link ViewConfiguration} - converts unmapped views to JSON requests</li>
- *      </ul>
- *  </li>
+ * <ul>
+ *   <li>{@link ServiceRestClientConfiguration} - RestTemplate abstraction with ServiceDiscovery</li>
+ *   <li>{@link CorrelationIdConfiguration} - adds correlation id to requests</li>
+ *   <li>{@link ViewConfiguration} - converts unmapped views to JSON requests</li>
+ * </ul>
  *
  * @see ServiceRestClientConfiguration
  * @see CorrelationIdConfiguration
@@ -23,9 +22,8 @@ import org.springframework.context.annotation.Import
  */
 @Configuration
 @CompileStatic
-@Import([ServiceRestClientConfiguration,
-        CorrelationIdConfiguration,
-        ViewConfiguration])
+@EnableCorrelationId
+@Import([ServiceRestClientConfiguration, ViewConfiguration])
 class WebInfrastructureConfiguration {
 
 }

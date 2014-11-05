@@ -9,9 +9,8 @@ import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
-
-import static org.springframework.web.bind.annotation.RequestMethod.GET
 
 /**
  * {@link RestController} providing connection state with services the microservice depends upon.
@@ -37,7 +36,7 @@ class CollaboratorsConnectivityController {
      *
      * @return connection status
      */
-    @RequestMapping(value = "/collaborators", method = GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/collaborators", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     String getCollaboratorsConnectivityInfo() {
         Set<String> collaborators = serviceResolver.fetchCollaboratorsNames()
         Map collaboratorsState = collaborators.collectEntries { String collaborator -> ["$collaborator": checkConnectionStatus(collaborator)] }

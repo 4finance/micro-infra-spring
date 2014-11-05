@@ -49,7 +49,7 @@ class GraphitePublisher implements MetricsPublishing {
     }
 
     @Override
-    void stop() throws IOException {
+    void stop() {
         graphiteReporter?.stop()
     }
 }

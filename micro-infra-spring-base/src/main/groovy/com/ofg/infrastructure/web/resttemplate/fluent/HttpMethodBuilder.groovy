@@ -16,11 +16,13 @@ import com.ofg.infrastructure.web.resttemplate.fluent.put.PutMethodBuilder
 import groovy.transform.CompileStatic
 import org.springframework.web.client.RestOperations
 
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
+
 /**
  * Point of entry of the fluent API over {@link RestOperations}.
  * This class gives methods for each of the HttpMethods and delegates to the root of
  * the fluent API of that method.
- * 
+ *
  * @see DeleteMethod
  * @see GetMethod
  * @see HeadMethod
@@ -40,7 +42,7 @@ class HttpMethodBuilder {
     private final PredefinedHttpHeaders predefinedHeaders
 
     HttpMethodBuilder(RestOperations restOperations) {
-        this('', restOperations, PredefinedHttpHeaders.NO_PREDEFINED_HEADERS)
+        this('', restOperations, NO_PREDEFINED_HEADERS)
     }
 
     HttpMethodBuilder(String serviceUrl, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders) {

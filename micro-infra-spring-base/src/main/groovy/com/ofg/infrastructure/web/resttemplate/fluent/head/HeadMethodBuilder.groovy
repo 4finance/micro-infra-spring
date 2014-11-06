@@ -9,6 +9,8 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
+
 /**
  * Implementation of the {@link org.springframework.http.HttpMethod#HEAD method} fluent API
  */
@@ -28,7 +30,7 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
     }
 
     HeadMethodBuilder(RestOperations restOperations) {
-        this(EMPTY_HOST, restOperations, PredefinedHttpHeaders.NO_PREDEFINED_HEADERS)
+        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS)
     }
 
     @Override

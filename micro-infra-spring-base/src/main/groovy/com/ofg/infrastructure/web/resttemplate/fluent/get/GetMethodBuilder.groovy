@@ -10,6 +10,8 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
+
 /**
  * Implementation of the {@link org.springframework.http.HttpMethod#GET method} fluent API
  */
@@ -23,7 +25,7 @@ class GetMethodBuilder implements GetMethod, UrlParameterizableGetMethod, Respon
     @Delegate private final BodyContainingWithHeaders withHeaders
 
     GetMethodBuilder(RestOperations restOperations) {
-        this(EMPTY_HOST, restOperations, PredefinedHttpHeaders.NO_PREDEFINED_HEADERS)
+        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS)
     }
 
     GetMethodBuilder(String host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders) {

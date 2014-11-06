@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.post
+
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.LocationFindingExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodyContainingWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
 import static org.springframework.http.HttpMethod.POST
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
 
 /**
  * Implementation of the {@link org.springframework.http.HttpMethod#POST method} fluent API
@@ -32,7 +34,7 @@ class PostMethodBuilder extends LocationFindingExecutor implements
     }
     
     PostMethodBuilder(RestOperations restOperations) {
-        this(EMPTY_HOST, restOperations, PredefinedHttpHeaders.NO_PREDEFINED_HEADERS)
+        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS)
     }
 
     @Override

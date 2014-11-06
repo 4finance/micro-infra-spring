@@ -1,10 +1,11 @@
 {
     "pl": {
         "this": "com/ofg/stub-runner/tester",
-        "dependencies": [{
-            "name": "foo-bar",
-            "path": "com/ofg/foo/bar",
-            "required": true
-        }]
+        "dependencies": {
+            "foo-bar" : {
+                "path": "com/ofg/foo/bar",
+                "required": true
+            }
+        }
     }
 }

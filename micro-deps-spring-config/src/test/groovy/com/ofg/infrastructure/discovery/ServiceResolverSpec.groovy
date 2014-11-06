@@ -37,7 +37,7 @@ class ServiceResolverSpec extends Specification {
             ServiceInstance<Void> serviceInstance = ServiceInstance.builder().uriSpec(new UriSpec("{scheme}://{address}:{port}/${it.value[PATH]}"))
                     .address('localhost')
                     .port(8030)
-                    .name(it.value[NAME])
+                    .name(it.key)
                     .build()
             ServiceDiscoveryBuilder.builder(Void).basePath(serviceConfigurationResolver.basePath).client(curatorFramework).thisInstance(serviceInstance).build().start()
         }

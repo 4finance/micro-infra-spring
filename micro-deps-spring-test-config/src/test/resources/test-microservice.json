@@ -1,9 +1,10 @@
 {
     "pl": {
         "this": "test-twitter-places-analyzer",
-        "dependencies": [{
-            "name": "collerator",
-            "path": "collerator"
-        }]
+        "dependencies": {
+            "collerator" : {
+                "path": "collerator"
+            }
+        }
     }
 }

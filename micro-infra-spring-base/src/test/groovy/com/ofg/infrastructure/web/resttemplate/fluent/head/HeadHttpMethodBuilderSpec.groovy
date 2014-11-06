@@ -2,11 +2,11 @@ package com.ofg.infrastructure.web.resttemplate.fluent.head
 
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
-import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.*
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.*
 import static org.springframework.http.HttpMethod.HEAD
 import static org.springframework.http.HttpStatus.OK
 

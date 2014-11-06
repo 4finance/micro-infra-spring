@@ -2,6 +2,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent.get
 
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
+
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.*
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus

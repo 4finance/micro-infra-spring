@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+@ContextConfiguration(classes = [BaseConfiguration, ServiceDiscoveryStubbingApplicationConfiguration, HealthCheckConfiguration], loader = SpringApplicationContextLoader)
 @ContextConfiguration(classes = TestConfig, loader = SpringApplicationContextLoader)
 class PingControllerMvcSpec extends MvcCorrelationIdSettingIntegrationSpec {
     

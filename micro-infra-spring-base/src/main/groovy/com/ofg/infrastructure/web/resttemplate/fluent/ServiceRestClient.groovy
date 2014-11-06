@@ -67,7 +67,7 @@ class ServiceRestClient {
      * @return builder for the specified HttpMethod
      */
     public HttpMethodBuilder forService(String serviceName) {
-        Map serviceSettings = configurationResolver.dependencies[serviceName]
+        Map serviceSettings = configurationResolver.dependencies[serviceName] as Map
         PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(serviceSettings)
         return new HttpMethodBuilder(serviceResolver.fetchUrl(serviceName), restOperations, predefinedHeaders)
     }

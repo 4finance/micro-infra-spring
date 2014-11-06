@@ -4,7 +4,7 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 class BodylessWithHeaders<T> extends WithHeaders<T> {
-    BodylessWithHeaders(T parent, Map<String, String> params) {
-        super(parent, params)
+    BodylessWithHeaders(T parent, Map<String, String> params, PredefinedHttpHeaders predefinedHeaders) {
+        super(parent, params, predefinedHeaders)
     }
 }

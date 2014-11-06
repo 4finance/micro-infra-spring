@@ -2,6 +2,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent.put
 
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.*
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
@@ -14,7 +15,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
     public static final String REQUEST_BODY = '''{"sample":"request"}'''
     public static final String RESPONSE_BODY = '''{"sample":"response"}'''
     public static final Class<String> RESPONSE_TYPE = String
-    
+
     def "should query for location when sending a put request on given address"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(restOperations)
@@ -75,7 +76,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for location when sending a put request on service template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
             URI expectedLocation = new URI('localhost')
         when:
             URI actualLocation = httpMethodBuilder
@@ -95,7 +96,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for location when sending a put request on service template address using map for url vars"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
             URI expectedLocation = new URI('localhost')
         when:
             URI actualLocation = httpMethodBuilder
@@ -137,7 +138,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for object when sending a put request on service template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
         when:
             String actualResponseBody = httpMethodBuilder
                                                         .put()
@@ -181,7 +182,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for entity when sending a put request on service template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
             ResponseEntity<String> expectedResponseEntity = responseEntityWith(RESPONSE_BODY)
         when:
             ResponseEntity<String> actualResponseEntity = httpMethodBuilder
@@ -216,7 +217,6 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
                     PUT,
                     _ as HttpEntity,
                     Object)
-
     }
 
     private ResponseEntity responseEntityWith(URI expectedLocation) {
@@ -226,6 +226,5 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
     private ResponseEntity responseEntityWith(Object body) {
         new ResponseEntity<>(body, OK)
     }
-
 
 }

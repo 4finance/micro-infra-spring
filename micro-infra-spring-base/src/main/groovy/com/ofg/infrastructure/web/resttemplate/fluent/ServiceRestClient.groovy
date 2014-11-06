@@ -2,6 +2,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent
 
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import groovy.transform.CompileStatic
 import org.springframework.web.client.RestOperations
 
@@ -66,7 +67,9 @@ class ServiceRestClient {
      * @return builder for the specified HttpMethod
      */
     public HttpMethodBuilder forService(String serviceName) {
-        return new HttpMethodBuilder(serviceResolver.fetchUrl(serviceName), restOperations)
+        Map serviceSettings = configurationResolver.dependencies[serviceName]
+        PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(serviceSettings)
+        return new HttpMethodBuilder(serviceResolver.fetchUrl(serviceName), restOperations, predefinedHeaders)
     }
 
     /**

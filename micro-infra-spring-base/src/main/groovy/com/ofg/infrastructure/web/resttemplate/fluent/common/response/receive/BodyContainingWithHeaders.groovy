@@ -8,7 +8,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class BodyContainingWithHeaders extends WithHeaders<ResponseReceiving> {
-    BodyContainingWithHeaders(ResponseReceiving parent, Map<String, String> params) {
-        super(parent, params)
+    BodyContainingWithHeaders(ResponseReceiving parent, Map<String, String> params, PredefinedHttpHeaders predefinedHeaders) {
+        super(parent, params, predefinedHeaders)
     }
 }

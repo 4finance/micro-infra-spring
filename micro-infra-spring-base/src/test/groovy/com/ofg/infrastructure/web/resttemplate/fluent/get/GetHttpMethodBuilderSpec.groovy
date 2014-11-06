@@ -2,6 +2,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent.get
 
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.*
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -9,7 +10,7 @@ import org.springframework.http.ResponseEntity
 import static org.springframework.http.HttpMethod.GET
 
 class GetHttpMethodBuilderSpec extends HttpMethodSpec {
-    
+
     def "should use only url template without provided service url to retrieve object"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(restOperations)
@@ -74,7 +75,7 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add service url to template when provided"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
         when:
             httpMethodBuilder
                 .get()
@@ -89,7 +90,7 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should treat url as path when sending request to a service to a path conaining a slash"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
         when:            
             httpMethodBuilder
                 .get()
@@ -103,7 +104,7 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should treat String url as path when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
         when:            
             httpMethodBuilder
                 .get()
@@ -129,7 +130,6 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
                     GET,
                     _ as HttpEntity,
                     Object)
-
     }
 
 }

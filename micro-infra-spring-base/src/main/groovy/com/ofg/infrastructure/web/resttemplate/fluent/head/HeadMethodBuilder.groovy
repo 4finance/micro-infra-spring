@@ -1,6 +1,8 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.head
+
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodylessWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -19,14 +21,14 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
     private final RestOperations restOperations
     @Delegate private final BodylessWithHeaders<ResponseReceivingHeadMethod> withHeaders
 
-    HeadMethodBuilder(String host, RestOperations restOperations) {
+    HeadMethodBuilder(String host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders) {
         this.restOperations = restOperations
         params.host = host
-        withHeaders =  new BodylessWithHeaders<ResponseReceivingHeadMethod>(this, params)
+        withHeaders =  new BodylessWithHeaders<ResponseReceivingHeadMethod>(this, params, predefinedHeaders)
     }
 
     HeadMethodBuilder(RestOperations restOperations) {
-        this(EMPTY_HOST, restOperations)
+        this(EMPTY_HOST, restOperations, PredefinedHttpHeaders.NO_PREDEFINED_HEADERS)
     }
 
     @Override

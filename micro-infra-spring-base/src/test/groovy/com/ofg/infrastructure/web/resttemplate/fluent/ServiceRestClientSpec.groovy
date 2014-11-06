@@ -51,6 +51,20 @@ class ServiceRestClientSpec extends Specification {
             } as HttpEntity, _ as Class)
     }
 
+    def 'should throw exception on creating Content-Type header when version property is required and is missing in dependency configuration'() {
+        given:
+            String serviceUrl = 'http://localhost:1234'
+            String path = 'some/serviceUrl'
+        and:
+            serviceResolver.fetchUrl(COLA_COLLABORATOR_NAME) >> serviceUrl
+        when:
+            serviceRestClient.forService(COLA_COLLABORATOR_NAME).get().onUrl(path).ignoringResponse()
+        then:
+            1 * configurationResolver.getDependencies() >> ['cola': ['contentTypeTemplate': 'application/vnd.cola.$version+json',
+                                                                     'headers'            : ['header1': 'value1', 'header2': 'value2']]]
+            thrown(MissingPropertyException)
+    }
+
     def 'should send a request to provided URL with predefined headers set when calling service'() {
         given:
             String serviceUrl = 'http://localhost:1234'

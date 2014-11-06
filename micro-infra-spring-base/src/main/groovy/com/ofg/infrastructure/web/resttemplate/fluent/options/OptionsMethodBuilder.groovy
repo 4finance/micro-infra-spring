@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.options
+
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
@@ -8,6 +9,8 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
+
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
 
 /**
  * Implementation of the {@link org.springframework.http.HttpMethod#HEAD method} fluent API
@@ -32,7 +35,7 @@ class OptionsMethodBuilder implements
     }
 
     OptionsMethodBuilder(RestOperations restOperations) {
-        this(EMPTY_HOST, restOperations, PredefinedHttpHeaders.NO_PREDEFINED_HEADERS)
+        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS)
     }
 
     @Override

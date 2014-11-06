@@ -3,6 +3,7 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.L
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodyContainingWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
@@ -24,14 +25,14 @@ class PutMethodBuilder extends LocationFindingExecutor implements
     
     @Delegate private final BodyContainingWithHeaders withHeaders
 
-    PutMethodBuilder(String host, RestOperations restOperations) {
+    PutMethodBuilder(String host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders) {
         super(restOperations)
         params.host = host
-        withHeaders = new BodyContainingWithHeaders(this, params)
+        withHeaders = new BodyContainingWithHeaders(this, params, predefinedHeaders)
     }
 
     PutMethodBuilder(RestOperations restOperations) {
-        this(EMPTY_HOST, restOperations)
+        this(EMPTY_HOST, restOperations, PredefinedHttpHeaders.NO_PREDEFINED_HEADERS)
     }
 
     @Override

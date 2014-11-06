@@ -3,6 +3,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent.get
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodyContainingWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
@@ -21,14 +22,14 @@ class GetMethodBuilder implements GetMethod, UrlParameterizableGetMethod, Respon
     private final RestOperations restOperations
     @Delegate private final BodyContainingWithHeaders withHeaders
 
-    GetMethodBuilder(String host, RestOperations restOperations) {
-        this.restOperations = restOperations
-        params.host = host
-        withHeaders = new BodyContainingWithHeaders(this, params)
+    GetMethodBuilder(RestOperations restOperations) {
+        this(EMPTY_HOST, restOperations, PredefinedHttpHeaders.NO_PREDEFINED_HEADERS)
     }
 
-    GetMethodBuilder(RestOperations restOperations) {
-        this(EMPTY_HOST, restOperations)
+    GetMethodBuilder(String host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders) {
+        this.restOperations = restOperations
+        params.host = host
+        withHeaders = new BodyContainingWithHeaders(this, params, predefinedHeaders)
     }
 
     @Override

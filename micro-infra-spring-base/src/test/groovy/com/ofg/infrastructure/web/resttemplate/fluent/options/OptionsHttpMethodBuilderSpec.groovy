@@ -2,6 +2,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent.options
 
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.*
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -103,7 +104,7 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add service url to template when provided"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
         when:
             httpMethodBuilder
                 .options()
@@ -118,7 +119,7 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should treat url as path when sending request to a service with a path containing a slash"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
         when:            
             httpMethodBuilder
                 .options()
@@ -132,7 +133,7 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should treat String url as path when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
         when:            
             httpMethodBuilder
                 .options()
@@ -158,7 +159,6 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
                     OPTIONS,
                     _ as HttpEntity,
                     Object)
-
     }
 
 }

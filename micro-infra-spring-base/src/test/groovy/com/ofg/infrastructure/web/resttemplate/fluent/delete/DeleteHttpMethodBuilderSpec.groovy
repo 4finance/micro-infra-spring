@@ -2,6 +2,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent.delete
 
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.*
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 
@@ -71,7 +72,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add service url to template when provided"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
         when:
             httpMethodBuilder
                 .delete()
@@ -85,7 +86,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should treat url as path when sending request to a service to a path containing a slash"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
             URI url = new URI(PATH_WITH_SLASH)
         when:            
             httpMethodBuilder
@@ -99,7 +100,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should treat String url as path when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
         when:            
             httpMethodBuilder
                 .delete()
@@ -124,7 +125,6 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
                 DELETE,
                 _ as HttpEntity,
                 Object)
-
     }
 
 }

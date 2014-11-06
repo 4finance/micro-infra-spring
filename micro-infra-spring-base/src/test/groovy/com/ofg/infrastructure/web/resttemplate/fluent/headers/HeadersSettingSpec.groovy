@@ -12,7 +12,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON
 class HeadersSettingSpec extends HttpMethodSpec {
 
     public static final String TEMPLATE_URL = 'http://some.url/api/objects/{objectId}'
-    
+
     def "should fill out headers for get method"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(restOperations)

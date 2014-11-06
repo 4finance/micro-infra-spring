@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.web.correlationid
+
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MicroserviceMvcWiremockSpec
-import com.ofg.infrastructure.discovery.DependencyVerifierConfiguration
 import com.ofg.infrastructure.discovery.web.HttpMockServer
 import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClient
 import groovy.transform.PackageScope
@@ -20,7 +20,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*
 import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
 
 @ActiveProfiles('aspect')
-@ContextConfiguration(classes = [BaseConfiguration, DependencyVerifierConfiguration, CorrelationIdAspectSpecConfiguration], loader = SpringApplicationContextLoader)
+@ContextConfiguration(classes = [BaseConfiguration, CorrelationIdAspectSpecConfiguration], loader = SpringApplicationContextLoader)
 class CorrelationIdAspectSpec extends MicroserviceMvcWiremockSpec {
 
     def "should set correlationId on header via aspect"() {

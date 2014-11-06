@@ -21,6 +21,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import(ReactorAspectConfiguration.class)
-public @interface EnableReactorAspect {
+public @interface EnableCorrelationIdForReactor {
 
 }

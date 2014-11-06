@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Import
  * @see BaseWebAppConfiguration
  *
  * @deprecated Use {@link EnableSwaggerDocumentation} with
- * {@link EnableMicroserviceStack} instead.
+ * {@link EnableMicroservice} instead.
  */
 @Configuration
 @CompileStatic

@@ -30,6 +30,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import(BaseWebAppConfiguration.class)
-public @interface EnableMicroserviceStack {
+public @interface EnableMicroservice {
 
 }

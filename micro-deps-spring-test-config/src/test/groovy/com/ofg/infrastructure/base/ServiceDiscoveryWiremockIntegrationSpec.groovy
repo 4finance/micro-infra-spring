@@ -27,9 +27,9 @@ class ServiceDiscoveryWiremockIntegrationSpec extends MvcWiremockIntegrationSpec
     
     def "should bind zookeeper stub's address with wiremock"() {
         given:
-            stubInteraction(wireMockGet('/collerator'), aResponse().withStatus(OK.value()))
+            stubInteraction(wireMockGet('/correlator'), aResponse().withStatus(OK.value()))
         expect:
-            get("http://$wiremockUrl:${DEFAULT_PORT}/collerator").then().statusCode(OK.value())
+            get("http://$wiremockUrl:${DEFAULT_PORT}/correlator").then().statusCode(OK.value())
     }
 
 }

@@ -17,7 +17,7 @@ class ServiceResolverSpec extends Specification {
         given:
             AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext()
             applicationContext.environment.setActiveProfiles(TEST)
-            applicationContext.register(PropertySourceConfiguration, DependencyVerifierConfiguration, ServiceResolverConfiguration)
+            applicationContext.register(PropertySourceConfiguration, ServiceResolverConfiguration)
             applicationContext.refresh()
         and:
             ServiceConfigurationResolver serviceConfigurationResolver = applicationContext.getBean(ServiceConfigurationResolver) 

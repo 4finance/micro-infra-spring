@@ -15,7 +15,7 @@ import static com.jayway.restassured.RestAssured.get
 import static com.ofg.config.BasicProfiles.TEST
 import static org.hamcrest.Matchers.equalTo
 
-@ContextConfiguration(classes = [PropertySourceConfiguration, DependencyVerifierConfiguration, StubRunnerConfiguration, ServiceResolverConfiguration])
+@ContextConfiguration(classes = [PropertySourceConfiguration, StubRunnerConfiguration, ServiceResolverConfiguration])
 @ActiveProfiles(TEST)
 @WebAppConfiguration
 class ConsumerDrivenContractSpec extends Specification {

@@ -29,11 +29,15 @@ import org.springframework.core.io.Resource
 @Configuration
 class DependencyResolutionConfiguration {
 
-    @Autowired DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier
+    @Bean
+    DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier() {
+        return new DependencyPresenceOnStartupVerifier()
+    }
 
     @PackageScope
     @Bean(initMethod = 'registerDependencies', destroyMethod = 'unregisterDependencies')
-    DependencyWatcher dependencyWatcher(ServiceConfigurationResolver serviceConfigurationResolver, ServiceDiscovery serviceDiscovery) {
+    DependencyWatcher dependencyWatcher(ServiceConfigurationResolver serviceConfigurationResolver, ServiceDiscovery serviceDiscovery,
+                                        DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier) {
         return new DependencyWatcher(serviceConfigurationResolver.dependencies, serviceDiscovery, dependencyPresenceOnStartupVerifier)
     }
 

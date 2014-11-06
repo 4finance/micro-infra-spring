@@ -17,7 +17,7 @@ class ApplicationContextStartupSpec extends Specification {
         and:
             AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext()
             applicationContext.environment.setActiveProfiles(PRODUCTION)
-            applicationContext.register(PropertySourceConfiguration, DependencyVerifierConfiguration, ServiceResolverConfiguration)
+            applicationContext.register(PropertySourceConfiguration, ServiceResolverConfiguration)
         when:            
             applicationContext.refresh()
         then:    

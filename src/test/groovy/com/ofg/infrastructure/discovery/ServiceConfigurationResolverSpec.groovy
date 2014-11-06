@@ -12,10 +12,8 @@ class ServiceConfigurationResolverSpec extends Specification {
         then:
             resolver.basePath == 'pl'
             resolver.microserviceName == 'com/ofg/service'
-            resolver.dependencies == ['ping':['name':'ping',
-                                              'path':'com/ofg/ping'],
-                                      'pong':['name':'pong',
-                                              'path':'com/ofg/pong']]
+            resolver.dependencies == ['ping':['path':'com/ofg/ping'],
+                                      'pong':['path':'com/ofg/pong']]
     }
     
     def 'should fail on missing "this" element'() {

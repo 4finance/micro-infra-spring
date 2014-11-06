@@ -5,7 +5,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class ServiceConfigurationProperties {
 
-    public static final String NAME = 'name'
     public static final String PATH = 'path'
     public static final String REQUIRED = 'required'
     public static final String VERSION = 'version'

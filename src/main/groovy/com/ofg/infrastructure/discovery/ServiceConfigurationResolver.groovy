@@ -30,9 +30,9 @@ class ServiceConfigurationResolver {
         }
     }
 
-    private static Map<String, Map<String, String>> convertDependenciesToMapWithNameAsKey(List<Map<String, String>> dependencies) {
-        Map<String, Map<String, String>> convertedDependencies = [:]
-        dependencies.each {convertedDependencies[it[NAME]] = it}
+    private static Map convertDependenciesToMapWithNameAsKey(Map dependencies) {
+        Map convertedDependencies = [:]
+        dependencies.each {convertedDependencies[it.key] = it.value}
         return convertedDependencies
     }
 
@@ -40,18 +40,18 @@ class ServiceConfigurationResolver {
         if (!(serviceMetadata.this && serviceMetadata.this instanceof String)) {
             throw new InvalidMicroserviceConfigurationException('invalid or missing "this" element')
         }
-        if (serviceMetadata.dependencies && !(serviceMetadata.dependencies instanceof List)) {
+        if (serviceMetadata.dependencies && !(serviceMetadata.dependencies instanceof Map)) {
             throw new InvalidMicroserviceConfigurationException('invalid "dependencies" element')
         }
     }
 
     private static void setDefaultsForMissingOptionalElements(serviceMetadata) {
         if (serviceMetadata.dependencies == null) {
-            serviceMetadata.dependencies = [] as List
+            serviceMetadata.dependencies = [:]
         }
         serviceMetadata.dependencies.each {
-            if (!it[REQUIRED]) {
-                it[REQUIRED] == false
+            if (!it.value[REQUIRED]) {
+                it.value[REQUIRED] == false
             }
         }
     }
@@ -60,7 +60,7 @@ class ServiceConfigurationResolver {
         return parsedConfiguration.this
     }
 
-    Map<String, Map<String, String>> getDependencies() {
+    Map getDependencies() {
         return parsedConfiguration.dependencies
     }
 

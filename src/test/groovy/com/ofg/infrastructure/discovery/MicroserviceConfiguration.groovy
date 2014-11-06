@@ -6,17 +6,18 @@ class MicroserviceConfiguration {
                             {
                                 "pl": {
                                     "this": "com/ofg/service",
-                                    "dependencies": [{
-                                        "name": "ping",
-                                        "path": "com/ofg/ping",
-                                        "required" : true,
-                                        "version": "v123",
-                                        "contentTypeTemplate": "application/vnd.mymoid-adapter.v123+json",
-                                        "headers": {
-                                            "someHeader": "its value",
-                                            "anotherHeader": "another value"
+                                    "dependencies": {
+                                        "ping" : {
+                                            "path": "com/ofg/ping",
+                                            "required" : true,
+                                            "version": "v123",
+                                            "contentTypeTemplate": "application/vnd.mymoid-adapter.v123+json",
+                                            "headers": {
+                                                "someHeader": "its value",
+                                                "anotherHeader": "another value"
+                                            }
                                         }
-                                    }]
+                                    }
                                 }
                             }
                             """
@@ -25,13 +26,14 @@ class MicroserviceConfiguration {
                             {
                                 "pl": {
                                     "this": "com/ofg/service",
-                                    "dependencies": [{
-                                        "name" : "ping",
-                                        "path": "com/ofg/ping"
-                                    }, {
-                                        "name" : "pong",
-                                        "path": "com/ofg/pong"
-                                    }]
+                                    "dependencies": {
+                                        "ping" : {
+                                            "path": "com/ofg/ping"
+                                        },
+                                        "pong" : {
+                                            "path": "com/ofg/pong"
+                                        }
+                                    }
                                 }
                             }
                             """
@@ -39,10 +41,11 @@ class MicroserviceConfiguration {
     public static final String MISSING_THIS_ELEMENT = """
                             {
                                 "pl": {
-                                    "dependencies": [{
-                                        "name" : "ping",
-                                        "path": "com/ofg/ping"
-                                    }]
+                                    "dependencies": {
+                                        "ping" : {
+                                            "path": "com/ofg/ping"
+                                        }
+                                    }
                                 }
                             }
                             """

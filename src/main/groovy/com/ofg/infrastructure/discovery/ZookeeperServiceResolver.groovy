@@ -18,11 +18,11 @@ class ZookeeperServiceResolver implements ServiceResolver {
 
     @Override
     void start() {
-        serviceConfigurationResolver.dependencies.each { String serviceName, Map<String, String> dependencyConfig ->
+        serviceConfigurationResolver.dependencies.each { Object serviceName, Object dependencyConfig ->
             String path = dependencyConfig['path']
             ServiceProvider serviceProvider = serviceDiscovery.serviceProviderBuilder().serviceName(path).build()
             serviceProvider.start()
-            services[serviceName] = serviceProvider
+            services[serviceName as String] = serviceProvider
         }
     }
 

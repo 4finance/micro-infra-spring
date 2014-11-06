@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Enables support for {@link ReactorAspect}.
+ * Enables Correlation Id for Reactor.
  *
  * That way, combined with {@link com.ofg.infrastructure.reactor.event.ReactorEvent} and
  * {@link reactor.spring.annotation.Selector} annotations correlationId will be set for

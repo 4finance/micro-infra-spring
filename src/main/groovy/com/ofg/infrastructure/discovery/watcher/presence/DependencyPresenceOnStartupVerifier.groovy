@@ -7,16 +7,20 @@ import groovy.transform.CompileStatic
 import org.apache.curator.x.discovery.ServiceCache
 
 @CompileStatic
-class DependencyPresenceOnStartupVerifier {
+abstract class DependencyPresenceOnStartupVerifier {
 
     private static final PresenceChecker MANDATORY_DEPENDENCY_CHECKER = new FailOnMissingDependencyChecker()
-    private static final PresenceChecker OPTIONAL_DEPENDENCY_CHECKER = new LogMissingDependencyChecker()
+    private final PresenceChecker optionalDependencyChecker
+
+    DependencyPresenceOnStartupVerifier(PresenceChecker optionalDependencyChecker) {
+        this.optionalDependencyChecker = optionalDependencyChecker
+    }
 
     void verifyDependencyPresence(String dependencyName, ServiceCache serviceCache, boolean required) {
         if (required) {
             MANDATORY_DEPENDENCY_CHECKER.checkPresence(dependencyName, serviceCache.instances)
         } else {
-            OPTIONAL_DEPENDENCY_CHECKER.checkPresence(dependencyName, serviceCache.instances)
+            optionalDependencyChecker.checkPresence(dependencyName, serviceCache.instances)
         }
     }
 

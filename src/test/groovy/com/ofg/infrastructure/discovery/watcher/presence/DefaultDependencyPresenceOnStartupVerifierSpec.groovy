@@ -7,13 +7,13 @@ import spock.lang.Specification
 
 import static org.codehaus.groovy.runtime.StackTraceUtils.extractRootCause
 
-class DependencyPresenceOnStartupVerifierSpec extends Specification {
+class DefaultDependencyPresenceOnStartupVerifierSpec extends Specification {
 
     private static final String SERVICE_NAME = 'service01'
 
     def 'should throw exception if obligatory dependencies are missing'() {
         given:
-            DependencyPresenceOnStartupVerifier dependencyVerifier = new DependencyPresenceOnStartupVerifier()
+            DefaultDependencyPresenceOnStartupVerifier dependencyVerifier = new DefaultDependencyPresenceOnStartupVerifier()
             ServiceCache serviceCache = Mock()
             serviceCache.instances >> new ArrayList<ServiceInstance>()
 

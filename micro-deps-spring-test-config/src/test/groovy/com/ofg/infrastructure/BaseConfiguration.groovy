@@ -18,9 +18,4 @@ class BaseConfiguration {
         return propertySourcesPlaceholderConfigurer
     }
 
-    @Bean
-    DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier() {
-        return new DependencyPresenceOnStartupVerifier()
-    }
-
 }

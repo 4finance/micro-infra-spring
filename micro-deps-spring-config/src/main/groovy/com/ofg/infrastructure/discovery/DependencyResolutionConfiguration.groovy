@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.discovery
 
 import com.ofg.infrastructure.discovery.watcher.DependencyWatcher
+import com.ofg.infrastructure.discovery.watcher.presence.DefaultDependencyPresenceOnStartupVerifier
 import com.ofg.infrastructure.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -29,16 +30,13 @@ import org.springframework.core.io.Resource
 @Configuration
 class DependencyResolutionConfiguration {
 
-    @Bean
-    DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier() {
-        return new DependencyPresenceOnStartupVerifier()
-    }
+    @Autowired(required = false)
+    private DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier
 
     @PackageScope
     @Bean(initMethod = 'registerDependencies', destroyMethod = 'unregisterDependencies')
-    DependencyWatcher dependencyWatcher(ServiceConfigurationResolver serviceConfigurationResolver, ServiceDiscovery serviceDiscovery,
-                                        DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier) {
-        return new DependencyWatcher(serviceConfigurationResolver.dependencies, serviceDiscovery, dependencyPresenceOnStartupVerifier)
+    DependencyWatcher dependencyWatcher(ServiceConfigurationResolver serviceConfigurationResolver, ServiceDiscovery serviceDiscovery) {
+        return new DependencyWatcher(serviceConfigurationResolver.dependencies, serviceDiscovery, dependencyPresenceOnStartupVerifier ?: new DefaultDependencyPresenceOnStartupVerifier())
     }
 
     @Bean(initMethod = 'start', destroyMethod = 'close')

@@ -3,6 +3,7 @@
 New features:
 * [Issue 66](https://github.com/4finance/micro-infra-spring/issues/66) SpringBoot anotation style
 * [Issue 67](https://github.com/4finance/micro-infra-spring/issues/67) ResponseException should also provide the thrown status (not only body)
+* [Issue 69](https://github.com/4finance/micro-infra-spring/issues/69) Let's start releasing with axion or sth else
 
 Bug fixes:
 * [Issue 21](https://github.com/4finance/micro-infra-spring/issues/21) /swagger should redirect to /swagger/index.html 

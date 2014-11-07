@@ -1,7 +1,7 @@
 0.6.0
 -----
 New features:
-* [Issue 66] SpringBoot anotation style
+* [Issue 66](https://github.com/4finance/micro-infra-spring/issues/66) SpringBoot anotation style
 * [Issue 67](https://github.com/4finance/micro-infra-spring/issues/67) ResponseException should also provide the thrown status (not only body)
 
 Bug fixes:

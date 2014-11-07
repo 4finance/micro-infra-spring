@@ -27,9 +27,22 @@ sign them up for newsletters and send confirmation emails).
         "prod": {
             "this": "foo/bar/registration",
             "dependencies": {
-                "users": "foo/bar/users",
-                "newsletter": "foo/bar/comms/newsletter",
-                "confirmation": "foo/bar/security/confirmation"
+                "users": {
+                    "path": "foo/bar/users",
+                    "required": true
+                },
+                "newsletter": {
+                    "path": "foo/bar/comms/newsletter",
+                    "contentTypeTemplate": "application/vnd.newsletter.$version+json",
+                    "version": "v1"                    
+                },
+                "confirmation": {
+                    "path": "foo/bar/security/confirmation",
+                    "headers": {
+                        "header1": "value1",
+                        "header2": "value2"
+                    }
+                }
             }
         }
     }
@@ -58,8 +71,12 @@ have possibility to either use an out-of-the-box strategy or implement your own 
 or is not available during the microservice boot and then what happens when a dependency disappears.
 
 Dependencies are always defined with a key and a value. The key must be an unique identifier that you will reference from
-your code, while the value is a fully qualified name of the dependency. When the path to the dependency changes, you will
-not have to change it everywhere in the code, just in this one place.
+your code, while the value is a map containing configuration properties. Here are supported properties:
+* path - value of this property is fully qualified name of the dependency (when the path to the dependency changes, you do not have to change it everywhere in the code, just in this one place),
+* contentTypeTemplate - template of a Content-Type HTTP header send to the service (it can contain `$version` variable that will be updated with the value assigned to the version property),
+* version - contains a version number of the MIME type we are using sending requests to the service,
+* headers - a map containing key-value entries that are directly set as HTTP headers of the request send to the service,
+* required - specifies whether the service we are depending on is a mandatory one or is optional: when set to `true` during the startup phase of our microservice the exception will be thrown in case the service we are depending on is not available, on the other hand if value of the property is `false` then by default a message is logged with information the service is not available.
 
 Usage 
 -----
@@ -179,9 +196,15 @@ The straight-forward approach is that you can add version to your microservice n
         "prod": {
             "this": "foo/bar/registration/12",
             "dependencies": {
-                "users": "foo/bar/users/8",
-                "newsletter": "foo/bar/comms/newsletter/14",
-                "confirmation": "foo/bar/security/confirmation/3"
+                "users": {
+                    "path": "foo/bar/users/8"
+                },
+                "newsletter": {
+                    "path": "foo/bar/comms/newsletter/14"
+                },
+                "confirmation": {
+                    "path": "foo/bar/security/confirmation/3"
+                }
             }
         }
     }

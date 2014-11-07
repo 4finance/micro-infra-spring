@@ -1,3 +1,11 @@
+0.6.3
+-----
+New features:
+* [Issue 15](https://github.com/4finance/micro-deps/issues/15) Add version property and headers properties in JSON config for a dependency
+
+Breaking changes:
+* Required format of dependencies specified in JSON file has been change - instead of a map with name-path pairs there is a map with service name as the key and nested map with configuration properties as the value. For more details check 'Dependencies' section in README file.
+
 0.6.2
 -----
 Bug fixes:

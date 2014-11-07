@@ -19,6 +19,7 @@ import static groovy.grape.Grape.addResolver
 import static groovy.grape.Grape.resolve
 import static groovy.io.FileType.FILES
 import static java.nio.file.Files.createTempDirectory
+import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.PATH
 
 /**
  * Configuration that initializes a {@link BatchStubRunner} that runs {@link StubRunner} instance for each microservice's collaborator.
@@ -79,8 +80,8 @@ class StubRunnerConfiguration {
         URI stubJarUri = findGrabbedStubJars(stubRepositoryRoot, stubsGroup, stubsModule)
         File unzippedStubsDir = unpackStubJarToATemporaryFolder(stubJarUri)
         String context = serviceConfigurationResolver.basePath
-        List<StubRunner> stubRunners = serviceConfigurationResolver.dependencies.collect { String alias, Map<String, String> dependencyConfig ->
-            String dependencyMappingsPath = dependencyConfig['path']
+        List<StubRunner> stubRunners = serviceConfigurationResolver.dependencies.collect { String alias, Map dependencyConfig ->
+            String dependencyMappingsPath = dependencyConfig[PATH]
             List<ProjectMetadata> projects = [new ProjectMetadata(alias, dependencyMappingsPath, serviceConfigurationResolver.basePath)]
             Arguments arguments = new Arguments(unzippedStubsDir.path, dependencyMappingsPath, testingServer.port, minPortValue, maxPortValue, context, projects)
             return new StubRunner(arguments, new StubRegistry(testingServer))

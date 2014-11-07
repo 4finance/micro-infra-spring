@@ -10,12 +10,13 @@ New features:
 * [Issue 66](https://github.com/4finance/micro-infra-spring/issues/66) SpringBoot anotation style
 * [Issue 67](https://github.com/4finance/micro-infra-spring/issues/67) ResponseException should also provide the thrown status (not only body)
 * [Issue 69](https://github.com/4finance/micro-infra-spring/issues/69) Let's start releasing with axion or sth else
+* [Issue 72](https://github.com/4finance/micro-infra-spring/issues/72) Add support for header properties in JSON config for a dependency
 
 Bug fixes:
 * [Issue 21](https://github.com/4finance/micro-infra-spring/issues/21) /swagger should redirect to /swagger/index.html 
 
 Notable changes:
-* [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.4.8`
+* [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.4.9-SNAPSHOT`
 
 0.5.5
 -----

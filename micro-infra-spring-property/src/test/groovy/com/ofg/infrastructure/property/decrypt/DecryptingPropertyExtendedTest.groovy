@@ -13,15 +13,15 @@ class DecryptingPropertyExtendedTest extends Specification {
             def context = new SpringApplicationBuilder(DecryptingPropertyTestApp)
                     .web(false)
                     .showBanner(false)
-                    .properties("enc:{cipher}bb3336c80dffc7a6d13faea47cf1920cf391a03319249d8a6e38c289d1de7232")
+                    .properties("propertyKey:{cipher}bb3336c80dffc7a6d13faea47cf1920cf391a03319249d8a6e38c289d1de7232")
                     .run()
         then:
-            thrown(IllegalStateException)
+            def e = thrown(IllegalStateException)
+            e.message?.contains("propertyKey")
         cleanup:
             context?.close()
     }
 
-    @Ignore("Currently fails with NoSuchBeanDefinitionException: TextEncryptor")
     def "should not fail when encryption key is not provided and there are no encrypted passwords"() {
         when:
             def context = new SpringApplicationBuilder(DecryptingPropertyTestApp)

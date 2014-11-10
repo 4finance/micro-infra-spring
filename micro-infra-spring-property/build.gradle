@@ -23,3 +23,9 @@ dependencies {
     testRuntime "org.spockframework:spock-spring:$spockVersion"
     testRuntime "ch.qos.logback:logback-classic:$logbackVersion"
 }
+
+repositories {
+    maven {
+        url 'http://repo.spring.io/snapshot'
+    }
+}

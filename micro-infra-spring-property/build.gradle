@@ -1,0 +1,25 @@
+description = 'Microservice Spring infrastructure for properties management'
+
+ext {
+    //TODO: Switch to 1.0.0.M3 when available
+    springCloudVersion = "1.0.0.BUILD-SNAPSHOT"
+}
+
+dependencies {
+    compile("org.springframework.cloud:spring-cloud-config-client:$springCloudVersion") {
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+    }
+    compile("org.springframework.cloud:spring-cloud-config-server:$springCloudVersion") {
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+    }
+    compile "org.springframework.security:spring-security-rsa:1.0.0.M2"
+    compile "org.eclipse.jgit:org.eclipse.jgit:2.3.1.201302201838-r"
+    compile "org.codehaus.groovy:groovy-all:$groovyVersion"
+
+    testCompile("org.spockframework:spock-core:$spockVersion") {
+        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+    }
+    testRuntime "org.springframework:spring-test:$springTestVersion"
+    testRuntime "org.spockframework:spock-spring:$spockVersion"
+    testRuntime "ch.qos.logback:logback-classic:$logbackVersion"
+}

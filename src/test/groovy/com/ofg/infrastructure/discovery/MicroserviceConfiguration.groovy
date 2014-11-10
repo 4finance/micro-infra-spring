@@ -2,13 +2,37 @@ package com.ofg.infrastructure.discovery
 
 class MicroserviceConfiguration {
 
+    public static final String REQUIRED_DEPENDENCY = """
+                            {
+                                "pl": {
+                                    "this": "com/ofg/service",
+                                    "dependencies": {
+                                        "ping" : {
+                                            "path": "com/ofg/ping",
+                                            "required" : true,
+                                            "version": "v123",
+                                            "contentTypeTemplate": "application/vnd.mymoid-adapter.v123+json",
+                                            "headers": {
+                                                "someHeader": "its value",
+                                                "anotherHeader": "another value"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            """
+
     public static final String VALID_CONFIGURATION = """
                             {
                                 "pl": {
                                     "this": "com/ofg/service",
                                     "dependencies": {
-                                        "ping": "com/ofg/ping",
-                                        "pong": "com/ofg/pong"
+                                        "ping" : {
+                                            "path": "com/ofg/ping"
+                                        },
+                                        "pong" : {
+                                            "path": "com/ofg/pong"
+                                        }
                                     }
                                 }
                             }
@@ -18,7 +42,9 @@ class MicroserviceConfiguration {
                             {
                                 "pl": {
                                     "dependencies": {
-                                        "ping": "com/ofg/ping"
+                                        "ping" : {
+                                            "path": "com/ofg/ping"
+                                        }
                                     }
                                 }
                             }

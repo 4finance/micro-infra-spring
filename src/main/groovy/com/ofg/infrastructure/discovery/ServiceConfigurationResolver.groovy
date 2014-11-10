@@ -2,6 +2,8 @@ package com.ofg.infrastructure.discovery
 
 import groovy.json.JsonSlurper
 
+import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.*
+
 class ServiceConfigurationResolver {
 
     final String basePath
@@ -18,6 +20,7 @@ class ServiceConfigurationResolver {
         def serviceMetadata = json[basePath]
         checkThatServiceMetadataContainsValidElements(serviceMetadata)
         setDefaultsForMissingOptionalElements(serviceMetadata)
+        serviceMetadata.dependencies = convertDependenciesToMapWithNameAsKey(serviceMetadata.dependencies)
         return [basePath, serviceMetadata]
     }
 
@@ -27,31 +30,42 @@ class ServiceConfigurationResolver {
         }
     }
 
+    private static Map convertDependenciesToMapWithNameAsKey(Map dependencies) {
+        Map convertedDependencies = [:]
+        dependencies.each {convertedDependencies[it.key] = it.value}
+        return convertedDependencies
+    }
+
     private static void checkThatServiceMetadataContainsValidElements(serviceMetadata) {
         if (!(serviceMetadata.this && serviceMetadata.this instanceof String)) {
             throw new InvalidMicroserviceConfigurationException('invalid or missing "this" element')
         }
-        if (serviceMetadata.dependencies != null && !(serviceMetadata.dependencies instanceof Map)) {
+        if (serviceMetadata.dependencies && !(serviceMetadata.dependencies instanceof Map)) {
             throw new InvalidMicroserviceConfigurationException('invalid "dependencies" element')
         }
     }
 
-   private  static void setDefaultsForMissingOptionalElements(serviceMetadata) {
-       if (serviceMetadata.dependencies == null) {
-           serviceMetadata.dependencies = [:]
-       }
+    private static void setDefaultsForMissingOptionalElements(serviceMetadata) {
+        if (serviceMetadata.dependencies == null) {
+            serviceMetadata.dependencies = [:]
+        }
+        serviceMetadata.dependencies.each {
+            if (!it.value[REQUIRED]) {
+                it.value[REQUIRED] == false
+            }
+        }
     }
 
     String getMicroserviceName() {
         return parsedConfiguration.this
     }
-    
-    Map<String, String> getDependencies() {
+
+    Map getDependencies() {
         return parsedConfiguration.dependencies
     }
-    
+
     String getDependencyConfigByName(String dependencyName) {
         return parsedConfiguration[dependencyName]
     }
-    
+
 } 

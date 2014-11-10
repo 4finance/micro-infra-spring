@@ -16,9 +16,7 @@ class MicroDepsServiceSpec extends Specification {
     final static String MICRO_A = """
 {
     "test": {
-        "this": "com/test/microA",
-        "dependencies": {
-        }
+        "this": "com/test/microA"
     }
 }
     """
@@ -28,7 +26,9 @@ class MicroDepsServiceSpec extends Specification {
     "test": {
         "this": "com/test/microB",
         "dependencies": {
-            "microA": "com/test/microA"
+            "microA" : {
+                "path": "com/test/microA"
+            }
         }
     }
 }

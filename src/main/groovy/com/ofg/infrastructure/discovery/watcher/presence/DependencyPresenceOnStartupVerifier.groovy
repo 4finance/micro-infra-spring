@@ -1,25 +1,27 @@
 package com.ofg.infrastructure.discovery.watcher.presence
 
+import com.ofg.infrastructure.discovery.watcher.presence.checker.FailOnMissingDependencyChecker
+import com.ofg.infrastructure.discovery.watcher.presence.checker.LogMissingDependencyChecker
 import com.ofg.infrastructure.discovery.watcher.presence.checker.PresenceChecker
 import groovy.transform.CompileStatic
 import org.apache.curator.x.discovery.ServiceCache
 
-/**
- * Verifies if a dependency is present and passes execution to 
- * proper {@see PresenceChecker}. Used by {@see DependencyWatcher}
- */
 @CompileStatic
 abstract class DependencyPresenceOnStartupVerifier {
-    private final Map<String, PresenceChecker> presenceCheckers
 
-    DependencyPresenceOnStartupVerifier(Map<String, PresenceChecker> presenceCheckers) {
-        this.presenceCheckers = presenceCheckers
+    private static final PresenceChecker MANDATORY_DEPENDENCY_CHECKER = new FailOnMissingDependencyChecker()
+    private final PresenceChecker optionalDependencyChecker
+
+    DependencyPresenceOnStartupVerifier(PresenceChecker optionalDependencyChecker) {
+        this.optionalDependencyChecker = optionalDependencyChecker
     }
 
-    void verifyDependencyPresence(String dependencyName, ServiceCache serviceCache) {
-        PresenceChecker dependencyPresenceChecker = presenceCheckers[dependencyName]
-        if (dependencyPresenceChecker) {
-            dependencyPresenceChecker.checkPresence(dependencyName, serviceCache.instances)
+    void verifyDependencyPresence(String dependencyName, ServiceCache serviceCache, boolean required) {
+        if (required) {
+            MANDATORY_DEPENDENCY_CHECKER.checkPresence(dependencyName, serviceCache.instances)
+        } else {
+            optionalDependencyChecker.checkPresence(dependencyName, serviceCache.instances)
         }
     }
+
 }

@@ -9,23 +9,25 @@ import org.apache.curator.x.discovery.ServiceDiscovery
 @CompileStatic
 class DependencyWatcher {
 
-    private final Map<String, String> dependencies
+    private final Map<String, Map<String, String>> dependencies
     private final ServiceDiscovery serviceDiscovery
     private final Map<String, ServiceCache> dependencyRegistry = [:]
     private final List<DependencyWatcherListener> listeners = []
     private final DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier
 
-    DependencyWatcher(Map<String, String> dependencies, ServiceDiscovery serviceDiscovery, DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier) {
+    DependencyWatcher(Map<String, Map<String, String>> dependencies, ServiceDiscovery serviceDiscovery, DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier) {
         this.dependencies = dependencies
         this.serviceDiscovery = serviceDiscovery
         this.dependencyPresenceOnStartupVerifier = dependencyPresenceOnStartupVerifier
     }
 
     @PackageScope void registerDependencies() {
-        dependencies.each { String dependencyName, String dependencyDefinition ->
-            ServiceCache serviceCache = serviceDiscovery.serviceCacheBuilder().name(dependencyDefinition).build()
+        dependencies.each { String dependencyName, Map<String, String> dependencyDefinition ->
+            String path = dependencyDefinition['path']
+            boolean required = dependencyDefinition['required']
+            ServiceCache serviceCache = serviceDiscovery.serviceCacheBuilder().name(path).build()
             serviceCache.start()
-            dependencyPresenceOnStartupVerifier.verifyDependencyPresence(dependencyName, serviceCache)
+            dependencyPresenceOnStartupVerifier.verifyDependencyPresence(dependencyName, serviceCache, required)
             dependencyRegistry[dependencyName] = serviceCache
             serviceCache.addListener(new DependencyStateChangeListenerRegistry(listeners, dependencyName, serviceCache))
         }

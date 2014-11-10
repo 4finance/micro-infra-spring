@@ -1,8 +1,8 @@
-0.4.9-SNAPSHOT
+0.5.0
 ------
 Notable changes:
 * [stub-runner-spring](https://github.com/4finance/stub-runner-spring) upgraded to version `0.0.2-SNAPSHOT`
-* [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.6.3-SNAPSHOT`
+* [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.7.0`
 
 New features:
 * [Issue 4](https://github.com/4finance/micro-deps-spring-config/issues/4) Add support for header properties in JSON config for a dependency

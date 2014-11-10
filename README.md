@@ -72,11 +72,11 @@ or is not available during the microservice boot and then what happens when a de
 
 Dependencies are always defined with a key and a value. The key must be an unique identifier that you will reference from
 your code, while the value is a map containing configuration properties. Here are supported properties:
-* path - value of this property is fully qualified name of the dependency (when the path to the dependency changes, you do not have to change it everywhere in the code, just in this one place),
-* contentTypeTemplate - template of a Content-Type HTTP header send to the service (it can contain `$version` variable that will be updated with the value assigned to the version property),
-* version - contains a version number of the MIME type we are using sending requests to the service,
-* headers - a map containing key-value entries that are directly set as HTTP headers of the request send to the service,
-* required - specifies whether the service we are depending on is a mandatory one or is optional: when set to `true` during the startup phase of our microservice the exception will be thrown in case the service we are depending on is not available, on the other hand if value of the property is `false` then by default a message is logged with information the service is not available.
+* **path** - value of this property is fully qualified name of the dependency (when the path to the dependency changes, you do not have to change it everywhere in the code, just in this one place),
+* **contentTypeTemplate** - template of a Content-Type HTTP header send to the service (it can contain `$version` variable that will be updated with the value assigned to the version property),
+* **version** - contains a version number of the MIME type we are using sending requests to the service,
+* **headers** - a map containing key-value entries that are directly set as HTTP headers of the request send to the service,
+* **required** - specifies whether the service we are depending on is a mandatory one or is optional: when set to `true` during the startup phase of our microservice the exception will be thrown in case the service we are depending on is not available, on the other hand if value of the property is `false` then by default a message is logged with information the service is not available.
 
 Usage 
 -----

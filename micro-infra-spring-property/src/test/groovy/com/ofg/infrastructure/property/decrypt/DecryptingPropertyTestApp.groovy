@@ -1,4 +1,4 @@
-package com.ofg.infrastructure.property
+package com.ofg.infrastructure.property.decrypt
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.context.annotation.ComponentScan

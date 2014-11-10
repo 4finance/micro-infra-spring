@@ -1,4 +1,4 @@
-package com.ofg.infrastructure.property
+package com.ofg.infrastructure.property.decrypt
 
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.ConfigurableApplicationContext

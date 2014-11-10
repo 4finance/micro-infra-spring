@@ -1,4 +1,4 @@
-0.6.3
+0.7.0
 -----
 New features:
 * [Issue 15](https://github.com/4finance/micro-deps/issues/15) Add version property and headers properties in JSON config for a dependency

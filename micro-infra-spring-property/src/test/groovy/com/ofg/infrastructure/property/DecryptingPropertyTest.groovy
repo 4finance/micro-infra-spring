@@ -1,6 +1,5 @@
-package com.ofg.infrastructure.property.decrypt
+package com.ofg.infrastructure.property
 
-import com.ofg.infrastructure.property.AbstractIntegrationTest
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Configuration
@@ -22,7 +21,7 @@ class DecryptingPropertyTest extends AbstractIntegrationTest {
                 .run("--spring.config.name=decryptingPropertyTest")
     }
 
-    void cleanupSpec() {
+    def cleanupSpec() {
         System.properties.remove("encrypt.key") //TODO: Replace with @RestoreSystemProperties from Spock 1.0, when available...
         context?.close()
     }

@@ -14,11 +14,25 @@ buildscript {
 
 apply plugin: 'axion-release'
 
+scmVersion {
+    tag {
+        prefix = ''
+        versionSeparator = ''
+    }
+}
+
+allprojects {
+    group = 'com.ofg'
+    project.version = scmVersion.version
+}
+
+ext {
     microDepsSpringConfigVersion = '0.4.8'
     groovyVersion = '2.3.7'
     spockVersion = '0.7-groovy-2.0'
     springBootVersion = '1.1.8.RELEASE'
     springTestVersion = '4.1.1.RELEASE'
+}
 
 task addHashFile << {
     String gitCmd = "git log --pretty=format:'%H' -n 1"

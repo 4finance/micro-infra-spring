@@ -12,15 +12,25 @@ buildscript {
     dependencies {
         classpath 'com.ofg:uptodate-gradle-plugin:1.1.0'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
+        classpath group: 'pl.allegro.tech.build', name: 'axion-release-plugin', version: '0.9.4'
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
     }
 }
+
+apply plugin: 'axion-release'
+
+scmVersion {
+    tag {
+        prefix = 'tag-prefix'
+    }
+}
+
+project.version = scmVersion.version
 
 sourceCompatibility = 1.7
 
 group = 'com.ofg'
 description = 'Spring configuration for stub-runner'
-version = '0.0.2-SNAPSHOT'
 
 repositories {
     mavenLocal()
@@ -29,7 +39,7 @@ repositories {
 
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.3.7'
-    compile 'com.ofg:micro-deps:0.6.0'
+    compile 'com.ofg:micro-deps:0.7.0'
     compile 'com.ofg:stub-runner:0.2.2'
     compile 'org.springframework:spring-context:4.1.1.RELEASE'
 
@@ -109,4 +119,3 @@ if(project.hasProperty("coverage")) {
         ignoreFailures = true
     }
 }
-

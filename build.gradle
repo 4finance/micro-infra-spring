@@ -19,7 +19,6 @@ apply plugin: 'axion-release'
     spockVersion = '0.7-groovy-2.0'
     springBootVersion = '1.1.8.RELEASE'
     springTestVersion = '4.1.1.RELEASE'
-}
 
 task addHashFile << {
     String gitCmd = "git log --pretty=format:'%H' -n 1"

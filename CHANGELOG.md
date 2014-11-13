@@ -1,7 +1,7 @@
 0.5.0
 ------
 Notable changes:
-* [stub-runner-spring](https://github.com/4finance/stub-runner-spring) upgraded to version `0.0.2-SNAPSHOT`
+* [stub-runner-spring](https://github.com/4finance/stub-runner-spring) upgraded to version `0.1.0`
 * [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.7.0`
 
 New features:

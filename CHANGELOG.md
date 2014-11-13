@@ -1,4 +1,4 @@
-0.0.2
+0.1.0
 -----
 Notable changes:
 * [stub-runner](https://github.com/4finance//stub-runner) upgraded to version `0.2.2`

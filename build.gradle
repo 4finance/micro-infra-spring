@@ -21,7 +21,6 @@ apply plugin: 'axion-release'
 scmVersion {
     tag {
         prefix = ''
-        versionSeparator = ''
     }
 }
 

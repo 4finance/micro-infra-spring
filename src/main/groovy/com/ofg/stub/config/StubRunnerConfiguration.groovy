@@ -9,6 +9,7 @@ import com.ofg.stub.mapping.ProjectMetadata
 import com.ofg.stub.registry.StubRegistry
 import com.ofg.stub.spring.ZipCategory
 import groovy.grape.Grape
+import groovy.util.logging.Slf4j
 import org.apache.curator.test.TestingServer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -50,6 +51,7 @@ import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.PA
  */
 @Configuration
 @Import(ServiceDiscoveryTestingServerConfiguration)
+@Slf4j
 class StubRunnerConfiguration {
 
     private static final String LATEST_MODULE = '*'
@@ -92,6 +94,7 @@ class StubRunnerConfiguration {
     private static File unpackStubJarToATemporaryFolder(URI stubJarUri) {
         File tmpDirWhereStubsWillBeUnzipped = createTempDirectory(STUB_RUNNER_TEMP_DIR_PREFIX).toFile()
         tmpDirWhereStubsWillBeUnzipped.deleteOnExit()
+        log.debug("Unpacking stub from JAR [URI: ${stubJarUri}]")
         use(ZipCategory) {
             new File(stubJarUri).unzipTo(tmpDirWhereStubsWillBeUnzipped)
         }
@@ -101,6 +104,7 @@ class StubRunnerConfiguration {
     private static URI findGrabbedStubJars(String stubRepositoryRoot, String stubsGroup, String stubsModule) {
         addResolver(name: REPOSITORY_NAME, root: stubRepositoryRoot)
         Map depToGrab = [group: stubsGroup, module: stubsModule, version: LATEST_MODULE, transitive: false]
+        log.info("Resolving dependency ${depToGrab} location...")
         URI resolvedUri = resolveDependencyLocation(depToGrab)
         ensureThatLatestVersionWillBePicked(resolvedUri)
         return resolveDependencyLocation(depToGrab)
@@ -111,7 +115,7 @@ class StubRunnerConfiguration {
     }
 
     private static void ensureThatLatestVersionWillBePicked(URI resolvedUri) {
-        getStubRepositoryGrapeRoot(resolvedUri).eachFileRecurse(FILES, { if (it.name.endsWith('xml')) it.delete() })
+        getStubRepositoryGrapeRoot(resolvedUri).eachFileRecurse(FILES, { if (it.name.endsWith('xml')) {log.info("removing ${it}");it.delete()} })
     }
 
     private static File getStubRepositoryGrapeRoot(URI resolvedUri) {

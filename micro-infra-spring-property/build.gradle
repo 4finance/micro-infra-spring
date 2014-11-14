@@ -15,6 +15,7 @@ dependencies {
     compile "org.springframework.security:spring-security-rsa:1.0.0.M2"
     compile "org.eclipse.jgit:org.eclipse.jgit:2.3.1.201302201838-r"
     compile "org.codehaus.groovy:groovy-all:$groovyVersion"
+    compile "org.aspectj:aspectjrt:1.8.3"
 
     testCompile("org.spockframework:spock-core:$spockVersion") {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'

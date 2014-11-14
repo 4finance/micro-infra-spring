@@ -31,12 +31,12 @@ public class FileSystemLocator implements PropertySourceLocator {
 	@Override
 	public PropertySource<?> locate(Environment environment) {
 		final SpringApplicationEnvironmentRepository springEnv = new SpringApplicationEnvironmentRepository();
-		final String[] propertiesPath = getPropertiesPath();
+		final String[] propertiesPath = getConfigFiles();
 		log.debug("Loading configuration from {}", propertiesPath);
 		springEnv.setSearchLocations(propertiesPath);
 		final org.springframework.cloud.config.Environment loadedEnvs = springEnv.findOne(applicationName, "prod", null);
 
-		CompositePropertySource composite = new CompositePropertySource("configService");
+		CompositePropertySource composite = new CompositePropertySource(FileSystemLocator.class.getSimpleName());
 		for (org.springframework.cloud.config.PropertySource source : loadedEnvs.getPropertySources()) {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> map = decrypt((Map<String, Object>) source.getSource());
@@ -45,20 +45,23 @@ public class FileSystemLocator implements PropertySourceLocator {
 		return composite;
 	}
 
-	private String[] getPropertiesPath() {
-		final File envFolder = new File(propertiesFolder, environment);
-		final File appFolder = new File(envFolder, applicationName);
-		final File path = appFolder.getAbsoluteFile();
+	private String[] getConfigFiles() {
 		return new String[] {
-				addConfigFile(path, ".properties"),
-				addConfigFile(path, ".yaml"),
-				addConfigFile(path, "-" + countryCode + ".properties"),
-				addConfigFile(path, "-" + countryCode + ".yaml")
+				configFile(".properties"),
+				configFile(".yaml"),
+				configFile("-" + countryCode + ".properties"),
+				configFile("-" + countryCode + ".yaml")
 		};
 	}
 
-	private String addConfigFile(File path, String suffix) {
-		return new File(path, applicationName + suffix).getAbsolutePath();
+	private String configFile(String suffix) {
+		return new File(getConfigPath(), applicationName + suffix).getAbsolutePath();
+	}
+
+	public File getConfigPath() {
+		final File envFolder = new File(propertiesFolder, environment);
+		final File appFolder = new File(envFolder, applicationName);
+		return appFolder.getAbsoluteFile();
 	}
 
 	private Map<String, Object> decrypt(Map<String, Object> sourceMap) {

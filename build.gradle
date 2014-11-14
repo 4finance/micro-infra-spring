@@ -8,14 +8,25 @@ buildscript {
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
         classpath 'com.ofg:uptodate-gradle-plugin:1.1.0'
+        classpath 'pl.allegro.tech.build:axion-release-plugin:0.9.4'
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.0' }
     }
 }
 
-ext {
-    projectGroup = 'com.ofg'
-    projectVersion = '0.5.0-SNAPSHOT'
+apply plugin: 'axion-release'
 
+scmVersion {
+    tag {
+        prefix = ''
+    }
+}
+
+allprojects {
+    group = 'com.ofg'
+    project.version = scmVersion.version
+}
+
+ext {
     spockVersion = '0.7-groovy-2.0'
     springVersion = '4.1.1.RELEASE'
     jacocoVersion = '0.7.1.201405082137'
@@ -66,9 +77,7 @@ subprojects {
     apply plugin: 'com.ofg.uptodate'
 
     sourceCompatibility = 1.7
-    group = projectGroup
-    version = projectVersion
-    
+
     repositories {
         mavenLocal()
         jcenter()
@@ -83,7 +92,7 @@ subprojects {
             exclude group: "org.slf4j", module: "slf4j-log4j12"
             exclude group: "org.slf4j", module: "log4j-over-slf4j"
         }
-        compile 'com.ofg:stub-runner-spring:0.1.0'
+        compile 'com.ofg:stub-runner-spring:0.1.1-SNAPSHOT'
 
         testCompile "org.spockframework:spock-core:$spockVersion"
         testCompile "org.spockframework:spock-spring:$spockVersion"

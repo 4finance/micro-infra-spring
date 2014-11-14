@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.discovery
 
-import com.ofg.stub.spring.StubRunnerConfiguration
+import com.ofg.stub.config.StubRunnerConfiguration
 import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Profile

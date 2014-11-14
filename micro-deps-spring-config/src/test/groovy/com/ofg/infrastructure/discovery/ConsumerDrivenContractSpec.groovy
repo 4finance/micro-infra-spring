@@ -1,7 +1,8 @@
 package com.ofg.infrastructure.discovery
 
 import com.ofg.infrastructure.discovery.config.PropertySourceConfiguration
-import com.ofg.stub.spring.StubRunnerConfiguration
+import com.ofg.stub.BatchStubRunner
+import com.ofg.stub.config.StubRunnerConfiguration
 import org.apache.curator.test.TestingServer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ActiveProfiles
@@ -26,7 +27,7 @@ class ConsumerDrivenContractSpec extends Specification {
         //System.setProperty("ivy.message.logger.level", '4')
     }
 
-    @Autowired StubRunnerConfiguration.BatchStubRunner batchStubRunner
+    @Autowired BatchStubRunner batchStubRunner
     @Autowired TestingServer testingServer
     @Autowired WebApplicationContext webApplicationContext
     @Autowired ServiceResolver serviceResolver

@@ -6,6 +6,9 @@ ext {
     aspectjVersion = '1.8.3'
 }
 
+sourceSets.main.java.srcDirs = []
+sourceSets.main.groovy.srcDirs += ["src/main/java", "src/main/groovy"]
+
 dependencies {
     compile "com.ofg:micro-deps-spring-config:$microDepsSpringConfigVersion"
     compile "org.codehaus.groovy:groovy-all:$groovyVersion"

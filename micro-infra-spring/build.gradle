@@ -5,3 +5,6 @@ dependencies {
     compile project(':swagger:micro-infra-spring-swagger')
     compile project(':swagger:micro-infra-spring-swagger-ui')
 }
+
+sourceSets.main.java.srcDirs = []
+sourceSets.main.groovy.srcDirs += ["src/main/java", "src/main/groovy"]

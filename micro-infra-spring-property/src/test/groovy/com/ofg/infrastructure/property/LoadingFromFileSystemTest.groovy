@@ -7,7 +7,6 @@ import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
-import spock.lang.Ignore
 import spock.lang.Shared
 
 class LoadingFromFileSystemTest extends AbstractIntegrationTest {
@@ -18,19 +17,12 @@ class LoadingFromFileSystemTest extends AbstractIntegrationTest {
     private MyBean myBean
 
     def setupSpec() {
-        System.setProperty(PropertiesConfiguration.CONFIG_FOLDER, findConfigDirInTestResources())
         System.setProperty(PropertiesConfiguration.COUNTRY_CODE, "pl")
         context = new SpringApplicationBuilder(BasicApp)
                 .web(false)
                 .showBanner(false)
                 .run()
         myBean = context.getBean(MyBean)
-    }
-
-    private String findConfigDirInTestResources() {
-        URL resourceInSrcTestRoot = getClass().getResource("/logback-test.groovy")
-        String srcTestResources = new File(resourceInSrcTestRoot.file).parent
-        return new File(srcTestResources, 'test-config-dir').absolutePath
     }
 
     void cleanupSpec() {

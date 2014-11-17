@@ -10,6 +10,7 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Map;
 
 public class FileSystemLocator implements PropertySourceLocator {
@@ -32,7 +33,7 @@ public class FileSystemLocator implements PropertySourceLocator {
 	public PropertySource<?> locate(Environment environment) {
 		final SpringApplicationEnvironmentRepository springEnv = new SpringApplicationEnvironmentRepository();
 		final String[] propertiesPath = getConfigFiles();
-		log.debug("Loading configuration from {}", propertiesPath);
+		log.debug("Loading configuration from {}", Arrays.toString(propertiesPath));
 		springEnv.setSearchLocations(propertiesPath);
 		final org.springframework.cloud.config.Environment loadedEnvs = springEnv.findOne(applicationName, "prod", null);
 

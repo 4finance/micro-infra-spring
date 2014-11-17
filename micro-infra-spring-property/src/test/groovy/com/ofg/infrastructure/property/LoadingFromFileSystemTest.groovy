@@ -17,7 +17,8 @@ class LoadingFromFileSystemTest extends AbstractIntegrationTest {
     private MyBean myBean
 
     def setupSpec() {
-        System.setProperty(PropertiesConfiguration.COUNTRY_CODE, "pl")
+        System.setProperty("encrypt.key", "eKey")
+        System.setProperty(AppCoordinates.COUNTRY_CODE, "pl")
         context = new SpringApplicationBuilder(BasicApp)
                 .web(false)
                 .showBanner(false)
@@ -59,6 +60,11 @@ class LoadingFromFileSystemTest extends AbstractIntegrationTest {
             myBean.globalYamlDefault == 'overriden default yaml value'
     }
 
+    def 'should decrypt property'() {
+        expect:
+            myBean.decrypted == 'enc.propertySource.prop'
+    }
+
     def '.yaml has priority over .properties'() {
         expect:
             myBean.custom == 'yaml value'
@@ -97,6 +103,9 @@ class MyBean {
 
     @Value('${global.yaml.default}')
     String globalYamlDefault;
+
+    @Value('${global.prop.secret}')
+    String decrypted;
 
     @Value('${custom}')
     String custom;

@@ -8,21 +8,26 @@ import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 public class FileSystemLocator implements PropertySourceLocator {
 
 	private static final Logger log = LoggerFactory.getLogger(FileSystemLocator.class);
+	public static final String CIPHER_PREFIX = "{cipher}";
 
 	private final File propertiesFolder;
 	private final AppCoordinates appCoordinates;
+	private final TextEncryptor encryptor;
 
-	public FileSystemLocator(File propertiesFolder, AppCoordinates appCoordinates) {
+	public FileSystemLocator(File propertiesFolder, AppCoordinates appCoordinates, TextEncryptor encryptor) {
 		this.propertiesFolder = propertiesFolder;
 		this.appCoordinates = appCoordinates;
+		this.encryptor = encryptor;
 	}
 
 	@Override
@@ -62,6 +67,23 @@ public class FileSystemLocator implements PropertySourceLocator {
 	}
 
 	private Map<String, Object> decrypt(Map<String, Object> sourceMap) {
-		return sourceMap;
+		final HashMap<String, Object> result = new HashMap<String, Object>();
+		for (Map.Entry<String, Object> entry : sourceMap.entrySet()) {
+			result.put(entry.getKey(), decryptIfEncrypted(entry.getValue()));
+		}
+		return result;
+	}
+
+	private Object decryptIfEncrypted(Object obj) {
+		if (obj.toString().startsWith(CIPHER_PREFIX)) {
+			return decrypt(obj.toString());
+		} else {
+			return obj;
+		}
+	}
+
+	private String decrypt(String encrypted) {
+		final String encryptedStr = encrypted.substring(CIPHER_PREFIX.length());
+		return encryptor.decrypt(encryptedStr);
 	}
 }

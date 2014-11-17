@@ -18,15 +18,11 @@ public class FileSystemLocator implements PropertySourceLocator {
 	private static final Logger log = LoggerFactory.getLogger(FileSystemLocator.class);
 
 	private final File propertiesFolder;
-	private final String environment;
-	private final String applicationName;
-	private final String countryCode;
+	private final AppCoordinates appCoordinates;
 
-	public FileSystemLocator(File propertiesFolder, String environment, String applicationName, String countryCode) {
+	public FileSystemLocator(File propertiesFolder, AppCoordinates appCoordinates) {
 		this.propertiesFolder = propertiesFolder;
-		this.environment = environment;
-		this.applicationName = applicationName;
-		this.countryCode = countryCode;
+		this.appCoordinates = appCoordinates;
 	}
 
 	@Override
@@ -35,7 +31,7 @@ public class FileSystemLocator implements PropertySourceLocator {
 		final String[] propertiesPath = getConfigFiles();
 		log.debug("Loading configuration from {}", Arrays.toString(propertiesPath));
 		springEnv.setSearchLocations(propertiesPath);
-		final org.springframework.cloud.config.Environment loadedEnvs = springEnv.findOne(applicationName, "prod", null);
+		final org.springframework.cloud.config.Environment loadedEnvs = springEnv.findOne(appCoordinates.getApplicationName(), "prod", null);
 
 		CompositePropertySource composite = new CompositePropertySource(FileSystemLocator.class.getSimpleName());
 		for (org.springframework.cloud.config.PropertySource source : loadedEnvs.getPropertySources()) {
@@ -50,18 +46,18 @@ public class FileSystemLocator implements PropertySourceLocator {
 		return new String[] {
 				configFile(".properties"),
 				configFile(".yaml"),
-				configFile("-" + countryCode + ".properties"),
-				configFile("-" + countryCode + ".yaml")
+				configFile("-" + appCoordinates.getCountryCode() + ".properties"),
+				configFile("-" + appCoordinates.getCountryCode() + ".yaml")
 		};
 	}
 
 	private String configFile(String suffix) {
-		return new File(getConfigPath(), applicationName + suffix).getAbsolutePath();
+		return new File(getConfigPath(), appCoordinates.getApplicationName() + suffix).getAbsolutePath();
 	}
 
 	public File getConfigPath() {
-		final File envFolder = new File(propertiesFolder, environment);
-		final File appFolder = new File(envFolder, applicationName);
+		final File envFolder = new File(propertiesFolder, appCoordinates.getEnvironment());
+		final File appFolder = new File(envFolder, appCoordinates.getApplicationName());
 		return appFolder.getAbsoluteFile();
 	}
 

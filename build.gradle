@@ -27,7 +27,7 @@ allprojects {
 }
 
 ext {
-    microDepsSpringConfigVersion = '0.5.0-SNAPSHOT'
+    microDepsSpringConfigVersion = '0.5.0'
     groovyVersion = '2.3.7'
     spockVersion = '0.7-groovy-2.0'
     springBootVersion = '1.1.8.RELEASE'

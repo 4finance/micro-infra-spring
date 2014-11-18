@@ -2,4 +2,4 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.ofg.infrastructure.property.PollerConfiguration
 
 org.springframework.cloud.bootstrap.BootstrapConfiguration=\
-com.ofg.infrastructure.property.PropertiesConfiguration
+com.ofg.infrastructure.property.ExternalPropertiesConfiguration

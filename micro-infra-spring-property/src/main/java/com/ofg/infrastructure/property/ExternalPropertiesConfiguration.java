@@ -11,7 +11,7 @@ import org.springframework.security.crypto.encrypt.TextEncryptor;
 import java.io.File;
 
 @Configuration
-public class PropertiesConfiguration implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
+public class ExternalPropertiesConfiguration implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
 
 	@Autowired
 	private TextEncryptor textEncryptor;

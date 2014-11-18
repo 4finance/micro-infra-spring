@@ -8,7 +8,6 @@ abstract class AbstractIntegrationTest extends Specification {
     def setupSpec() {
         System.setProperty(AppCoordinates.CONFIG_FOLDER, findConfigDirInTestResources())
         System.setProperty(AppCoordinates.APP_ENV, "prod")
-        System.setProperty(AppCoordinates.COUNTRY_CODE, "pl")
     }
 
     private String findConfigDirInTestResources() {

@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.property;
 
+import com.google.common.base.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -26,8 +27,8 @@ public class ExternalPropertiesConfiguration implements ApplicationContextInitia
 
 	@Bean
 	public AppCoordinates appCoordinates() {
-		return new AppCoordinates();
-	}
+        return AppCoordinates.defaults();
+    }
 
 	private File findPropertiesFolder() {
 		final File defaultConfigDirectory = new File(System.getProperty("user.home"), "config");

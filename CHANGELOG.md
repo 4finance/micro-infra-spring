@@ -1,3 +1,9 @@
+0.6.1
+-----
+New features:
+
+* [Issue 86](https://github.com/4finance/micro-infra-spring/issues/86)  Make the library spring-boot compliant
+
 0.6.0
 -----
 New features:

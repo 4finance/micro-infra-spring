@@ -3,6 +3,7 @@ package com.ofg.infrastructure.property
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.builder.SpringApplicationBuilder
+import org.springframework.cloud.autoconfigure.ConfigClientAutoConfiguration
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
@@ -75,7 +76,7 @@ class LoadingFromFileSystemTest extends AbstractIntegrationTest {
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan(basePackages = ['org.springframework.cloud.autoconfigure'])
+@ComponentScan(basePackageClasses = [ConfigClientAutoConfiguration.class])
 class BasicApp {
 
     @Bean

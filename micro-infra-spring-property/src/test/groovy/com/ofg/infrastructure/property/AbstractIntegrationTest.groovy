@@ -1,13 +1,23 @@
 package com.ofg.infrastructure.property
 
 import spock.lang.Specification
+import spock.util.environment.RestoreSystemProperties
 
-
+@RestoreSystemProperties
 abstract class AbstractIntegrationTest extends Specification {
 
     def setupSpec() {
         System.setProperty(AppCoordinates.CONFIG_FOLDER, findConfigDirInTestResources())
         System.setProperty(AppCoordinates.APP_ENV, "prod")
+    }
+
+    def cleanupSpec() {
+        System.properties.with {
+            remove("encrypt.key")   //has to be done manually - @RestoreSystemProperties works only at feature (test) level
+            remove(AppCoordinates.CONFIG_FOLDER)
+            remove(AppCoordinates.APP_ENV)
+            remove(AppCoordinates.COUNTRY_CODE)
+        }
     }
 
     private String findConfigDirInTestResources() {

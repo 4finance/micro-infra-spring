@@ -28,7 +28,7 @@ class LoadingFromFileSystemTest extends AbstractIntegrationTest {
         myBean = context.getBean(MyBean)
     }
 
-    void cleanupSpec() {
+    def cleanupSpec() {
         context?.close()
     }
 
@@ -72,7 +72,6 @@ class LoadingFromFileSystemTest extends AbstractIntegrationTest {
             myBean.custom == 'yaml value'
             myBean.customCountry == 'yaml country value'
     }
-
 }
 
 @Configuration
@@ -84,7 +83,6 @@ class BasicApp {
     def myBean() {
         return new MyBean()
     }
-
 }
 
 class MyBean {

@@ -26,8 +26,7 @@ class DecryptingPropertyTest extends AbstractIntegrationTest {
                 .run("--spring.config.name=decryptingPropertyTest")
     }
 
-    void cleanupSpec() {
-        System.properties.remove("encrypt.key") //TODO: Replace with @RestoreSystemProperties from Spock 1.0, when available...
+    def cleanupSpec() {
         context?.close()
     }
 

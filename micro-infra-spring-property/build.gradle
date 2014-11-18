@@ -3,6 +3,7 @@ description = 'Microservice Spring infrastructure for properties management'
 ext {
     //TODO: Switch to 1.0.0.M3 when available
     springCloudVersion = "1.0.0.BUILD-SNAPSHOT"
+    spock10Version = "1.0-groovy-2.0-SNAPSHOT"
 }
 
 dependencies {
@@ -18,16 +19,13 @@ dependencies {
     compile "org.codehaus.groovy:groovy-all:$groovyVersion"
     compile "org.aspectj:aspectjrt:1.8.3"
 
-    testCompile("org.spockframework:spock-core:$spockVersion") {
-        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
-    }
+    testCompile "org.spockframework:spock-core:$spock10Version"
     testRuntime "org.springframework:spring-test:$springTestVersion"
-    testRuntime "org.spockframework:spock-spring:$spockVersion"
+    testRuntime "org.spockframework:spock-spring:$spock10Version"
     testRuntime "ch.qos.logback:logback-classic:$logbackVersion"
 }
 
 repositories {
-    maven {
-        url 'http://repo.spring.io/snapshot'
-    }
+    maven { url 'http://repo.spring.io/snapshot' }
+    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" } //Spock
 }

@@ -2,7 +2,6 @@ package com.ofg.infrastructure.autoconfigure;
 
 import com.ofg.infrastructure.config.EnableSwaggerDocumentation;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
  * @see com.ofg.infrastructure.config.EnableSwaggerDocumentation
  */
 @Configuration
-@ConditionalOnClass(com.wordnik.swagger.annotations.Api.class)
 @ConditionalOnExpression("${com.ofg.infrastructure.swagger.auto:true}")
 @AutoConfigureAfter(org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration.class)
 @EnableSwaggerDocumentation

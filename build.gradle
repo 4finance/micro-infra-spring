@@ -130,3 +130,7 @@ configure(subprojects - project(':swagger')) {
         }
     }
 }
+
+wrapper {
+    gradleVersion '2.2'
+}

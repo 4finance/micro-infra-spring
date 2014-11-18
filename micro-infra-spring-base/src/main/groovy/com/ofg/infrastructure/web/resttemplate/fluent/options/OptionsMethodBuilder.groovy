@@ -1,12 +1,16 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.options
+
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
+
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
 
 /**
  * Implementation of the {@link org.springframework.http.HttpMethod#HEAD method} fluent API
@@ -23,15 +27,15 @@ class OptionsMethodBuilder implements
     @Delegate private final AllowContainingWithHeaders withHeaders
     @Delegate private final OptionsAllowHeaderExecutor allowHeaderExecutor
 
-    OptionsMethodBuilder(String host, RestOperations restOperations) {
+    OptionsMethodBuilder(String host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders) {
         this.restOperations = restOperations
         params.host = host
-        withHeaders = new AllowContainingWithHeaders(this, params)
+        withHeaders = new AllowContainingWithHeaders(this, params, predefinedHeaders)
         allowHeaderExecutor = new OptionsAllowHeaderExecutor(params, restOperations)
     }
 
     OptionsMethodBuilder(RestOperations restOperations) {
-        this(EMPTY_HOST, restOperations)
+        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS)
     }
 
     @Override

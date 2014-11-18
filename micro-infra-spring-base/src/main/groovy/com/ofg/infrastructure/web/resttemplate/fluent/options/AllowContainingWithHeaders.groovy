@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.options
 
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.WithHeaders
 import groovy.transform.CompileStatic
 
@@ -9,7 +10,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class AllowContainingWithHeaders extends WithHeaders<ResponseReceivingOptionsMethod> {
-    AllowContainingWithHeaders(ResponseReceivingOptionsMethod parent, Map<String, String> params) {
-        super(parent, params)
+    AllowContainingWithHeaders(ResponseReceivingOptionsMethod parent, Map<String, String> params, PredefinedHttpHeaders predefinedHeaders) {
+        super(parent, params, predefinedHeaders)
     }
 }

@@ -1,8 +1,8 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
 
-import com.google.common.base.Optional
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
-import com.ofg.infrastructure.discovery.ServiceUnavailableException
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import groovy.transform.CompileStatic
 import org.springframework.web.client.RestOperations
 
@@ -52,8 +52,10 @@ class ServiceRestClient {
 
     private final RestOperations restOperations
     private final ServiceResolver serviceResolver
+    private final ServiceConfigurationResolver configurationResolver
 
-    ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver) {
+    ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver) {
+        this.configurationResolver = configurationResolver
         this.restOperations = restOperations
         this.serviceResolver = serviceResolver
     }
@@ -65,7 +67,9 @@ class ServiceRestClient {
      * @return builder for the specified HttpMethod
      */
     public HttpMethodBuilder forService(String serviceName) {
-        return new HttpMethodBuilder(serviceResolver.fetchUrl(serviceName), restOperations)
+        Map serviceSettings = configurationResolver.dependencies[serviceName] as Map
+        PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(serviceSettings)
+        return new HttpMethodBuilder(serviceResolver.fetchUrl(serviceName), restOperations, predefinedHeaders)
     }
 
     /**

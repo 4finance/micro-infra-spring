@@ -2,6 +2,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent.post
 
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.*
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
@@ -14,7 +15,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
     public static final String REQUEST_BODY = '''{"sample":"request"}'''
     public static final String RESPONSE_BODY = '''{"sample":"response"}'''
     public static final Class<String> RESPONSE_TYPE = String
-    
+
     def "should query for location when sending a post request on given address"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(restOperations)
@@ -75,7 +76,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for location when sending a post request on service template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
             URI expectedLocation = new URI('localhost')
         when:
             URI actualLocation = httpMethodBuilder
@@ -95,7 +96,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for location when sending a post request on service template address using map for url vars"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
             URI expectedLocation = new URI('localhost')
         when:
             URI actualLocation = httpMethodBuilder
@@ -115,7 +116,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for location when sending a post request on service template address with url"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
             URI expectedLocation = new URI(FULL_SERVICE_URL)
         when:
             URI actualLocation = httpMethodBuilder
@@ -133,7 +134,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for location when sending a post request on service template address with String url"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
             URI expectedLocation = new URI('localhost')
         when:
             URI actualLocation = httpMethodBuilder
@@ -175,7 +176,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for object when sending a post request on service template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
         when:
             String actualResponseBody = httpMethodBuilder
                                                         .post()
@@ -219,7 +220,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for entity when sending a post request on service template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
             ResponseEntity<String> expectedResponseEntity = responseEntityWith(RESPONSE_BODY)
         when:
             ResponseEntity<String> actualResponseEntity = httpMethodBuilder
@@ -259,7 +260,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should treat url as path when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
         when:
             httpMethodBuilder
                     .post()
@@ -272,7 +273,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should treat String url as path when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
         when:
             httpMethodBuilder
                     .post()
@@ -290,6 +291,5 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
     private ResponseEntity responseEntityWith(Object body) {
         new ResponseEntity<>(body, OK)
     }
-
 
 }

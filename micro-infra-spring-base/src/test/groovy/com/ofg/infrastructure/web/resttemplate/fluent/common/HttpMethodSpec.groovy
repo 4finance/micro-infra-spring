@@ -17,5 +17,5 @@ class HttpMethodSpec extends Specification {
 
     RestOperations restOperations = Mock()
     HttpMethodBuilder httpMethodBuilder
-    
+
 }

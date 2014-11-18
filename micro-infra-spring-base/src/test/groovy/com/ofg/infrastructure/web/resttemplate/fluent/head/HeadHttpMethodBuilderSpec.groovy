@@ -6,11 +6,12 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.*
 import static org.springframework.http.HttpMethod.HEAD
 import static org.springframework.http.HttpStatus.OK
 
 class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
-    
+
     def "should use only url template without provided service url to retrieve response entity"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(restOperations)
@@ -94,7 +95,7 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add service url to template when provided"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
         when:
             httpMethodBuilder
                 .head()
@@ -108,7 +109,7 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should treat url as path when sending request to a service to a path containing a slash"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
         when:            
             httpMethodBuilder
                 .head()
@@ -121,7 +122,7 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should treat String url as path when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
         when:            
             httpMethodBuilder
                 .head()
@@ -146,7 +147,6 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
                     HEAD,
                     _ as HttpEntity,
                     Object)
-
     }
 
 }

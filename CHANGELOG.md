@@ -1,8 +1,12 @@
-0.6.1
+0.7.0
 -----
 New features:
-
+* [Issue 72](https://github.com/4finance/micro-infra-spring/issues/72) Add support for header properties in JSON config for a dependency
 * [Issue 86](https://github.com/4finance/micro-infra-spring/issues/86)  Make the library spring-boot compliant
+
+Notable changes:
+* [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.5.0`
+* [stub-runner-spring](https://github.com/4finance/stub-runner-spring) upgraded to version `0.0.2`
 
 0.6.0
 -----

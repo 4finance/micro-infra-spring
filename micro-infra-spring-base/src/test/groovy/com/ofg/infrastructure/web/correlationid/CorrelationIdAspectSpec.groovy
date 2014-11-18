@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.web.correlationid
+
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MicroserviceMvcWiremockSpec
 import com.ofg.infrastructure.discovery.web.HttpMockServer

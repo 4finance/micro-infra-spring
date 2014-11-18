@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
 
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import groovy.transform.CompileStatic
@@ -22,8 +23,8 @@ import org.springframework.web.client.RestOperations
 class ServiceRestClientConfiguration {
 
     @Bean
-    ServiceRestClient serviceRestClient(ServiceResolver serviceResolver) {
-        return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver)
+    ServiceRestClient serviceRestClient(ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver) {
+        return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, configurationResolver)
     }
 
     @Bean

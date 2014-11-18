@@ -21,9 +21,11 @@ class WithHeaders<T> implements HeadersSetting<T>, HeadersHaving<T> {
     private final Map params
     private final T parent
 
-    WithHeaders(T parent, Map<String, String> params) {
+    WithHeaders(T parent, Map<String, String> params, PredefinedHttpHeaders predefinedHeaders) {
         this.params = params
         this.parent = parent
+        predefinedHeaders.copyTo(httpHeaders)
+        updateHeaderParams()
     }
 
     @Override

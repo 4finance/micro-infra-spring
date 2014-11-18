@@ -2,7 +2,7 @@ package com.ofg.infrastructure.property;
 
 import java.util.Objects;
 
-class AppCoordinates {
+public class AppCoordinates {
 
 	public static final String CONFIG_FOLDER = "CONFIG_FOLDER";
 	public static final String APP_ENV = "APP_ENV";

@@ -169,3 +169,7 @@ if(project.hasProperty("coverage")) {
         srcSubprojects*.test
     }
 }
+
+wrapper {
+    gradleVersion '2.2'
+}

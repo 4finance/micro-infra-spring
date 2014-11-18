@@ -41,7 +41,8 @@ task addHashFile << {
     new File("commitHash.txt").withWriter { it << proc.in.text }
 }
 
-configure(subprojects - project(':swagger')) {
+def srcSubprojects = subprojects - project(':swagger')
+configure(srcSubprojects) {
     apply plugin: 'groovy'
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
@@ -128,5 +129,43 @@ configure(subprojects - project(':swagger')) {
                 excludes = ['*Configuration']
             }
         }
+    }
+}
+
+if(project.hasProperty("coverage")) {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+
+    apply plugin: 'jacoco'
+    apply plugin: 'com.github.kt3k.coveralls'
+
+    jacoco {
+        toolVersion = '0.7.1.201405082137'
+    }
+
+    task codeCoverageReport(type: JacocoReport) {
+
+        // Gather execution data from all subprojects
+        // (change this if you e.g. want to calculate unit test/integration test coverage separately)
+        executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+        // Add all relevant sourcesets from the subprojects
+        srcSubprojects.each {
+            sourceSets it.sourceSets.main
+        }
+
+        reports {
+            xml.enabled true
+            html.enabled true
+            html.destination "${buildDir}/reports/jacoco"
+            csv.enabled false
+        }
+    }
+
+    // always run the tests before generating the report
+    codeCoverageReport.dependsOn {
+        srcSubprojects*.test
     }
 }

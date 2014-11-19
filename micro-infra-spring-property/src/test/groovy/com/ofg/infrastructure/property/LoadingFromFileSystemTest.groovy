@@ -64,7 +64,12 @@ class LoadingFromFileSystemTest extends AbstractIntegrationTest {
 
     def 'should decrypt property'() {
         expect:
-            myBean.decrypted == 'enc.propertySource.prop'
+            myBean.decryptedProp == 'enc.propertySource.prop'
+    }
+
+    def 'should decrypt yaml property'() {
+        expect:
+            myBean.decryptedYaml == 'encrypted.yaml.value'
     }
 
     def '.yaml has priority over .properties'() {
@@ -105,7 +110,10 @@ class MyBean {
     String globalYamlDefault;
 
     @Value('${global.prop.secret}')
-    String decrypted;
+    String decryptedProp;
+
+    @Value('${global.yaml.secret}')
+    String decryptedYaml;
 
     @Value('${custom}')
     String custom;

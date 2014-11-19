@@ -12,6 +12,7 @@ buildscript {
     }
 }
 
+apply plugin: 'base'
 apply plugin: 'axion-release'
 
 scmVersion {
@@ -23,6 +24,11 @@ scmVersion {
 allprojects {
     group = 'com.ofg'
     project.version = scmVersion.version
+
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
 }
 
 ext {
@@ -49,11 +55,6 @@ configure(srcSubprojects) {
     apply plugin: 'com.ofg.uptodate'
 
     sourceCompatibility = 1.7
-
-    repositories {
-        mavenLocal()
-        jcenter()
-    }
 
     //Workaround for the issue with Java 8u11 and 7u65 - http://www.infoq.com/news/2014/08/Java8-U11-Broke-Tools
     test {
@@ -106,19 +107,21 @@ configure(srcSubprojects) {
         archives sourcesJar
         archives javadocJar
     }
+}
 
-    if(project.hasProperty("coverage")) {
+if(project.hasProperty("coverage")) {
+    configure(srcSubprojects + rootProject) {
         apply plugin: 'jacoco'
-        apply plugin: 'com.github.kt3k.coveralls'
 
         jacoco {
             toolVersion = '0.7.1.201405082137'
         }
+    }
 
+    configure(srcSubprojects) {
         jacocoTestReport {
             reports {
                 xml.enabled = true // coveralls plugin depends on xml format report
-                html.enabled = true
             }
         }
 
@@ -129,27 +132,14 @@ configure(srcSubprojects) {
             }
         }
     }
-}
 
-if(project.hasProperty("coverage")) {
-    repositories {
-        mavenLocal()
-        jcenter()
-    }
-
-    apply plugin: 'jacoco'
     apply plugin: 'com.github.kt3k.coveralls'
-
-    jacoco {
-        toolVersion = '0.7.1.201405082137'
-    }
 
     coveralls {
         sourceDirs = files(srcSubprojects.sourceSets.main.allSource.srcDirs).files.absolutePath
     }
 
     task jacocoRootReport(type: JacocoReport) {
-
         // Gather execution data from all subprojects
         // (change this if you e.g. want to calculate unit test/integration test coverage separately)
         executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
@@ -161,8 +151,6 @@ if(project.hasProperty("coverage")) {
 
         reports {
             xml.enabled true
-            html.enabled true
-            csv.enabled false
             xml.destination "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
         }
     }

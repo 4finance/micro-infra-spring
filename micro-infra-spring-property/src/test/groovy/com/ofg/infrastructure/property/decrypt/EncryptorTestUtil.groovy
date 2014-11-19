@@ -7,6 +7,8 @@ import groovy.transform.TupleConstructor
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.security.crypto.encrypt.TextEncryptor
 
+import static com.ofg.infrastructure.property.FileSystemLocator.CIPHER_PREFIX
+
 /**
  * Simple encryption test util.
  *
@@ -18,7 +20,7 @@ class EncryptorTestUtil {
 
     static void main(String[] args) {
         EncryptionInputData inputData = prepareImputData(args)
-        println "Encrypted text: ${decryptAndReturn(inputData)}"
+        println "\n\nEncrypted text: $CIPHER_PREFIX${decryptAndReturn(inputData)}\n\n"
     }
 
     private static String decryptAndReturn(EncryptionInputData inputData) {
@@ -29,7 +31,9 @@ class EncryptorTestUtil {
         def context = new SpringApplicationBuilder(DecryptingPropertyTestApp).web(false).showBanner(false).run()
         def encryptor = context.getBean(TextEncryptor)
 
-        encryptor.encrypt(inputData.textToEncrypt)
+        def encrypted = encryptor.encrypt(inputData.textToEncrypt)
+        context.close()
+        return encrypted
     }
 
     private static EncryptionInputData prepareImputData(String[] args) {

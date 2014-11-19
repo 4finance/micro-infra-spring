@@ -11,7 +11,6 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +63,7 @@ public class FileSystemLocator implements PropertySourceLocator {
     }
 
     private Map<String, Object> decrypt(Map<String, Object> sourceMap) {
-        final HashMap<String, Object> result = new HashMap<String, Object>();
+        final Map<String, Object> result = new HashMap<String, Object>();
         for (Map.Entry<String, Object> entry : sourceMap.entrySet()) {
             result.put(entry.getKey(), decryptIfEncrypted(entry.getValue()));
         }

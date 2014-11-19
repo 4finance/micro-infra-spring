@@ -1,6 +1,5 @@
 package com.ofg.infrastructure.property;
 
-import com.google.common.base.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -14,35 +13,53 @@ import java.io.File;
 @Configuration
 public class ExternalPropertiesConfiguration implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
 
-	@Autowired
-	private TextEncryptor textEncryptor;
+    @Autowired(required = false)
+    private TextEncryptor textEncryptor;
 
-	@Bean
-	public FileSystemLocator fileSystemLocator() {
-		return new FileSystemLocator(
-				findPropertiesFolder(),
-				appCoordinates(),
-				textEncryptor);
-	}
+    @Bean
+    public FileSystemLocator fileSystemLocator() {
+        return new FileSystemLocator(
+                findPropertiesFolder(),
+                appCoordinates(),
+                textEncryptor == null ? new FailsafeTextEncryptor() : textEncryptor);
+    }
 
-	@Bean
-	public AppCoordinates appCoordinates() {
+    @Bean
+    public AppCoordinates appCoordinates() {
         return AppCoordinates.defaults();
     }
 
-	private File findPropertiesFolder() {
-		final File defaultConfigDirectory = new File(System.getProperty("user.home"), "config");
-		final String configFolder = PropertyUtils.getProperty(AppCoordinates.CONFIG_FOLDER, defaultConfigDirectory.getAbsolutePath());
-		return new File(configFolder);
-	}
+    private File findPropertiesFolder() {
+        final File defaultConfigDirectory = new File(System.getProperty("user.home"), "config");
+        final String configFolder = PropertyUtils.getProperty(AppCoordinates.CONFIG_FOLDER, defaultConfigDirectory.getAbsolutePath());
+        return new File(configFolder);
+    }
 
-	@Override
-	public void initialize(ConfigurableApplicationContext applicationContext) {
-	}
+    @Override
+    public void initialize(ConfigurableApplicationContext applicationContext) {
+    }
 
-	@Override
-	public int getOrder() {
-		return 0;
-	}
+    @Override
+    public int getOrder() {
+        return Ordered.LOWEST_PRECEDENCE;
+    }
 
+    /**
+     * TextEncryptor that just fails, so that users don't get a false sense of security
+     * adding ciphers to config files and not getting them decrypted.
+     * <p/>
+     * Based on FailsafeTextEncryptor from spring-cloud-config by Dave Syer.
+     */
+    static class FailsafeTextEncryptor implements TextEncryptor {
+
+        @Override
+        public String encrypt(String text) {
+            throw new UnsupportedOperationException("Encryption is not supported. Did you configure the encryption key/keystore correctly?");
+        }
+
+        @Override
+        public String decrypt(String encryptedText) {
+            throw new UnsupportedOperationException("Decryption is not supported. Did you configure the encryption key/keystore correctly?");
+        }
+    }
 }

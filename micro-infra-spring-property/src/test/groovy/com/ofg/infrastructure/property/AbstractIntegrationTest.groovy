@@ -17,6 +17,7 @@ abstract class AbstractIntegrationTest extends Specification {
             remove(AppCoordinates.CONFIG_FOLDER)
             remove(AppCoordinates.APP_ENV)
             remove(AppCoordinates.COUNTRY_CODE)
+            remove("spring.cloud.config.server.enabled")
         }
     }
 

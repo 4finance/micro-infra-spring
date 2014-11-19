@@ -6,11 +6,13 @@ import org.springframework.cloud.context.scope.refresh.RefreshScope;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -79,6 +81,11 @@ public class FileSystemPoller {
         sources.addFirst(propertySource);
 
         refreshScope.refreshAll();
+    }
+
+    @ManagedAttribute
+    public File getConfigPath() {
+        return configPath.toFile();
     }
 
     private class PollerRunnable implements Runnable {

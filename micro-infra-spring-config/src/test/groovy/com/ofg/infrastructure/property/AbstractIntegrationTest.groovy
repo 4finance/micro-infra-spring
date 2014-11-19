@@ -8,13 +8,17 @@ import spock.util.environment.RestoreSystemProperties
 @ClassLevelRestoreSystemProperties
 abstract class AbstractIntegrationTest extends Specification {
 
+
+    public static final String CLOUD_SERVER_ENALED = "spring.cloud.config.server.enabled"
+
     def setupSpec() {
         System.setProperty(AppCoordinates.CONFIG_FOLDER, findConfigDirInTestResources())
         System.setProperty(AppCoordinates.APP_ENV, "prod")
-        System.setProperty("spring.cloud.config.server.enabled", "false")
+        System.setProperty(CLOUD_SERVER_ENALED, "false")
     }
 
-    private String findConfigDirInTestResources() {
+
+    protected String findConfigDirInTestResources() {
         URL resourceInSrcTestRoot = getClass().getResource("/logback-test.groovy")
         String srcTestResources = new File(resourceInSrcTestRoot.file).parent
         return new File(srcTestResources, 'test-config-dir').absolutePath

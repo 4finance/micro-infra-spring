@@ -133,4 +133,5 @@ configure(subprojects - project(':swagger')) {
 
     //Dependencies in all subprojects - http://solidsoft.wordpress.com/2014/11/13/gradle-tricks-display-dependencies-for-all-subprojects-in-multi-project-build/
     task allDeps(type: DependencyReportTask) {}
+    task allInsight(type: DependencyInsightReportTask) {}
 }

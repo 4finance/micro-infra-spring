@@ -145,7 +145,11 @@ if(project.hasProperty("coverage")) {
         toolVersion = '0.7.1.201405082137'
     }
 
-    task codeCoverageReport(type: JacocoReport) {
+    coveralls {
+        jacocoReportPath = new File("${buildDir}/reports/jacoco/jacocoRootReport/jacocoRootReport.xml")
+    }
+
+    task jacocoRootReport(type: JacocoReport) {
 
         // Gather execution data from all subprojects
         // (change this if you e.g. want to calculate unit test/integration test coverage separately)
@@ -165,8 +169,9 @@ if(project.hasProperty("coverage")) {
     }
 
     // always run the tests before generating the report
-    codeCoverageReport.dependsOn {
+    jacocoRootReport.dependsOn {
         srcSubprojects*.test
+        srcSubprojects*.jacocoTestReport
     }
 }
 

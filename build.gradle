@@ -50,7 +50,7 @@ configurations {
 }
 
 dependencies {
-    compile "org.codehaus.groovy:groovy-all:$groovyVersion:indy"
+    compile "org.codehaus.groovy:groovy-all:$groovyVersion"
     compile "org.apache.curator:curator-x-discovery:$curatorVersion"
     compile "org.apache.curator:curator-test:$curatorVersion"
     compile 'org.jboss.resteasy:resteasy-undertow:3.0.10.Final'

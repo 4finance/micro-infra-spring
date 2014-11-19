@@ -145,7 +145,7 @@ if(project.hasProperty("coverage")) {
     }
 
     coveralls {
-        jacocoReportPath = new File("${buildDir}/reports/jacoco/jacocoRootReport/jacocoRootReport.xml")
+        sourceDirs = files(srcSubprojects.sourceSets.main.allSource.srcDirs).files.absolutePath
     }
 
     task jacocoRootReport(type: JacocoReport) {
@@ -162,8 +162,8 @@ if(project.hasProperty("coverage")) {
         reports {
             xml.enabled true
             html.enabled true
-            html.destination "${buildDir}/reports/jacoco"
             csv.enabled false
+            xml.destination "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
         }
     }
 

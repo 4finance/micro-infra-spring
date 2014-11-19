@@ -6,6 +6,8 @@ import org.springframework.cloud.context.scope.refresh.RefreshScope;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedResource;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -21,6 +23,7 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
+@ManagedResource
 public class FileSystemPoller {
 
     private static final Logger log = LoggerFactory.getLogger(FileSystemPoller.class);
@@ -65,7 +68,8 @@ public class FileSystemPoller {
         pollingThread.start();
     }
 
-    private void refreshBeans() {
+    @ManagedOperation
+    public void refreshConfiguration() {
         final PropertySource<?> propertySource = fileSystemLocator.locate(environment);
         final MutablePropertySources sources = environment.getPropertySources();
 
@@ -104,7 +108,7 @@ public class FileSystemPoller {
                 for (WatchEvent<?> watchEvent : key.pollEvents()) {
                     log.info("Found file system change '{}', refreshing beans", watchEvent.context());
                 }
-                refreshBeans();
+                refreshConfiguration();
             } finally {
                 key.reset();
             }

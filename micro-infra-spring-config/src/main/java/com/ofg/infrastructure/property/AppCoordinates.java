@@ -47,7 +47,15 @@ public class AppCoordinates {
         for (int i = 0; i < components.length - 1; i++) {
             folder = new File(folder, components[i]);
         }
-        return folder;
+        return useParentIfLastChildIsCountry(folder);
+    }
+
+    private File useParentIfLastChildIsCountry(File folder) {
+        if (folder.getName().equals(countryCode)) {
+            return folder.getParentFile();
+        } else {
+            return folder;
+        }
     }
 
     private static String findEnvironment() {

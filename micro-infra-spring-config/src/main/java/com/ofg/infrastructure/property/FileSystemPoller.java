@@ -19,6 +19,8 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
@@ -70,25 +72,13 @@ public class FileSystemPoller {
         pollingThread.start();
     }
 
-    @ManagedOperation
-    public void refreshConfiguration() {
-        final PropertySource<?> propertySource = fileSystemLocator.locate(environment);
-        final MutablePropertySources sources = environment.getPropertySources();
-
-        if (sources.contains(propertySource.getName())) {
-            sources.remove(propertySource.getName());
-        }
-        sources.addFirst(propertySource);
-
-        refreshScope.refreshAll();
-    }
-
     @ManagedAttribute
     public File getConfigPath() {
         return configPath.toFile();
     }
 
     private class PollerRunnable implements Runnable {
+
         @Override
         public void run() {
             log.info("Started monitoring configuration directory for changes: {}", configPath);
@@ -102,7 +92,6 @@ public class FileSystemPoller {
                 log.error("Unexpected error, terminating", e);
             }
         }
-
         private void waitForChanges() throws InterruptedException {
             final WatchKey key = watcher.poll(10, TimeUnit.SECONDS);
             if (key != null) {
@@ -113,12 +102,51 @@ public class FileSystemPoller {
         private void handleChange(WatchKey key) {
             try {
                 for (WatchEvent<?> watchEvent : key.pollEvents()) {
-                    log.info("Found file system change '{}', refreshing beans", watchEvent.context());
+                    handleChangeIfRelatedFile(watchEvent);
                 }
-                refreshConfiguration();
             } finally {
                 key.reset();
             }
+        }
+
+        private void handleChangeIfRelatedFile(WatchEvent<?> watchEvent) {
+            final Object context = watchEvent.context();
+            if (context instanceof Path) {
+                handlePathChange(context);
+            } else {
+                log.warn("Unsupported change event: {} of type {}", context, (context != null) ? context.getClass() : null);
+            }
+        }
+
+        private void handlePathChange(Object context) {
+            final String file = ((Path) context).toFile().getName();
+            final Set<String> relatedFiles = getRelatedFiles();
+            final boolean relatedFile = relatedFiles.contains(file);
+            log.info("Found file system change '{}', related file: {}", context, relatedFile);
+            if (relatedFile) {
+                refreshConfiguration();
+            }
+        }
+
+        private Set<String> getRelatedFiles() {
+            final HashSet<String> files = new HashSet<String>();
+            for (File file : fileSystemLocator.getConfigFiles()) {
+                files.add(file.getName());
+            }
+            return files;
+        }
+
+        @ManagedOperation
+        public void refreshConfiguration() {
+            final PropertySource<?> propertySource = fileSystemLocator.locate(environment);
+            final MutablePropertySources sources = environment.getPropertySources();
+
+            if (sources.contains(propertySource.getName())) {
+                sources.remove(propertySource.getName());
+            }
+            sources.addFirst(propertySource);
+
+            refreshScope.refreshAll();
         }
     }
 }

@@ -12,13 +12,15 @@ class AppCoordinatesTest extends Specification {
             def coords = new AppCoordinates(env, name, country)
 
         expect:
-            coords.getConfigFileNames(new File('/home')) == paths.collect { new File(it) }
+            coords.getConfigFileNames(new File('/home')) == paths.collect { new File(new File('/home'), it) }
 
         where:
-            env    | country | name                || paths
-            'prod' | 'pl'    | 'foo'               || ['/home/prod/foo.properties', '/home/prod/foo.yaml', '/home/prod/foo-pl.properties', '/home/prod/foo-pl.yaml']
-            'prod' | 'pl'    | '/a/b/c'            || ['/home/prod/a/b/c.properties', '/home/prod/a/b/c.yaml', '/home/prod/a/b/c-pl.properties', '/home/prod/a/b/c-pl.yaml']
-            'dev'  | 'es'    | '/com/ofg/fraud-es' || ['/home/dev/com/ofg/fraud.properties', '/home/dev/com/ofg/fraud.yaml', '/home/dev/com/ofg/fraud-es.properties', '/home/dev/com/ofg/fraud-es.yaml']
+            env    | country | name                   || paths
+            'prod' | 'pl'    | 'foo'                  || ['/prod/foo.properties', '/prod/foo.yaml', '/prod/foo-pl.properties', '/prod/foo-pl.yaml']
+            'prod' | 'pl'    | '/a/b/c'               || ['/prod/a/b/c.properties', '/prod/a/b/c.yaml', '/prod/a/b/c-pl.properties', '/prod/a/b/c-pl.yaml']
+            'dev'  | 'es'    | '/com/ofg/fraud-es'    || ['/dev/com/ofg/fraud.properties', '/dev/com/ofg/fraud.yaml', '/dev/com/ofg/fraud-es.properties', '/dev/com/ofg/fraud-es.yaml']
+            'dev'  | 'pl'    | '/com/ofg/pl/fraud-pl' || ['/dev/com/ofg/fraud.properties', '/dev/com/ofg/fraud.yaml', '/dev/com/ofg/fraud-pl.properties', '/dev/com/ofg/fraud-pl.yaml']
+            'dev'  | 'pl'    | '/com/ofg/pl/fraud'    || ['/dev/com/ofg/fraud.properties', '/dev/com/ofg/fraud.yaml', '/dev/com/ofg/fraud-pl.properties', '/dev/com/ofg/fraud-pl.yaml']
     }
 
 }

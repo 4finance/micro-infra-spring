@@ -15,6 +15,7 @@ import java.util.concurrent.Callable
 import java.util.concurrent.atomic.AtomicInteger
 
 import static com.jayway.awaitility.Awaitility.await
+import static org.junit.Assert.assertTrue
 
 class FileSystemPollerTest extends AbstractIntegrationTest {
 
@@ -45,7 +46,7 @@ class FileSystemPollerTest extends AbstractIntegrationTest {
             def previous = counter.value
 
         when:
-            oneConfigurationFileWasChanged()
+            oneConfigurationFileWasChanged("micro-app.yaml")
 
         then:
             beanWasReloaded(previous)
@@ -59,8 +60,10 @@ class FileSystemPollerTest extends AbstractIntegrationTest {
         true
     }
 
-    private void oneConfigurationFileWasChanged() {
-        new File(poller.getConfigPath(), "micro-app.yaml").setLastModified(System.currentTimeMillis())
+    private void oneConfigurationFileWasChanged(String configFile) {
+        File file = new File(poller.getConfigPath(), configFile)
+        assertTrue("$configFile does not exist", file.exists())
+        file.setLastModified(System.currentTimeMillis())
     }
 }
 

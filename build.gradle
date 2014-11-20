@@ -14,7 +14,16 @@ buildscript {
         classpath 'com.ofg:uptodate-gradle-plugin:1.1.0'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.8.RELEASE'
+        classpath 'pl.allegro.tech.build:axion-release-plugin:0.9.4'
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
+    }
+}
+
+apply plugin: 'axion-release'
+
+scmVersion {
+    tag {
+        prefix = ''
     }
 }
 
@@ -22,7 +31,7 @@ sourceCompatibility = 1.7
 
 group = 'com.ofg'
 description = 'Runs stubs for service collaborators'
-version = '0.3.1-SNAPSHOT'
+version = scmVersion.version
 
 ext {
     stubRepositoryPath = 'repository'

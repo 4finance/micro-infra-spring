@@ -18,7 +18,6 @@ class LoadingFromFileSystemTest extends AbstractIntegrationTest {
     private MyBean myBean
 
     def setupSpec() {
-        System.setProperty("spring.cloud.config.server.enabled", "false")
         System.setProperty("encrypt.key", "eKey")
         System.setProperty(AppCoordinates.COUNTRY_CODE, "pl")
         context = new SpringApplicationBuilder(BasicApp)

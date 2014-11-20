@@ -11,6 +11,7 @@ abstract class AbstractIntegrationTest extends Specification {
     def setupSpec() {
         System.setProperty(AppCoordinates.CONFIG_FOLDER, findConfigDirInTestResources())
         System.setProperty(AppCoordinates.APP_ENV, "prod")
+        System.setProperty("spring.cloud.config.server.enabled", "false")
     }
 
     private String findConfigDirInTestResources() {

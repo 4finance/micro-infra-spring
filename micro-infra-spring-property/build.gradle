@@ -2,7 +2,8 @@ description = 'Microservice Spring infrastructure for properties management'
 
 ext {
     //TODO: Switch to 1.0.0.M3 when available
-    springCloudVersion = "1.0.0.BUILD-SNAPSHOT"
+    springCloudVersion = "1.0.0.M2"
+    springSecurityRsaVersion = springCloudVersion
     spock10Version = "1.0-groovy-2.0-SNAPSHOT"
 }
 
@@ -17,7 +18,7 @@ dependencies {
         //Required with micro-deps 0.4.0 as it uses groovy-all-indy which confuses Intellij Idea (both jars are added to dependencies)
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
-    compile "org.springframework.security:spring-security-rsa:1.0.0.M2" //Not needed when AES is used?
+    compile "org.springframework.security:spring-security-rsa:$springSecurityRsaVersion"
     compile "org.eclipse.jgit:org.eclipse.jgit:2.3.1.201302201838-r"
     compile "org.codehaus.groovy:groovy-all:$groovyVersion"
     compile "org.aspectj:aspectjrt:1.8.3"
@@ -29,6 +30,5 @@ dependencies {
 }
 
 repositories {
-    maven { url 'http://repo.spring.io/snapshot' }
     maven { url "http://oss.sonatype.org/content/repositories/snapshots/" } //Spock
 }

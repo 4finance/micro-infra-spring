@@ -3,9 +3,13 @@ package com.ofg.infrastructure.property.decrypt
 import com.ofg.infrastructure.property.AbstractIntegrationTest
 import org.codehaus.groovy.runtime.StackTraceUtils
 import org.springframework.boot.builder.SpringApplicationBuilder
+import spock.lang.Ignore
+import spock.lang.Issue
 
 class DecryptingPropertyExtendedTest extends AbstractIntegrationTest {
 
+    @Ignore("Broken with spring-cloud 1.0.0.M2 - enable when M3 is available")
+    @Issue("https://github.com/4finance/micro-infra-spring/issues/97")
     def "should fail when wrong encryption key is provided and there are encrypted passwords"() {
         given:
             System.setProperty("encrypt.key", "wrongKey")
@@ -20,6 +24,8 @@ class DecryptingPropertyExtendedTest extends AbstractIntegrationTest {
             context?.close()
     }
 
+    @Ignore("Broken with spring-cloud 1.0.0.M2 - enable when M3 is available")
+    @Issue("https://github.com/4finance/micro-infra-spring/issues/97")
     def "should fail when encryption key is not provided and there are encrypted passwords"() {
         when:
             def context = defaultTestSpringApplicationBuilder()

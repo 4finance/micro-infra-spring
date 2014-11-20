@@ -12,7 +12,7 @@ import static com.ofg.infrastructure.property.FileSystemLocator.CIPHER_PREFIX
 /**
  * Simple encryption test util.
  *
- * Note. The class shouldn't be reused as it does not do required clean up and can pollute JVM
+ * Note. That class shouldn't be reused as it does not do required clean up and can pollute JVM
  */
 @PackageScope
 @CompileStatic

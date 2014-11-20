@@ -5,6 +5,6 @@ include 'micro-infra-camel'
 include ':swagger:micro-infra-spring-swagger'
 include ':swagger:micro-infra-spring-swagger-ui'
 include 'micro-infra-spring'
-include 'micro-infra-spring-property'
+include 'micro-infra-spring-config'
 
 rootProject.name = 'micro-infra-spring-root'

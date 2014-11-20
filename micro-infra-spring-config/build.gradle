@@ -1,0 +1,35 @@
+description = 'Microservice Spring infrastructure for properties management'
+
+ext {
+    //TODO: Switch to 1.0.0.M3 when available
+    springCloudVersion = "1.0.0.M2"
+    springSecurityRsaVersion = springCloudVersion
+    spock10Version = "1.0-groovy-2.0-SNAPSHOT"
+}
+
+dependencies {
+    compile("org.springframework.cloud:spring-cloud-config-client:$springCloudVersion") {
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+    }
+    compile("org.springframework.cloud:spring-cloud-config-server:$springCloudVersion") {
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+    }
+    compile('com.ofg:micro-deps:0.6.2') {
+        //Required with micro-deps 0.4.0 as it uses groovy-all-indy which confuses Intellij Idea (both jars are added to dependencies)
+        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+    }
+    compile "org.springframework.security:spring-security-rsa:$springSecurityRsaVersion"
+    compile "org.eclipse.jgit:org.eclipse.jgit:2.3.1.201302201838-r"
+    compile "org.codehaus.groovy:groovy-all:$groovyVersion"
+    compile "org.aspectj:aspectjrt:1.8.3"
+
+    testCompile "org.spockframework:spock-core:$spock10Version"
+    testRuntime "org.springframework:spring-test:$springTestVersion"
+    testRuntime "org.spockframework:spock-spring:$spock10Version"
+    testRuntime "ch.qos.logback:logback-classic:$logbackVersion"
+    testCompile 'com.jayway.awaitility:awaitility:1.6.2'
+}
+
+repositories {
+    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" } //Spock
+}

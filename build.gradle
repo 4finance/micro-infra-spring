@@ -37,6 +37,7 @@ ext {
     spockVersion = '0.7-groovy-2.0'
     springBootVersion = '1.1.8.RELEASE'
     springTestVersion = '4.1.1.RELEASE'
+    logbackVersion = '1.1.2'
 }
 
 task addHashFile << {
@@ -107,6 +108,10 @@ configure(srcSubprojects) {
         archives sourcesJar
         archives javadocJar
     }
+
+    //Dependencies in all subprojects - http://solidsoft.wordpress.com/2014/11/13/gradle-tricks-display-dependencies-for-all-subprojects-in-multi-project-build/
+    task allDeps(type: DependencyReportTask) {}
+    task allInsight(type: DependencyInsightReportTask) {}
 }
 
 if(project.hasProperty("coverage")) {

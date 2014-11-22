@@ -1,0 +1,6 @@
+description = 'Spring Boot Micro Infra Spring Starter'
+
+dependencies {
+    compile project(':micro-infra-spring')
+}
+

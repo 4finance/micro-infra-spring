@@ -131,7 +131,7 @@ class StubRunnerConfiguration {
             def http = new HTTPBuilder(stubRepositoryRoot)
             http.request(HEAD) { req ->
                 response.success = { resp ->
-                    log.info("Connection with [$stubRepositoryRoot] succeed.")
+                    log.info("Connection with [$stubRepositoryRoot] succeeded")
                     return doResolveRemoteDependency(stubRepositoryRoot, depToGrab)
                 }
                 response.failure = { resp ->

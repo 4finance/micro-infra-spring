@@ -35,13 +35,14 @@ import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.PA
  *     <li>{@code stubrunner.stubs.repository.root} default value {@code 4finance Nexus Repository location} - point to where your stub mappings are uploaded as a jar</li>
  *     <li>{@code stubrunner.stubs.group} default value {@code com.ofg} - group name of your stub mappings</li>
  *     <li>{@code stubrunner.stubs.module} default value {@code stub-definitions} - artifactId of your stub mappings</li>
+ *     <li>{@code stubrunner.use.local.repo} default value {@code false} - points whether dependencies should be resolved against local or remote repository</li>
  * </ul>
  *
  * What happens under the hood is that
  *
  * <ul>
- *     <li>{@link Grape} downloads the latest version of the repository containing the stub mappings</li>
- *     <li>The downloaded dependency is unpacked to a temporary folder</li>
+ *     <li>Depending on value of {@code stubrunner.use.local.repo} parameter {@link Grape} takes the latest version of stub mappings from local repository or downloads it from remote one</li>
+ *     <li>The dependency is unpacked to a temporary folder</li>
  *     <li>Basing on your {@code microservice.json} setup, for each collaborator a {@link StubRunner} is set up</li>
  *     <li>Each {@link StubRunner} is initialized with a single instance of the Zookeeper {@link TestingServer}</li>
  *     <li>{@link StubRunner} takes the mappings from the unpacked JAR file</li>
@@ -70,7 +71,7 @@ class StubRunnerConfiguration {
      * @param stubRepositoryRoot root URL from where the JAR with stub mappings will be downloaded
      * @param stubsGroup group name of the dependency containing stub mappings
      * @param stubsModule module name of the dependency containing stub mappings
-     * @param useLocalRepo points whether Grapes should be resolved against local or remote repository
+     * @param useLocalRepo points whether dependencies should be resolved against local or remote repository
      * @param testingServer test instance of Zookeeper
      * @param serviceConfigurationResolver object that wraps the microservice configuration
      */
@@ -113,7 +114,7 @@ class StubRunnerConfiguration {
     /**
      * Provides {@link DependencyResolver} implementation.
      *
-     * @param useLocalRepo points whether a {@link DependencyResolver} should be provided that works on local Grapes repository (when set to {@code true) or remote one (if set to {@code false})
+     * @param useLocalRepo points whether a {@link DependencyResolver} should be provided that works on local Grape repository (when set to {@code true) or remote one (if set to {@code false})
      *
      * @return instance of {@link DependencyResolver}
      */
@@ -126,7 +127,7 @@ class StubRunnerConfiguration {
     }
 
     /**
-     * Dependency resolver providing {@link URI} to remote Grapes.
+     * Dependency resolver providing {@link URI} to remote dependencies.
      */
     private class RemoteDependencyResolver extends DependencyResolver {
 
@@ -178,7 +179,7 @@ class StubRunnerConfiguration {
     }
 
     /**
-     * Dependency resolver providing {@link URI} to a Grape stored locally.
+     * Dependency resolver providing {@link URI} to dependency stored locally.
      */
     private class LocalDependencyResolver extends DependencyResolver {
 
@@ -190,17 +191,17 @@ class StubRunnerConfiguration {
     }
 
     /**
-     * Base class of dependency resolvers providing {@link URI} to Groovy's Grape dependency.
+     * Base class of dependency resolvers providing {@link URI} to required dependency.
      */
     abstract class DependencyResolver {
 
         /**
-         * Returns {@link URI} to locally stored Grape.
+         * Returns {@link URI} to a dependency.
          *
          * @param stubRepositoryRoot root of the repository where the dependency should be found
          * @param depToGrab parameters describing dependency to search for
          *
-         * @return {@link URI} to locally stored Grape
+         * @return {@link URI} to dependency
          */
         abstract URI resolveDependency(String stubRepositoryRoot, Map depToGrab)
 

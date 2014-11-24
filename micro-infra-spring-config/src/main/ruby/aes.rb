@@ -21,16 +21,28 @@ def decrypt(encrypted, password)
     return decrypted_bytes[16..-1]
 end
 
+def decrypt_file(file, password)
+    cipherRegex = /\{cipher\}(\w+)/
+    File.open(file).each do |line|
+        cipher = cipherRegex.match(line)
+        if cipher.nil?
+            puts line
+        else
+            puts cipher.pre_match + decrypt(cipher[1], password) + cipher.post_match
+        end
+    end
+end
+
 case ARGV[0]
     when '-e'
         puts '{cipher}' + encrypt(ARGV[1], ARGV[2])
     when '-d'
         puts decrypt(ARGV[1], ARGV[2])
     when '-f'
-        puts decrypt_file(ARGV[1])
+        decrypt_file(ARGV[1], ARGV[2])
     else
         puts 'Valid options:'
         puts '    -e plaintext_secret master_password'
         puts '    -d encrypted_secret master_password'
-        puts '    -f encrypted_file'
+        puts '    -f encrypted_file master_password'
 end

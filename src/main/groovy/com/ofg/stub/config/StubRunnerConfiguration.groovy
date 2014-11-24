@@ -10,6 +10,7 @@ import com.ofg.stub.registry.StubRegistry
 import com.ofg.stub.spring.ZipCategory
 import groovy.grape.Grape
 import groovy.util.logging.Slf4j
+import groovyx.net.http.HTTPBuilder
 import org.apache.curator.test.TestingServer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -19,6 +20,7 @@ import org.springframework.context.annotation.Import
 import static groovy.grape.Grape.addResolver
 import static groovy.grape.Grape.resolve
 import static groovy.io.FileType.FILES
+import static groovyx.net.http.Method.HEAD
 import static java.nio.file.Files.createTempDirectory
 import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.PATH
 
@@ -77,9 +79,10 @@ class StubRunnerConfiguration {
                                     @Value('${stubrunner.stubs.repository.root:http://nexus.4finance.net/content/repositories/Pipeline}') String stubRepositoryRoot,
                                     @Value('${stubrunner.stubs.group:com.ofg}') String stubsGroup,
                                     @Value('${stubrunner.stubs.module:stub-definitions}') String stubsModule,
+                                    @Value('${stubrunner.use.local.repo:false}') boolean useLocalRepo,
                                     TestingServer testingServer,
                                     ServiceConfigurationResolver serviceConfigurationResolver) {
-        URI stubJarUri = findGrabbedStubJars(stubRepositoryRoot, stubsGroup, stubsModule)
+        URI stubJarUri = findGrabbedStubJars(useLocalRepo, stubRepositoryRoot, stubsGroup, stubsModule)
         File unzippedStubsDir = unpackStubJarToATemporaryFolder(stubJarUri)
         String context = serviceConfigurationResolver.basePath
         List<StubRunner> stubRunners = serviceConfigurationResolver.dependencies.collect { String alias, Map dependencyConfig ->
@@ -101,24 +104,78 @@ class StubRunnerConfiguration {
         return tmpDirWhereStubsWillBeUnzipped
     }
 
-    private static URI findGrabbedStubJars(String stubRepositoryRoot, String stubsGroup, String stubsModule) {
-        addResolver(name: REPOSITORY_NAME, root: stubRepositoryRoot)
+    private static URI findGrabbedStubJars(boolean useLocalRepo, String stubRepositoryRoot, String stubsGroup, String stubsModule) {
         Map depToGrab = [group: stubsGroup, module: stubsModule, version: LATEST_MODULE, transitive: false]
-        log.info("Resolving dependency ${depToGrab} location...")
-        URI resolvedUri = resolveDependencyLocation(depToGrab)
-        ensureThatLatestVersionWillBePicked(resolvedUri)
-        return resolveDependencyLocation(depToGrab)
+        if (useLocalRepo) {
+            return LocalDependencyResolver.resolveDependency(depToGrab)
+        } else {
+            return RemoteDependencyResolver.resolveDependency(stubRepositoryRoot, depToGrab)
+        }
     }
 
-    private static URI resolveDependencyLocation(LinkedHashMap<String, Serializable> depToGrab) {
-        return resolve([classLoader: new GroovyClassLoader()], depToGrab).first()
+    private static class RemoteDependencyResolver extends DependencyResolver {
+
+        private static URI resolveDependency(String stubRepositoryRoot, Map depToGrab) {
+            try {
+                checkConnectivityWithRemoteRepository(stubRepositoryRoot, depToGrab)
+            }
+            catch (UnknownHostException e) {
+                failureHandler(stubRepositoryRoot, "unknown host error -> ${e.message}")
+            }
+            catch (Exception e) {
+                failureHandler(stubRepositoryRoot, "connection error -> ${e.message}")
+            }
+        }
+
+        private static void checkConnectivityWithRemoteRepository(String stubRepositoryRoot, Map depToGrab) {
+            def http = new HTTPBuilder(stubRepositoryRoot)
+            http.request(HEAD) { req ->
+                response.success = { resp ->
+                    log.info("Connection with [$stubRepositoryRoot] succeed.")
+                    return doResolveRemoteDependency(stubRepositoryRoot, depToGrab)
+                }
+                response.failure = { resp ->
+                    failureHandler(stubRepositoryRoot, "Status code [${resp.status}]")
+                }
+            }
+        }
+
+        private static URI doResolveRemoteDependency(String stubRepositoryRoot, Map depToGrab) {
+            addResolver(name: REPOSITORY_NAME, root: stubRepositoryRoot)
+            log.info("Resolving dependency ${depToGrab} location in remote repository...")
+            URI resolvedUri = resolveDependencyLocation(depToGrab)
+            ensureThatLatestVersionWillBePicked(resolvedUri)
+            return resolveDependencyLocation(depToGrab)
+        }
+
+        private static void failureHandler(String stubRepository, String reason) {
+            throw new RuntimeException("Unable to open connection with stub repository [$stubRepository]. Reason: $reason")
+        }
+
+        private static void ensureThatLatestVersionWillBePicked(URI resolvedUri) {
+            getStubRepositoryGrapeRoot(resolvedUri).eachFileRecurse(FILES, { if (it.name.endsWith('xml')) {log.info("removing ${it}");it.delete()} })
+        }
+
+        private static File getStubRepositoryGrapeRoot(URI resolvedUri) {
+            return new File(resolvedUri).parentFile.parentFile
+        }
+
     }
 
-    private static void ensureThatLatestVersionWillBePicked(URI resolvedUri) {
-        getStubRepositoryGrapeRoot(resolvedUri).eachFileRecurse(FILES, { if (it.name.endsWith('xml')) {log.info("removing ${it}");it.delete()} })
+    private static class LocalDependencyResolver extends DependencyResolver {
+
+        private static URI resolveDependency(Map depToGrab) {
+            log.warn("Resolving dependency ${depToGrab} location in local repository...")
+            return resolveDependencyLocation(depToGrab)
+        }
+
     }
 
-    private static File getStubRepositoryGrapeRoot(URI resolvedUri) {
-        return new File(resolvedUri).parentFile.parentFile
+    private static class DependencyResolver {
+
+        static URI resolveDependencyLocation(Map depToGrab) {
+            return resolve([classLoader: new GroovyClassLoader()], depToGrab).first()
+        }
+
     }
 }

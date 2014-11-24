@@ -4,7 +4,7 @@ Bug fixes:
 * [Issue 89](https://github.com/4finance/micro-infra-spring/issues/89) Project definition in pom.xml contains wrong dependency definition (runtime)
 
 New features:
-* Introducing separate module Spring Boot Starter for micro-infra-spring: 'micro-infra-spring-boot-starter'
+* Introducing separate module Spring Boot Starter for micro-infra-spring: __micro-infra-spring-boot-starter__
 * [Issue 83](https://github.com/4finance/micro-infra-spring/issues/83) Properties management
 
 Notable changes:

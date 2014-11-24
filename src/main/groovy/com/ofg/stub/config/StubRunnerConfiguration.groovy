@@ -70,6 +70,7 @@ class StubRunnerConfiguration {
      * @param stubRepositoryRoot root URL from where the JAR with stub mappings will be downloaded
      * @param stubsGroup group name of the dependency containing stub mappings
      * @param stubsModule module name of the dependency containing stub mappings
+     * @param useLocalRepo points whether Grapes should be resolved against local or remote repository
      * @param testingServer test instance of Zookeeper
      * @param serviceConfigurationResolver object that wraps the microservice configuration
      */
@@ -109,6 +110,13 @@ class StubRunnerConfiguration {
         return buildResolver(useLocalRepo).resolveDependency(stubRepositoryRoot, depToGrab)
     }
 
+    /**
+     * Provides {@link DependencyResolver} implementation.
+     *
+     * @param useLocalRepo points whether a {@link DependencyResolver} should be provided that works on local Grapes repository (when set to {@code true) or remote one (if set to {@code false})
+     *
+     * @return instance of {@link DependencyResolver}
+     */
     DependencyResolver buildResolver(boolean useLocalRepo) {
         if (useLocalRepo) {
             return new LocalDependencyResolver()
@@ -117,6 +125,9 @@ class StubRunnerConfiguration {
         }
     }
 
+    /**
+     * Dependency resolver providing {@link URI} to remote Grapes.
+     */
     private class RemoteDependencyResolver extends DependencyResolver {
 
         URI resolveDependency(String stubRepositoryRoot, Map depToGrab) {
@@ -166,6 +177,9 @@ class StubRunnerConfiguration {
 
     }
 
+    /**
+     * Dependency resolver providing {@link URI} to a Grape stored locally.
+     */
     private class LocalDependencyResolver extends DependencyResolver {
 
         URI resolveDependency(String stubRepositoryRoot, Map depToGrab) {
@@ -175,8 +189,19 @@ class StubRunnerConfiguration {
 
     }
 
+    /**
+     * Base class of dependency resolvers providing {@link URI} to Groovy's Grape dependency.
+     */
     abstract class DependencyResolver {
 
+        /**
+         * Returns {@link URI} to locally stored Grape.
+         *
+         * @param stubRepositoryRoot root of the repository where the dependency should be found
+         * @param depToGrab parameters describing dependency to search for
+         *
+         * @return {@link URI} to locally stored Grape
+         */
         abstract URI resolveDependency(String stubRepositoryRoot, Map depToGrab)
 
         URI resolveDependencyLocation(Map depToGrab) {

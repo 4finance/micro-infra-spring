@@ -1,3 +1,11 @@
+0.7.1
+-----
+Bug fixes:
+* [Issue 89](https://github.com/4finance/micro-infra-spring/issues/89) Project definition in pom.xml contains wrong dependency definition (runtime)
+
+New features:
+* [Issue 83](https://github.com/4finance/micro-infra-spring/issues/83) Properties management
+
 0.7.0
 -----
 New features:

@@ -6,6 +6,9 @@ Bug fixes:
 New features:
 * [Issue 83](https://github.com/4finance/micro-infra-spring/issues/83) Properties management
 
+Notable changes:
+* Developers are now required to use Java JCE, see [Development](https://github.com/4finance/micro-infra-spring/wiki/Development)
+
 0.7.0
 -----
 New features:

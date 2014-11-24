@@ -120,10 +120,10 @@ class StubRunnerConfiguration {
                 checkConnectivityWithRemoteRepository(stubRepositoryRoot, depToGrab)
             }
             catch (UnknownHostException e) {
-                failureHandler(stubRepositoryRoot, "unknown host error -> ${e.message}")
+                failureHandler(stubRepositoryRoot, "unknown host error -> ${e.message}", e)
             }
             catch (Exception e) {
-                failureHandler(stubRepositoryRoot, "connection error -> ${e.message}")
+                failureHandler(stubRepositoryRoot, "connection error -> ${e.message}", e)
             }
         }
 
@@ -148,8 +148,8 @@ class StubRunnerConfiguration {
             return resolveDependencyLocation(depToGrab)
         }
 
-        private static void failureHandler(String stubRepository, String reason) {
-            throw new RuntimeException("Unable to open connection with stub repository [$stubRepository]. Reason: $reason")
+        private static void failureHandler(String stubRepository, String reason, Exception cause) {
+            throw new RuntimeException("Unable to open connection with stub repository [$stubRepository]. Reason: $reason", cause)
         }
 
         private static void ensureThatLatestVersionWillBePicked(URI resolvedUri) {

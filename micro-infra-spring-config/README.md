@@ -1,0 +1,1 @@
+See: [Centralized configuration management](https://github.com/4finance/micro-infra-spring/wiki/Centralized-configuration-management) wiki.

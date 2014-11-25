@@ -58,13 +58,16 @@ project.gradle.projectsEvaluated {
 
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.3.7'
-    compile 'com.github.tomakehurst:wiremock:1.51'
+    compile ('com.github.tomakehurst:wiremock:1.51') {
+        exclude group: 'org.mortbay.jetty', module: 'servlet-api'
+    }
     compile "org.apache.curator:curator-x-discovery:$curatorVersion"
     compile "org.apache.curator:curator-test:$curatorVersion"
     compile "org.slf4j:slf4j-api:$slf4jVersion"
     compile "org.slf4j:log4j-over-slf4j:$slf4jVersion"
     compile 'ch.qos.logback:logback-classic:1.1.2'
     compile 'args4j:args4j:2.0.29'
+    compile 'javax.servlet:javax.servlet-api:3.0.1'
 
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
 }

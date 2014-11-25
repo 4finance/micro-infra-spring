@@ -165,7 +165,7 @@ class StubRunnerConfiguration {
         }
 
         private void failureHandler(String stubRepository, String reason, Exception cause) {
-            throw new RuntimeException("Unable to open connection with stub repository [$stubRepository]. Reason: $reason", cause)
+            throw new RemoteDependencyResolvingException("Unable to open connection with stub repository [$stubRepository]. Reason: $reason", cause)
         }
 
         private void ensureThatLatestVersionWillBePicked(URI resolvedUri) {
@@ -207,6 +207,14 @@ class StubRunnerConfiguration {
 
         URI resolveDependencyLocation(Map depToGrab) {
             return resolve([classLoader: new GroovyClassLoader()], depToGrab).first()
+        }
+
+    }
+
+    class RemoteDependencyResolvingException extends Exception {
+
+        RemoteDependencyResolvingException(String message, Throwable cause) {
+            super(message, cause)
         }
 
     }

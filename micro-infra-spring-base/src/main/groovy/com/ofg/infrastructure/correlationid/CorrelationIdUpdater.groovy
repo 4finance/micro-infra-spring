@@ -28,4 +28,15 @@ class CorrelationIdUpdater {
         }
     }
 
+    static <T> T withId(String temporaryCorrelationId, Closure<T> block) {
+        final String oldCorrelationId = CorrelationIdHolder.get()
+        try {
+            updateCorrelationId(temporaryCorrelationId)
+            return block()
+        } finally {
+            updateCorrelationId(oldCorrelationId)
+        }
+    }
+
+
 }

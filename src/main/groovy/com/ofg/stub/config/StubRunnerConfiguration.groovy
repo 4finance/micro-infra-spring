@@ -129,11 +129,12 @@ class StubRunnerConfiguration {
     /**
      * Dependency resolver providing {@link URI} to remote dependencies.
      */
+    @Slf4j
     private class RemoteDependencyResolver extends DependencyResolver {
 
         URI resolveDependency(String stubRepositoryRoot, Map depToGrab) {
             try {
-                checkConnectivityWithRemoteRepository(stubRepositoryRoot, depToGrab)
+                return doResolveRemoteDependency(stubRepositoryRoot, depToGrab)
             }
             catch (UnknownHostException e) {
                 failureHandler(stubRepositoryRoot, "unknown host error -> ${e.message}", e)
@@ -181,6 +182,7 @@ class StubRunnerConfiguration {
     /**
      * Dependency resolver providing {@link URI} to dependency stored locally.
      */
+    @Slf4j
     private class LocalDependencyResolver extends DependencyResolver {
 
         URI resolveDependency(String stubRepositoryRoot, Map depToGrab) {

@@ -90,7 +90,7 @@ class StubRunnerConfiguration {
         List<StubRunner> stubRunners = serviceConfigurationResolver.dependencies.collect { String alias, Map dependencyConfig ->
             String dependencyMappingsPath = dependencyConfig[PATH]
             List<ProjectMetadata> projects = [new ProjectMetadata(alias, dependencyMappingsPath, serviceConfigurationResolver.basePath)]
-            Arguments arguments = new Arguments(unzippedStubsDir.path, dependencyMappingsPath, testingServer.port, minPortValue, maxPortValue, context, projects)
+            Arguments arguments = new Arguments(unzippedStubsDir.path, dependencyMappingsPath, testingServer.port, minPortValue, maxPortValue, context, testingServer.connectString, projects)
             return new StubRunner(arguments, new StubRegistry(testingServer))
         }
         return new BatchStubRunner(stubRunners)

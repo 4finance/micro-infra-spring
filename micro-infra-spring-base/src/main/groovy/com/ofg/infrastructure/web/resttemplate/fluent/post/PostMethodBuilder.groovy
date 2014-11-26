@@ -1,5 +1,10 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.post
 
+import com.google.common.base.Function
+import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.ListenableFuture
+import com.nurkiewicz.asyncretry.RetryExecutor
+import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.LocationFindingExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodyContainingWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
@@ -24,17 +29,17 @@ class PostMethodBuilder extends LocationFindingExecutor implements
         UrlParameterizablePostMethod, HeadersSetting {
 
     public static final String EMPTY_HOST = ''
-    
+
     @Delegate private final BodyContainingWithHeaders withHeaders
 
-    PostMethodBuilder(String host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders) {
-        super(restOperations)
+    PostMethodBuilder(String host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
+        super(restOperations, retryExecutor)
         params.host = host
         withHeaders = new BodyContainingWithHeaders(this, params, predefinedHeaders)
     }
     
     PostMethodBuilder(RestOperations restOperations) {
-        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS)
+        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE)
     }
 
     @Override
@@ -95,8 +100,9 @@ class PostMethodBuilder extends LocationFindingExecutor implements
     ObjectReceiving anObject() {
         return new ObjectReceiving() {
             @Override
-            public <T> T ofType(Class<T> responseType) {
-                return new PostExecuteForResponseTypeRelated<T>(params, restOperations, responseType).exchange()?.body
+            public <T> ListenableFuture<T> ofTypeAsync(Class<T> responseType) {
+                ListenableFuture<ResponseEntity<T>> future = post(responseType).exchangeAsync()
+                return Futures.transform(future, {ResponseEntity response -> response?.body} as Function)
             }
         }
     }
@@ -105,15 +111,24 @@ class PostMethodBuilder extends LocationFindingExecutor implements
     ResponseEntityReceiving aResponseEntity() {
         return new ResponseEntityReceiving() {
             @Override
-            public <T> ResponseEntity<T> ofType(Class<T> responseType) {
-                return new PostExecuteForResponseTypeRelated<T>(params, restOperations, responseType).exchange()
+            public <T> ListenableFuture<ResponseEntity<T>> ofTypeAsync(Class<T> responseType) {
+                return post(responseType).exchangeAsync()
             }
         }
     }
-    
+
+    private PostExecuteForResponseTypeRelated post(Class responseType) {
+        return new PostExecuteForResponseTypeRelated(params, restOperations, retryExecutor, responseType)
+    }
+
     @Override
     void ignoringResponse() {
         aResponseEntity().ofType(Object)    
     }
 
+    @Override
+    ListenableFuture<Void> ignoringResponseAsync() {
+        ListenableFuture<ResponseEntity<Object>> future = aResponseEntity().ofTypeAsync(Object)
+        return Futures.transform(future, {null} as Function<ResponseEntity, Void>)
+    }
 }

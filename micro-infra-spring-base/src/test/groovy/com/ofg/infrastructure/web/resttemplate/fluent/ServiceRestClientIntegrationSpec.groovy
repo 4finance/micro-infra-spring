@@ -22,7 +22,13 @@ class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
     
     def "should send a request to provided URL with appending host when calling service"() {
         when:
-            ResponseEntity<String> result = serviceRestClient.forService(COLLABORATOR_NAME).get().onUrl(PATH).andExecuteFor().aResponseEntity().ofType(String)
+            ResponseEntity<String> result = serviceRestClient
+                    .forService(COLLABORATOR_NAME)
+                    .get()
+                    .onUrl(PATH)
+                    .andExecuteFor()
+                    .aResponseEntity()
+                    .ofType(String)
         then:
             result.body == CONTEXT_SPECIFIC_FOOBAR
     }

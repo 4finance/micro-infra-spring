@@ -1,12 +1,18 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.options
+
+import com.google.common.base.Function
+import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.ListenableFuture
+import com.nurkiewicz.asyncretry.RetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.InvalidHttpMethodParametersException
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.RestExecutor
 import groovy.transform.PackageScope
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
-import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.HttpEntityUtils.getHttpEntityFrom
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.RestExecutor.getHttpEntityFrom
 import static org.springframework.http.HttpMethod.OPTIONS
 
 /**
@@ -18,25 +24,25 @@ import static org.springframework.http.HttpMethod.OPTIONS
 class OptionsAllowHeaderExecutor implements AllowHeaderReceiving {
 
     private final Map params
-    private final RestOperations restOperations
+    private final RestExecutor restExecutor
 
-    OptionsAllowHeaderExecutor(Map params, RestOperations restOperations) {
+    OptionsAllowHeaderExecutor(RestOperations restOperations, RetryExecutor retryExecutor, Map params) {
         this.params = params
-        this.restOperations = restOperations
+        this.restExecutor = new RestExecutor<>(restOperations, retryExecutor)
+    }
+
+    @Override
+    ListenableFuture<HttpMethod> allowAsync() {
+        ListenableFuture<ResponseEntity> future = restExecutor.exchangeAsync(OPTIONS, params, Object)
+        return Futures.transform(future, {ResponseEntity entity -> extractAllow(entity)} as Function)
     }
 
     @Override
     Set<HttpMethod> allow() {
-        if(params.url) {
-            ResponseEntity response = restOperations.exchange(
-                    params.url as URI, OPTIONS, getHttpEntityFrom(params), Object)
-            return response.headers.getAllow()
-        } else if(params.urlTemplate) {
-            ResponseEntity response = restOperations.exchange(
-                    "${params.host}${params.urlTemplate}", OPTIONS, getHttpEntityFrom(params),
-                    Object, params.urlVariablesArray as Object[] ?: params.urlVariablesMap as Map<String, ?>)
-            return response.headers.getAllow()
-        }
-        throw new InvalidHttpMethodParametersException(params)
+        return extractAllow(restExecutor.exchange(OPTIONS, params, Object))
+    }
+
+    private Set<HttpMethod> extractAllow(ResponseEntity entity) {
+        return entity.headers.getAllow()
     }
 }

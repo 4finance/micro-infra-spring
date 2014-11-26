@@ -1,5 +1,8 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
 
+import com.nurkiewicz.asyncretry.AsyncRetryExecutor
+import com.nurkiewicz.asyncretry.RetryExecutor
+import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.delete.DeleteMethod
 import com.ofg.infrastructure.web.resttemplate.fluent.delete.DeleteMethodBuilder
@@ -15,6 +18,8 @@ import com.ofg.infrastructure.web.resttemplate.fluent.put.PutMethod
 import com.ofg.infrastructure.web.resttemplate.fluent.put.PutMethodBuilder
 import groovy.transform.CompileStatic
 import org.springframework.web.client.RestOperations
+
+import java.util.concurrent.Executors
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
 
@@ -40,6 +45,7 @@ class HttpMethodBuilder {
      */
     private final String serviceUrl
     private final PredefinedHttpHeaders predefinedHeaders
+    private RetryExecutor retryExecutor = SyncRetryExecutor.INSTANCE
 
     HttpMethodBuilder(RestOperations restOperations) {
         this('', restOperations, NO_PREDEFINED_HEADERS)
@@ -51,28 +57,33 @@ class HttpMethodBuilder {
         this.serviceUrl = serviceUrl
     }
 
+    HttpMethodBuilder retryUsing(RetryExecutor retryExecutor) {
+        this.retryExecutor = retryExecutor
+        return this
+    }
+
     DeleteMethod delete() {
-        return new DeleteMethodBuilder(serviceUrl, restOperations, predefinedHeaders)
+        return new DeleteMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor)
     }
 
     GetMethod get() {
-        return new GetMethodBuilder(serviceUrl, restOperations, predefinedHeaders)
+        return new GetMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor)
     }
 
     HeadMethod head() {
-        return new HeadMethodBuilder(serviceUrl, restOperations, predefinedHeaders)
+        return new HeadMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor)
     }
 
     OptionsMethod options() {
-        return new OptionsMethodBuilder(serviceUrl, restOperations, predefinedHeaders)
+        return new OptionsMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor)
     }
 
     PostMethod post() {
-        return new PostMethodBuilder(serviceUrl, restOperations, predefinedHeaders)
+        return new PostMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor)
     }
 
     PutMethod put() {
-        return new PutMethodBuilder(serviceUrl, restOperations, predefinedHeaders)
+        return new PutMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor)
     }
 
 }

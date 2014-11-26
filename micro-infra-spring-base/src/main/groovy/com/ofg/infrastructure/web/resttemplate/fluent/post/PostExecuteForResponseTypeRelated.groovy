@@ -1,4 +1,6 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.post
+
+import com.nurkiewicz.asyncretry.RetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import groovy.transform.CompileStatic
 import org.springframework.http.HttpMethod
@@ -11,8 +13,8 @@ import static org.springframework.http.HttpMethod.POST
 @CompileStatic
 class PostExecuteForResponseTypeRelated<T> extends ResponseTypeRelatedRequestsExecutor<T> {
 
-    PostExecuteForResponseTypeRelated(Map params, RestOperations restOperations, Class<T> responseType) {
-        super(params, restOperations, responseType)
+    PostExecuteForResponseTypeRelated(Map params, RestOperations restOperations, RetryExecutor retryExecutor, Class<T> responseType) {
+        super(params, restOperations, retryExecutor, responseType)
     }
 
     @Override

@@ -1,4 +1,6 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.delete
+
+import com.nurkiewicz.asyncretry.RetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import groovy.transform.CompileStatic
 import org.springframework.http.HttpMethod
@@ -11,8 +13,8 @@ import static org.springframework.http.HttpMethod.DELETE
 @CompileStatic
 class DeleteExecuteForResponseTypeRelated extends ResponseTypeRelatedRequestsExecutor<Object> {
 
-    DeleteExecuteForResponseTypeRelated(Map params, RestOperations restOperations) {
-        super(params, restOperations, Object)
+    DeleteExecuteForResponseTypeRelated(Map params, RestOperations restOperations, RetryExecutor retryExecutor) {
+        super(params, restOperations, retryExecutor, Object)
     }
 
     @Override

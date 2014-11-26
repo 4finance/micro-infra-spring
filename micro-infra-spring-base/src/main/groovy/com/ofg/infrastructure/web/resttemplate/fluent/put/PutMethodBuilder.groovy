@@ -1,5 +1,10 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.put
 
+import com.google.common.base.Function
+import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.ListenableFuture
+import com.nurkiewicz.asyncretry.RetryExecutor
+import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.LocationFindingExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodyContainingWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
@@ -28,14 +33,14 @@ class PutMethodBuilder extends LocationFindingExecutor implements
     
     @Delegate private final BodyContainingWithHeaders withHeaders
 
-    PutMethodBuilder(String host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders) {
-        super(restOperations)
+    PutMethodBuilder(String host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
+        super(restOperations, retryExecutor)
         params.host = host
         withHeaders = new BodyContainingWithHeaders(this, params, predefinedHeaders)
     }
 
     PutMethodBuilder(RestOperations restOperations) {
-        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS)
+        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE)
     }
 
     @Override
@@ -96,8 +101,9 @@ class PutMethodBuilder extends LocationFindingExecutor implements
     ObjectReceiving anObject() {
         return new ObjectReceiving() {
             @Override
-            public <T> T ofType(Class<T> responseType) {
-                return new PutExecuteForResponseTypeRelated<T>(params, restOperations, responseType).exchange()?.body
+            public <T> ListenableFuture<T> ofTypeAsync(Class<T> responseType) {
+                ListenableFuture<ResponseEntity> future = put(responseType).exchangeAsync()
+                return Futures.transform(future, {ResponseEntity response -> response?.body} as Function)
             }
         }
     }
@@ -106,15 +112,23 @@ class PutMethodBuilder extends LocationFindingExecutor implements
     ResponseEntityReceiving aResponseEntity() {
         return new ResponseEntityReceiving() {
             @Override
-            public <T> ResponseEntity<T> ofType(Class<T> responseType) {
-                return new PutExecuteForResponseTypeRelated<T>(params, restOperations, responseType).exchange()
+            public <T> ListenableFuture<ResponseEntity<T>> ofTypeAsync(Class<T> responseType) {
+                return put(responseType).exchangeAsync()
             }
         }
     }
-    
+
+    private PutExecuteForResponseTypeRelated put(Class responseType) {
+        return new PutExecuteForResponseTypeRelated(params, restOperations, retryExecutor, responseType)
+    }
+
     @Override
     void ignoringResponse() {
         aResponseEntity().ofType(Object)
     }
 
+    ListenableFuture<Void> ignoringResponseAsync() {
+        ListenableFuture<ResponseEntity<Object>> future = aResponseEntity().ofTypeAsync(Object)
+        return Futures.transform(future, {null} as Function<ResponseEntity<Object>, Void>)
+    }
 }

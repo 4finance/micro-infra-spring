@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.options
 
+import com.google.common.util.concurrent.ListenableFuture
 import org.springframework.http.HttpMethod
 
 /**
@@ -13,5 +14,7 @@ interface AllowHeaderReceiving {
      * @return - a set of values from the {@link org.springframework.http.HttpHeaders#ALLOW} header
      */
     Set<HttpMethod> allow()
+
+    ListenableFuture<Set<HttpMethod>> allowAsync()
 
 }

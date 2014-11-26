@@ -1,12 +1,11 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
 
+import com.google.common.util.concurrent.ListenableFuture
+import com.nurkiewicz.asyncretry.RetryExecutor
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpMethod as SpringHttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
-
-import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.HttpEntityUtils.getHttpEntityFrom
-import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.UrlParsingUtils.appendPathToHost
 
 /**
  * Abstraction over {@link RestOperations} that for a {@link ResponseTypeRelatedRequestsExecutor#getHttpMethod()} 
@@ -26,35 +25,25 @@ import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.exe
 @TypeChecked
 abstract class ResponseTypeRelatedRequestsExecutor<T> {
 
-    protected final RestOperations restOperations
+    protected final RestExecutor<T> restExecutor
     protected final Map params
-    protected final Class<T> responseType
+    private final Class<T> responseType
 
-    ResponseTypeRelatedRequestsExecutor(Map params, RestOperations restOperations, Class<T> responseType) {
-        this.restOperations = restOperations
+    ResponseTypeRelatedRequestsExecutor(Map params, RestOperations restOperations, RetryExecutor retryExecutor, Class<T> responseType) {
         this.params = params
         this.responseType = responseType
+        this.restExecutor = new RestExecutor(restOperations, retryExecutor)
     }
 
     protected abstract SpringHttpMethod getHttpMethod()
 
     ResponseEntity<T> exchange() {
-        if (params.url) {  
-            return restOperations.exchange(
-                    new URI(appendPathToHost(params.host as String, params.url as URI)),
-                    httpMethod,
-                    getHttpEntityFrom(params),
-                    responseType)
-        } else if (params.urlTemplate) {
-            return restOperations.exchange(
-                    appendPathToHost(params.host as String, params.urlTemplate as String),
-                    httpMethod,
-                    getHttpEntityFrom(params),
-                    responseType,
-                    params.urlVariablesArray as Object[] ?: params.urlVariablesMap as Map<String, ?>)
-        }
-        throw new InvalidHttpMethodParametersException(params)
+        return exchangeAsync().get()
     }
-    
+
+    ListenableFuture<ResponseEntity<T>> exchangeAsync() {
+        return restExecutor.exchangeAsync(httpMethod, params, responseType)
+    }
+
 }
 

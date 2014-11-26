@@ -14,7 +14,6 @@ import static org.springframework.http.HttpStatus.OK
 
 class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
 
-    public static final String RESPONSE_BODY = '''{"sample":"response"}'''
     public static final Class<String> RESPONSE_TYPE = String
 
     def "should use only url template without provided service url to retrieve an object"() {

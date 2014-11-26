@@ -8,20 +8,13 @@ class HttpEntityUtilsSpec extends Specification {
 
     public static final int UNKOWN_HEADER_VALUE = -1
 
-    def 'should fail to instantiate a utility class'() {
-        when:
-            HttpEntityUtils.newInstance()
-        then:
-            thrown(UnsupportedOperationException)
-    }
-    
     def 'should create HttpEntity from a filled argument map'() {
         given:
             long expectedExpires = 1000
             String expectedBody = '''{"sample":"json"}'''
             Map args = [headers: new HttpHeaders(expires: expectedExpires), request: expectedBody]
         when:
-            HttpEntity httpEntity = HttpEntityUtils.getHttpEntityFrom(args)
+            HttpEntity httpEntity = RestExecutor.getHttpEntityFrom(args)
         then:
             expectedExpires == httpEntity.headers.getExpires()
             expectedBody == httpEntity.body
@@ -31,7 +24,7 @@ class HttpEntityUtilsSpec extends Specification {
         given:
             Map args = [:]
         when:
-            HttpEntity httpEntity = HttpEntityUtils.getHttpEntityFrom(args)
+            HttpEntity httpEntity = RestExecutor.getHttpEntityFrom(args)
         then:
             httpEntity.headers.getExpires() == UNKOWN_HEADER_VALUE
             !httpEntity.body

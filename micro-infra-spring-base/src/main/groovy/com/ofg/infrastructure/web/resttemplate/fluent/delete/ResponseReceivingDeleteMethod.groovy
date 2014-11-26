@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.delete
 
+import com.google.common.util.concurrent.ListenableFuture
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.Executable
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HttpEntitySending
@@ -15,5 +16,6 @@ interface ResponseReceivingDeleteMethod extends
         HttpEntitySending<ResponseReceivingDeleteMethod>, ResponseIgnoring {
 
     ResponseEntity aResponseEntity()
+    ListenableFuture<ResponseEntity> aResponseEntityAsync()
 
 }

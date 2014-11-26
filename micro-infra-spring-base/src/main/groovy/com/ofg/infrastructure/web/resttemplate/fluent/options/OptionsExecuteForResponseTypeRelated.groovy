@@ -1,4 +1,6 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.options
+
+import com.nurkiewicz.asyncretry.RetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import groovy.transform.CompileStatic
 import org.springframework.http.HttpMethod
@@ -11,8 +13,8 @@ import static org.springframework.http.HttpMethod.OPTIONS
 @CompileStatic
 class OptionsExecuteForResponseTypeRelated<T> extends ResponseTypeRelatedRequestsExecutor<T> {
 
-    OptionsExecuteForResponseTypeRelated(Map params, RestOperations restOperations, Class<T> responseType) {
-        super(params, restOperations, responseType)
+    OptionsExecuteForResponseTypeRelated(Map params, RestOperations restOperations, RetryExecutor retryExecutor, Class<T> responseType) {
+        super(params, restOperations, retryExecutor, responseType)
     }
 
     @Override

@@ -1,5 +1,10 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.options
 
+import com.google.common.base.Function
+import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.ListenableFuture
+import com.nurkiewicz.asyncretry.RetryExecutor
+import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
@@ -24,18 +29,20 @@ class OptionsMethodBuilder implements
 
     private final Map params = [:]
     private final RestOperations restOperations
+    private final RetryExecutor retryExecutor
     @Delegate private final AllowContainingWithHeaders withHeaders
     @Delegate private final OptionsAllowHeaderExecutor allowHeaderExecutor
 
-    OptionsMethodBuilder(String host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders) {
+    OptionsMethodBuilder(String host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
         this.restOperations = restOperations
         params.host = host
         withHeaders = new AllowContainingWithHeaders(this, params, predefinedHeaders)
-        allowHeaderExecutor = new OptionsAllowHeaderExecutor(params, restOperations)
+        allowHeaderExecutor = new OptionsAllowHeaderExecutor(restOperations, retryExecutor, params)
+        this.retryExecutor = retryExecutor
     }
 
     OptionsMethodBuilder(RestOperations restOperations) {
-        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS)
+        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE)
     }
 
     @Override
@@ -83,8 +90,9 @@ class OptionsMethodBuilder implements
     ObjectReceiving anObject() {
         return new ObjectReceiving() {
             @Override
-            public <T> T ofType(Class<T> responseType) {
-                return new OptionsExecuteForResponseTypeRelated<T>(params, restOperations, responseType).exchange()?.body
+            public <T> ListenableFuture<T> ofTypeAsync(Class<T> responseType) {
+                def future = options(responseType).exchangeAsync()
+                return Futures.transform(future, {ResponseEntity response -> response?.body} as Function)
             }
         }
     }
@@ -93,15 +101,25 @@ class OptionsMethodBuilder implements
     ResponseEntityReceiving aResponseEntity() {
         return new ResponseEntityReceiving() {
             @Override
-            public <T> ResponseEntity<T> ofType(Class<T> responseType) {
-                return new OptionsExecuteForResponseTypeRelated<T>(params, restOperations, responseType).exchange()
+            public <T> ListenableFuture<ResponseEntity<T>> ofTypeAsync(Class<T> responseType) {
+                return options(responseType).exchangeAsync()
             }
         }
+    }
+
+    private OptionsExecuteForResponseTypeRelated options(Class responseType) {
+        return new OptionsExecuteForResponseTypeRelated(params, restOperations, retryExecutor, responseType)
     }
 
     @Override
     void ignoringResponse() {
         aResponseEntity().ofType(Object)
+    }
+
+    @Override
+    ListenableFuture<Void> ignoringResponseAsync() {
+        ListenableFuture<ResponseEntity<Object>> future = aResponseEntity().ofTypeAsync(Object)
+        return Futures.transform(future, {null} as Function<ResponseEntity, Void>)
     }
 
 }

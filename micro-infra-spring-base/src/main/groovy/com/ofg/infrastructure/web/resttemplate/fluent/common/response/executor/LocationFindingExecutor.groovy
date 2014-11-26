@@ -1,11 +1,15 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
 
+import com.google.common.base.Function
+import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.ListenableFuture
+import com.nurkiewicz.asyncretry.RetryExecutor
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
+import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
-import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.HttpEntityUtils.getHttpEntityFrom
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.UrlParsingUtils.appendPathToHost
 
 /**
@@ -17,30 +21,26 @@ abstract class LocationFindingExecutor implements LocationReceiving {
 
     protected final Map params = [:]
     protected final RestOperations restOperations
+    protected final RetryExecutor retryExecutor
+    private final RestExecutor restExecutor
 
-    LocationFindingExecutor(RestOperations restOperations) {
+    LocationFindingExecutor(RestOperations restOperations, RetryExecutor retryExecutor) {
         this.restOperations = restOperations
+        this.retryExecutor = retryExecutor
+        this.restExecutor = new RestExecutor<>(restOperations, retryExecutor)
     }
 
     protected abstract HttpMethod getHttpMethod()
 
     @Override
     URI forLocation() {
-        if (params.url) {
-            return getLocation(restOperations.exchange(
-                    new URI(appendPathToHost(params.host as String, params.url as URI)),
-                    httpMethod,
-                    getHttpEntityFrom(params),
-                    params.request.class))
-        } else if (params.urlTemplate) {
-            return getLocation(restOperations.exchange(
-                    appendPathToHost(params.host as String, params.urlTemplate as String),
-                    httpMethod,
-                    getHttpEntityFrom(params),
-                    params.request.class,
-                    params.urlVariablesArray as Object[] ?: params.urlVariablesMap as Map<String, ?>))
-        }
-        throw new InvalidHttpMethodParametersException(params)
+        return getLocation(restExecutor.exchange(httpMethod, params, params.request.class))
+    }
+
+    @Override
+    ListenableFuture<URI> forLocationAsync() {
+        ListenableFuture<ResponseEntity> future = restExecutor.exchangeAsync(httpMethod, params, params.request.class)
+        return Futures.transform(future, {ResponseEntity entity -> getLocation(entity)} as Function)
     }
 
     private static URI getLocation(HttpEntity entity) {

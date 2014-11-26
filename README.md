@@ -155,8 +155,6 @@ class AcceptanceTest extends MvcWiremockIntegrationTest {
 }
 ```
 
-## Why?
-
 That way you'll have:
 
 * 'test' profile activated

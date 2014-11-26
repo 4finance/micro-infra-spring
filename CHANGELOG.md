@@ -1,3 +1,13 @@
+0.2.0
+-----
+Notable changes:
+* [stub-runner](https://github.com/4finance//stub-runner) upgraded to version `0.3.1
+
+New features:
+* [Issue 2](https://github.com/4finance/stub-runner-spring/issues/2) Downloading increases build time by ~ 10 sec
+* [Issue 4](https://github.com/4finance/stub-runner-spring/issues/4) It's rather impossible to work offline with current setup
+* [Issue 5](https://github.com/4finance/stub-runner-spring/issues/5) Make deletion of downloaded grapes optional (or even remove it)
+
 0.1.0
 -----
 Notable changes:

@@ -153,7 +153,7 @@ Just extend the __MvcWiremockIntegrationTest__ class and you're ready to go!
 class AcceptanceTest extends MvcWiremockIntegrationTest {
 
 }
-``
+```
 
 ## Why?
 

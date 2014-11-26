@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
  * @see com.ofg.infrastructure.config.EnableMicroservice
  */
 @Configuration
-@ConditionalOnExpression("${com.ofg.infrastructure.microservice.auto:true}")
+@ConditionalOnExpression("${com.ofg.infra.microservice.auto:true}")
 @EnableMicroservice
 public class MicroserviceAutoConfiguration {
 

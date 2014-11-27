@@ -35,12 +35,12 @@ class SwaggerConfiguration extends WebMvcConfigurerAdapter {
             @Value('${rest.api.urls.to.list:.*}') String urlsToList) {
         return new SwaggerSpringMvcPlugin(springSwaggerConfig)
                 .apiInfo(new ApiInfo(
-                restApiTitle,
-                restApiDescription,
-                restApiTerms,
-                restApiContact,
-                restApiLicenseType,
-                restApiLicenseUrl))
+                                restApiTitle,
+                                restApiDescription,
+                                restApiTerms,
+                                restApiContact,
+                                restApiLicenseType,
+                                restApiLicenseUrl))
                 .apiVersion(restApiVersion)
                 .includePatterns(urlsToList)
     }
@@ -52,7 +52,7 @@ class SwaggerConfiguration extends WebMvcConfigurerAdapter {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler('/**', '/swagger/**', '/images/**', '/lib/**', '/css/**')
+        registry.addResourceHandler('/swagger/**', '/*.js', '/images/**', '/lib/**', '/css/**')
                 .addResourceLocations('classpath:/static/swagger/**', 'classpath:/static/swagger/images/**',
                                        'classpath:/static/swagger/lib/**', 'classpath:/static/swagger/css/**')
     }

@@ -2,6 +2,7 @@ package com.ofg.infrastructure.web.view
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.PropertyAccessor
+import com.fasterxml.jackson.core.JsonParser
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
@@ -42,6 +43,7 @@ class ViewConfiguration extends WebMvcConfigurerAdapter {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter()
         converter.prettyPrint = prettyPrintingBasedOnProfile()
         converter.objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
+        converter.objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, environment.getProperty('json.allow.unquotted.fields', Boolean.class, false))
         return converter
     }
 

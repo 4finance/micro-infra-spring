@@ -41,7 +41,7 @@ public class FileSystemLocator implements PropertySourceLocator {
     }
 
     List<File> getConfigFiles() {
-        return appCoordinates.getConfigFileNames(propertiesFolder);
+        return appCoordinates.getConfigFiles(propertiesFolder);
     }
 
     private String[] toSearchLocations(List<File> propertiesPath) {

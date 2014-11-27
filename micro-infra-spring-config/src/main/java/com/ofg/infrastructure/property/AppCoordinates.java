@@ -75,14 +75,15 @@ public class AppCoordinates {
         return countryCode;
     }
 
-    public List<File> getConfigFileNames(File rootConfigFolder) {
+    public List<File> getConfigFiles(File rootConfigFolder) {
         final String coreName = findBaseNameWithoutCountrySuffix(findBaseName());
         final File root = getConfigFolder(rootConfigFolder);
+        final File regional = getRegionalConfigFolderFromAppConfigFolder(root);
         return Arrays.asList(
                 new File(root, coreName + ".properties"),
                 new File(root, coreName + ".yaml"),
-                new File(root, coreName + "-" + countryCode + ".properties"),
-                new File(root, coreName + "-" + countryCode + ".yaml"));
+                new File(regional, coreName + "-" + countryCode + ".properties"),
+                new File(regional, coreName + "-" + countryCode + ".yaml"));
     }
 
     private String findBaseName() {
@@ -101,5 +102,9 @@ public class AppCoordinates {
         } else {
             return baseName;
         }
+    }
+
+    private File getRegionalConfigFolderFromAppConfigFolder(File appConfigFolder) {
+        return new File(appConfigFolder, countryCode);
     }
 }

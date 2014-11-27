@@ -10,12 +10,10 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import spock.lang.AutoCleanup
 import spock.lang.Shared
+import spock.util.concurrent.PollingConditions
 
 import javax.annotation.PostConstruct
-import java.util.concurrent.Callable
 import java.util.concurrent.atomic.AtomicInteger
-
-import static com.jayway.awaitility.Awaitility.await
 
 class FileSystemPollerTest extends AbstractIntegrationTest {
 
@@ -26,6 +24,8 @@ class FileSystemPollerTest extends AbstractIntegrationTest {
     private FileSystemPoller poller
     @Shared
     private InitCounter counter;
+
+    private PollingConditions conditions = new PollingConditions()
 
     def setupSpec() {
         System.setProperty("encrypt.key", "eKey")
@@ -39,22 +39,13 @@ class FileSystemPollerTest extends AbstractIntegrationTest {
     }
 
     def 'should reload configuration once when file system touched'() {
-        given:
-            def previous = counter.value
-
         when:
             oneConfigurationFileWasChanged("micro-app.yaml")
-
         then:
-            beanWasReloaded(previous)
-            counter.value == previous + 1
-    }
-
-    private def beanWasReloaded(int previous) {
-        await().until ({
-            return counter.value == previous + 1
-        } as Callable<Boolean>)
-        true
+            conditions.eventually {
+                counter.value == old(counter.value) + 1
+            }
+            counter.value == old(counter.value) + 1
     }
 
     private void oneConfigurationFileWasChanged(String configFile) {
@@ -88,5 +79,4 @@ class InitCounter {
     public int getValue() {
         return COUNTER.get()
     }
-
 }

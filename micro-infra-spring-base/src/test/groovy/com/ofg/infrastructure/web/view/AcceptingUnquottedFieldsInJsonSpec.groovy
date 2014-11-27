@@ -48,9 +48,9 @@ class AcceptingUnquottedFieldsInJsonSpec extends MvcCorrelationIdSettingIntegrat
     static class PropertyMockingApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         @Override
         public void initialize(ConfigurableApplicationContext applicationContext) {
-            MutablePropertySources propertySources = applicationContext.getEnvironment().getPropertySources();
-            MockPropertySource mockEnvVars = new MockPropertySource().withProperty('json.allow.unquotted.fields', true);
-            propertySources.replace(StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME, mockEnvVars);
+            MutablePropertySources propertySources = applicationContext.getEnvironment().getPropertySources()
+            MockPropertySource mockEnvVars = new MockPropertySource().withProperty('json.jackson.parser', 'ALLOW_UNQUOTED_FIELD_NAMES')
+            propertySources.replace(StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME, mockEnvVars)
         }
     }
 }

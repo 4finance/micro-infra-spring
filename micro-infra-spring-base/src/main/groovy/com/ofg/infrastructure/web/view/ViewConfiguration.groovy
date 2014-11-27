@@ -43,8 +43,21 @@ class ViewConfiguration extends WebMvcConfigurerAdapter {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter()
         converter.prettyPrint = prettyPrintingBasedOnProfile()
         converter.objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-        converter.objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, environment.getProperty('json.allow.unquotted.fields', Boolean.class, false))
+        configureJacksonJsonParser(converter)
         return converter
+    }
+
+    private void configureJacksonJsonParser(MappingJackson2HttpMessageConverter converter) {
+        String jsonJacksonParserFeatures = environment.getProperty('json.jackson.parser', String.class, '').trim()
+        if (jsonJacksonParserFeatures) {
+            doConfigureParserFeatures(jsonJacksonParserFeatures, converter)
+        }
+    }
+
+    private void doConfigureParserFeatures(String jsonJacksonParserFeatures, MappingJackson2HttpMessageConverter converter) {
+        jsonJacksonParserFeatures.split(',').each {
+            converter.objectMapper.configure(JsonParser.Feature.valueOf(it as String), true)
+        }
     }
 
     private boolean prettyPrintingBasedOnProfile() {

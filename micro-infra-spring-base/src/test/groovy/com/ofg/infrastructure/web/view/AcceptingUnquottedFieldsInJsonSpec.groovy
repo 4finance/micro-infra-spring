@@ -33,7 +33,6 @@ class AcceptingUnquottedFieldsInJsonSpec extends MvcCorrelationIdSettingIntegrat
             mockMvc.perform(post("/test")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(REQUEST_JSON_BODY))
-                .andDo(print())
                 .andExpect(status().isCreated())
     }
 

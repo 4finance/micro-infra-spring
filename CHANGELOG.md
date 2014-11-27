@@ -1,3 +1,8 @@
+0.7.1
+-----
+Bug fixes:
+* [Issue 25](https://github.com/4finance/micro-deps/issues/25) Better exception message on missing element in JSON
+
 0.7.0
 -----
 New features:

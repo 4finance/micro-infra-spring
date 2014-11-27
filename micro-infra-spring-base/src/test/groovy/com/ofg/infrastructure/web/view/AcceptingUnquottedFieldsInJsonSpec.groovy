@@ -28,7 +28,7 @@ class AcceptingUnquottedFieldsInJsonSpec extends MvcCorrelationIdSettingIntegrat
 
     String REQUEST_JSON_BODY = "{sampleField:\"sampleValue\"}"
 
-    def "should return accept JSON with unquotted field names"() {
+    def "should accept JSON with unquotted field names"() {
         expect:
             mockMvc.perform(post("/test")
                     .contentType(MediaType.APPLICATION_JSON)

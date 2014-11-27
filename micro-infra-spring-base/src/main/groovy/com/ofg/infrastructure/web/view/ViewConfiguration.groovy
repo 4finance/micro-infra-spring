@@ -48,7 +48,7 @@ class ViewConfiguration extends WebMvcConfigurerAdapter {
     }
 
     private void configureJacksonJsonParser(MappingJackson2HttpMessageConverter converter) {
-        String jsonJacksonParserFeatures = environment.getProperty('json.jackson.parser', String.class, '').trim()
+        String jsonJacksonParserFeatures = environment.getProperty('json.jackson.parser.on', String.class, '').trim()
         if (jsonJacksonParserFeatures) {
             doConfigureParserFeatures(jsonJacksonParserFeatures, converter)
         }

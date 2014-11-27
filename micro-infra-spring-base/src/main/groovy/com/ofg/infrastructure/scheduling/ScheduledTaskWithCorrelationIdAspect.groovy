@@ -2,9 +2,9 @@ package com.ofg.infrastructure.scheduling
 
 import com.ofg.infrastructure.correlationid.CorrelationIdUpdater
 import groovy.transform.CompileStatic
-import org.aspectj.lang.JoinPoint
+import org.aspectj.lang.ProceedingJoinPoint
+import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
-import org.aspectj.lang.annotation.Before
 
 /**
  * Aspect that sets correlationId for running threads executing methods annotated with {@link org.springframework.scheduling.annotation.Scheduled} annotation.
@@ -14,10 +14,12 @@ import org.aspectj.lang.annotation.Before
 @CompileStatic
 class ScheduledTaskWithCorrelationIdAspect {
 
-    @Before('execution (@org.springframework.scheduling.annotation.Scheduled  * *.*(..))')
-    void setNewCorrelationIdOnThread(JoinPoint joinPoint) throws Throwable {
+    @Around('execution (@org.springframework.scheduling.annotation.Scheduled  * *.*(..))')
+    Object setNewCorrelationIdOnThread(ProceedingJoinPoint pjp) throws Throwable {
         String correlationId = UUID.randomUUID().toString()
-        CorrelationIdUpdater.updateCorrelationId(correlationId)
+        return CorrelationIdUpdater.withId(correlationId) {
+            return pjp.proceed()
+        }
     }
 
 }

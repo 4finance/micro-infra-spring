@@ -1,0 +1,11 @@
+description = 'Wrapper around HystrixCommand that propagates correlation ID'
+
+dependencies {
+    compile project(':micro-infra-spring-base')
+    compile "org.codehaus.groovy:groovy-all:$groovyVersion"
+    compile 'com.netflix.hystrix:hystrix-core:1.4.0-RC5'
+
+    testCompile "org.spockframework:spock-core:$spockVersion"
+    testRuntime "org.spockframework:spock-spring:$spockVersion"
+    testCompile "org.springframework:spring-test:$springTestVersion"
+}

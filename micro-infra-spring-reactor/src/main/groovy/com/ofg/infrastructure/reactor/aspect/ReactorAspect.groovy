@@ -81,9 +81,10 @@ class ReactorAspect {
         }
         Event event = eventArgument as Event
         String correlationId = event.headers.get(CORRELATION_ID_HEADER) as String
-        CorrelationIdUpdater.updateCorrelationId(correlationId)
-        log.debug("Set correlationId retrieved from event header to [$correlationId]")
-        return pjp.proceed()
+        return CorrelationIdUpdater.withId(correlationId) {
+            log.debug("Set correlationId retrieved from event header to [$correlationId]")
+            return pjp.proceed()
+        }
     }
 
 }

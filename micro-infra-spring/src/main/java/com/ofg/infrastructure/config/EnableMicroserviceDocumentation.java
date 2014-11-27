@@ -20,6 +20,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import(SwaggerDocumentationConfiguration.class)
-public @interface EnableSwaggerDocumentation {
+public @interface EnableMicroserviceDocumentation {
 
 }

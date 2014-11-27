@@ -43,7 +43,9 @@ class MicroserviceConfiguration {
                                 "pl": {
                                     "dependencies": {
                                         "ping" : {
-                                            "path": "com/ofg/ping"
+                                            "ping" : {
+                                                "path": "com/ofg/ping"
+                                            }
                                         }
                                     }
                                 }
@@ -55,6 +57,17 @@ class MicroserviceConfiguration {
                                 "pl": {
                                     "this": "com/ofg/service",
                                     "dependencies": "no"
+                                }
+                            }
+                            """
+
+    public static final String INVALID_COLLABORATOR_ELEMENT = """
+                            {
+                                "pl": {
+                                    "this": "com/ofg/service",
+                                    "dependencies": {
+                                        "ping" : "com/ofg/pong"
+                                    }
                                 }
                             }
                             """

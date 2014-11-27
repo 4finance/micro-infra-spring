@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.discovery
 
 import groovy.json.JsonSlurper
+import groovy.util.logging.Slf4j
 
 import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.*
 
@@ -42,6 +43,17 @@ class ServiceConfigurationResolver {
         }
         if (serviceMetadata.dependencies && !(serviceMetadata.dependencies instanceof Map)) {
             throw new InvalidMicroserviceConfigurationException('invalid "dependencies" element')
+        }
+        validateEveryDependencyFormat(serviceMetadata)
+    }
+
+    private static void validateEveryDependencyFormat(serviceMetadata) {
+        List invalidDependenciesNames = serviceMetadata.dependencies
+                .findAll { !(it.value instanceof Map) }
+                .collect { key, value -> key }
+        if (!invalidDependenciesNames.isEmpty()) {
+            throw new InvalidMicroserviceConfigurationException("following dependencies have invalid format: " +
+                                                        " $invalidDependenciesNames (Check documentation for details.)")
         }
     }
 

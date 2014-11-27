@@ -23,11 +23,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                       loader = SpringApplicationContextLoader,
                       initializers = PropertyMockingApplicationContextInitializer.class)
 @ActiveProfiles(DEVELOPMENT)
-class AcceptingUnquottedFieldsInJsonSpec extends MvcCorrelationIdSettingIntegrationSpec {
+class AcceptingUnquotedFieldsInJsonSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
     String REQUEST_JSON_BODY = "{sampleField:\"sampleValue\"}"
 
-    def "should accept JSON with unquotted field names"() {
+    def "should accept JSON with unquoted field names"() {
         expect:
             mockMvc.perform(post("/test")
                     .contentType(MediaType.APPLICATION_JSON)

@@ -1,7 +1,7 @@
 description = 'Microservice testing utilities'
 
 dependencies {
-    compile("com.ofg:micro-deps-spring-test-config:$microDepsSpringConfigVersion") {
+    compile("com.ofg:micro-deps-spring-test-config") {
         //Required with micro-deps 0.4.0 as it uses groovy-all-indy which confuses Intellij Idea (both jars are added to dependencies)
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }

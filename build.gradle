@@ -8,6 +8,7 @@ buildscript {
         classpath 'com.ofg:uptodate-gradle-plugin:+'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
         classpath 'pl.allegro.tech.build:axion-release-plugin:0.9.4'
+        classpath "io.spring.gradle:dependency-management-plugin:0.2.1.RELEASE"
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
     }
 }
@@ -31,15 +32,6 @@ allprojects {
     }
 }
 
-ext {
-    microDepsSpringConfigVersion = '0.5.0'
-    groovyVersion = '2.3.7'
-    spockVersion = '0.7-groovy-2.0'
-    springBootVersion = '1.1.8.RELEASE'
-    springTestVersion = '4.1.1.RELEASE'
-    logbackVersion = '1.1.2'
-}
-
 task addHashFile << {
     String gitCmd = "git log --pretty=format:'%H' -n 1"
     def proc = gitCmd.execute()
@@ -54,8 +46,27 @@ configure(srcSubprojects) {
     apply plugin: 'maven-publish'
     apply plugin: 'com.jfrog.bintray'
     apply plugin: 'com.ofg.uptodate'
+    apply plugin: "io.spring.dependency-management"
 
     sourceCompatibility = 1.7
+
+    dependencyManagement {
+        dependencies {
+            dependencySet(group: "com.ofg", version: "0.5.0") {
+                entry "micro-deps-spring-config"
+                entry "micro-deps-spring-test-config"
+            }
+            "org.codehaus.groovy:groovy-all" "2.3.7"
+            "org.springframework.boot:spring-boot-starter-web" "1.1.8.RELEASE"
+            "ch.qos.logback:logback-classic" "1.1.2"
+
+            dependencySet(group:'org.spockframework', version: '0.7-groovy-2.0') {
+                entry "spock-core"
+                entry "spock-spring"
+            }
+            "org.springframework:spring-test" "4.1.1.RELEASE"
+        }
+    }
 
     //Workaround for the issue with Java 8u11 and 7u65 - http://www.infoq.com/news/2014/08/Java8-U11-Broke-Tools
     test {
@@ -95,6 +106,17 @@ configure(srcSubprojects) {
                         }
                     }.each() {
                         it.scope*.value = 'compile'
+                    }
+                    //#70 - workaround for empty version in pom.xml when dependency-management-plugin is used
+                    //Known limitation of new Gradle publishing mechanism - https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/8
+                    asNode().dependencies[0]?.get('dependency')?.each() { dep ->
+                        String pomVer = dep.get("version").text();
+                        String pomArtifactId = dep.get("artifactId").text();
+                        String pomGroupId = dep.get("groupId").text();
+                        if (pomVer.isEmpty()) {
+                            def depVer = project.dependencyManagement.getManagedVersion("$pomGroupId", "$pomArtifactId")
+                            dep.appendNode('version', depVer)
+                        }
                     }
                 }
             }

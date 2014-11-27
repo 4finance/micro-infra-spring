@@ -6,12 +6,12 @@ ext {
 
 dependencies {
     compile project(':micro-infra-spring-base')
-    compile "org.codehaus.groovy:groovy-all:$groovyVersion"
+    compile "org.codehaus.groovy:groovy-all"
     compile("org.apache.camel:camel-spring-javaconfig:$camelVersion") {
         exclude group: 'org.springframework', module: 'spring-test'
     }
-    testCompile "org.spockframework:spock-core:$spockVersion"
-    testRuntime "org.spockframework:spock-spring:$spockVersion"
+    testCompile "org.spockframework:spock-core"
+    testRuntime "org.spockframework:spock-spring"
     testCompile "org.apache.camel:camel-test-spring:$camelVersion"
-    testCompile "org.springframework:spring-test:$springTestVersion"
+    testCompile "org.springframework:spring-test"
 }

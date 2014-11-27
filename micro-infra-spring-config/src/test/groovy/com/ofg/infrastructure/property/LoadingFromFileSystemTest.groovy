@@ -8,11 +8,13 @@ import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import spock.lang.AutoCleanup
 import spock.lang.Shared
 
 class LoadingFromFileSystemTest extends AbstractIntegrationTest {
 
     @Shared
+    @AutoCleanup
     private ConfigurableApplicationContext context
     @Shared
     private MyBean myBean
@@ -25,10 +27,6 @@ class LoadingFromFileSystemTest extends AbstractIntegrationTest {
                 .showBanner(false)
                 .run()
         myBean = context.getBean(MyBean)
-    }
-
-    def cleanupSpec() {
-        context?.close()
     }
 
     def 'should read property from default .properties file'() {

@@ -8,6 +8,7 @@ import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import spock.lang.AutoCleanup
 import spock.lang.Shared
 
 import javax.annotation.PostConstruct
@@ -19,6 +20,7 @@ import static com.jayway.awaitility.Awaitility.await
 class FileSystemPollerTest extends AbstractIntegrationTest {
 
     @Shared
+    @AutoCleanup
     private ConfigurableApplicationContext context
     @Shared
     private FileSystemPoller poller
@@ -34,10 +36,6 @@ class FileSystemPollerTest extends AbstractIntegrationTest {
                 .run()
         counter = context.getBean(InitCounter)
         poller = context.getBean(FileSystemPoller)
-    }
-
-    def cleanupSpec() {
-        context?.close()
     }
 
     def 'should reload configuration once when file system touched'() {

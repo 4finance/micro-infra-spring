@@ -1,3 +1,10 @@
+0.7.2-SNAPSHOT
+-----
+New features:
+ * [Issue 5](https://github.com/4finance/micro-infra-spring/issues/5) Add Hystrix
+ * [Issue 96](https://github.com/4finance/micro-infra-spring/issues/96) Disable uptodate plugin on Travis
+ * [Issue 116](https://github.com/4finance/micro-infra-spring/issues/116) Detection of using Java 8 API
+
 [0.7.1](https://github.com/4finance/micro-infra-spring/tree/0.7.1)
 -----
 Bug fixes:

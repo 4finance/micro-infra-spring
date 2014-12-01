@@ -9,6 +9,7 @@ buildscript {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
         classpath 'pl.allegro.tech.build:axion-release-plugin:0.9.4'
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
+        if (project.hasProperty("compatibility")) { classpath "be.insaneprogramming.gradle:animalsniffer-gradle-plugin:+" }
     }
 }
 
@@ -60,6 +61,18 @@ configure(srcSubprojects) {
     //Workaround for the issue with Java 8u11 and 7u65 - http://www.infoq.com/news/2014/08/Java8-U11-Broke-Tools
     test {
         jvmArgs '-noverify'
+    }
+
+    if (project.hasProperty("compatibility")) {
+        apply plugin: 'be.insaneprogramming.gradle.animalsniffer'
+
+        animalsniffer {
+            signature = "org.codehaus.mojo.signature:java17:+@signature"
+        }
+
+        afterEvaluate {
+            animalSniffer.mustRunAfter 'compileGroovy'
+        }
     }
 
     bintrayUpload.dependsOn 'build'

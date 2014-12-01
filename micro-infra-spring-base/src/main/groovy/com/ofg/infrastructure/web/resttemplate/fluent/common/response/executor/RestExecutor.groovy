@@ -3,6 +3,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
 import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
 import groovy.transform.CompileStatic
+import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -14,7 +15,7 @@ import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.exe
 /**
  * Utility class that extracts {@link HttpEntity} from the provided map of passed parameters
  */
-@CompileStatic
+@TypeChecked
 final class RestExecutor<T> {
     private final RestOperations restOperations
     private final RetryExecutor retryExecutor

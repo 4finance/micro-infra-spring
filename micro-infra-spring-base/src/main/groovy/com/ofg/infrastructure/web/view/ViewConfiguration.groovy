@@ -53,11 +53,13 @@ class ViewConfiguration extends WebMvcConfigurerAdapter {
     private void configureJacksonJsonParser(MappingJackson2HttpMessageConverter converter) {
         String jsonParserFeaturesToEnable = environment.getProperty('json.jackson.parser.on', String.class, '').trim()
         configureFeatures(jsonParserFeaturesToEnable, converter, ON)
+        String jsonParserFeaturesToDisable = environment.getProperty('json.jackson.parser.off', String.class, '').trim()
+        configureFeatures(jsonParserFeaturesToDisable, converter, OFF)
     }
 
-    private void configureFeatures(String jsonParserFeaturesToEnable, MappingJackson2HttpMessageConverter converter, boolean state) {
+    private void configureFeatures(String jsonParserFeaturesToEnable, MappingJackson2HttpMessageConverter converter, boolean featuresState) {
         if (jsonParserFeaturesToEnable) {
-            doConfigureFeatures(jsonParserFeaturesToEnable, converter, state)
+            doConfigureFeatures(jsonParserFeaturesToEnable, converter, featuresState)
         }
     }
 

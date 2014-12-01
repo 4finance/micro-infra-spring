@@ -2,6 +2,7 @@ package com.ofg.infrastructure.web.view
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.PropertyAccessor
+import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
@@ -46,26 +47,34 @@ class ViewConfiguration extends WebMvcConfigurerAdapter {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter()
         converter.prettyPrint = prettyPrintingBasedOnProfile()
         converter.objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-        configureJacksonJsonParser(converter)
+        configureJsonJacksonFeatures(converter)
         return converter
     }
 
-    private void configureJacksonJsonParser(MappingJackson2HttpMessageConverter converter) {
-        configureFeatures('json.jackson.parser.on', converter, ON)
-        configureFeatures('json.jackson.parser.off', converter, OFF)
+    private void configureJsonJacksonFeatures(MappingJackson2HttpMessageConverter converter) {
+        configureParserFeatures('json.jackson.parser.on', converter, ON)
+        configureParserFeatures('json.jackson.parser.off', converter, OFF)
+        configureGeneratorFeatures('json.jackson.generator.on', converter, ON)
+        configureGeneratorFeatures('json.jackson.generator.off', converter, OFF)
     }
 
-    private void configureFeatures(String jsonFeaturesConfigProperty, MappingJackson2HttpMessageConverter converter, boolean featuresState) {
-        String jsonParserFeaturesToEnable = environment.getProperty(jsonFeaturesConfigProperty, String.class, '').trim()
-        if (jsonParserFeaturesToEnable) {
-            doConfigureFeatures(jsonParserFeaturesToEnable, converter, featuresState)
+    private void configureParserFeatures(String jsonFeaturesConfigProperty, MappingJackson2HttpMessageConverter converter, boolean featuresState) {
+        String jsonJacksonFeatures = environment.getProperty(jsonFeaturesConfigProperty, String.class, '').trim()
+        if (jsonJacksonFeatures) {
+            jsonJacksonFeatures.split(',').each { it ->
+                String featureName = (it as String).trim()
+                converter.objectMapper.configure(JsonParser.Feature.valueOf(featureName), featuresState)
+            }
         }
     }
 
-    private void doConfigureFeatures(String features, MappingJackson2HttpMessageConverter converter, boolean state) {
-        features.split(',').each { it ->
-            String featureName = (it as String).trim()
-            converter.objectMapper.configure(JsonParser.Feature.valueOf(featureName), state)
+    private void configureGeneratorFeatures(String jsonFeaturesConfigProperty, MappingJackson2HttpMessageConverter converter, boolean featuresState) {
+        String jsonJacksonFeatures = environment.getProperty(jsonFeaturesConfigProperty, String.class, '').trim()
+        if (jsonJacksonFeatures) {
+            jsonJacksonFeatures.split(',').each { it ->
+                String featureName = (it as String).trim()
+                converter.objectMapper.configure(JsonGenerator.Feature.valueOf(featureName), featuresState)
+            }
         }
     }
 

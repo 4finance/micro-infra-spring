@@ -19,4 +19,3 @@ env:
 
 after_success:
 - ./gradlew jacocoRootReport coveralls -Pcoverage
-- ./gradlew uptodate

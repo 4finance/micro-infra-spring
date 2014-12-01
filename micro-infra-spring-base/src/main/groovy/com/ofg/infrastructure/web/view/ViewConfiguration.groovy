@@ -25,6 +25,9 @@ import static com.ofg.config.BasicProfiles.TEST
 @Configuration
 class ViewConfiguration extends WebMvcConfigurerAdapter {
 
+    private static final boolean ON = true
+    private static final boolean OFF = false
+
     @Autowired
     Environment environment
 
@@ -48,15 +51,20 @@ class ViewConfiguration extends WebMvcConfigurerAdapter {
     }
 
     private void configureJacksonJsonParser(MappingJackson2HttpMessageConverter converter) {
-        String jsonJacksonParserFeatures = environment.getProperty('json.jackson.parser.on', String.class, '').trim()
-        if (jsonJacksonParserFeatures) {
-            doConfigureParserFeatures(jsonJacksonParserFeatures, converter)
+        String jsonParserFeaturesToEnable = environment.getProperty('json.jackson.parser.on', String.class, '').trim()
+        configureFeatures(jsonParserFeaturesToEnable, converter, ON)
+    }
+
+    private void configureFeatures(String jsonParserFeaturesToEnable, MappingJackson2HttpMessageConverter converter, boolean state) {
+        if (jsonParserFeaturesToEnable) {
+            doConfigureFeatures(jsonParserFeaturesToEnable, converter, state)
         }
     }
 
-    private void doConfigureParserFeatures(String jsonJacksonParserFeatures, MappingJackson2HttpMessageConverter converter) {
-        jsonJacksonParserFeatures.split(',').each {
-            converter.objectMapper.configure(JsonParser.Feature.valueOf(it as String), true)
+    private void doConfigureFeatures(String features, MappingJackson2HttpMessageConverter converter, boolean state) {
+        features.split(',').each { it ->
+            String featureName = (it as String).trim()
+            converter.objectMapper.configure(JsonParser.Feature.valueOf(featureName), state)
         }
     }
 

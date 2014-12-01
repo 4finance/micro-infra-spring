@@ -12,7 +12,7 @@ before_script:
  - "export JAVA_OPTS=-Xmx512m"
 
 script:
-- ./gradlew check --info --stacktrace --continue -Pcoverage
+- ./gradlew check --info --stacktrace --continue -Pcoverage -Pcompatibility
 
 env:
 - TERM=dumb

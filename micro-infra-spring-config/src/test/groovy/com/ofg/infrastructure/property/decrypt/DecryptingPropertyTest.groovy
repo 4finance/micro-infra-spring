@@ -8,6 +8,7 @@ import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.PropertySource
 import org.springframework.stereotype.Component
+import spock.lang.AutoCleanup
 import spock.lang.Ignore
 import spock.lang.Issue
 import spock.lang.Shared
@@ -15,6 +16,7 @@ import spock.lang.Shared
 class DecryptingPropertyTest extends AbstractIntegrationTest {
 
     @Shared
+    @AutoCleanup
     private ConfigurableApplicationContext context
 
     def setupSpec() {
@@ -24,10 +26,6 @@ class DecryptingPropertyTest extends AbstractIntegrationTest {
                 .showBanner(false)
                 .properties("enc.prop:{cipher}f43b8323cd82a74aafa1fba5efdce529274b58f68145903e6cc7e460e07e0e20")
                 .run("--spring.config.name=decryptingPropertyTest")
-    }
-
-    def cleanupSpec() {
-        context?.close()
     }
 
     def "should decrypt properties from application.properties"() {

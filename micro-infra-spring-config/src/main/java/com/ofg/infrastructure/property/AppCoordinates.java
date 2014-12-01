@@ -8,7 +8,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 public class AppCoordinates {
 
@@ -23,7 +24,7 @@ public class AppCoordinates {
 
     public static AppCoordinates defaults() {
         final URL res = AppCoordinates.class.getResource("/" + MICROSERVICE_JSON);
-        Objects.requireNonNull(res, MICROSERVICE_JSON + " not found");
+        requireNonNull(res, MICROSERVICE_JSON + " not found");
         try {
             final String configJson = IOUtils.toString(res);
             final ServiceConfigurationResolver configurationResolver = new ServiceConfigurationResolver(configJson);
@@ -36,9 +37,9 @@ public class AppCoordinates {
     }
 
     AppCoordinates(String environment, String applicationName, String countryCode) {
-        this.environment = environment;
-        this.applicationName = applicationName;
-        this.countryCode = countryCode;
+        this.environment = requireNonNull(environment);
+        this.applicationName = requireNonNull(applicationName);
+        this.countryCode = requireNonNull(countryCode);
     }
 
     public File getConfigFolder(File rootFolder) {
@@ -60,7 +61,7 @@ public class AppCoordinates {
 
     private static String findEnvironment() {
         final String envOrNull = PropertyUtils.getProperty(APP_ENV, null);
-        return Objects.requireNonNull(envOrNull, "No " + APP_ENV + " property found");
+        return requireNonNull(envOrNull, "No " + APP_ENV + " property found");
     }
 
     public String getEnvironment() {
@@ -75,14 +76,15 @@ public class AppCoordinates {
         return countryCode;
     }
 
-    public List<File> getConfigFileNames(File rootConfigFolder) {
+    public List<File> getConfigFiles(File rootConfigFolder) {
         final String coreName = findBaseNameWithoutCountrySuffix(findBaseName());
         final File root = getConfigFolder(rootConfigFolder);
+        final File regional = getRegionalConfigFolderFromAppConfigFolder(root);
         return Arrays.asList(
                 new File(root, coreName + ".properties"),
                 new File(root, coreName + ".yaml"),
-                new File(root, coreName + "-" + countryCode + ".properties"),
-                new File(root, coreName + "-" + countryCode + ".yaml"));
+                new File(regional, coreName + "-" + countryCode + ".properties"),
+                new File(regional, coreName + "-" + countryCode + ".yaml"));
     }
 
     private String findBaseName() {
@@ -101,5 +103,9 @@ public class AppCoordinates {
         } else {
             return baseName;
         }
+    }
+
+    private File getRegionalConfigFolderFromAppConfigFolder(File appConfigFolder) {
+        return new File(appConfigFolder, countryCode);
     }
 }

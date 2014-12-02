@@ -38,7 +38,7 @@ abstract class ResponseTypeRelatedRequestsExecutor<T> {
     protected abstract SpringHttpMethod getHttpMethod()
 
     ResponseEntity<T> exchange() {
-        return exchangeAsync().get()
+        return restExecutor.exchange(httpMethod, params, responseType)
     }
 
     ListenableFuture<ResponseEntity<T>> exchangeAsync() {

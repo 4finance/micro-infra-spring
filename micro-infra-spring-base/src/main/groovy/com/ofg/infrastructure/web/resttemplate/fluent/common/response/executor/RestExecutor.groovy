@@ -2,7 +2,9 @@ package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
 
 import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
-import groovy.transform.CompileStatic
+import com.nurkiewicz.asyncretry.SyncRetryExecutor
+import com.ofg.infrastructure.correlationid.CorrelationIdHolder
+import com.ofg.infrastructure.correlationid.CorrelationIdUpdater
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -26,22 +28,32 @@ final class RestExecutor<T> {
     }
 
     ResponseEntity<T> exchange(HttpMethod httpMethod, Map params, Class<T> responseType) {
-        return exchangeAsync(httpMethod, params, responseType).get()
+        return exchangeInternal(params, httpMethod, responseType).get()
     }
 
     ListenableFuture<ResponseEntity<T>> exchangeAsync(HttpMethod httpMethod, Map params, Class<T> responseType) {
+        throwIfAsyncWithoutExecutor()
+        return exchangeInternal(params, httpMethod, responseType)
+    }
+
+    private ListenableFuture<ResponseEntity<T>> exchangeInternal(Map params, HttpMethod httpMethod, Class<T> responseType) {
         if (params.url) {
-            return callUrlWithRetry(httpMethod, params, responseType)
+            return urlExchange(httpMethod, params, responseType)
         } else if (params.urlTemplate) {
-            return callUrlTemplateWithRetry(httpMethod, params, responseType)
+            return urlTemplateExchange(httpMethod, params, responseType)
         }
         throw new InvalidHttpMethodParametersException(params)
     }
 
-    protected ListenableFuture<ResponseEntity<T>> callUrlTemplateWithRetry(HttpMethod httpMethod, Map params, Class<T> responseType) {
-        return retryExecutor.getWithRetry {
-            //TODO Correlation ID
-            return restOperations.exchange(
+    private void throwIfAsyncWithoutExecutor() {
+        if (retryExecutor == SyncRetryExecutor.INSTANCE)
+            throw new IllegalStateException("Async execution is only enabled with retrying executor. Try .retryUsing(executor.dontRetry()) ")
+    }
+
+
+    private ListenableFuture<ResponseEntity<T>> urlTemplateExchange(HttpMethod httpMethod, Map params, Class<T> responseType) {
+        return withRetry {
+            restOperations.exchange(
                     appendPathToHost(params.host as String, params.urlTemplate as String),
                     httpMethod,
                     getHttpEntityFrom(params),
@@ -50,14 +62,23 @@ final class RestExecutor<T> {
         }
     }
 
-    protected ListenableFuture<ResponseEntity<T>> callUrlWithRetry(HttpMethod httpMethod, Map params, Class<T> responseType) {
-        return retryExecutor.getWithRetry {
-            //TODO Correlation ID
-            restOperations.exchange(
+
+    private ListenableFuture<ResponseEntity<T>> urlExchange(HttpMethod httpMethod, Map params, Class<T> responseType) {
+        return withRetry {
+            return restOperations.exchange(
                     new URI(appendPathToHost(params.host as String, params.url as URI)),
                     httpMethod,
                     getHttpEntityFrom(params),
                     responseType)
+        }
+    }
+
+    private ListenableFuture<ResponseEntity<T>> withRetry(Closure<ResponseEntity<T>> httpInvocation) {
+        String correlationId = CorrelationIdHolder.get()
+        return retryExecutor.getWithRetry {
+            return CorrelationIdUpdater.withId(correlationId) {
+                return httpInvocation.call()
+            }
         }
     }
 

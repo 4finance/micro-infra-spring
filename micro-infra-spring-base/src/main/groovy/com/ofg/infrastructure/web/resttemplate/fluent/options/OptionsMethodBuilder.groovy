@@ -90,6 +90,11 @@ class OptionsMethodBuilder implements
     ObjectReceiving anObject() {
         return new ObjectReceiving() {
             @Override
+            def <T> T ofType(Class<T> responseType) {
+                return options(responseType).exchange()?.body
+            }
+
+            @Override
             public <T> ListenableFuture<T> ofTypeAsync(Class<T> responseType) {
                 def future = options(responseType).exchangeAsync()
                 return Futures.transform(future, {ResponseEntity response -> response?.body} as Function)
@@ -103,6 +108,11 @@ class OptionsMethodBuilder implements
             @Override
             public <T> ListenableFuture<ResponseEntity<T>> ofTypeAsync(Class<T> responseType) {
                 return options(responseType).exchangeAsync()
+            }
+
+            @Override
+            def <T> ResponseEntity<T> ofType(Class<T> responseType) {
+                return options(responseType).exchange()
             }
         }
     }

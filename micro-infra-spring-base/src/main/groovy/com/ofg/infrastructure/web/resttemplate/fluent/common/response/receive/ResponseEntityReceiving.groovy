@@ -7,9 +7,7 @@ import org.springframework.http.ResponseEntity
  * Interface that defines what is the type of the received response. 
  * It will return a {@link ResponseEntity} of the provided class.
  */
-abstract class ResponseEntityReceiving {
-    public abstract <T> ListenableFuture<ResponseEntity<T>> ofTypeAsync(Class<T> responseType)
-    public <T> ResponseEntity<T> ofType(Class<T> responseType) {
-        return ofTypeAsync(responseType).get()
-    }
+interface ResponseEntityReceiving {
+    public <T> ListenableFuture<ResponseEntity<T>> ofTypeAsync(Class<T> responseType)
+    public <T> ResponseEntity<T> ofType(Class<T> responseType)
 }

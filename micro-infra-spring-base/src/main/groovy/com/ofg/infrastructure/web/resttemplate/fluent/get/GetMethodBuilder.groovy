@@ -81,6 +81,11 @@ class GetMethodBuilder implements GetMethod, UrlParameterizableGetMethod, Respon
     ObjectReceiving anObject() {
         return new ObjectReceiving() {
             @Override
+            def <T> T ofType(Class<T> responseType) {
+                return get(responseType).exchange()?.body
+            }
+
+            @Override
             public <T> ListenableFuture<T> ofTypeAsync(Class<T> responseType) {
                 GetExecuteForResponseTypeRelated<T> get = get(responseType)
                 ListenableFuture<ResponseEntity<T>> future = get.exchangeAsync()
@@ -97,6 +102,11 @@ class GetMethodBuilder implements GetMethod, UrlParameterizableGetMethod, Respon
             @Override
             public <T> ListenableFuture<ResponseEntity<T>> ofTypeAsync(Class<T> responseType) {
                 return get(responseType).exchangeAsync()
+            }
+
+            @Override
+            def <T> ResponseEntity<T> ofType(Class<T> responseType) {
+                return get(responseType).exchange()
             }
         }
     }

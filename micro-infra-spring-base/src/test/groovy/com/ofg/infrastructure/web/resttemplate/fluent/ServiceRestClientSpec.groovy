@@ -19,6 +19,7 @@ import static org.springframework.http.HttpMethod.DELETE
 import static org.springframework.http.HttpMethod.GET
 import static org.springframework.http.HttpMethod.HEAD
 import static org.springframework.http.HttpMethod.POST
+import static org.springframework.http.HttpMethod.PUT
 
 class ServiceRestClientSpec extends Specification {
 
@@ -180,4 +181,29 @@ class ServiceRestClientSpec extends Specification {
                 throw new RestClientException("Simulated")
             } >> null
     }
+
+    def 'should fail when multiple retries of PUT failed'() {
+        given:
+            AsyncRetryExecutor executor = new AsyncRetryExecutor(pool)
+        when:
+            serviceRestClient
+                    .forExternalService()
+                    .retryUsing(executor.withMaxRetries(2).withNoDelay())
+                    .put()
+                    .onUrl(SOME_SERVICE_URL)
+                    .body('')
+                    .ignoringResponseAsync()
+                    .get()
+        then:
+            3 * restOperations.exchange(_, PUT, _ as HttpEntity, _ as Class) >>> [] >> {
+                throw new RestClientException("Simulated A")
+            } >> {
+                throw new RestClientException("Simulated B")
+            } >> {
+                throw new RestClientException("Simulated C")
+            } >> null
+            Exception e = thrown(Exception)
+            e.message.contains("Simulated C")
+    }
+
 }

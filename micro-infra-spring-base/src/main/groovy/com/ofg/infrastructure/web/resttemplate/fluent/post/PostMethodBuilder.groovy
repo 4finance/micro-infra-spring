@@ -100,6 +100,11 @@ class PostMethodBuilder extends LocationFindingExecutor implements
     ObjectReceiving anObject() {
         return new ObjectReceiving() {
             @Override
+            def <T> T ofType(Class<T> responseType) {
+                return post(responseType).exchange()?.body
+            }
+
+            @Override
             public <T> ListenableFuture<T> ofTypeAsync(Class<T> responseType) {
                 ListenableFuture<ResponseEntity<T>> future = post(responseType).exchangeAsync()
                 return Futures.transform(future, {ResponseEntity response -> response?.body} as Function)
@@ -113,6 +118,11 @@ class PostMethodBuilder extends LocationFindingExecutor implements
             @Override
             public <T> ListenableFuture<ResponseEntity<T>> ofTypeAsync(Class<T> responseType) {
                 return post(responseType).exchangeAsync()
+            }
+
+            @Override
+            def <T> ResponseEntity<T> ofType(Class<T> responseType) {
+                return post(responseType).exchange()
             }
         }
     }

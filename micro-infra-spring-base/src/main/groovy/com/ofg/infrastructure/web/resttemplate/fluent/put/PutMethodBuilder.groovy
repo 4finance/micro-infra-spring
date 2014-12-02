@@ -101,6 +101,11 @@ class PutMethodBuilder extends LocationFindingExecutor implements
     ObjectReceiving anObject() {
         return new ObjectReceiving() {
             @Override
+            def <T> T ofType(Class<T> responseType) {
+                return put(responseType).exchange()?.body
+            }
+
+            @Override
             public <T> ListenableFuture<T> ofTypeAsync(Class<T> responseType) {
                 ListenableFuture<ResponseEntity> future = put(responseType).exchangeAsync()
                 return Futures.transform(future, {ResponseEntity response -> response?.body} as Function)
@@ -114,6 +119,11 @@ class PutMethodBuilder extends LocationFindingExecutor implements
             @Override
             public <T> ListenableFuture<ResponseEntity<T>> ofTypeAsync(Class<T> responseType) {
                 return put(responseType).exchangeAsync()
+            }
+
+            @Override
+            def <T> ResponseEntity<T> ofType(Class<T> responseType) {
+                return put(responseType).exchange()
             }
         }
     }

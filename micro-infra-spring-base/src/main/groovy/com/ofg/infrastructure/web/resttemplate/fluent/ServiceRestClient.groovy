@@ -27,7 +27,8 @@ import org.springframework.web.client.RestOperations
  * </pre>
  * 
  * in the following manner (example for POST):
- * 
+ *
+ * <pre>
  * serviceRestClient.forService('users').post()
  *                                      .onUrl('/some/url/to/service')
  *                                      .body('<loan><id>100</id><name>Smith</name></loan>')
@@ -36,16 +37,42 @@ import org.springframework.web.client.RestOperations
  *                                      .andExecuteFor()
  *                                      .aResponseEntity()
  *                                      .ofType(String)
- * 
+ * </pre>
+ *
  * If you want to send a request to the outside world you can also profit from this component as follows (example for google.com):
  *
+ *<pre>
  * serviceRestClient.forExternalService().get()
  *                                      .onUrl('http://google.com')
  *                                      .andExecuteFor()
  *                                      .aResponseEntity()
  *                                      .ofType(String)
- * 
+ * </pre>
+ *
+ * This client has built in retrying mechanism supported:
+ *
+ * <pre>
+ * @@Autowired
+ * AsyncRetryExecutor executor
+ *
+ * serviceRestClient
+ *         .forExternalService()
+ *         .retryUsing(
+ *             executor
+ *                     .withMaxRetries(5)
+ *                     .withFixedBackoff(2_000)
+ *                     .withUniformJitter())
+ *         .delete()
+ *         .onUrl(SOME_SERVICE_URL)
+ *         .ignoringResponseAsync()
+ * </pre>
+ *
+ * If you are using retry mechanism, another features is enabled - asynchronous invocation. By appending <code>Async</code>
+ * to last method you will get <code>ListenableFuture</code> instance. This way you can easily run multiple requests
+ * concurrently, combine them, etc.
+ *
  * @see <a href="https://github.com/4finance/micro-deps">micro-deps project</a>
+ * @see <a href="">async-retry</a>
  */
 @CompileStatic
 class ServiceRestClient {

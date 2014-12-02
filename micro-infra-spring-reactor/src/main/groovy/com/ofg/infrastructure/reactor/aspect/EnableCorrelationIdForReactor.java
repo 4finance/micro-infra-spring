@@ -1,6 +1,5 @@
 package com.ofg.infrastructure.reactor.aspect;
 
-import com.ofg.infrastructure.web.logging.RequestLoggingConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.ElementType;
@@ -22,5 +21,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Import(ReactorAspectConfiguration.class)
 public @interface EnableCorrelationIdForReactor {
-
 }

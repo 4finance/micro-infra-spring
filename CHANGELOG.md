@@ -37,13 +37,10 @@ New features:
 
 Bug fixes:
 * [Issue 21](https://github.com/4finance/micro-infra-spring/issues/21) /swagger should redirect to /swagger/index.html 
+* [Issue 61](https://github.com/4finance/micro-infra-spring/issues/61) When action is triggered by a scheduler CorrelationID is NOT SET
 
 Notable changes:
 * [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.4.8`
-
-[0.5.5](https://github.com/4finance/micro-infra-spring/tree/0.5.5)
------
-* [Issue 61](https://github.com/4finance/micro-infra-spring/issues/61) When action is triggered by a scheduler CorrelationID is NOT SET
 
 [0.5.4](https://github.com/4finance/micro-infra-spring/tree/0.5.4)
 -----

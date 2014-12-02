@@ -17,7 +17,6 @@
 package com.ofg.infrastructure.spock;
 
 import org.spockframework.runtime.extension.ExtensionAnnotation;
-import org.spockframework.runtime.extension.builtin.RestoreSystemPropertiesExtension;
 
 import java.lang.annotation.*;
 

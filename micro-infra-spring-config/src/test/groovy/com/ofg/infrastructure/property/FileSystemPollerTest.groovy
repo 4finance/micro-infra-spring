@@ -9,12 +9,14 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import spock.lang.AutoCleanup
+import spock.lang.IgnoreIf
 import spock.lang.Shared
 import spock.util.concurrent.PollingConditions
 
 import javax.annotation.PostConstruct
 import java.util.concurrent.atomic.AtomicInteger
 
+@IgnoreIf({ os.macOs }) //Due to problems with native file system poller implementation - https://github.com/4finance/micro-infra-spring/issues/119
 class FileSystemPollerTest extends AbstractIntegrationTest {
 
     @Shared

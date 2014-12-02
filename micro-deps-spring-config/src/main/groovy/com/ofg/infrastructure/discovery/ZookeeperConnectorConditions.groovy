@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Condition
 import org.springframework.context.annotation.ConditionContext
 import org.springframework.core.type.AnnotatedTypeMetadata
 
-import static com.ofg.config.BasicProfiles.*
+import static com.ofg.config.BasicProfiles.PRODUCTION
 
 /**
  * Conditions for creating a zookeeper connector.
@@ -25,8 +25,8 @@ class ZookeeperConnectorConditions {
 
         @Override
         boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-            def activeProfiles = context.environment.activeProfiles
-            PRODUCTION in activeProfiles || standaloneEnabled(context)
+            def env = context.environment
+            PRODUCTION in env.activeProfiles || env.containsProperty("zookeeper.standalone.enabled")
         }
 
     }
@@ -35,13 +35,9 @@ class ZookeeperConnectorConditions {
 
         @Override
         boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-            def activeProfiles = context.environment.activeProfiles
-            (DEVELOPMENT in activeProfiles || TEST in activeProfiles) && !standaloneEnabled(context)
+            !new StandaloneZookeeperCondition().matches(context, metadata)
         }
 
     }
 
-    private static boolean standaloneEnabled(ConditionContext context) {
-        context.environment.containsProperty("zookeeper.standalone.enabled")
-    }
 }

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Import
  * @see ZookeeperConnectorConditions
  */
 @CompileStatic
-@Conditional(ZookeeperConnectorConditions.TestingZookeeperCondition)
+@Conditional(ZookeeperConnectorConditions.InMemoryZookeeperCondition)
 @Import(StubRunnerConfiguration)
 class ConsumerDrivenContractConfiguration {
 }

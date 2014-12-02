@@ -38,8 +38,8 @@ class ServiceDiscoveryInfrastructureConfiguration {
     }
 
     @Bean
-    @Conditional(ZookeeperConnectorConditions.ProductionZookeeperCondition)
-    ZookeeperConnector productionZookeeperConnector(@Value('${service.resolver.url:localhost:2181}') String serviceResolverUrl) {
+    @Conditional(ZookeeperConnectorConditions.StandaloneZookeeperCondition)
+    ZookeeperConnector standaloneZookeeperConnector(@Value('${service.resolver.url:localhost:2181}') String serviceResolverUrl) {
         return new ZookeeperConnector() {
             @Override
             String getServiceResolverUrl() {
@@ -49,8 +49,8 @@ class ServiceDiscoveryInfrastructureConfiguration {
     }
 
     @Bean
-    @Conditional(ZookeeperConnectorConditions.TestingZookeeperCondition)
-    ZookeeperConnector testingZookeeperConnector(TestingServer testingServer) {
+    @Conditional(ZookeeperConnectorConditions.InMemoryZookeeperCondition)
+    ZookeeperConnector inMemoryZookeeperConnector(TestingServer testingServer) {
         return new ZookeeperConnector() {
             @Override
             String getServiceResolverUrl() {

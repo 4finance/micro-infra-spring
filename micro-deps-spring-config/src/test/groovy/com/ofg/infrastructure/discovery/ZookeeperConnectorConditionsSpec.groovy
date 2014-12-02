@@ -10,9 +10,9 @@ import static com.ofg.config.BasicProfiles.*
 
 class ZookeeperConnectorConditionsSpec extends Specification {
 
-    static final testingCondition = new ZookeeperConnectorConditions.TestingZookeeperCondition()
-    static final productionCondition = new ZookeeperConnectorConditions.ProductionZookeeperCondition()
-    static final forceProd = "microservice.production"
+    private static final IN_MEMORY_CONDITION = new ZookeeperConnectorConditions.InMemoryZookeeperCondition()
+    private static final STANDALONE_CONDITION = new ZookeeperConnectorConditions.StandaloneZookeeperCondition()
+    private static final STANDALONE = "microservice.production"
 
     ConditionContext context = Mock()
     AnnotatedTypeMetadata metadata = Mock()
@@ -29,18 +29,18 @@ class ZookeeperConnectorConditionsSpec extends Specification {
         then:
             matches == expectedOutcome
         where:
-            condition           | activeProfile | envProperty || expectedOutcome
-            productionCondition | PRODUCTION    | "foo"       || true
-            productionCondition | PRODUCTION    | forceProd   || true
-            productionCondition | DEVELOPMENT   | "foo"       || false
-            productionCondition | DEVELOPMENT   | forceProd   || true
-            productionCondition | TEST          | "foo"       || false
-            productionCondition | TEST          | forceProd   || true
-            testingCondition    | DEVELOPMENT   | "foo"       || true
-            testingCondition    | DEVELOPMENT   | forceProd   || false
-            testingCondition    | TEST          | "foo"       || true
-            testingCondition    | TEST          | forceProd   || false
-            testingCondition    | PRODUCTION    | "foo"       || false
-            testingCondition    | PRODUCTION    | forceProd   || false
+            condition            | activeProfile | envProperty || expectedOutcome
+            STANDALONE_CONDITION | PRODUCTION    | "foo"       || true
+            STANDALONE_CONDITION | PRODUCTION    | STANDALONE  || true
+            STANDALONE_CONDITION | DEVELOPMENT   | "foo"       || false
+            STANDALONE_CONDITION | DEVELOPMENT   | STANDALONE  || true
+            STANDALONE_CONDITION | TEST          | "foo"       || false
+            STANDALONE_CONDITION | TEST          | STANDALONE  || true
+            IN_MEMORY_CONDITION  | DEVELOPMENT   | "foo"       || true
+            IN_MEMORY_CONDITION  | DEVELOPMENT   | STANDALONE  || false
+            IN_MEMORY_CONDITION  | TEST          | "foo"       || true
+            IN_MEMORY_CONDITION  | TEST          | STANDALONE  || false
+            IN_MEMORY_CONDITION  | PRODUCTION    | "foo"       || false
+            IN_MEMORY_CONDITION  | PRODUCTION    | STANDALONE  || false
     }
 }

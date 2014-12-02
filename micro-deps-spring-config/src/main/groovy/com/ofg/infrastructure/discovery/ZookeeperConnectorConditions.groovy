@@ -11,17 +11,17 @@ import static com.ofg.config.BasicProfiles.*
 /**
  * Conditions for creating a zookeeper connector.
  *
- * When {@link BasicProfiles#PRODUCTION} profile is active, production connector will be created.
- * When {@link BasicProfiles#DEVELOPMENT} or {@link BasicProfiles#TEST} is active, testing connector will be created.
+ * When {@link BasicProfiles#PRODUCTION} profile is active, standalone connector will be created.
+ * When {@link BasicProfiles#DEVELOPMENT} or {@link BasicProfiles#TEST} is active, in-memory connector will be created.
  *
  * <p>Behavior can be overridden via system property <code>microservice.production</code>. When this property is present,
  * a production connector will be created despite the active Spring profile.
  *
  */
+@CompileStatic
 class ZookeeperConnectorConditions {
 
-    @CompileStatic
-    static class ProductionZookeeperCondition implements Condition {
+    static class StandaloneZookeeperCondition implements Condition {
 
         @Override
         boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
@@ -31,8 +31,7 @@ class ZookeeperConnectorConditions {
 
     }
 
-    @CompileStatic
-    static class TestingZookeeperCondition implements Condition {
+    static class InMemoryZookeeperCondition implements Condition {
 
         @Override
         boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
@@ -42,7 +41,7 @@ class ZookeeperConnectorConditions {
 
     }
 
-    static boolean forceProduction(ConditionContext context) {
+    private static boolean forceProduction(ConditionContext context) {
         context.environment.containsProperty("microservice.production")
     }
 }

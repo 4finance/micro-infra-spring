@@ -26,7 +26,7 @@ class ZookeeperConnectorConditions {
         @Override
         boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
             def activeProfiles = context.environment.activeProfiles
-            PRODUCTION in activeProfiles || forceProduction(context)
+            PRODUCTION in activeProfiles || standaloneEnabled(context)
         }
 
     }
@@ -36,12 +36,12 @@ class ZookeeperConnectorConditions {
         @Override
         boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
             def activeProfiles = context.environment.activeProfiles
-            (DEVELOPMENT in activeProfiles || TEST in activeProfiles) && !forceProduction(context)
+            (DEVELOPMENT in activeProfiles || TEST in activeProfiles) && !standaloneEnabled(context)
         }
 
     }
 
-    private static boolean forceProduction(ConditionContext context) {
-        context.environment.containsProperty("microservice.production")
+    private static boolean standaloneEnabled(ConditionContext context) {
+        context.environment.containsProperty("zookeeper.standalone.enabled")
     }
 }

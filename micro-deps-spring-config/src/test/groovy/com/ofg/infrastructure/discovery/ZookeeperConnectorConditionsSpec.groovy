@@ -12,7 +12,7 @@ class ZookeeperConnectorConditionsSpec extends Specification {
 
     private static final IN_MEMORY_CONDITION = new ZookeeperConnectorConditions.InMemoryZookeeperCondition()
     private static final STANDALONE_CONDITION = new ZookeeperConnectorConditions.StandaloneZookeeperCondition()
-    private static final STANDALONE = "microservice.production"
+    private static final STANDALONE = "zookeeper.standalone.enabled"
 
     ConditionContext context = Mock()
     AnnotatedTypeMetadata metadata = Mock()

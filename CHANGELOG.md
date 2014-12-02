@@ -1,7 +1,7 @@
 0.2.0
 -----
 Notable changes:
-* [stub-runner](https://github.com/4finance//stub-runner) upgraded to version `0.3.1
+* [stub-runner](https://github.com/4finance//stub-runner) upgraded to version `0.3.1`
 * New configuration parameter added, i.e. `stubrunner.use.local.repo`. See project's wiki for more details.
 
 New features:

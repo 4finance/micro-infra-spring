@@ -119,3 +119,8 @@ if(project.hasProperty("coverage")) {
         ignoreFailures = true
     }
 }
+
+wrapper {
+    gradleVersion '2.2'
+}
+

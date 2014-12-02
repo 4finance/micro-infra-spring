@@ -12,7 +12,7 @@ buildscript {
     dependencies {
         classpath 'com.ofg:uptodate-gradle-plugin:1.1.0'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
-        classpath 'pl.allegro.tech.build:axion-release-plugin:0.9.4'
+        classpath 'pl.allegro.tech.build:axion-release-plugin:0.9.9'
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
     }
 }
@@ -22,6 +22,7 @@ apply plugin: 'axion-release'
 scmVersion {
     tag {
         prefix = ''
+        createReleaseCommit = true
     }
 }
 

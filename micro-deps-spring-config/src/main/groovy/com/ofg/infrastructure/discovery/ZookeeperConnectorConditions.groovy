@@ -4,6 +4,7 @@ import com.ofg.config.BasicProfiles
 import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Condition
 import org.springframework.context.annotation.ConditionContext
+import org.springframework.core.env.Environment
 import org.springframework.core.type.AnnotatedTypeMetadata
 
 import static com.ofg.config.BasicProfiles.PRODUCTION
@@ -25,7 +26,7 @@ class ZookeeperConnectorConditions {
 
         @Override
         boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-            def env = context.environment
+            Environment env = context.environment
             PRODUCTION in env.activeProfiles || env.containsProperty("zookeeper.standalone.enabled")
         }
 

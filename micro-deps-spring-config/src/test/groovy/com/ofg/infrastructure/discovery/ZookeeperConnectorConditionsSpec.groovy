@@ -20,7 +20,7 @@ class ZookeeperConnectorConditionsSpec extends Specification {
     @Unroll
     def '[#condition.class.simpleName] should evaluate to [#expectedOutcome] with profile [#activeProfile] and env[#envProperty]'() {
         given:
-            def mockEnv = new MockEnvironment()
+            MockEnvironment mockEnv = new MockEnvironment()
                     .withProperty(envProperty, "")
             mockEnv.addActiveProfile(activeProfile)
             context.environment >> mockEnv

@@ -61,6 +61,12 @@ stubrunner.stubs.module=stub-definitions
 
 ```
 
+### Zookeeper connectors
+
+Running microservice with `com.ofg.config.BasicProfiles.PRODUCTION` profile active will try to connect to a standalone Zookeeper instance.
+Otherwise, an in-memory instance of Zookeeper will be started. For development purposes, you can enable standalone Zookeeper connector manually
+via environment property `zookeeper.standalone.enabled`.
+
 Micro-deps-spring-test-config  [ ![Download](https://api.bintray.com/packages/4finance/micro-deps/micro-deps-spring-test-config/images/download.svg) ](https://bintray.com/4finance/micro-deps/micro-deps-spring-test-config/_latestVersion)
 =================
 

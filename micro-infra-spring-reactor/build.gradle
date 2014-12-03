@@ -5,12 +5,12 @@ dependencies {
     compile "org.projectreactor:reactor-core:1.1.5.RELEASE"
     compile "org.projectreactor:reactor-spring:1.0.1.RELEASE"
 
-    testCompile("org.spockframework:spock-core:$spockVersion") {
+    testCompile("org.spockframework:spock-core") {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
-    testRuntime("org.spockframework:spock-spring:$spockVersion") {
+    testRuntime("org.spockframework:spock-spring") {
         exclude group: 'org.spockframework', module: 'spock-core'
     }
-    testCompile "org.springframework:spring-test:$springTestVersion"
+    testCompile "org.springframework:spring-test"
     testCompile 'com.jayway.awaitility:awaitility:1.6.2'
 }

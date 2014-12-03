@@ -1,10 +1,10 @@
 description = 'Microservice Spring Swagger configuration'
 
 dependencies {
-    compile "org.codehaus.groovy:groovy-all:$groovyVersion"
+    compile "org.codehaus.groovy:groovy-all"
     compile("com.mangofactory:swagger-springmvc:0.9.0") {
         exclude group: 'org.mockito'
         exclude module: 'scala-compiler'
     }
-    compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    compile "org.springframework.boot:spring-boot-starter-web"
 }

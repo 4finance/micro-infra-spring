@@ -42,23 +42,12 @@ ext {
     groovyVersion = '2.3.7'
     spockVersion = '0.7-groovy-2.0'
     curatorVersion = '2.6.0'
-    undertowVersion = '1.0.17.Final'
-}
-
-configurations {
-    compile.exclude group: "org.slf4j", module: "slf4j-log4j12"
-    compile.exclude group: "org.slf4j", module: "log4j-over-slf4j"
 }
 
 dependencies {
     compile "org.codehaus.groovy:groovy-all:$groovyVersion"
     compile "org.apache.curator:curator-x-discovery:$curatorVersion"
     compile "org.apache.curator:curator-test:$curatorVersion"
-    compile 'org.jboss.resteasy:resteasy-undertow:3.0.10.Final'
-    compile "io.undertow:undertow-core:$undertowVersion"
-    compile "io.undertow:undertow-servlet:$undertowVersion"
-    compile 'org.apache.ivy:ivy:2.3.0'
-    compile 'args4j:args4j:2.0.29'
     compile 'com.google.guava:guava:18.0'
     compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
 

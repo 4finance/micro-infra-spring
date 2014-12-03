@@ -3,7 +3,9 @@ package com.ofg.infrastructure.web.view
 import com.fasterxml.jackson.core.JsonGenerator
 import spock.lang.Unroll
 
-class DisablingJsonGeneratorFeaturesSpec extends JsonJacksonFeaturesSpec implements JacksonGeneratorFeaturesTrait {
+import static com.ofg.infrastructure.web.view.JacksonFeaturesTestConstants.JACKSON_GENERATOR_FEATURES_AS_LIST
+
+class DisablingJsonGeneratorFeaturesSpec extends JsonJacksonFeaturesSpec {
 
     def setupSpec() {
         System.setProperty("json.jackson.generator.off", JACKSON_GENERATOR_FEATURES_AS_LIST.join(','))

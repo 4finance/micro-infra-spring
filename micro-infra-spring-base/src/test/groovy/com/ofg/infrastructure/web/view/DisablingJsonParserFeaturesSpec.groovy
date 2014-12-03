@@ -3,7 +3,9 @@ package com.ofg.infrastructure.web.view
 import com.fasterxml.jackson.core.JsonParser
 import spock.lang.Unroll
 
-class DisablingJsonParserFeaturesSpec extends JsonJacksonFeaturesSpec implements JacksonParserFeaturesTrait {
+import static com.ofg.infrastructure.web.view.JacksonFeaturesTestConstants.JACKSON_PARSER_FEATURES_AS_LIST
+
+class DisablingJsonParserFeaturesSpec extends JsonJacksonFeaturesSpec {
 
     def setupSpec() {
         System.setProperty("json.jackson.parser.off", JACKSON_PARSER_FEATURES_AS_LIST.join(','))

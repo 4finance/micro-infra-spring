@@ -10,8 +10,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
 import org.springframework.http.converter.*
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
-import org.springframework.http.converter.xml.SourceHttpMessageConverter
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport
 
 import static com.ofg.config.BasicProfiles.DEVELOPMENT
 import static com.ofg.config.BasicProfiles.TEST
@@ -24,23 +23,18 @@ import static com.ofg.config.BasicProfiles.TEST
  */
 @CompileStatic
 @Configuration
-class ViewConfiguration extends WebMvcConfigurerAdapter {
+class ViewConfiguration extends WebMvcConfigurationSupport {
 
     private static final boolean ON = true
     private static final boolean OFF = false
 
     @Autowired
-    Environment environment
+    private Environment environment
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        super.configureMessageConverters(converters)
-        converters.addAll([new ByteArrayHttpMessageConverter(),
-                           new StringHttpMessageConverter(),
-                           new ResourceHttpMessageConverter(),
-                           new SourceHttpMessageConverter(),
-                           new FormHttpMessageConverter(),
-                           mappingJackson2HttpMessageConverter()])
+        converters.add(mappingJackson2HttpMessageConverter())
+        super.addDefaultHttpMessageConverters(converters)
     }
 
     private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {

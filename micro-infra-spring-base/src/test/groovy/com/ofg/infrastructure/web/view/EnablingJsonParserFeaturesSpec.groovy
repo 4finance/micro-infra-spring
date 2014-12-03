@@ -16,7 +16,7 @@ class EnablingJsonParserFeaturesSpec extends JsonJacksonFeaturesSpec implements 
     @Unroll
     def "should enable JsonParser's feature #parserFeature"() {
         given:
-            def converter = getPredefinedJacksonMessageConverter()
+            def converter = getFirstConfiguredJacksonMessageConverter()
             def feature = JsonParser.Feature.valueOf(parserFeature)
         expect:
             converter.objectMapper.isEnabled(feature)

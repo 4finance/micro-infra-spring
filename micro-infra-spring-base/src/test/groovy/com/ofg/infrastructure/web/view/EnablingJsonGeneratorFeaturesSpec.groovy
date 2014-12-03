@@ -16,7 +16,7 @@ class EnablingJsonGeneratorFeaturesSpec extends JsonJacksonFeaturesSpec implemen
     @Unroll
     def "should enable JsonGenerator's feature #generatorFeature"() {
         given:
-            def converter = getPredefinedJacksonMessageConverter()
+            def converter = getFirstConfiguredJacksonMessageConverter()
             def feature = JsonGenerator.Feature.valueOf(generatorFeature)
         expect:
             converter.objectMapper.isEnabled(feature)

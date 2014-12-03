@@ -2,18 +2,17 @@ package com.ofg.infrastructure.discovery
 
 import com.ofg.stub.config.StubRunnerConfiguration
 import groovy.transform.CompileStatic
+import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Import
-import org.springframework.context.annotation.Profile
-
-import static com.ofg.config.BasicProfiles.DEVELOPMENT
-import static com.ofg.config.BasicProfiles.TEST
 
 /**
- * Configuration that under {@link com.ofg.config.BasicProfiles#TEST and com.ofg.config.BasicProfiles#DEVELOPMENT}
+ * Configuration that under {@link com.ofg.config.BasicProfiles#TEST} and {@link com.ofg.config.BasicProfiles#DEVELOPMENT}
  * registers the {@link StubRunnerConfiguration}
+ *
+ * @see ZookeeperConnectorConditions
  */
 @CompileStatic
-@Profile([TEST, DEVELOPMENT])
+@Conditional(ZookeeperConnectorConditions.InMemoryZookeeperCondition)
 @Import(StubRunnerConfiguration)
 class ConsumerDrivenContractConfiguration {
 }

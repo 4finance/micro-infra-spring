@@ -45,6 +45,10 @@ class ViewConfiguration extends WebMvcConfigurationSupport {
         return converter
     }
 
+    private boolean prettyPrintingBasedOnProfile() {
+        return environment.acceptsProfiles(DEVELOPMENT, TEST)
+    }
+
     private void configureJsonJacksonFeatures(MappingJackson2HttpMessageConverter converter) {
         configureParserFeatures('json.jackson.parser.on', converter, ON)
         configureParserFeatures('json.jackson.parser.off', converter, OFF)
@@ -70,9 +74,5 @@ class ViewConfiguration extends WebMvcConfigurationSupport {
                 converter.objectMapper.configure(JsonGenerator.Feature.valueOf(featureName), featuresState)
             }
         }
-    }
-
-    private boolean prettyPrintingBasedOnProfile() {
-        return environment.acceptsProfiles(DEVELOPMENT, TEST)
     }
 }

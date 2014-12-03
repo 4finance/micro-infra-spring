@@ -2,7 +2,6 @@ package com.ofg.infrastructure.web.view
 
 import groovy.transform.PackageScope
 import groovy.transform.ToString
-import groovy.util.logging.Slf4j
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod
 
 @PackageScope
 @Controller
-@Slf4j
 class TestController {
 
     @RequestMapping(value = "/test", produces = "application/json", method = RequestMethod.GET)
@@ -31,7 +29,7 @@ class TestController {
 }
 
 @PackageScope
-@ToString
+@ToString(includePackage = false)
 class SampleBean {
     String sampleField
 }

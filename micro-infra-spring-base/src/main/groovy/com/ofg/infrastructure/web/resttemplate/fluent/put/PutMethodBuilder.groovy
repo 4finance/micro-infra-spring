@@ -6,6 +6,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.LocationFindingExecutor
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodyContainingWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
@@ -128,8 +129,8 @@ class PutMethodBuilder extends LocationFindingExecutor implements
         }
     }
 
-    private PutExecuteForResponseTypeRelated put(Class responseType) {
-        return new PutExecuteForResponseTypeRelated(params, restOperations, retryExecutor, responseType)
+    private ResponseTypeRelatedRequestsExecutor put(Class responseType) {
+        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, responseType, PUT)
     }
 
     @Override

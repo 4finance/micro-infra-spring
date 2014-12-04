@@ -5,6 +5,7 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodyContainingWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
@@ -12,6 +13,7 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.Pr
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
+import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
@@ -87,7 +89,7 @@ class GetMethodBuilder implements GetMethod, UrlParameterizableGetMethod, Respon
 
             @Override
             public <T> ListenableFuture<T> ofTypeAsync(Class<T> responseType) {
-                GetExecuteForResponseTypeRelated<T> get = get(responseType)
+                ResponseTypeRelatedRequestsExecutor<T> get = get(responseType)
                 ListenableFuture<ResponseEntity<T>> future = get.exchangeAsync()
                 return Futures.transform(future, { ResponseEntity input ->
                     return input?.body
@@ -111,8 +113,8 @@ class GetMethodBuilder implements GetMethod, UrlParameterizableGetMethod, Respon
         }
     }
 
-    private GetExecuteForResponseTypeRelated get(Class responseType) {
-        return new GetExecuteForResponseTypeRelated(params, restOperations, retryExecutor, responseType)
+    private ResponseTypeRelatedRequestsExecutor get(Class responseType) {
+        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, responseType, HttpMethod.GET)
     }
 
     @Override

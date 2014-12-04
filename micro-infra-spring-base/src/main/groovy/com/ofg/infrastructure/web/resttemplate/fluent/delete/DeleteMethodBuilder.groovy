@@ -5,13 +5,17 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodylessWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
+import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
+
+import javax.ws.rs.DELETE
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
 
@@ -91,8 +95,8 @@ class DeleteMethodBuilder implements DeleteMethod, UrlParameterizableDeleteMetho
         return delete().exchangeAsync()
     }
 
-    private DeleteExecuteForResponseTypeRelated delete() {
-        return new DeleteExecuteForResponseTypeRelated(params, restOperations, retryExecutor)
+    private ResponseTypeRelatedRequestsExecutor<Object> delete() {
+        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, Object, HttpMethod.DELETE)
     }
 
     @Override

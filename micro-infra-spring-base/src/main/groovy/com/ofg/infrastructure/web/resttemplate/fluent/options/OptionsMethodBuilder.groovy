@@ -5,6 +5,7 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
+import static org.springframework.http.HttpMethod.OPTIONS
 
 /**
  * Implementation of the {@link org.springframework.http.HttpMethod#HEAD method} fluent API
@@ -117,8 +119,8 @@ class OptionsMethodBuilder implements
         }
     }
 
-    private OptionsExecuteForResponseTypeRelated options(Class responseType) {
-        return new OptionsExecuteForResponseTypeRelated(params, restOperations, retryExecutor, responseType)
+    private ResponseTypeRelatedRequestsExecutor options(Class responseType) {
+        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, responseType, OPTIONS)
     }
 
     @Override

@@ -3,9 +3,12 @@ package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
 import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
 import groovy.transform.TypeChecked
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpMethod as SpringHttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
+
+import static org.springframework.http.HttpMethod.DELETE
 
 /**
  * Abstraction over {@link RestOperations} that for a {@link ResponseTypeRelatedRequestsExecutor#getHttpMethod()} 
@@ -23,19 +26,19 @@ import org.springframework.web.client.RestOperations
  * @see RestOperations
  */
 @TypeChecked
-abstract class ResponseTypeRelatedRequestsExecutor<T> {
+public class ResponseTypeRelatedRequestsExecutor<T> {
 
     protected final RestExecutor<T> restExecutor
     protected final Map params
     private final Class<T> responseType
+    final HttpMethod httpMethod
 
-    ResponseTypeRelatedRequestsExecutor(Map params, RestOperations restOperations, RetryExecutor retryExecutor, Class<T> responseType) {
+    public ResponseTypeRelatedRequestsExecutor(Map params, RestOperations restOperations, RetryExecutor retryExecutor, Class<T> responseType, HttpMethod httpMethod) {
         this.params = params
         this.responseType = responseType
         this.restExecutor = new RestExecutor(restOperations, retryExecutor)
+        this.httpMethod = httpMethod
     }
-
-    protected abstract SpringHttpMethod getHttpMethod()
 
     ResponseEntity<T> exchange() {
         return restExecutor.exchange(httpMethod, params, responseType)

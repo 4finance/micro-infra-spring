@@ -79,6 +79,14 @@ subprojects {
 
     sourceCompatibility = 1.7
 
+    configurations.all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'org.codehaus.groovy' && details.requested.name.startsWith("groovy")) {
+                useTarget("org.codehaus.groovy:groovy-all:${details.requested.version}")
+            }
+        }
+    }
+
     repositories {
         mavenLocal()
         jcenter()
@@ -174,6 +182,9 @@ subprojects {
             ignoreFailures = true
         }
     }
+
+    task allDeps(type: DependencyReportTask) {}
+    task allDepInsight(type: DependencyInsightReportTask) {}
 }
 
 project(':micro-deps-spring-config') {

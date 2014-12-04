@@ -7,7 +7,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import spock.lang.Specification
 
 class ServiceResolverConfigurationSpec extends Specification {
-    
+
     def "should resolve microservice port to the one in system prop"() {
         given:
             Integer expectedPort = 12345

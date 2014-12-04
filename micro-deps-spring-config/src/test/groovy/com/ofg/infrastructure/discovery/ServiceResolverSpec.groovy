@@ -12,7 +12,7 @@ import static com.ofg.config.BasicProfiles.TEST
 import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.*
 
 class ServiceResolverSpec extends Specification {
-    
+
     def 'should resolve urls properly'() {
         given:
             AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext()
@@ -20,7 +20,7 @@ class ServiceResolverSpec extends Specification {
             applicationContext.register(PropertySourceConfiguration, ServiceResolverConfiguration)
             applicationContext.refresh()
         and:
-            ServiceConfigurationResolver serviceConfigurationResolver = applicationContext.getBean(ServiceConfigurationResolver) 
+            ServiceConfigurationResolver serviceConfigurationResolver = applicationContext.getBean(ServiceConfigurationResolver)
             CuratorFramework curatorFramework = applicationContext.getBean(CuratorFramework)
             ServiceResolver serviceResolver = applicationContext.getBean(ServiceResolver)
         and:
@@ -42,5 +42,5 @@ class ServiceResolverSpec extends Specification {
             ServiceDiscoveryBuilder.builder(Void).basePath(serviceConfigurationResolver.basePath).client(curatorFramework).thisInstance(serviceInstance).build().start()
         }
     }
-   
+
 }

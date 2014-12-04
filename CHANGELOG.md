@@ -1,3 +1,12 @@
+0.7.1
+------
+Notable changes:
+* [stub-runner-spring](https://github.com/4finance/stub-runner-spring) upgraded to version `0.2.1`
+* [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.7.1`
+
+New features:
+* [Issue 12](https://github.com/4finance/micro-deps-spring-config/issues/12) Add possibility to get all defined Spring profiles from BasicProfile
+
 0.5.0
 ------
 Notable changes:

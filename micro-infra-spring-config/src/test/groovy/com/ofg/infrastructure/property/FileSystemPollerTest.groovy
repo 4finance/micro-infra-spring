@@ -16,7 +16,12 @@ import spock.util.concurrent.PollingConditions
 import javax.annotation.PostConstruct
 import java.util.concurrent.atomic.AtomicInteger
 
-@IgnoreIf({ os.macOs }) //Due to problems with native file system poller implementation - https://github.com/4finance/micro-infra-spring/issues/119
+import static com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthTestFixture.propertiesDecryptionTestingEnabled
+
+@IgnoreIf({
+    os.macOs ||     //Due to problems with native file system poller implementation - https://github.com/4finance/micro-infra-spring/issues/119
+            isPropertiesDecryptionTestingEnabled()
+})
 class FileSystemPollerTest extends AbstractIntegrationTest {
 
     @Shared

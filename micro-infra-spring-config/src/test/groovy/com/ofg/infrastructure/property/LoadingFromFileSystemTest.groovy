@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.property
 
+import com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthTestFixture
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.builder.SpringApplicationBuilder
@@ -9,8 +10,12 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import spock.lang.AutoCleanup
+import spock.lang.IgnoreIf
 import spock.lang.Shared
 
+import static com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthTestFixture.propertiesDecryptionTestingEnabled
+
+@IgnoreIf({ isPropertiesDecryptionTestingEnabled() })
 class LoadingFromFileSystemTest extends AbstractIntegrationTest {
 
     @Shared

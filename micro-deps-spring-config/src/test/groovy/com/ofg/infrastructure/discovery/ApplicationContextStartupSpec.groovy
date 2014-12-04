@@ -24,8 +24,8 @@ class ApplicationContextStartupSpec extends Specification {
             Throwable thrown = thrown(Throwable)
             extractRootCause(thrown).class == NoInstancesRunningException
         cleanup:
-            applicationContext.close()
-            testingServer.close()
+            applicationContext?.close()
+            testingServer?.close()
     }
          
 }

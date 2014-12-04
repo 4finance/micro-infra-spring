@@ -44,4 +44,8 @@ class ConsumerDrivenContractSpec extends Specification {
             get("$fooBarUrl/foobar").then().assertThat().body(equalTo(GENERIC_FOOBAR));
             get("$fooBarUrl/pl/foobar").then().assertThat().body(equalTo(CONTEXT_SPECIFIC_FOOBAR));
     }
+
+    def cleanup() {
+        testingServer.close()
+    }
 }

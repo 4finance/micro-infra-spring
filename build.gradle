@@ -93,7 +93,7 @@ subprojects {
             exclude group: "org.slf4j", module: "slf4j-log4j12"
             exclude group: "org.slf4j", module: "log4j-over-slf4j"
         }
-        compile 'com.ofg:stub-runner-spring:0.1.1-SNAPSHOT'
+        compile 'com.ofg:stub-runner-spring:0.2.1'
 
         testCompile "org.spockframework:spock-core:$spockVersion"
         testCompile "org.spockframework:spock-spring:$spockVersion"

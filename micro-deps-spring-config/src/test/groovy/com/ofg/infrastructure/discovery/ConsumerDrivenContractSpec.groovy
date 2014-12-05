@@ -2,7 +2,6 @@ package com.ofg.infrastructure.discovery
 
 import com.ofg.infrastructure.discovery.config.PropertySourceConfiguration
 import com.ofg.stub.config.StubRunnerConfiguration
-import groovy.util.logging.Slf4j
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import spock.lang.Specification
 
@@ -10,7 +9,6 @@ import static com.jayway.restassured.RestAssured.get
 import static com.ofg.config.BasicProfiles.TEST
 import static org.hamcrest.Matchers.equalTo
 
-@Slf4j
 class ConsumerDrivenContractSpec extends Specification {
 
     public static final String GENERIC_FOOBAR = 'foobar'

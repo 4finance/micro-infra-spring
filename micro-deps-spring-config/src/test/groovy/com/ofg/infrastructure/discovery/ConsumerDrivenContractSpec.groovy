@@ -23,9 +23,9 @@ class ConsumerDrivenContractSpec extends Specification {
 
     def setup() {
         applicationContext = new AnnotationConfigApplicationContext()
-        this.applicationContext.environment.setActiveProfiles(TEST)
-        this.applicationContext.register(PropertySourceConfiguration, StubRunnerConfiguration, ServiceResolverConfiguration)
-        this.applicationContext.refresh()
+        applicationContext.environment.setActiveProfiles(TEST)
+        applicationContext.register(PropertySourceConfiguration, StubRunnerConfiguration, ServiceResolverConfiguration)
+        applicationContext.refresh()
     }
 
     def 'should register a collaborator in a TestingZookeeper'()  {

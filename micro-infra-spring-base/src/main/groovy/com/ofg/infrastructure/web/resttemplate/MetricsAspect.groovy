@@ -2,11 +2,9 @@ package com.ofg.infrastructure.web.resttemplate
 
 import com.codahale.metrics.MetricRegistry
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.client.RestOperations
 
 import static org.springframework.util.StringUtils.trimLeadingCharacter

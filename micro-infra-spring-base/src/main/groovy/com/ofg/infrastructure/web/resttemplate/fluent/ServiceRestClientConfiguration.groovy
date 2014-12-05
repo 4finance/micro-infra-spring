@@ -1,9 +1,12 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
 
+import com.codahale.metrics.MetricRegistry
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
+import com.ofg.infrastructure.metrics.config.EnableMetrics
+import com.ofg.infrastructure.web.resttemplate.MetricsAspect
 import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.BeansException
@@ -27,6 +30,7 @@ import java.util.concurrent.ThreadFactory
  */
 @Configuration
 @CompileStatic
+@EnableMetrics
 class ServiceRestClientConfiguration {
 
     @Bean
@@ -52,6 +56,11 @@ class ServiceRestClientConfiguration {
         new ThreadFactoryBuilder()
                 .setNameFormat(AsyncRetryExecutor.simpleName + "-%d")
                 .build()
+    }
+
+    @Bean
+    MetricsAspect metricsAspect(MetricRegistry metricRegistry) {
+        return new MetricsAspect(metricRegistry)
     }
 
     @Bean

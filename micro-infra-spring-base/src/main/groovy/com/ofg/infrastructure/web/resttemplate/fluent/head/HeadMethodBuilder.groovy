@@ -8,9 +8,9 @@ import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodylessWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.MethodParamsApplier
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import groovy.transform.TypeChecked
-import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
@@ -22,60 +22,26 @@ import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.rec
  * Implementation of the {@link org.springframework.http.HttpMethod#HEAD method} fluent API
  */
 @TypeChecked
-class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, ResponseReceivingHeadMethod, HeadersHaving {
+class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, ResponseReceivingHeadMethod, HeadersHaving,
+        MethodParamsApplier<ResponseReceivingHeadMethod, ResponseReceivingHeadMethod, UrlParameterizableHeadMethod> {
 
     public static final String EMPTY_HOST = ''
 
     private final Map params = [:]
     private final RestOperations restOperations
     private final RetryExecutor retryExecutor
-    @Delegate private final BodylessWithHeaders<ResponseReceivingHeadMethod> withHeaders
+    @Delegate
+    private final BodylessWithHeaders<ResponseReceivingHeadMethod> withHeaders
 
     HeadMethodBuilder(String host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
         this.restOperations = restOperations
         params.host = host
-        withHeaders =  new BodylessWithHeaders<ResponseReceivingHeadMethod>(this, params, predefinedHeaders)
+        withHeaders = new BodylessWithHeaders<ResponseReceivingHeadMethod>(this, params, predefinedHeaders)
         this.retryExecutor = retryExecutor
     }
 
     HeadMethodBuilder(RestOperations restOperations) {
         this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE)
-    }
-
-    @Override
-    ResponseReceivingHeadMethod onUrl(URI url) {
-        params.url = url
-        return this
-    }
-
-    @Override
-    ResponseReceivingHeadMethod onUrl(String url) {
-        params.url = new URI(url)
-        return this
-    }
-
-    @Override
-    ResponseReceivingHeadMethod httpEntity(HttpEntity httpEntity) {
-        params.httpEntity = httpEntity
-        return this
-    }
-
-    @Override
-    UrlParameterizableHeadMethod onUrlFromTemplate(String urlTemplate) {
-        params.urlTemplate = urlTemplate
-        return this
-    }
-
-    @Override
-    ResponseReceivingHeadMethod withVariables(Object... urlVariables) {
-        params.urlVariablesArray = urlVariables
-        return this
-    }
-
-    @Override
-    ResponseReceivingHeadMethod withVariables(Map<String, ?> urlVariables) {
-        params.urlVariablesMap = urlVariables
-        return this
     }
 
     @Override
@@ -96,7 +62,7 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
     @Override
     ListenableFuture<HttpHeaders> httpHeadersAsync() {
         ListenableFuture<ResponseEntity> future = aResponseEntityAsync()
-        return Futures.transform(future, {ResponseEntity re -> re?.headers} as Function<ResponseEntity, HttpHeaders>)
+        return Futures.transform(future, { ResponseEntity re -> re?.headers } as Function<ResponseEntity, HttpHeaders>)
     }
 
     private ResponseTypeRelatedRequestsExecutor<Object> head() {
@@ -110,8 +76,6 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
 
     ListenableFuture<Void> ignoringResponseAsync() {
         ListenableFuture<ResponseEntity> future = aResponseEntityAsync()
-        return Futures.transform(future, {ResponseEntity re -> null} as Function<ResponseEntity, Void>)
+        return Futures.transform(future, { null } as Function<ResponseEntity<Object>, Void>)
     }
-
-
 }

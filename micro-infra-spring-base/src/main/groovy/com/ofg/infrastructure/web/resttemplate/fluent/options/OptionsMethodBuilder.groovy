@@ -7,11 +7,11 @@ import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.MethodParamsApplier
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving
 import groovy.transform.TypeChecked
-import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
@@ -25,7 +25,8 @@ import static org.springframework.http.HttpMethod.OPTIONS
 @TypeChecked
 class OptionsMethodBuilder implements
         OptionsMethod, UrlParameterizableOptionsMethod,
-        ResponseReceivingOptionsMethod, HeadersHaving, AllowHeaderReceiving {
+        ResponseReceivingOptionsMethod, HeadersHaving, AllowHeaderReceiving,
+        MethodParamsApplier<ResponseReceivingOptionsMethod, ResponseReceivingOptionsMethod, UrlParameterizableOptionsMethod> {
 
     public static final String EMPTY_HOST = ''
 
@@ -45,42 +46,6 @@ class OptionsMethodBuilder implements
 
     OptionsMethodBuilder(RestOperations restOperations) {
         this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE)
-    }
-
-    @Override
-    ResponseReceivingOptionsMethod onUrl(URI url) {
-        params.url = url
-        return this
-    }
-    
-    @Override
-    ResponseReceivingOptionsMethod onUrl(String url) {
-        params.url = new URI(url)
-        return this
-    }
-
-    @Override
-    ResponseReceivingOptionsMethod httpEntity(HttpEntity httpEntity) {
-        params.httpEntity = httpEntity
-        return this
-    }
-
-    @Override
-    UrlParameterizableOptionsMethod onUrlFromTemplate(String urlTemplate) {
-        params.urlTemplate = urlTemplate
-        return this
-    }
-
-    @Override
-    ResponseReceivingOptionsMethod withVariables(Object... urlVariables) {
-        params.urlVariablesArray = urlVariables
-        return this
-    }
-
-    @Override
-    ResponseReceivingOptionsMethod withVariables(Map<String, ?> urlVariables) {
-        params.urlVariablesMap = urlVariables
-        return this
     }
 
     @Override
@@ -131,7 +96,6 @@ class OptionsMethodBuilder implements
     @Override
     ListenableFuture<Void> ignoringResponseAsync() {
         ListenableFuture<ResponseEntity<Object>> future = aResponseEntity().ofTypeAsync(Object)
-        return Futures.transform(future, {null} as Function<ResponseEntity, Void>)
+        return Futures.transform(future, {null} as Function<ResponseEntity<Object>, Void>)
     }
-
 }

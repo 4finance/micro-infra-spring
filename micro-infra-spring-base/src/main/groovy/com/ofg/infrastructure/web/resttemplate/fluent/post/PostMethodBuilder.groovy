@@ -9,17 +9,17 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.L
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodyContainingWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.MethodParamsApplier
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving
 import groovy.transform.TypeChecked
-import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
-import static org.springframework.http.HttpMethod.POST
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
+import static org.springframework.http.HttpMethod.POST
 
 /**
  * Implementation of the {@link org.springframework.http.HttpMethod#POST method} fluent API
@@ -27,7 +27,8 @@ import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.rec
 @TypeChecked
 class PostMethodBuilder extends LocationFindingExecutor implements
         PostMethod, RequestHavingPostMethod, ResponseReceivingPostMethod,
-        UrlParameterizablePostMethod, HeadersSetting {
+        UrlParameterizablePostMethod, HeadersSetting,
+        MethodParamsApplier<RequestHavingPostMethod, ResponseReceivingPostMethod, UrlParameterizablePostMethod> {
 
     public static final String EMPTY_HOST = ''
 
@@ -46,42 +47,6 @@ class PostMethodBuilder extends LocationFindingExecutor implements
     @Override
     protected HttpMethod getHttpMethod() {
         return POST
-    }
-
-    @Override
-    RequestHavingPostMethod onUrl(URI url) {
-        params.url = url
-        return this
-    }
-
-    @Override
-    RequestHavingPostMethod onUrl(String url) {
-        params.url = new URI(url)
-        return this
-    }
-
-    @Override
-    ResponseReceivingPostMethod httpEntity(HttpEntity httpEntity) {
-        params.httpEntity = httpEntity
-        return this
-    }
-
-    @Override
-    UrlParameterizablePostMethod onUrlFromTemplate(String urlTemplate) {
-        params.urlTemplate = urlTemplate
-        return this
-    }
-
-    @Override
-    RequestHavingPostMethod withVariables(Object... urlVariables) {
-        params.urlVariablesArray = urlVariables
-        return this
-    }
-
-    @Override
-    RequestHavingPostMethod withVariables(Map<String, ?> urlVariables) {
-        params.urlVariablesMap = urlVariables
-        return this
     }
 
     @Override
@@ -140,6 +105,6 @@ class PostMethodBuilder extends LocationFindingExecutor implements
     @Override
     ListenableFuture<Void> ignoringResponseAsync() {
         ListenableFuture<ResponseEntity<Object>> future = aResponseEntity().ofTypeAsync(Object)
-        return Futures.transform(future, {null} as Function<ResponseEntity, Void>)
+        return Futures.transform(future, {null} as Function<ResponseEntity<Object>, Void>)
     }
 }

@@ -44,11 +44,11 @@ class ServiceRestClientConfiguration {
         return new AsyncRetryExecutor(retryExecutorService(retryPoolThreads))
     }
 
-    ScheduledExecutorService retryExecutorService(@Value('${retry.threads:10}') int retryPoolThreads) {
+    private ScheduledExecutorService retryExecutorService(@Value('${retry.threads:10}') int retryPoolThreads) {
         return Executors.newScheduledThreadPool(retryPoolThreads, retryThreadFactory())
     }
 
-    ThreadFactory retryThreadFactory() {
+    private ThreadFactory retryThreadFactory() {
         new ThreadFactoryBuilder()
                 .setNameFormat(AsyncRetryExecutor.simpleName + "-%d")
                 .build()

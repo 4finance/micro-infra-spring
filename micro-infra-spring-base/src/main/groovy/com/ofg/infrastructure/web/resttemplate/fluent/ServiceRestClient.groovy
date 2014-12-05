@@ -72,7 +72,7 @@ import org.springframework.web.client.RestOperations
  * concurrently, combine them, etc.
  *
  * @see <a href="https://github.com/4finance/micro-deps">micro-deps project</a>
- * @see <a href="">async-retry</a>
+ * @see <a href="https://github.com/nurkiewicz/async-retry">async-retry</a>
  */
 @CompileStatic
 class ServiceRestClient {

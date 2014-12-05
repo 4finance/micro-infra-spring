@@ -8,8 +8,7 @@ appender("CONSOLE", ConsoleAppender) {
 }
 
 //TODO: Fix console pollution during tests (it should be only logged to a test log file, but also available in Gradle test reports)
-root(INFO, ["CONSOLE"])
+root(WARN, ["CONSOLE"])
 
 logger("com.nurkiewicz.asyncretry", ALL)
 logger("com.ofg", DEBUG)
-logger("org.springframework.cloud.config.client", DEBUG)

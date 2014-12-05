@@ -1,6 +1,5 @@
 package com.ofg.infrastructure.property
 
-import com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthTestFixture
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.builder.SpringApplicationBuilder
@@ -10,12 +9,8 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import spock.lang.AutoCleanup
-import spock.lang.IgnoreIf
 import spock.lang.Shared
 
-import static com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthTestFixture.propertiesDecryptionTestingEnabled
-
-@IgnoreIf({ isPropertiesDecryptionTestingEnabled() })
 class LoadingFromFileSystemTest extends AbstractIntegrationTest {
 
     @Shared
@@ -26,7 +21,6 @@ class LoadingFromFileSystemTest extends AbstractIntegrationTest {
 
     def setupSpec() {
         System.setProperty("encrypt.key", "eKey")
-        System.setProperty(AppCoordinates.COUNTRY_CODE, "pl")
         context = new SpringApplicationBuilder(BasicApp)
                 .web(false)
                 .showBanner(false)
@@ -62,16 +56,6 @@ class LoadingFromFileSystemTest extends AbstractIntegrationTest {
     def 'should override property from country-specific .yaml file'() {
         expect:
             myBean.globalYamlDefault == 'overriden default yaml value'
-    }
-
-    def 'should decrypt property'() {
-        expect:
-            myBean.decryptedProp == 'enc.propertySource.prop'
-    }
-
-    def 'should decrypt yaml property'() {
-        expect:
-            myBean.decryptedYaml == 'encrypted.yaml.value'
     }
 
     def '.yaml has priority over .properties'() {
@@ -110,12 +94,6 @@ class MyBean {
 
     @Value('${global.yaml.default}')
     String globalYamlDefault;
-
-    @Value('${global.prop.secret}')
-    String decryptedProp;
-
-    @Value('${global.yaml.secret}')
-    String decryptedYaml;
 
     @Value('${custom}')
     String custom;

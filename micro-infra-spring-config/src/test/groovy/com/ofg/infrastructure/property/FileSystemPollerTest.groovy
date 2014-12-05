@@ -16,12 +16,7 @@ import spock.util.concurrent.PollingConditions
 import javax.annotation.PostConstruct
 import java.util.concurrent.atomic.AtomicInteger
 
-import static com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthTestFixture.propertiesDecryptionTestingEnabled
-
-@IgnoreIf({
-    os.macOs ||     //Due to problems with native file system poller implementation - https://github.com/4finance/micro-infra-spring/issues/119
-            isPropertiesDecryptionTestingEnabled()
-})
+@IgnoreIf({ os.macOs }) //Due to problems with native file system poller implementation - https://github.com/4finance/micro-infra-spring/issues/119
 class FileSystemPollerTest extends AbstractIntegrationTest {
 
     @Shared
@@ -36,7 +31,6 @@ class FileSystemPollerTest extends AbstractIntegrationTest {
 
     def setupSpec() {
         System.setProperty("encrypt.key", "eKey")
-        System.setProperty(AppCoordinates.COUNTRY_CODE, "pl")
         context = new SpringApplicationBuilder(RefreshingApp)
                 .web(false)
                 .showBanner(false)

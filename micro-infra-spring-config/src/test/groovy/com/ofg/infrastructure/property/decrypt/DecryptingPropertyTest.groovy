@@ -14,9 +14,9 @@ import spock.lang.IgnoreIf
 import spock.lang.Issue
 import spock.lang.Shared
 
-import static com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthTestFixture.isPropertiesDecryptionTestingEnabled
+import static com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthTestFixture.shouldDecryptionTestsBeExecuted
 
-@IgnoreIf({ isPropertiesDecryptionTestingEnabled() })
+@IgnoreIf({ !shouldDecryptionTestsBeExecuted() })
 class DecryptingPropertyTest extends AbstractIntegrationTest {
 
     @Shared

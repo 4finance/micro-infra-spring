@@ -13,13 +13,14 @@ class ConsumerDrivenContractSpec extends Specification {
 
     public static final String GENERIC_FOOBAR = 'foobar'
     public static final String CONTEXT_SPECIFIC_FOOBAR = 'foobar Poland'
-    private AnnotationConfigApplicationContext applicationContext
+
+    private static AnnotationConfigApplicationContext applicationContext
 
     static {
         //System.setProperty("ivy.message.logger.level", '4')
     }
 
-    def setup() {
+    def setupSpec() {
         applicationContext = new AnnotationConfigApplicationContext()
         applicationContext.environment.setActiveProfiles(TEST)
         applicationContext.register(PropertySourceConfiguration, StubRunnerConfiguration, ServiceResolverConfiguration)
@@ -43,7 +44,7 @@ class ConsumerDrivenContractSpec extends Specification {
             get("$fooBarUrl/pl/foobar").then().assertThat().body(equalTo(CONTEXT_SPECIFIC_FOOBAR));
     }
 
-    def cleanup() {
+    def cleanupSpec() {
         applicationContext.close()
     }
 }

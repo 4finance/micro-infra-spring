@@ -23,6 +23,10 @@ import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATI
 @ContextConfiguration(classes = [BaseConfiguration, CorrelationIdAspectSpecConfiguration], loader = SpringApplicationContextLoader)
 class CorrelationIdAspectSpec extends MicroserviceMvcWiremockSpec {
 
+    static {
+        System.setProperty('service.resolver.url', 'localhost:2182');
+    }
+
     def "should set correlationId on header via aspect"() {
         given:
             stubInteraction(get(urlMatching('.*')), aResponse().withStatus(200))

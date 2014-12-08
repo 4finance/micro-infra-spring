@@ -14,12 +14,16 @@ import org.springframework.test.context.ContextConfiguration
 @ContextConfiguration(classes = [BaseConfiguration, ServiceDiscoveryStubbingApplicationConfiguration], loader = SpringApplicationContextLoader)
 class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
 
-    public static final String COLLABORATOR_NAME = 'foo-bar'
-    public static final String PATH = '/pl/foobar'
-    public static final String CONTEXT_SPECIFIC_FOOBAR = 'foobar Poland'
-    
+    private static final String COLLABORATOR_NAME = 'foo-bar'
+    private static final String PATH = '/pl/foobar'
+    private static final String CONTEXT_SPECIFIC_FOOBAR = 'foobar Poland'
+
+    static {
+        System.setProperty('service.resolver.url', 'localhost:2183')
+    }
+
     @Autowired ServiceRestClient serviceRestClient
-    
+
     def "should send a request to provided URL with appending host when calling service"() {
         when:
             ResponseEntity<String> result = serviceRestClient.forService(COLLABORATOR_NAME).get().onUrl(PATH).andExecuteFor().aResponseEntity().ofType(String)

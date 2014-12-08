@@ -1,4 +1,4 @@
-0.7.2(https://github.com/4finance/micro-infra-spring/tree/0.7.2)
+[0.7.2](https://github.com/4finance/micro-infra-spring/tree/0.7.2)
 -----
 New features:
  * [Issue 5](https://github.com/4finance/micro-infra-spring/issues/5) Add Hystrix
@@ -13,9 +13,9 @@ New features:
 
 Notable changes:
  * Ability to disable property decryption tests with `-DdisableDecryptionTests=true` flag, see [Troubleshooting](https://github.com/4finance/micro-infra-spring/wiki/Development#troubleshooting)
- * [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.5.1`
- * [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.7.1`
- * [stub-runner-spring](https://github.com/4finance/stub-runner-spring) upgraded to version `0.2.1`
+ * [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config/issues?q=milestone%3A0.5.1) upgraded to version `0.5.1`
+ * [micro-deps](https://github.com/4finance/micro-deps/issues?q=milestone%3A0.7.1) upgraded to version `0.7.1`
+ * [stub-runner-spring](https://github.com/4finance/stub-runner-spring/issues?q=milestone%3A0.2.1) upgraded to version `0.2.1`
 
 [0.7.1](https://github.com/4finance/micro-infra-spring/tree/0.7.1)
 -----

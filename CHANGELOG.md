@@ -1,10 +1,14 @@
-0.7.2-SNAPSHOT
+0.7.2
 -----
 New features:
  * [Issue 5](https://github.com/4finance/micro-infra-spring/issues/5) Add Hystrix
  * [Issue 96](https://github.com/4finance/micro-infra-spring/issues/96) Disable uptodate plugin on Travis
  * [Issue 101](https://github.com/4finance/micro-infra-spring/issues/101) Add easy way to configure JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES
  * [Issue 116](https://github.com/4finance/micro-infra-spring/issues/116) Detection of using Java 8 API
+ * [Issue 99](https://github.com/4finance/micro-infra-spring/issues/99) External properties mechanism should support alternative microservice.json file names
+
+Notable changes:
+ * Ability to disable property decryption tests with `-DdisableDecryptionTests=true` flag, see [Troubleshooting](https://github.com/4finance/micro-infra-spring/wiki/Development#troubleshooting)
 
 [0.7.1](https://github.com/4finance/micro-infra-spring/tree/0.7.1)
 -----

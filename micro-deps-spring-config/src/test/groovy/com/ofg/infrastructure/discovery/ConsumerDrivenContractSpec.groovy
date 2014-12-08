@@ -3,6 +3,7 @@ package com.ofg.infrastructure.discovery
 import com.ofg.infrastructure.discovery.config.PropertySourceConfiguration
 import com.ofg.stub.config.StubRunnerConfiguration
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
+import spock.lang.Shared
 import spock.lang.Specification
 
 import static com.jayway.restassured.RestAssured.get
@@ -14,7 +15,8 @@ class ConsumerDrivenContractSpec extends Specification {
     public static final String GENERIC_FOOBAR = 'foobar'
     public static final String CONTEXT_SPECIFIC_FOOBAR = 'foobar Poland'
 
-    private static AnnotationConfigApplicationContext applicationContext
+    @Shared
+    private AnnotationConfigApplicationContext applicationContext
 
     static {
         //System.setProperty("ivy.message.logger.level", '4')

@@ -32,6 +32,15 @@ allprojects {
         mavenLocal()
         jcenter()
     }
+
+    configurations {
+        all {
+            resolutionStrategy {
+                exclude group: 'log4j', module: 'log4j'
+            }
+        }
+    }
+
 }
 
 task addHashFile << {

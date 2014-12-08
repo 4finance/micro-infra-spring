@@ -1,4 +1,6 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.head
+
+import com.google.common.util.concurrent.ListenableFuture
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.Executable
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HttpEntitySending
@@ -15,6 +17,8 @@ interface ResponseReceivingHeadMethod extends
         HttpEntitySending<ResponseReceivingHeadMethod>, ResponseIgnoring {
     
     ResponseEntity aResponseEntity()
+    ListenableFuture<ResponseEntity> aResponseEntityAsync()
 
     HttpHeaders httpHeaders()
+    ListenableFuture<HttpHeaders> httpHeadersAsync()
 }

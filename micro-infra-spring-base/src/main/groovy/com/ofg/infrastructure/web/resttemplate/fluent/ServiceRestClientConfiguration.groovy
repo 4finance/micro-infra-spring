@@ -1,16 +1,23 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder
+import com.nurkiewicz.asyncretry.AsyncRetryExecutor
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.BeansException
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.Ordered
 import org.springframework.web.client.RestOperations
+
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.ThreadFactory
 
 /**
  * Creates a bean of abstraction over {@link RestOperations}.
@@ -30,6 +37,21 @@ class ServiceRestClientConfiguration {
     @Bean
     RestOperations microInfraSpringRestTemplate() {
         return new RestTemplate()
+    }
+
+    @Bean
+    AsyncRetryExecutor retryExecutor(@Value('${retry.threads:10}') int retryPoolThreads) {
+        return new AsyncRetryExecutor(retryExecutorService(retryPoolThreads))
+    }
+
+    private ScheduledExecutorService retryExecutorService(@Value('${retry.threads:10}') int retryPoolThreads) {
+        return Executors.newScheduledThreadPool(retryPoolThreads, retryThreadFactory())
+    }
+
+    private ThreadFactory retryThreadFactory() {
+        new ThreadFactoryBuilder()
+                .setNameFormat(AsyncRetryExecutor.simpleName + "-%d")
+                .build()
     }
 
     @Bean

@@ -27,9 +27,9 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
                                                     .body(REQUEST_BODY)
                                                     .forLocation()
         then:
-            1 * restOperations.exchange(expectedLocation, 
-                                      PUT, 
-                                      { HttpEntity httpEntity -> httpEntity.body == REQUEST_BODY } as HttpEntity, 
+            1 * restOperations.exchange(expectedLocation,
+                                      PUT,
+                                      { HttpEntity httpEntity -> httpEntity.body == REQUEST_BODY } as HttpEntity,
                                       RESPONSE_TYPE) >> responseEntityWith(expectedLocation)
             actualLocation == expectedLocation
     }

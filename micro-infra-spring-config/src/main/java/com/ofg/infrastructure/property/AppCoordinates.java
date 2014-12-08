@@ -2,10 +2,10 @@ package com.ofg.infrastructure.property;
 
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver;
 import org.apache.commons.io.IOUtils;
+import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,24 +15,21 @@ public class AppCoordinates {
 
     public static final String CONFIG_FOLDER = "CONFIG_FOLDER";
     public static final String APP_ENV = "APP_ENV";
-    public static final String COUNTRY_CODE = "countryCode";
-    public static final String MICROSERVICE_JSON = "microservice.json";
 
     private final String environment;
     private final String applicationName;
     private final String countryCode;
 
-    public static AppCoordinates defaults() {
-        final URL res = AppCoordinates.class.getResource("/" + MICROSERVICE_JSON);
-        requireNonNull(res, MICROSERVICE_JSON + " not found");
+    public static AppCoordinates defaults(Resource microserviceConfigResource) {
+        requireNonNull(microserviceConfigResource, " Microservice configuration cannot be null");
         try {
-            final String configJson = IOUtils.toString(res);
+            final String configJson = IOUtils.toString(microserviceConfigResource.getURL());
             final ServiceConfigurationResolver configurationResolver = new ServiceConfigurationResolver(configJson);
             final String appName = configurationResolver.getMicroserviceName();
             final String countryName = configurationResolver.getBasePath();
             return new AppCoordinates(findEnvironment(), appName, countryName);
         } catch (IOException e) {
-            throw new IllegalStateException("Can't read " + MICROSERVICE_JSON, e);
+            throw new IllegalStateException("Can't read " + microserviceConfigResource, e);
         }
     }
 

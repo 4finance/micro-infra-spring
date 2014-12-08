@@ -30,6 +30,13 @@ dependencies {
     testCompile 'com.jayway.awaitility:awaitility:1.6.2'
 }
 
+test {
+    String disableDecryptionTestsPropertyValue = System.getProperty("disableDecryptionTests")
+    if (disableDecryptionTestsPropertyValue != null) {
+        systemProperty("disableDecryptionTests", disableDecryptionTestsPropertyValue)
+    }
+}
+
 repositories {
     maven { url "http://oss.sonatype.org/content/repositories/snapshots/" } //Spock
 }

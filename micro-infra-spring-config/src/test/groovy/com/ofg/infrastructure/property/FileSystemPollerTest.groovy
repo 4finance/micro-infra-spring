@@ -31,7 +31,6 @@ class FileSystemPollerTest extends AbstractIntegrationTest {
 
     def setupSpec() {
         System.setProperty("encrypt.key", "eKey")
-        System.setProperty(AppCoordinates.COUNTRY_CODE, "pl")
         context = new SpringApplicationBuilder(RefreshingApp)
                 .web(false)
                 .showBanner(false)

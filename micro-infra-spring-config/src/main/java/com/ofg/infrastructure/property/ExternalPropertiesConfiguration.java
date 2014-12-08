@@ -1,11 +1,13 @@
 package com.ofg.infrastructure.property;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 
 import java.io.File;
@@ -15,6 +17,9 @@ public class ExternalPropertiesConfiguration implements ApplicationContextInitia
 
     @Autowired(required = false)
     private TextEncryptor textEncryptor;
+
+    @Value("${microservice.config.file:classpath:microservice.json}")
+    private Resource microserviceConfig;
 
     @Bean
     public FileSystemLocator fileSystemLocator() {
@@ -26,7 +31,7 @@ public class ExternalPropertiesConfiguration implements ApplicationContextInitia
 
     @Bean
     public AppCoordinates appCoordinates() {
-        return AppCoordinates.defaults();
+        return AppCoordinates.defaults(microserviceConfig);
     }
 
     private File findPropertiesFolder() {

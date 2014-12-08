@@ -6,6 +6,9 @@ import com.ofg.infrastructure.discovery.web.HttpMockServer
 import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClient
 import groovy.transform.PackageScope
 import groovy.transform.TypeChecked
+import org.junit.ClassRule
+import org.junit.contrib.java.lang.system.ClearSystemProperties
+import org.junit.contrib.java.lang.system.ProvideSystemProperty
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
@@ -15,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
+import spock.lang.Shared
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*
 import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
@@ -23,9 +27,11 @@ import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATI
 @ContextConfiguration(classes = [BaseConfiguration, CorrelationIdAspectSpecConfiguration], loader = SpringApplicationContextLoader)
 class CorrelationIdAspectSpec extends MicroserviceMvcWiremockSpec {
 
-    static {
-        System.setProperty('service.resolver.url', 'localhost:2182');
-    }
+    @Shared @ClassRule
+    public final ProvideSystemProperty resolverUrlPropertyIsSet = new ProvideSystemProperty('service.resolver.url', 'localhost:2182');
+
+    @Shared @ClassRule
+    public final ClearSystemProperties resolverUrlPropertyIsCleared = new ClearSystemProperties('service.resolver.url')
 
     def "should set correlationId on header via aspect"() {
         given:

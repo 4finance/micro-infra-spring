@@ -1,14 +1,21 @@
-0.7.2
+0.7.2(https://github.com/4finance/micro-infra-spring/tree/0.7.2)
 -----
 New features:
  * [Issue 5](https://github.com/4finance/micro-infra-spring/issues/5) Add Hystrix
+ * [Issue 13](https://github.com/4finance/micro-infra-spring/issues/13) Add automatic retry to fluent RestTemplate calls
+ * [Issue 70](https://github.com/4finance/micro-infra-spring/issues/70) More comprehensive dependency management
  * [Issue 96](https://github.com/4finance/micro-infra-spring/issues/96) Disable uptodate plugin on Travis
- * [Issue 101](https://github.com/4finance/micro-infra-spring/issues/101) Add easy way to configure JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES
- * [Issue 116](https://github.com/4finance/micro-infra-spring/issues/116) Detection of using Java 8 API
  * [Issue 99](https://github.com/4finance/micro-infra-spring/issues/99) External properties mechanism should support alternative microservice.json file names
+ * [Issue 101](https://github.com/4finance/micro-infra-spring/issues/101) Add easy way to configure JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES
+ * [Issue 111](https://github.com/4finance/micro-infra-spring/issues/111) Ensure that we ignore unknown JSON fields
+ * [Issue 116](https://github.com/4finance/micro-infra-spring/issues/116) Detection of using Java 8 API
+ * [Issue 128](https://github.com/4finance/micro-infra-spring/issues/128) BindException after upgrade of micro-deps-spring-config to 0.5.1
 
 Notable changes:
  * Ability to disable property decryption tests with `-DdisableDecryptionTests=true` flag, see [Troubleshooting](https://github.com/4finance/micro-infra-spring/wiki/Development#troubleshooting)
+ * [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.5.1`
+ * [micro-deps-spring-config](https://github.com/4finance/micro-deps-spring-config) upgraded to version `0.7.1`
+ * [stub-runner-spring](https://github.com/4finance/stub-runner-spring) upgraded to version `0.2.1`
 
 [0.7.1](https://github.com/4finance/micro-infra-spring/tree/0.7.1)
 -----

@@ -11,7 +11,7 @@ import org.apache.curator.x.discovery.ServiceInstance
 import org.apache.curator.x.discovery.UriSpec
 import spock.lang.Specification
 
-import static com.ofg.infrastructure.discovery.MicroserviceConfiguration.VALID_CONFIGURATION
+import static com.ofg.infrastructure.discovery.MicroserviceConfiguration.CONFIGURATION_WITH_PATH_ELEM
 
 class SpecWithZookeper extends Specification {
 
@@ -48,7 +48,7 @@ class SpecWithZookeper extends Specification {
     }
 
     String serviceConfig() {
-        return VALID_CONFIGURATION
+        return CONFIGURATION_WITH_PATH_ELEM
     }
 
     def cleanup() {

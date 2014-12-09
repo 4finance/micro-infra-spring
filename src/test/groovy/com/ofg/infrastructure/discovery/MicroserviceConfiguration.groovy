@@ -22,7 +22,7 @@ class MicroserviceConfiguration {
                             }
                             """
 
-    public static final String VALID_CONFIGURATION = """
+    public static final String CONFIGURATION_WITH_PATH_ELEM = """
                             {
                                 "pl": {
                                     "this": "com/ofg/service",

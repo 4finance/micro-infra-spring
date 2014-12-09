@@ -8,7 +8,7 @@ class ServiceConfigurationResolverSpec extends Specification {
 
     def 'should parse valid configuration'() {
         when:
-            def resolver = new ServiceConfigurationResolver(VALID_CONFIGURATION)
+            def resolver = new ServiceConfigurationResolver(CONFIGURATION_WITH_PATH_ELEM)
         then:
             resolver.basePath == 'pl'
             resolver.microserviceName == 'com/ofg/service'

@@ -22,6 +22,18 @@ class MicroserviceConfiguration {
                             }
                             """
 
+    public static final String FLAT_CONFIGURATION = """
+                            {
+                                "pl": {
+                                    "this": "com/ofg/service",
+                                    "dependencies": {
+                                        "ping" : "com/ofg/ping",
+                                        "pong" : "com/ofg/pong"
+                                    }
+                                }
+                            }
+                            """
+
     public static final String CONFIGURATION_WITH_PATH_ELEM = """
                             {
                                 "pl": {
@@ -57,17 +69,6 @@ class MicroserviceConfiguration {
                                 "pl": {
                                     "this": "com/ofg/service",
                                     "dependencies": "no"
-                                }
-                            }
-                            """
-
-    public static final String INVALID_COLLABORATOR_ELEMENT = """
-                            {
-                                "pl": {
-                                    "this": "com/ofg/service",
-                                    "dependencies": {
-                                        "ping" : "com/ofg/pong"
-                                    }
                                 }
                             }
                             """

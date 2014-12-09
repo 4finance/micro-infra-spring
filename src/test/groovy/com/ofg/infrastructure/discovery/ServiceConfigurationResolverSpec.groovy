@@ -16,19 +16,21 @@ class ServiceConfigurationResolverSpec extends Specification {
                                       'pong':['path':'com/ofg/pong']]
     }
 
+    def 'should parse flat configuration'() {
+        when:
+            def resolver = new ServiceConfigurationResolver(FLAT_CONFIGURATION)
+        then:
+            resolver.basePath == 'pl'
+            resolver.microserviceName == 'com/ofg/service'
+            resolver.dependencies == ['ping':['path':'com/ofg/ping'],
+                                      'pong':['path':'com/ofg/pong']]
+    }
+
     def 'should fail on missing "this" element'() {
         when:
             new ServiceConfigurationResolver(MISSING_THIS_ELEMENT)
         then:
             thrown(InvalidMicroserviceConfigurationException)
-    }
-
-    def 'should fail on invalid collaborator element'() {
-        when:
-            new ServiceConfigurationResolver(INVALID_COLLABORATOR_ELEMENT)
-        then:
-            def e = thrown(InvalidMicroserviceConfigurationException)
-            print e.message
     }
 
     def 'should fail on invalid dependencies'() {

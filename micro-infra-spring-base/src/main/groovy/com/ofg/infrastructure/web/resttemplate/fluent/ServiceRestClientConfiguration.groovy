@@ -3,6 +3,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent
 import com.codahale.metrics.MetricRegistry
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor
+import com.ofg.infrastructure.discovery.EnableServiceDiscovery
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.metrics.config.EnableMetrics
@@ -31,6 +32,7 @@ import java.util.concurrent.ThreadFactory
 @Configuration
 @CompileStatic
 @EnableMetrics
+@EnableServiceDiscovery
 class ServiceRestClientConfiguration {
 
     @Bean

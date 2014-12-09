@@ -36,7 +36,6 @@ import org.springframework.context.annotation.Import
 @Configuration
 @EnableHealthCheck
 @EnableMetrics
-@EnableServiceDiscovery
 @Import([WebInfrastructureConfiguration])
 class BaseWebAppConfiguration {
 }

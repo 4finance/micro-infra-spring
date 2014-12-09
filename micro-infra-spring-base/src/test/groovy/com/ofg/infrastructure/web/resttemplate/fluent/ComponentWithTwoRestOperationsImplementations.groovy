@@ -13,15 +13,17 @@ class ComponentWithTwoRestOperationsImplementations {
         this.restOperations = restOperations
     }
 
-    boolean hasDependenciesInjectedCorrectly() {
-        return nonNullDependencies() && nonMicroInfraSpringRestOperationsWasInjected()
+    void hasDependenciesInjectedCorrectly() {
+        nonNullDependencies()
+        nonMicroInfraSpringRestOperationsWasInjected()
     }
 
-    private boolean nonNullDependencies() {
-        return serviceRestClient != null && restOperations != null
+    private void nonNullDependencies() {
+        assert serviceRestClient != null
+        assert restOperations != null
     }
 
-    private boolean nonMicroInfraSpringRestOperationsWasInjected() {
-        return restOperations.getClass() == TestRestTemplate
+    private void nonMicroInfraSpringRestOperationsWasInjected() {
+        assert restOperations instanceof TestRestTemplate
     }
 }

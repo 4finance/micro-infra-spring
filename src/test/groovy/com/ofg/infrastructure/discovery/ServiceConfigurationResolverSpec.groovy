@@ -6,7 +6,7 @@ import static com.ofg.infrastructure.discovery.MicroserviceConfiguration.*
 
 class ServiceConfigurationResolverSpec extends Specification {
 
-    def 'should parse valid configuration'() {
+    def 'should parse configuration with path element only'() {
         when:
             def resolver = new ServiceConfigurationResolver(CONFIGURATION_WITH_PATH_ELEM)
         then:

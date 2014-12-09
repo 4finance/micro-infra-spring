@@ -1,7 +1,6 @@
 package com.ofg.infrastructure.discovery
 
 import groovy.json.JsonSlurper
-import groovy.util.logging.Slf4j
 
 import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.*
 
@@ -20,6 +19,8 @@ class ServiceConfigurationResolver {
         String basePath = json.keySet().first()
         def serviceMetadata = json[basePath]
         checkThatServiceMetadataContainsValidElements(serviceMetadata)
+        convertFlatDependenciesToMapFormat(serviceMetadata)
+        validateDependencyEntries(serviceMetadata)
         setDefaultsForMissingOptionalElements(serviceMetadata)
         serviceMetadata.dependencies = convertDependenciesToMapWithNameAsKey(serviceMetadata.dependencies)
         return [basePath, serviceMetadata]
@@ -44,16 +45,23 @@ class ServiceConfigurationResolver {
         if (serviceMetadata.dependencies && !(serviceMetadata.dependencies instanceof Map)) {
             throw new InvalidMicroserviceConfigurationException('invalid "dependencies" element')
         }
-        validateEveryDependencyFormat(serviceMetadata)
     }
 
-    private static void validateEveryDependencyFormat(serviceMetadata) {
+    private static void convertFlatDependenciesToMapFormat(serviceMetadata) {
+        serviceMetadata.dependencies.each {
+            if (it.value instanceof String) {
+                it.value = [(PATH):it.value]
+            }
+        }
+    }
+
+    private static void validateDependencyEntries(serviceMetadata) {
         List invalidDependenciesNames = serviceMetadata.dependencies
                 .findAll { !(it.value instanceof Map) }
                 .collect { key, value -> key }
         if (!invalidDependenciesNames.isEmpty()) {
             throw new InvalidMicroserviceConfigurationException("following dependencies have invalid format: " +
-                                                        " $invalidDependenciesNames (Check documentation for details.)")
+                    " $invalidDependenciesNames (Check documentation for details.)")
         }
     }
 

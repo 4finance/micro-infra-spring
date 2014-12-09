@@ -3,12 +3,16 @@ package com.ofg.infrastructure.healthcheck
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
 import com.ofg.infrastructure.base.ServiceDiscoveryStubbingApplicationConfiguration
+import org.junit.ClassRule
+import org.junit.contrib.java.lang.system.ClearSystemProperties
+import org.junit.contrib.java.lang.system.ProvideSystemProperty
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpMethod
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
+import spock.lang.Shared
 
 import static org.springframework.http.MediaType.TEXT_PLAIN
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -17,7 +21,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ContextConfiguration(classes = TestConfig, loader = SpringApplicationContextLoader)
 class PingControllerMvcSpec extends MvcCorrelationIdSettingIntegrationSpec {
-    
+
+    @Shared @ClassRule
+    public final ProvideSystemProperty resolverUrlPropertyIsSet = new ProvideSystemProperty('service.resolver.url', 'localhost:2184');
+
+    @Shared @ClassRule
+    public final ClearSystemProperties resolverUrlPropertyIsCleared = new ClearSystemProperties('service.resolver.url')
+
     def "should return OK on ping for Zabbix"() {
         expect:
             mockMvc.perform(get('/ping').accept(TEXT_PLAIN))

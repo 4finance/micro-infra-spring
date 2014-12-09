@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * Auto-configuration} for Swagger API Documentation. Equivalent to enabling
  * {@link com.ofg.infrastructure.config.EnableMicroserviceDocumentation} in your configuration.
  * <p/>
- * The configuration will not be activated if {@literal com.ofg.infrastructure.swagger.auto=false}.
+ * The configuration will not be activated if {@literal com.ofg.infrastructure.documentation.auto=false}.
  *
  * @see com.ofg.infrastructure.config.EnableMicroserviceDocumentation
  */

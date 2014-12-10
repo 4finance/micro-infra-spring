@@ -1,3 +1,16 @@
+0.3.2-SNAPSHOT
+-----
+Bug fixes:
+* [Issue 16](https://github.com/4finance/stub-runner/issues/16) logback.xml should not be packaged into JAR
+
+0.3.1
+-----
+Bug fixes:
+* [Issue 17](https://github.com/4finance/stub-runner/issues/17) Remove dependency on Servlet API v2.5
+
+New features:
+* [Issue 14](https://github.com/4finance/stub-runner/issues/14) Switch releasing to Axion plugin
+
 0.3.0
 -----
 New features:

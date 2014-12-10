@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.discovery.util
 
 import com.ofg.infrastructure.discovery.InstanceDetails
+import com.google.common.annotations.VisibleForTesting
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.discovery.ZookeeperServiceResolver
@@ -26,12 +27,12 @@ import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.*
 class MicroDepsService {
     private static final RetryPolicy DEFAULT_RETRY_POLICY = new ExponentialBackoffRetry(50, 20, 500)
 
-    private ServiceConfigurationResolver configurationResolver
-    private DependencyWatcher dependencyWatcher
-    private CuratorFramework curatorFramework
-    private ServiceInstance serviceInstance
-    private ServiceDiscovery serviceDiscovery
-    private ServiceResolver serviceResolver
+    private final ServiceConfigurationResolver configurationResolver
+    private final DependencyWatcher dependencyWatcher
+    private final CuratorFramework curatorFramework
+    private final ServiceInstance serviceInstance
+    private final ServiceDiscovery serviceDiscovery
+    @VisibleForTesting final ServiceResolver serviceResolver
 
     /**
      * Creates new instance of the class and registers microservice based on provided {@code microserviceConfig} in Zookeepaer server located at {@code zookeperUrl}.
@@ -59,9 +60,14 @@ class MicroDepsService {
                 .name(configurationResolver.microserviceName)
                 .payload(instanceDetails())
                 .build()
-        serviceDiscovery = ServiceDiscoveryBuilder.builder(InstanceDetails).basePath(configurationResolver.basePath).client(curatorFramework).thisInstance(serviceInstance).build()
+        serviceDiscovery = ServiceDiscoveryBuilder
+                .builder(InstanceDetails)
+                .basePath(configurationResolver.basePath)
+                .client(curatorFramework)
+                .thisInstance(serviceInstance)
+                .build()
         dependencyWatcher = new DependencyWatcher(configurationResolver.dependencies, serviceDiscovery, new DefaultDependencyPresenceOnStartupVerifier())
-        serviceResolver = new ZookeeperServiceResolver(configurationResolver, serviceDiscovery)
+        serviceResolver = new ZookeeperServiceResolver(configurationResolver, serviceDiscovery, curatorFramework)
     }
 
     private InstanceDetails instanceDetails() {

@@ -198,3 +198,6 @@ if(project.hasProperty("coverage")) {
     }
 }
 
+wrapper {
+    gradleVersion '2.2'
+}

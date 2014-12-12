@@ -3,7 +3,7 @@ package com.ofg.infrastructure.base
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
-import org.apache.curator.retry.RetryNTimes
+import org.apache.curator.retry.ExponentialBackoffRetry
 import org.apache.curator.test.TestingServer
 import org.apache.curator.x.discovery.ServiceDiscovery
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
@@ -37,7 +37,7 @@ class SpecWithZookeper extends Specification {
                 .port(10)
                 .name(this.serviceConfigurationResolver.microserviceName)
                 .build()
-        curatorFramework = CuratorFrameworkFactory.newClient(server.connectString, new RetryNTimes(5, 500))
+        curatorFramework = CuratorFrameworkFactory.newClient(server.connectString, new ExponentialBackoffRetry(20, 20, 500))
         curatorFramework.start()
         serviceDiscovery = ServiceDiscoveryBuilder.builder(Void)
                 .basePath(this.serviceConfigurationResolver.basePath)

@@ -10,7 +10,7 @@ import groovy.transform.TypeChecked
 import org.apache.curator.RetryPolicy
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
-import org.apache.curator.retry.RetryNTimes
+import org.apache.curator.retry.ExponentialBackoffRetry
 import org.apache.curator.x.discovery.ServiceDiscovery
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
 import org.apache.curator.x.discovery.ServiceInstance
@@ -18,7 +18,7 @@ import org.apache.curator.x.discovery.UriSpec
 
 @TypeChecked
 class MicroDepsService {
-    private  static final RetryNTimes DEFAULT_RETRY_POLICY = new RetryNTimes(20, 5000)
+    private  static final RetryPolicy DEFAULT_RETRY_POLICY = new ExponentialBackoffRetry(50, 20, 500)
 
     private ServiceConfigurationResolver configurationResolver
     private DependencyWatcher dependencyWatcher

@@ -39,10 +39,10 @@ repositories {
 }
 
 ext {
-    groovyVersion = '2.3.7'
+    groovyVersion = '2.3.8'
     spockVersion = '0.7-groovy-2.0'
-    curatorVersion = '2.6.0'
-    undertowVersion = '1.0.17.Final'
+    curatorVersion = '2.7.0'
+    undertowVersion = '1.1.1.Final'
 }
 
 configurations {
@@ -62,13 +62,8 @@ dependencies {
     compile 'com.google.guava:guava:18.0'
     compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
 
-    testCompile("org.spockframework:spock-core:$spockVersion") {
-        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
-    }
-
-    testCompile ('com.jayway.awaitility:awaitility-groovy:1.6.2') {
-        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
-    }
+    testCompile"org.spockframework:spock-core:$spockVersion"
+    testCompile 'com.jayway.awaitility:awaitility-groovy:1.6.3'
 }
 
 bintrayUpload.dependsOn 'build'

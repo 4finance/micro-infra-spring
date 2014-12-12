@@ -1,3 +1,8 @@
+0.7.2
+-----
+Noteable changes:
+* Change default retry policy in `MicroDepsService` from retry N times to expotential backoff
+
 0.7.1
 -----
 Bug fixes:

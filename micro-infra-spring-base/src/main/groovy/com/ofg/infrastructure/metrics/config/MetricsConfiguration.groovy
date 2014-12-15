@@ -2,6 +2,13 @@ package com.ofg.infrastructure.metrics.config
 
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.graphite.Graphite
+import com.codahale.metrics.graphite.GraphiteSender
+import com.codahale.metrics.graphite.GraphiteUDP
+import com.codahale.metrics.graphite.PickledGraphite
+import com.codahale.metrics.jvm.FileDescriptorRatioGauge
+import com.codahale.metrics.jvm.GarbageCollectorMetricSet
+import com.codahale.metrics.jvm.MemoryUsageGaugeSet
+import com.codahale.metrics.jvm.ThreadStatesGaugeSet
 import com.ofg.config.BasicProfiles
 import com.ofg.infrastructure.metrics.publishing.GraphitePublisher
 import com.ofg.infrastructure.metrics.publishing.JmxPublisher
@@ -41,16 +48,24 @@ class MetricsConfiguration {
     }
 
     @Bean
-    @Profile(BasicProfiles.PRODUCTION)
-    @Conditional(IsGraphitePublishingEnabled.class)
-    Graphite graphite(@Value('${graphite.host:graphite.4finance.net}') String hostname, @Value('${graphite.port:2003}') int port) {
-        return new Graphite(new InetSocketAddress(hostname, port))
+    @Conditional(MetricsActivationConditions.GraphiteEnabledCondition)
+    GraphiteSender graphite(@Value('${graphite.host:graphite.4finance.net}') String hostname,
+                      @Value('${graphite.port:2003}') int port,
+                      @Value('${graphite.format:plain}') String format) {
+        switch (format) {
+            case "plain":
+                return new GraphiteUDP(new InetSocketAddress(hostname, port))
+            case "pickle":
+                return new PickledGraphite(new InetSocketAddress(hostname, port))
+            default:
+                throw new IllegalArgumentException("Unexpected graphite.format value. Expected values are [plain, pickle]")
+        }
     }
 
     @Bean(initMethod = "start", destroyMethod = "stop")
-    @Profile(BasicProfiles.PRODUCTION)
-    @Conditional(IsGraphitePublishingEnabled.class)
-    GraphitePublisher graphitePublisher(Graphite graphite, MetricRegistry metricRegistry,
+    @Conditional(MetricsActivationConditions.GraphiteEnabledCondition)
+    GraphitePublisher graphitePublisher(GraphiteSender graphite,
+                                        MetricRegistry metricRegistry,
                                         @Value('${graphite.publishing.interval:15000}') long publishingIntervalInMs) {
         PublishingInterval publishingInterval = new PublishingInterval(publishingIntervalInMs, MILLISECONDS)
         return new GraphitePublisher(graphite, publishingInterval, metricRegistry, MINUTES, MILLISECONDS)
@@ -66,6 +81,11 @@ class MetricsConfiguration {
 
     @Bean
     MetricRegistry metricRegistry(MetricPathProvider metricPathProvider) {
-        return new PathPrependingMetricRegistry(metricPathProvider)
+        MetricRegistry metricRegistry = new PathPrependingMetricRegistry(metricPathProvider)
+        metricRegistry.register(MetricRegistry.name("jvm", "gc"), new GarbageCollectorMetricSet());
+        metricRegistry.register(MetricRegistry.name("jvm", "memory"), new MemoryUsageGaugeSet());
+        metricRegistry.register(MetricRegistry.name("jvm", "thread-states"), new ThreadStatesGaugeSet());
+        metricRegistry.register(MetricRegistry.name("jvm", "fd", "usage"), new FileDescriptorRatioGauge());
+        return metricRegistry;
     }
 }

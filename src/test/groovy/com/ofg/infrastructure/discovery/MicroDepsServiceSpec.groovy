@@ -3,7 +3,14 @@ import com.jayway.awaitility.groovy.AwaitilitySupport
 import com.ofg.infrastructure.discovery.util.MicroDepsService
 import com.ofg.infrastructure.discovery.watcher.DependencyState
 import com.ofg.infrastructure.discovery.watcher.DependencyWatcherListener
+import org.apache.curator.RetryPolicy
+import org.apache.curator.framework.CuratorFramework
+import org.apache.curator.framework.CuratorFrameworkFactory
+import org.apache.curator.retry.RetryNTimes
 import org.apache.curator.test.TestingServer
+import org.apache.curator.x.discovery.ServiceDiscovery
+import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
+import org.apache.curator.x.discovery.ServiceProvider
 import spock.lang.Specification
 
 import java.util.concurrent.TimeUnit
@@ -11,7 +18,9 @@ import java.util.concurrent.TimeUnit
 @Mixin(AwaitilitySupport)
 class MicroDepsServiceSpec extends Specification {
 
-    TestingServer server
+    private static final RetryPolicy RETRY_POLICY = new RetryNTimes(50, 100)
+    private TestingServer server
+    private CuratorFramework curatorFramework
 
     final static String MICRO_A = """
 {
@@ -40,6 +49,30 @@ class MicroDepsServiceSpec extends Specification {
 
     private void setupTestingServer() {
         server = new TestingServer()
+        curatorFramework = CuratorFrameworkFactory.newClient(server.connectString, RETRY_POLICY)
+        curatorFramework.start()
+    }
+
+    def 'should register dependencies of a service as payload'() {
+        given:
+            MicroDepsService testService =
+                    new MicroDepsService(server.connectString, "pl", "microUrl", 8866, MicroserviceConfiguration.FLAT_CONFIGURATION)
+            testService.start()
+        when:
+            ServiceDiscovery discovery = ServiceDiscoveryBuilder.builder(InstanceDetails)
+                    .basePath('/pl')
+                    .client(curatorFramework)
+                    .build()
+            discovery.start()
+            ServiceProvider serviceProvider = discovery.serviceProviderBuilder().serviceName('com/ofg/service').build()
+            serviceProvider.start()
+            InstanceDetails payload = serviceProvider.getInstance().payload
+        then:
+            payload.dependencies == ['com/ofg/ping', 'com/ofg/pong']
+        cleanup:
+            serviceProvider?.close()
+            discovery?.close()
+            testService?.stop()
     }
 
     def "should setup service discovery properly"() {
@@ -93,6 +126,7 @@ class MicroDepsServiceSpec extends Specification {
     }
 
     def cleanup() {
+        curatorFramework.close()
         server.close()
     }
 }

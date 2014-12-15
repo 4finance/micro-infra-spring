@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.discovery.util
 
+import com.ofg.infrastructure.discovery.InstanceDetails
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.discovery.ZookeeperServiceResolver
@@ -15,6 +16,8 @@ import org.apache.curator.x.discovery.ServiceDiscovery
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
 import org.apache.curator.x.discovery.ServiceInstance
 import org.apache.curator.x.discovery.UriSpec
+
+import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.*
 
 @TypeChecked
 class MicroDepsService {
@@ -40,11 +43,20 @@ class MicroDepsService {
                 .address(microserviceUrl)
                 .port(microservicePort)
                 .name(configurationResolver.microserviceName)
+                .payload(instanceDetails())
                 .build()
-        serviceDiscovery = ServiceDiscoveryBuilder.builder(Void).basePath(configurationResolver.basePath).client(curatorFramework).thisInstance(serviceInstance).build()
+        serviceDiscovery = ServiceDiscoveryBuilder.builder(InstanceDetails).basePath(configurationResolver.basePath).client(curatorFramework).thisInstance(serviceInstance).build()
         dependencyWatcher = new DependencyWatcher(configurationResolver.dependencies, serviceDiscovery, new DefaultDependencyPresenceOnStartupVerifier())
         serviceResolver = new ZookeeperServiceResolver(configurationResolver, serviceDiscovery)
     }
+
+    private InstanceDetails instanceDetails() {
+        List<String> dependenciesList = configurationResolver.dependencies.collect {
+            return it.value[(PATH)] as String
+        }
+        return new InstanceDetails(dependenciesList)
+    }
+
 
     void registerDependencyStateChangeListener(DependencyWatcherListener listener) {
         dependencyWatcher.registerDependencyStateChangeListener(listener)

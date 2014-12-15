@@ -1,9 +1,11 @@
 package com.ofg.stub
+
 import com.ofg.stub.mapping.ProjectMetadata
 import com.ofg.stub.mapping.ProjectMetadataResolver
 import com.ofg.stub.mapping.StubRepository
 import com.ofg.stub.registry.StubRegistry
 import com.ofg.stub.server.AvailablePortScanner
+import com.ofg.stub.server.ZookeeperServer
 import groovy.util.logging.Slf4j
 import org.kohsuke.args4j.CmdLineException
 import org.kohsuke.args4j.CmdLineParser
@@ -44,13 +46,15 @@ class StubRunner implements StubRunning {
     private final Arguments arguments
     private final StubRegistry stubRegistry
     private final StubRepository stubRepository
+    private final ZookeeperServer zookeeperServer
 
     StubRunner(String[] args) {
         CmdLineParser parser = new CmdLineParser(this)
         try {
             parser.parseArgument(args)
             this.arguments = new Arguments(repositoryPath, projectRelativePath, testingZookeeperPort, minPortValue, maxPortValue, context, zookeeperLocation)
-            this.stubRegistry = resolveStubRegistry()
+            this.zookeeperServer = resolveZookeeperServer()
+            this.stubRegistry = new StubRegistry(zookeeperServer.connectString, zookeeperServer.curatorFramework)
             this.stubRepository = new StubRepository(new File(repositoryPath))
         } catch (CmdLineException e) {
             printErrorMessage(e, parser)
@@ -58,11 +62,11 @@ class StubRunner implements StubRunning {
         }
     }
 
-    private StubRegistry resolveStubRegistry() {
+    private ZookeeperServer resolveZookeeperServer() {
         if (isNotBlank(zookeeperLocation)) {
-            return new StubRegistry(zookeeperLocation)
+            return new ZookeeperServer(zookeeperLocation)
         } else if (testingZookeeperPort) {
-            return new StubRegistry(testingZookeeperPort)
+            return new ZookeeperServer(testingZookeeperPort)
         }
         throw new IllegalArgumentException('You have to provide either Zookeeper port or a path to a local Zookeeper')
     }
@@ -118,6 +122,7 @@ class StubRunner implements StubRunning {
 
     @Override
     void close() throws IOException {
+        zookeeperServer.shutdown()
         stubRunner.get()?.shutdown()
     }
 }

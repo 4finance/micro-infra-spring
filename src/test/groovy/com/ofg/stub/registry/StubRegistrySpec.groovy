@@ -2,8 +2,10 @@ package com.ofg.stub.registry
 
 import com.ofg.stub.mapping.ProjectMetadata
 import com.ofg.stub.server.StubServer
+import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
 import org.apache.curator.retry.RetryNTimes
+import org.apache.curator.test.TestingServer
 import org.apache.curator.x.discovery.ServiceDiscovery
 import org.apache.curator.x.discovery.ServiceInstance
 import org.apache.curator.x.discovery.ServiceProvider
@@ -19,7 +21,16 @@ class StubRegistrySpec extends Specification {
 
     @AutoCleanup('stop') StubServer helloStub = new StubServer(HELLO_STUB_SERVER_PORT, HELLO_STUB_METADATA, [])
     @AutoCleanup('stop') StubServer byeStub = new StubServer(BYE_STUB_SERVER_PORT, BYE_STUB_METADATA, [])
-    @AutoCleanup('shutdown') StubRegistry stubRegistry = new StubRegistry(STUB_REGISTRY_PORT)
+    @AutoCleanup('close') CuratorFramework client
+    @AutoCleanup('stop') TestingServer testingServer
+    private StubRegistry stubRegistry
+
+    def setup() {
+        testingServer = new TestingServer(STUB_REGISTRY_PORT)
+        client = CuratorFrameworkFactory.newClient("localhost:$STUB_REGISTRY_PORT", new RetryNTimes(5, 10))
+        this.client.start()
+        stubRegistry = new StubRegistry("localhost:$STUB_REGISTRY_PORT", this.client)
+    }
 
     def 'should register stub servers'() {
         given:

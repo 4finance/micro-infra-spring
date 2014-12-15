@@ -1,5 +1,6 @@
 package com.ofg.stub
 
+import com.ofg.infrastructure.discovery.InstanceDetails
 import com.ofg.stub.mapping.ProjectMetadata
 import com.ofg.stub.mapping.ProjectMetadataResolver
 import com.ofg.stub.mapping.StubRepository
@@ -7,6 +8,9 @@ import com.ofg.stub.registry.StubRegistry
 import com.ofg.stub.server.AvailablePortScanner
 import com.ofg.stub.server.ZookeeperServer
 import groovy.util.logging.Slf4j
+import org.apache.curator.x.discovery.ServiceDiscovery
+import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
+import org.apache.curator.x.discovery.ServiceProvider
 import org.kohsuke.args4j.CmdLineException
 import org.kohsuke.args4j.CmdLineParser
 import org.kohsuke.args4j.Option
@@ -42,6 +46,12 @@ class StubRunner implements StubRunning {
 
     @Option(name = "-c", aliases = ['--context'], usage = "Context for which the project should be run (e.g. 'pl', 'lt')")
     private String context
+
+    @Option(name = "-n", aliases = ['--name'], usage = "Name of the service for which the project should be run (e.g. 'com/service/name')")
+    private String serviceName
+
+    @Option(name = "-uz", aliases = ['--useZookeeper'], usage = "Switch to use Zookeeper server to resolve dependencies of the service and run stubs for them")
+    private boolean useZookeeper = true
 
     private final Arguments arguments
     private final StubRegistry stubRegistry
@@ -110,7 +120,9 @@ class StubRunner implements StubRunning {
     }
 
     private Collection<ProjectMetadata> resolveProjects(StubRepository repository, Arguments args) {
-        if (arguments.projects) {
+        if (useZookeeper) {
+            return ProjectMetadataResolver.resolveFromZookeeper(serviceName, context, zookeeperServer)
+        } else if (arguments.projects) {
             return arguments.projects
         } else if (args.projectRelativePath) {
             File metadata = new File(repository.getProjectMetadataLocation(args.projectRelativePath))

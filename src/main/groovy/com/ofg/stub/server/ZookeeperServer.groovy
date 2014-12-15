@@ -33,7 +33,7 @@ class ZookeeperServer {
     }
 
     void shutdown() {
-        curatorFramework.close()
+        curatorFramework?.close()
         server?.close()
     }
 

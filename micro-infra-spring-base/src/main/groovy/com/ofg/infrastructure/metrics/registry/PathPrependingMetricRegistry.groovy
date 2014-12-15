@@ -6,7 +6,7 @@ import groovy.transform.CompileStatic
 /**
  * Custom implementation of {@link MetricRegistry} that prepends if necessary
  * 4finance path prefix to a given metric name.
- * 
+ *
  * @see MetricPathProvider
  */
 @CompileStatic
@@ -17,7 +17,7 @@ class PathPrependingMetricRegistry extends MetricRegistry {
     PathPrependingMetricRegistry(MetricPathProvider metricPathProvider) {
         this.metricPathProvider = metricPathProvider
     }
-    
+
     @Override
     public <T extends Metric> T register(String metricName, T metric) throws IllegalArgumentException {
         if (metricPathProvider.isPathPrepended(metricName)) {

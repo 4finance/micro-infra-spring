@@ -2,7 +2,7 @@ package com.ofg.infrastructure.metrics.publishing
 
 import com.codahale.metrics.MetricFilter
 import com.codahale.metrics.MetricRegistry
-import com.codahale.metrics.graphite.Graphite
+import com.codahale.metrics.graphite.GraphiteSender
 import com.codahale.metrics.graphite.GraphiteReporter
 import groovy.transform.CompileStatic
 
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
  * A publisher to <a href="http://graphite.wikidot.com/">Graphite</a>. Creates a {@link GraphiteReporter} instance
  * that in a given {@link com.ofg.infrastructure.metrics.publishing.PublishingInterval} publishes
  * data to Graphite. 
- * 
+ *
  * @see GraphiteReporter
  * @see com.ofg.infrastructure.metrics.publishing.PublishingInterval
  */
@@ -21,18 +21,18 @@ class GraphitePublisher implements MetricsPublishing {
     private final GraphiteReporter graphiteReporter
     private final PublishingInterval publishingInterval
 
-    GraphitePublisher(Graphite graphite, PublishingInterval publishingInterval, MetricRegistry metricRegistry,
+    GraphitePublisher(GraphiteSender graphite, PublishingInterval publishingInterval, MetricRegistry metricRegistry,
                       TimeUnit reportedRatesTimeUnit, TimeUnit reportedDurationsTimeUnit) {
-        this(graphite, publishingInterval, metricRegistry, reportedRatesTimeUnit, reportedDurationsTimeUnit, MetricFilter.ALL)
+        this(graphite, publishingInterval, metricRegistry, reportedRatesTimeUnit, reportedDurationsTimeUnit, null)
     }
 
-    GraphitePublisher(Graphite graphite, PublishingInterval publishingInterval, MetricRegistry metricRegistry,
-                      TimeUnit reportedRatesTimeUnit, TimeUnit reportedDurationsTimeUnit, MetricFilter metricFilter) {
-        this(graphite, publishingInterval, metricRegistry, reportedRatesTimeUnit, reportedDurationsTimeUnit, metricFilter, null)
+    GraphitePublisher(GraphiteSender graphite, PublishingInterval publishingInterval, MetricRegistry metricRegistry,
+                      TimeUnit reportedRatesTimeUnit, TimeUnit reportedDurationsTimeUnit, String metricsPrefix) {
+        this(graphite, publishingInterval, metricRegistry, reportedRatesTimeUnit, reportedDurationsTimeUnit, metricsPrefix, MetricFilter.ALL)
     }
 
-    GraphitePublisher(Graphite graphite, PublishingInterval publishingInterval, MetricRegistry metricRegistry,
-                      TimeUnit reportedRatesTimeUnit, TimeUnit reportedDurationsTimeUnit, MetricFilter metricFilter, String metricsPrefix) {
+    GraphitePublisher(GraphiteSender graphite, PublishingInterval publishingInterval, MetricRegistry metricRegistry,
+                      TimeUnit reportedRatesTimeUnit, TimeUnit reportedDurationsTimeUnit, String metricsPrefix, MetricFilter metricFilter) {
         graphiteReporter = GraphiteReporter
                 .forRegistry(metricRegistry)
                 .convertRatesTo(reportedRatesTimeUnit)

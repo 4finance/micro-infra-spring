@@ -13,14 +13,14 @@ class ZookeeperServer {
 
     private CuratorFramework curatorFramework
     private String localZookeeperPath
-    private TestingServer zookeeperServer
+    private TestingServer server
 
     ZookeeperServer(String localZookeeperPath) {
         this.localZookeeperPath = localZookeeperPath
     }
 
     ZookeeperServer(int zookeeperPort) {
-        this.zookeeperServer = new TestingServer(zookeeperPort)
+        this.server = new TestingServer(zookeeperPort)
     }
 
     void start() {
@@ -34,11 +34,11 @@ class ZookeeperServer {
 
     void shutdown() {
         curatorFramework.close()
-        zookeeperServer?.close()
+        server?.close()
     }
 
     String getConnectString() {
-        String connectString = zookeeperServer ? zookeeperServer.connectString : localZookeeperPath
+        String connectString = server ? server.connectString : localZookeeperPath
         if (StringUtils.isBlank(connectString)) {
             throw new IllegalArgumentException('You have to provide either Zookeeper port or a path to a local Zookeeper')
         }

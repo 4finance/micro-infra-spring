@@ -5,6 +5,9 @@ import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.discovery.ServiceUnavailableException
+import org.junit.ClassRule
+import org.junit.contrib.java.lang.system.ClearSystemProperties
+import org.junit.contrib.java.lang.system.ProvideSystemProperty
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.SpringApplicationContextLoader
@@ -16,9 +19,16 @@ import org.springframework.context.annotation.Primary
 import org.springframework.core.io.Resource
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.web.client.RestOperations
+import spock.lang.Shared
 
 @ContextConfiguration(classes = Config, loader = SpringApplicationContextLoader)
 class TwoRestOperationsImplementationsSpec extends MvcCorrelationIdSettingIntegrationSpec {
+
+    @Shared @ClassRule
+    public ProvideSystemProperty resolverUrlPropertyIsSet = new ProvideSystemProperty('service.resolver.url', 'localhost:2186');
+
+    @Shared @ClassRule
+    public ClearSystemProperties resolverUrlPropertyIsCleared = new ClearSystemProperties('service.resolver.url')
 
     @Autowired
     ComponentWithTwoRestOperationsImplementations componentWithTwoRestOperationsImplementations

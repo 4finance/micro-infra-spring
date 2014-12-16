@@ -1,7 +1,15 @@
+0.7.3
+-----
+New features:
+* [Issue 29](https://github.com/4finance/micro-deps/issues/29) Storing microservice dependencies in Zookeeper
+
 0.7.2
 -----
 Noteable changes:
-* Change default retry policy in `MicroDepsService` from retry N times to expotential backoff
+* Change default retry policy in `MicroDepsService` from retry N times to exponential backoff
+
+New features:
+* [Issue 28](https://github.com/4finance/micro-deps/issues/28) Bring back backward compatibility with microservice.json
 
 0.7.1
 -----

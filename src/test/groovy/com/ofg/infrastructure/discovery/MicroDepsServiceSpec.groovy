@@ -49,13 +49,12 @@ class MicroDepsServiceSpec extends Specification {
 
     def 'should register dependencies of a service as payload'() {
         given:
-            CuratorFramework curatorFramework = CuratorFrameworkFactory.newClient(server.connectString, RETRY_POLICY)
-            curatorFramework.start()
-        and:
             MicroDepsService testService =
                     new MicroDepsService(server.connectString, "pl", "microUrl", 8866, MicroserviceConfiguration.FLAT_CONFIGURATION)
             testService.start()
         when:
+            CuratorFramework curatorFramework = CuratorFrameworkFactory.newClient(server.connectString, RETRY_POLICY)
+            curatorFramework.start()
             ServiceDiscovery discovery = ServiceDiscoveryBuilder.builder(InstanceDetails)
                     .basePath('/pl')
                     .client(curatorFramework)

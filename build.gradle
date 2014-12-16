@@ -42,10 +42,6 @@ bintray {
     }
 }
 
-publishUploadedArtifacts {
-    requestBody = [discard: 'false']
-}
-
 sourceCompatibility = 1.7
 
 apply plugin: 'com.ofg.uptodate'

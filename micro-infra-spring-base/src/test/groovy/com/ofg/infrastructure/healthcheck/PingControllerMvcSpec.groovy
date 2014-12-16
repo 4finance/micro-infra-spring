@@ -23,10 +23,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PingControllerMvcSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
     @Shared @ClassRule
-    public final ProvideSystemProperty resolverUrlPropertyIsSet = new ProvideSystemProperty('service.resolver.url', 'localhost:2184');
+    public ProvideSystemProperty resolverUrlPropertyIsSet = new ProvideSystemProperty('service.resolver.url', 'localhost:2184');
 
     @Shared @ClassRule
-    public final ClearSystemProperties resolverUrlPropertyIsCleared = new ClearSystemProperties('service.resolver.url')
+    public ClearSystemProperties resolverUrlPropertyIsCleared = new ClearSystemProperties('service.resolver.url')
 
     def "should return OK on ping for Zabbix"() {
         expect:

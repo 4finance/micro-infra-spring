@@ -22,26 +22,26 @@ class MicroDepsServiceSpec extends Specification {
     private TestingServer server
     private CuratorFramework curatorFramework
 
-    final static String MICRO_A = """
-{
-    "test": {
-        "this": "com/test/microA"
-    }
-}
-    """
+    private final static String MICRO_A = """
+                                            {
+                                                "test": {
+                                                    "this": "com/test/microA"
+                                                }
+                                            }
+                                            """
 
-    final static String MICRO_B = """
-{
-    "test": {
-        "this": "com/test/microB",
-        "dependencies": {
-            "microA" : {
-                "path": "com/test/microA"
-            }
-        }
-    }
-}
-    """
+    private final static String MICRO_B = """
+                                    {
+                                        "test": {
+                                            "this": "com/test/microB",
+                                            "dependencies": {
+                                                "microA" : {
+                                                    "path": "com/test/microA"
+                                                }
+                                            }
+                                        }
+                                    }
+                                    """
 
     def setup() {
         setupTestingServer()

@@ -19,9 +19,12 @@ import org.apache.curator.x.discovery.UriSpec
 
 import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.*
 
+/**
+ * Class that registers microservice in Zookeeper server and enables its discovery using Curator framework.
+ */
 @TypeChecked
 class MicroDepsService {
-    private  static final RetryPolicy DEFAULT_RETRY_POLICY = new ExponentialBackoffRetry(50, 20, 500)
+    private static final RetryPolicy DEFAULT_RETRY_POLICY = new ExponentialBackoffRetry(50, 20, 500)
 
     private ServiceConfigurationResolver configurationResolver
     private DependencyWatcher dependencyWatcher
@@ -30,6 +33,17 @@ class MicroDepsService {
     private ServiceDiscovery serviceDiscovery
     private ServiceResolver serviceResolver
 
+    /**
+     * Creates new instance of the class and registers microservice based on provided {@code microserviceConfig} in Zookeepaer server located at {@code zookeperUrl}.
+     *
+     * @param zookeeperUrl URL to running Zookeeper instance
+     * @param microserviceContext registration context of microservice
+     * @param microserviceUrl address of the microservice
+     * @param microservicePort port of the microservice
+     * @param microserviceConfig configuration of microservice, by default provided from {@code microservice.json} file placed on classpath
+     * @param uriSpec specification of connection URI to microservice, by default {@code http://microserviceUrl:microservicePort/microserviceContext} is used
+     * @param retryPolicy retry policy to connect to Zookeeper server, by default {@code ExponentialBackoffRetry} is used
+     */
     MicroDepsService(String zookeeperUrl,
                      String microserviceContext,
                      String microserviceUrl,

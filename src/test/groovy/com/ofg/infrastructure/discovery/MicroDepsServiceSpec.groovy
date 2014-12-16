@@ -11,6 +11,7 @@ import org.apache.curator.test.TestingServer
 import org.apache.curator.x.discovery.ServiceDiscovery
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
 import org.apache.curator.x.discovery.ServiceProvider
+import spock.lang.AutoCleanup
 import spock.lang.Specification
 
 import java.util.concurrent.TimeUnit
@@ -19,8 +20,7 @@ import java.util.concurrent.TimeUnit
 class MicroDepsServiceSpec extends Specification {
 
     private static final RetryPolicy RETRY_POLICY = new RetryNTimes(50, 100)
-    private TestingServer server
-    private CuratorFramework curatorFramework
+    @AutoCleanup('close') TestingServer server
 
     private final static String MICRO_A = """
                                             {
@@ -44,17 +44,14 @@ class MicroDepsServiceSpec extends Specification {
                                     """
 
     def setup() {
-        setupTestingServer()
-    }
-
-    private void setupTestingServer() {
         server = new TestingServer()
-        curatorFramework = CuratorFrameworkFactory.newClient(server.connectString, RETRY_POLICY)
-        curatorFramework.start()
     }
 
     def 'should register dependencies of a service as payload'() {
         given:
+            CuratorFramework curatorFramework = CuratorFrameworkFactory.newClient(server.connectString, RETRY_POLICY)
+            curatorFramework.start()
+        and:
             MicroDepsService testService =
                     new MicroDepsService(server.connectString, "pl", "microUrl", 8866, MicroserviceConfiguration.FLAT_CONFIGURATION)
             testService.start()
@@ -73,6 +70,7 @@ class MicroDepsServiceSpec extends Specification {
             serviceProvider?.close()
             discovery?.close()
             testService?.stop()
+            curatorFramework?.close()
     }
 
     def "should setup service discovery properly"() {
@@ -123,10 +121,5 @@ class MicroDepsServiceSpec extends Specification {
         cleanup:
         microBService?.stop()
         microAService?.stop()
-    }
-
-    def cleanup() {
-        curatorFramework.close()
-        server.close()
     }
 }

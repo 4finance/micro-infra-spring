@@ -65,12 +65,11 @@ class MicroDepsService {
     }
 
     private InstanceDetails instanceDetails() {
-        List<String> dependenciesList = configurationResolver.dependencies.collect {
-            return it.value[(PATH)] as String
+        List<String> dependenciesList = configurationResolver.dependencies.collect { entry ->
+            entry.value[PATH] as String
         }
         return new InstanceDetails(dependenciesList)
     }
-
 
     void registerDependencyStateChangeListener(DependencyWatcherListener listener) {
         dependencyWatcher.registerDependencyStateChangeListener(listener)

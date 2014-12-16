@@ -9,10 +9,10 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class InstanceDetails {
 
-    List<String> dependencies
+    final List<String> dependencies
 
     InstanceDetails() {
-        this.dependencies = ImmutableList.copyOf()
+        this.dependencies = Collections.emptyList()
     }
 
     /**
@@ -21,6 +21,6 @@ class InstanceDetails {
      * @param dependencies list of dependencies' names of our microservice
      */
     InstanceDetails(List<String> dependencies) {
-        this.dependencies = dependencies
+        this.dependencies = ImmutableList.copyOf(dependencies)
     }
 }

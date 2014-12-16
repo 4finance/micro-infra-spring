@@ -5,10 +5,10 @@ New features:
 
 0.7.2
 -----
-Noteable changes:
+Notable changes:
 * Change default retry policy in `MicroDepsService` from retry N times to exponential backoff
 
-New features:
+Bug fixes:
 * [Issue 28](https://github.com/4finance/micro-deps/issues/28) Bring back backward compatibility with microservice.json
 
 0.7.1

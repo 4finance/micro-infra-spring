@@ -2,40 +2,58 @@ buildscript {
     repositories {
         mavenLocal()
         jcenter()
+        maven { url "http://dl.bintray.com/4finance/micro" }    //TODO: Remove when available in jcenter
         mavenCentral()
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
-        classpath 'com.ofg:uptodate-gradle-plugin:1.1.0'
-        classpath 'pl.allegro.tech.build:axion-release-plugin:0.9.9'
+        classpath 'com.ofg:uptodate-gradle-plugin:+'
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.0' }
+    }
+    dependencies {
+        classpath "com.ofg:micro-common-release:+"
+    }
+    dependencies {
+        ant.unjar src: configurations.classpath.find { it.name.startsWith("micro-common-release") }, dest: 'build/release'
     }
 }
 
-apply plugin: 'groovy'
-apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'com.ofg.uptodate'
-apply plugin: 'axion-release'
+apply plugin: 'pl.allegro.tech.build.axion-release'
 
 scmVersion {
     tag {
         prefix = ''
-        createReleaseCommit = true
     }
+    createReleaseCommit = true
+    releaseCommitMessage { version, position -> "release version: ${version}\n\n[ci skip]" }
 }
 
 project.version = scmVersion.version
-
-sourceCompatibility = 1.7
-
 group = 'com.ofg'
 description = 'Microservice dependency manager'
 
+
+apply plugin: 'groovy'
+apply from: 'build/release/gradle/publish.gradle'
+apply from: 'build/release/gradle/release.gradle'
+
+bintray {
+    pkg {
+        repo = 'micro-deps'
+    }
+}
+
+publishUploadedArtifacts {
+    requestBody = [discard: 'false']
+}
+
+sourceCompatibility = 1.7
+
+apply plugin: 'com.ofg.uptodate'
+
 repositories {
     mavenLocal()
-    mavenCentral()
     jcenter()
+    mavenCentral()
 }
 
 ext {
@@ -64,48 +82,6 @@ dependencies {
 
     testCompile"org.spockframework:spock-core:$spockVersion"
     testCompile 'com.jayway.awaitility:awaitility-groovy:1.6.3'
-}
-
-bintrayUpload.dependsOn 'build'
-
-bintray {
-    user = System.properties['bintrayUser']
-    key = System.properties['bintrayKey']
-
-    publications = ['mavenJava']
-    pkg {
-        repo = 'micro-deps'
-        userOrg = '4finance'
-        name = 'micro-deps'
-        desc = 'Library for managing microservice dependencies using Apache Curator'
-        licenses = ['Apache-2.0']
-        labels = ['microservice']
-    }
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-        }
-    }
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: groovydoc) {
-    classifier = 'javadoc'
-    from groovydoc.destinationDir
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
 }
 
 if(project.hasProperty("coverage")) {

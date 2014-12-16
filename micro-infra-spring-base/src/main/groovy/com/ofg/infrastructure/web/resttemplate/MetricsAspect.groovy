@@ -2,6 +2,7 @@ package com.ofg.infrastructure.web.resttemplate
 
 import com.codahale.metrics.MetricRegistry
 import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
@@ -12,6 +13,7 @@ import static org.springframework.util.StringUtils.trimTrailingCharacter
 
 @Aspect
 @CompileStatic
+@Slf4j
 class MetricsAspect {
 
     private static final String PREFIX = RestOperations.class.simpleName
@@ -26,7 +28,11 @@ class MetricsAspect {
         final Object url = pjp.args[0]
         final String name = metricName(url)
         return metricRegistry.timer(name).time {
-            return pjp.proceed()
+            final long startTime = System.currentTimeMillis()
+            Object result = pjp.proceed()
+            final long done = System.currentTimeMillis() - startTime
+            log.debug("Calling '$url' took ${done}ms")
+            return result
         }
     }
 

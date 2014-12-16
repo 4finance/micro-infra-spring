@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.discovery
 
+import com.google.common.collect.ImmutableList
 import groovy.transform.CompileStatic
 
 /**
@@ -10,7 +11,9 @@ class InstanceDetails {
 
     List<String> dependencies
 
-    InstanceDetails() {}
+    InstanceDetails() {
+        this.dependencies = ImmutableList.copyOf()
+    }
 
     /**
      * Creates new instance of the class with information about microservice dependencies.

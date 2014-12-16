@@ -65,7 +65,9 @@ class MicroDepsServiceSpec extends Specification {
             serviceProvider.start()
             InstanceDetails payload = serviceProvider.getInstance().payload
         then:
-            payload.dependencies == ['com/ofg/ping', 'com/ofg/pong']
+            payload.dependencies.size() == 2
+            payload.dependencies.contains('com/ofg/pong')
+            payload.dependencies.contains('com/ofg/ping')
         cleanup:
             serviceProvider?.close()
             discovery?.close()

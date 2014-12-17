@@ -9,4 +9,12 @@ script:
 
 after_success:
 - ./gradlew test jacocoTestReport coveralls -Pcoverage
-- ./gradlew uptodate
+
+
+env:
+  global:
+  - TERM=dumb
+  - SKIP_RELEASE=true
+  - secure: QvTik8hBBw8TtoAS+sAeYaYq96yO/EIySye4c4fcKNnMcNUMiMmbOz8KBFzfhStiEwwrfMwtDJsFFaTuIoFjTnZTGp78eSXMtA1fkVf5VEmHSI0UbNT9nykns/YlUSjtKOmQxU73lFog6Q36YJHzOISjT/HMdoYMLYnyGGr1tW4=
+  - secure: C+XNL6uGveU1izF43PkYV+sNUJIPDWzGnTzBPpeSCbvG77JXry9u6nyxRZZJ0ebSnoAvgY3in4er6dTUexwi7Exhd0jC/lxj78w0Q6vyAxhnNmFUmEg/u9nBGac4wHSd+grrXi9j7htAI9n7nnqC4pqUohEasqwMyVnkYWTTPxo=
+  - secure: l30zL0xepdTh+jVzAVaEqkxxhtzqvMZIMOfeCR1pLOJV0YxELgNebkf62GDpDibTvEZJcVsTIWBMYbJ+J1FkrB2GiyhwLsH6rSCaGfHqyc0T3WCLK3s0Kdy2bBXmEHtz3t3ED50s/x8Qyu/kmD4hgHBB/nJj7BJXT+ZEHKjlo+U=

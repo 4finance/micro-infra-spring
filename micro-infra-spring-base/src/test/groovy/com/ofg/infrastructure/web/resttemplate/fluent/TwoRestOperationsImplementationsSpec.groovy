@@ -6,7 +6,6 @@ import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.discovery.ServiceUnavailableException
 import org.junit.ClassRule
-import org.junit.contrib.java.lang.system.ClearSystemProperties
 import org.junit.contrib.java.lang.system.ProvideSystemProperty
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -26,9 +25,6 @@ class TwoRestOperationsImplementationsSpec extends MvcCorrelationIdSettingIntegr
 
     @Shared @ClassRule
     public ProvideSystemProperty resolverUrlPropertyIsSet = new ProvideSystemProperty('service.resolver.url', 'localhost:2186');
-
-    @Shared @ClassRule
-    public ClearSystemProperties resolverUrlPropertyIsCleared = new ClearSystemProperties('service.resolver.url')
 
     @Autowired
     ComponentWithTwoRestOperationsImplementations componentWithTwoRestOperationsImplementations

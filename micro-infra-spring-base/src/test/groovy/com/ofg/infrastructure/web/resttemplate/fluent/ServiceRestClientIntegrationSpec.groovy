@@ -5,7 +5,6 @@ import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcWiremockIntegrationSpec
 import com.ofg.infrastructure.base.ServiceDiscoveryStubbingApplicationConfiguration
 import org.junit.ClassRule
-import org.junit.contrib.java.lang.system.ClearSystemProperties
 import org.junit.contrib.java.lang.system.ProvideSystemProperty
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
@@ -23,10 +22,7 @@ class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
     private static final String CONTEXT_SPECIFIC_FOOBAR = 'foobar Poland'
 
     @Shared @ClassRule
-    public final ProvideSystemProperty resolverUrlPropertyIsSet = new ProvideSystemProperty('service.resolver.url', 'localhost:2183');
-
-    @Shared @ClassRule
-    public final ClearSystemProperties resolverUrlPropertyIsCleared = new ClearSystemProperties('service.resolver.url')
+    public ProvideSystemProperty resolverUrlPropertyIsSet = new ProvideSystemProperty('service.resolver.url', 'localhost:2183');
 
     @Autowired ServiceRestClient serviceRestClient
 

@@ -7,7 +7,6 @@ import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClient
 import groovy.transform.PackageScope
 import groovy.transform.TypeChecked
 import org.junit.ClassRule
-import org.junit.contrib.java.lang.system.ClearSystemProperties
 import org.junit.contrib.java.lang.system.ProvideSystemProperty
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.http.MediaType
@@ -28,10 +27,7 @@ import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATI
 class CorrelationIdAspectSpec extends MicroserviceMvcWiremockSpec {
 
     @Shared @ClassRule
-    public final ProvideSystemProperty resolverUrlPropertyIsSet = new ProvideSystemProperty('service.resolver.url', 'localhost:2182');
-
-    @Shared @ClassRule
-    public final ClearSystemProperties resolverUrlPropertyIsCleared = new ClearSystemProperties('service.resolver.url')
+    public ProvideSystemProperty resolverUrlPropertyIsSet = new ProvideSystemProperty('service.resolver.url', 'localhost:2182');
 
     def "should set correlationId on header via aspect"() {
         given:

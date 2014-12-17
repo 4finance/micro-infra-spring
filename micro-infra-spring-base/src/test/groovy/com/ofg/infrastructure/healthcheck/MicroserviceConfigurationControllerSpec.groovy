@@ -4,7 +4,6 @@ import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
 import com.ofg.infrastructure.base.ServiceDiscoveryStubbingApplicationConfiguration
 import org.junit.ClassRule
-import org.junit.contrib.java.lang.system.ClearSystemProperties
 import org.junit.contrib.java.lang.system.ProvideSystemProperty
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.test.context.ContextConfiguration
@@ -20,9 +19,6 @@ class MicroserviceConfigurationControllerSpec extends MvcCorrelationIdSettingInt
 
     @Shared @ClassRule
     public ProvideSystemProperty resolverUrlPropertyIsSet = new ProvideSystemProperty('service.resolver.url', 'localhost:2185');
-
-    @Shared @ClassRule
-    public ClearSystemProperties resolverUrlPropertyIsCleared = new ClearSystemProperties('service.resolver.url')
 
     def 'should provide content of configuration file'() {
         expect:

@@ -1,15 +1,27 @@
+install:
+- true
+
+script:
+- set -e
+- ./gradlew check --info --stacktrace --continue -Pcoverage -Pcompatibility
+- source build/release/gradle/setGitVariables.sh
+- ./gradlew release -Prelease.disableRemoteCheck -Prelease.localOnly --info --stacktrace
+- ./gradlew finalizeRelease publishUploadedArtifacts -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --info --stacktrace
+
+after_success:
+- ./gradlew jacocoTestReport coveralls -Pcoverage
+
+
 language: groovy
+
 jdk:
 - oraclejdk8
 
-
-script:
-- ./gradlew build --info --stacktrace
-
-
-after_success:
-- ./gradlew test jacocoTestReport coveralls -Pcoverage
-
+matrix:
+  include:
+    # Release not skipped only in Java 7 build
+    - jdk: oraclejdk7
+      env: SKIP_RELEASE=false
 
 env:
   global:

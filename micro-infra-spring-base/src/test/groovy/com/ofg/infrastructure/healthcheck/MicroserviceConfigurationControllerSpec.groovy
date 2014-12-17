@@ -24,25 +24,27 @@ class MicroserviceConfigurationControllerSpec extends MvcCorrelationIdSettingInt
         expect:
             mockMvc.perform(get('/config'))
                     .andExpect(status().isOk())
-                    .andExpect(content().string(equalToIgnoringWhiteSpace('{\n' +
-                                                                            '  "pl" : {\n' +
-                                                                            '    "dependencies" : {\n' +
-                                                                            '      "confirmation" : {\n' +
-                                                                            '        "path" : "foo/bar/security/confirmation"\n' +
-                                                                            '      },\n' +
-                                                                            '      "foo-bar" : {\n' +
-                                                                            '        "path" : "com/ofg/foo/bar"\n' +
-                                                                            '      },\n' +
-                                                                            '      "newsletter" : {\n' +
-                                                                            '        "path" : "foo/bar/comms/newsletter"\n' +
-                                                                            '      },\n' +
-                                                                            '      "users" : {\n' +
-                                                                            '        "path" : "foo/bar/users"\n' +
-                                                                            '      }\n' +
-                                                                            '    },\n' +
-                                                                            '    "this" : "foo/bar/registration"\n' +
-                                                                            '  }\n' +
-                                                                            '}')))
+                    .andExpect(content().string(equalToIgnoringWhiteSpace(
+                        """{
+                          "pl" : {
+                            "dependencies" : {
+                              "confirmation" : {
+                                "path" : "foo/bar/security/confirmation"
+                              },
+                              "foo-bar" : {
+                                "path" : "com/ofg/foo/bar"
+                              },
+                              "newsletter" : {
+                                "path" : "foo/bar/comms/newsletter"
+                              },
+                              "users" : {
+                                "path" : "foo/bar/users"
+                              }
+                            },
+                            "this" : "foo/bar/registration"
+                          }
+                        }"""
+            )))
     }
 
 }

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 @PackageScope
 class MicroserviceConfigurationController {
 
-    final Resource microserviceConfig
+    private final Resource microserviceConfig
 
     MicroserviceConfigurationController(Resource microserviceConfig) {
         this.microserviceConfig = microserviceConfig

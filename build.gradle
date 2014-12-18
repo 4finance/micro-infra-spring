@@ -8,7 +8,7 @@ buildscript {
         classpath 'com.ofg:uptodate-gradle-plugin:+'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
         classpath 'pl.allegro.tech.build:axion-release-plugin:0.9.9'
-        classpath "io.spring.gradle:dependency-management-plugin:0.2.1.RELEASE"
+        classpath "io.spring.gradle:dependency-management-plugin:0.3.0.RELEASE"
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
         if (project.hasProperty("compatibility")) { classpath "be.insaneprogramming.gradle:animalsniffer-gradle-plugin:+" }
     }
@@ -53,7 +53,6 @@ task addHashFile << {
 def srcSubprojects = subprojects - project(':swagger')
 configure(srcSubprojects) {
     apply plugin: 'groovy'
-    apply plugin: 'maven'
     apply plugin: 'maven-publish'
     apply plugin: 'com.jfrog.bintray'
     apply plugin: 'com.ofg.uptodate'
@@ -129,17 +128,6 @@ configure(srcSubprojects) {
                         }
                     }.each() {
                         it.scope*.value = 'compile'
-                    }
-                    //#70 - workaround for empty version in pom.xml when dependency-management-plugin is used
-                    //Known limitation of new Gradle publishing mechanism - https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/8
-                    asNode().dependencies[0]?.get('dependency')?.each() { dep ->
-                        String pomVer = dep.get("version").text();
-                        String pomArtifactId = dep.get("artifactId").text();
-                        String pomGroupId = dep.get("groupId").text();
-                        if (pomVer.isEmpty()) {
-                            def depVer = project.dependencyManagement.getManagedVersion("$pomGroupId", "$pomArtifactId")
-                            dep.appendNode('version', depVer)
-                        }
                     }
                 }
             }

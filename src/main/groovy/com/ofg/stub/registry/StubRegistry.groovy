@@ -19,41 +19,23 @@ import org.apache.curator.x.discovery.UriSpec
 @Slf4j
 class StubRegistry {
     private static final UriSpec URI_SPEC = new UriSpec('{scheme}://{address}:{port}')
-    private static final RetryPolicy RETRY_POLICY = new RetryNTimes(50, 100)
 
-    private TestingServer zookeeperServer
-    private String localZookeeperPath
+    private final CuratorFramework client
+    private final String connectionString
 
-    StubRegistry(int port) {
-        this.zookeeperServer = new TestingServer(port)
-    }
-
-    StubRegistry(String localZookeeperPath) {
-        this.localZookeeperPath = localZookeeperPath
-    }
-
-    StubRegistry(TestingServer testingServer) {
-        this.zookeeperServer = testingServer
+    StubRegistry(String connectionString, CuratorFramework client) {
+        this.connectionString = connectionString
+        this.client = client
     }
 
     void register(Collection<StubServer> stubServers) {
-        CuratorFramework client = CuratorFrameworkFactory.newClient(getConnectString(), RETRY_POLICY)
-        client.start()
         stubServers.each { StubServer stubServer ->
             registerInstance(stubServer, client)
         }
     }
 
     String getConnectString() {
-        String connectString = zookeeperServer ? zookeeperServer.connectString : localZookeeperPath
-        if (StringUtils.isBlank(connectString)) {
-            throw new IllegalArgumentException('You have to provide either Zookeeper port or a path to a local Zookeeper')
-        }
-        return connectString
-    }
-
-    void shutdown() {
-        zookeeperServer.close()
+        return connectionString
     }
 
     private static void registerInstance(StubServer stubServer, CuratorFramework client) {

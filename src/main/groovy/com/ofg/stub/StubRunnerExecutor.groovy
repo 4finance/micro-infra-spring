@@ -29,7 +29,6 @@ class StubRunnerExecutor {
     }
 
     void shutdown() {
-        stubRegistry.shutdown()
         stubServers.each { StubServer stubServer -> stubServer.stop() }
     }
 

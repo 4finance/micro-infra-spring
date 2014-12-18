@@ -1,9 +1,11 @@
 package com.ofg.stub
+
 import com.ofg.stub.mapping.ProjectMetadata
 import com.ofg.stub.mapping.ProjectMetadataResolver
 import com.ofg.stub.mapping.StubRepository
 import com.ofg.stub.registry.StubRegistry
 import com.ofg.stub.server.AvailablePortScanner
+import com.ofg.stub.server.ZookeeperServer
 import groovy.util.logging.Slf4j
 import org.kohsuke.args4j.CmdLineException
 import org.kohsuke.args4j.CmdLineParser
@@ -41,16 +43,24 @@ class StubRunner implements StubRunning {
     @Option(name = "-c", aliases = ['--context'], usage = "Context for which the project should be run (e.g. 'pl', 'lt')")
     private String context
 
+    @Option(name = "-n", aliases = ['--serviceName'], usage = "Name of the service for which the project should be run (e.g. 'com/service/name')")
+    private String serviceName
+
+    @Option(name = "-uz", aliases = ['--useZookeeperDepResolution'], usage = "Switch to use Zookeeper server to resolve dependencies of the service and run stubs for them")
+    private boolean useZookeeperDepResolution = true
+
     private final Arguments arguments
     private final StubRegistry stubRegistry
     private final StubRepository stubRepository
+    private final ZookeeperServer zookeeperServer
 
     StubRunner(String[] args) {
         CmdLineParser parser = new CmdLineParser(this)
         try {
             parser.parseArgument(args)
             this.arguments = new Arguments(repositoryPath, projectRelativePath, testingZookeeperPort, minPortValue, maxPortValue, context, zookeeperLocation)
-            this.stubRegistry = resolveStubRegistry()
+            this.zookeeperServer = resolveZookeeperServer()
+            this.stubRegistry = new StubRegistry(zookeeperServer.connectString, zookeeperServer.curatorFramework)
             this.stubRepository = new StubRepository(new File(repositoryPath))
         } catch (CmdLineException e) {
             printErrorMessage(e, parser)
@@ -58,11 +68,11 @@ class StubRunner implements StubRunning {
         }
     }
 
-    private StubRegistry resolveStubRegistry() {
+    private ZookeeperServer resolveZookeeperServer() {
         if (isNotBlank(zookeeperLocation)) {
-            return new StubRegistry(zookeeperLocation)
+            return new ZookeeperServer(zookeeperLocation)
         } else if (testingZookeeperPort) {
-            return new StubRegistry(testingZookeeperPort)
+            return new ZookeeperServer(testingZookeeperPort)
         }
         throw new IllegalArgumentException('You have to provide either Zookeeper port or a path to a local Zookeeper')
     }
@@ -106,7 +116,9 @@ class StubRunner implements StubRunning {
     }
 
     private Collection<ProjectMetadata> resolveProjects(StubRepository repository, Arguments args) {
-        if (arguments.projects) {
+        if (useZookeeperDepResolution) {
+            return ProjectMetadataResolver.resolveFromZookeeper(serviceName, context, zookeeperServer)
+        } else if (arguments.projects) {
             return arguments.projects
         } else if (args.projectRelativePath) {
             File metadata = new File(repository.getProjectMetadataLocation(args.projectRelativePath))
@@ -118,6 +130,7 @@ class StubRunner implements StubRunning {
 
     @Override
     void close() throws IOException {
+        zookeeperServer.shutdown()
         stubRunner.get()?.shutdown()
     }
 }

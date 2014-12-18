@@ -2,6 +2,7 @@
 ------
 Notable changes:
 * [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.7.3`
+* bytecode verification turned back on (-noverify JVM flag removed)
 
 0.5.1
 ------

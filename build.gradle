@@ -153,9 +153,7 @@ subprojects {
         archives javadocJar
     }
 
-    //Workaround for the issue with Java 8u11 and 7u65 - http://www.infoq.com/news/2014/08/Java8-U11-Broke-Tools
     test {
-        jvmArgs '-noverify'
         if (project.hasProperty("coverage")) {
             jacoco {
                 enabled = true

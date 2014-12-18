@@ -59,7 +59,7 @@ project.gradle.projectsEvaluated {
 
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.3.7'
-    compile ('com.github.tomakehurst:wiremock:1.51') {
+    compile ('com.github.tomakehurst:wiremock:1.52') {
         exclude group: 'org.mortbay.jetty', module: 'servlet-api'
     }
     compile "org.apache.curator:curator-x-discovery:$curatorVersion"

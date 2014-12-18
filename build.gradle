@@ -2,7 +2,6 @@ buildscript {
     repositories {
         mavenLocal()
         jcenter()
-        maven { url "http://dl.bintray.com/4finance/micro" }    //TODO: Remove when available in jcenter
         mavenCentral()
     }
     dependencies {

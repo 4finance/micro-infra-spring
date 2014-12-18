@@ -10,19 +10,17 @@ import com.ofg.stub.registry.StubRegistry
 import com.ofg.stub.spring.ZipCategory
 import groovy.grape.Grape
 import groovy.util.logging.Slf4j
-import groovyx.net.http.HTTPBuilder
 import org.apache.curator.test.TestingServer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 
+import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.PATH
 import static groovy.grape.Grape.addResolver
 import static groovy.grape.Grape.resolve
 import static groovy.io.FileType.FILES
-import static groovyx.net.http.Method.HEAD
 import static java.nio.file.Files.createTempDirectory
-import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.PATH
 
 /**
  * Configuration that initializes a {@link BatchStubRunner} that runs {@link StubRunner} instance for each microservice's collaborator.
@@ -35,7 +33,7 @@ import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.PA
  *     <li>{@code stubrunner.stubs.repository.root} default value {@code 4finance Nexus Repository location} - point to where your stub mappings are uploaded as a jar</li>
  *     <li>{@code stubrunner.stubs.group} default value {@code com.ofg} - group name of your stub mappings</li>
  *     <li>{@code stubrunner.stubs.module} default value {@code stub-definitions} - artifactId of your stub mappings</li>
- *     <li>{@code stubrunner.use.local.repo} default value {@code false} - points whether dependencies should be resolved against local or remote repository</li>
+ *     <li>{@code stubrunner.skip-local-repo} default value {@code false} - avoids local repository in the dependency resolution & always pulls from the remote</li>
  * </ul>
  *
  * What happens under the hood is that
@@ -71,7 +69,7 @@ class StubRunnerConfiguration {
      * @param stubRepositoryRoot root URL from where the JAR with stub mappings will be downloaded
      * @param stubsGroup group name of the dependency containing stub mappings
      * @param stubsModule module name of the dependency containing stub mappings
-     * @param useLocalRepo points whether dependencies should be resolved against local or remote repository
+     * @param skipLocalRepo avoids local repository in dependency resolution
      * @param testingServer test instance of Zookeeper
      * @param serviceConfigurationResolver object that wraps the microservice configuration
      */
@@ -81,10 +79,10 @@ class StubRunnerConfiguration {
                                     @Value('${stubrunner.stubs.repository.root:http://nexus.4finance.net/content/repositories/Pipeline}') String stubRepositoryRoot,
                                     @Value('${stubrunner.stubs.group:com.ofg}') String stubsGroup,
                                     @Value('${stubrunner.stubs.module:stub-definitions}') String stubsModule,
-                                    @Value('${stubrunner.use.local.repo:false}') boolean useLocalRepo,
+                                    @Value('${stubrunner.skip-local-repo:false}') boolean skipLocalRepo,
                                     TestingServer testingServer,
                                     ServiceConfigurationResolver serviceConfigurationResolver) {
-        URI stubJarUri = findGrabbedStubJars(useLocalRepo, stubRepositoryRoot, stubsGroup, stubsModule)
+        URI stubJarUri = findGrabbedStubJars(skipLocalRepo, stubRepositoryRoot, stubsGroup, stubsModule)
         File unzippedStubsDir = unpackStubJarToATemporaryFolder(stubJarUri)
         String context = serviceConfigurationResolver.basePath
         List<StubRunner> stubRunners = serviceConfigurationResolver.dependencies.collect { String alias, Map dependencyConfig ->
@@ -106,24 +104,13 @@ class StubRunnerConfiguration {
         return tmpDirWhereStubsWillBeUnzipped
     }
 
-    private URI findGrabbedStubJars(boolean useLocalRepo, String stubRepositoryRoot, String stubsGroup, String stubsModule) {
+    private URI findGrabbedStubJars(boolean skipLocalRepo, String stubRepositoryRoot, String stubsGroup, String stubsModule) {
         Map depToGrab = [group: stubsGroup, module: stubsModule, version: LATEST_MODULE, transitive: false]
-        return buildResolver(useLocalRepo).resolveDependency(stubRepositoryRoot, depToGrab)
+        return buildResolver(skipLocalRepo).resolveDependency(stubRepositoryRoot, depToGrab)
     }
 
-    /**
-     * Provides {@link DependencyResolver} implementation.
-     *
-     * @param useLocalRepo points whether a {@link DependencyResolver} should be provided that works on local Grape repository (when set to {@code true) or remote one (if set to {@code false})
-     *
-     * @return instance of {@link DependencyResolver}
-     */
-    DependencyResolver buildResolver(boolean useLocalRepo) {
-        if (useLocalRepo) {
-            return new LocalDependencyResolver()
-        } else {
-            return new RemoteDependencyResolver()
-        }
+    private DependencyResolver buildResolver(boolean skipLocalRepo) {
+        skipLocalRepo ? new RemoteDependencyResolver() : new LocalFirstDependencyResolver()
     }
 
     /**
@@ -144,19 +131,6 @@ class StubRunnerConfiguration {
             }
         }
 
-        private void checkConnectivityWithRemoteRepository(String stubRepositoryRoot, Map depToGrab) {
-            def http = new HTTPBuilder(stubRepositoryRoot)
-            http.request(HEAD) { req ->
-                response.success = { resp ->
-                    log.info("Connection with [$stubRepositoryRoot] succeeded")
-                    return doResolveRemoteDependency(stubRepositoryRoot, depToGrab)
-                }
-                response.failure = { resp ->
-                    failureHandler(stubRepositoryRoot, "Status code [${resp.status}]")
-                }
-            }
-        }
-
         private URI doResolveRemoteDependency(String stubRepositoryRoot, Map depToGrab) {
             addResolver(name: REPOSITORY_NAME, root: stubRepositoryRoot)
             log.info("Resolving dependency ${depToGrab} location in remote repository...")
@@ -166,7 +140,7 @@ class StubRunnerConfiguration {
         }
 
         private void failureHandler(String stubRepository, String reason, Exception cause) {
-            throw new RemoteDependencyResolvingException("Unable to open connection with stub repository [$stubRepository]. Reason: $reason", cause)
+            throw new DependencyResolutionException("Unable to open connection with stub repository [$stubRepository]. Reason: $reason", cause)
         }
 
         private void ensureThatLatestVersionWillBePicked(URI resolvedUri) {
@@ -180,14 +154,24 @@ class StubRunnerConfiguration {
     }
 
     /**
-     * Dependency resolver providing {@link URI} to dependency stored locally.
+     * Dependency resolver that first checks if a dependency is available in the local repository.
+     * If not, it will try to provide {@link URI} from the remote repository.
+     *
+     * @see RemoteDependencyResolver
      */
     @Slf4j
-    private class LocalDependencyResolver extends DependencyResolver {
+    private class LocalFirstDependencyResolver extends DependencyResolver {
+
+        private DependencyResolver delegate = new RemoteDependencyResolver()
 
         URI resolveDependency(String stubRepositoryRoot, Map depToGrab) {
-            log.warn("Resolving dependency ${depToGrab} location in local repository...")
-            return resolveDependencyLocation(depToGrab)
+            log.info("Resolving dependency ${depToGrab} location in local repository...")
+            try {
+                resolveDependencyLocation(depToGrab)
+            } catch (Exception e) {
+                log.warn("Unable to find dependency $depToGrab in local repository")
+                delegate.resolveDependencyLocation(depToGrab)
+            }
         }
 
     }
@@ -213,9 +197,9 @@ class StubRunnerConfiguration {
 
     }
 
-    class RemoteDependencyResolvingException extends Exception {
+    class DependencyResolutionException extends Exception {
 
-        RemoteDependencyResolvingException(String message, Throwable cause) {
+        DependencyResolutionException(String message, Throwable cause) {
             super(message, cause)
         }
 

@@ -1,4 +1,9 @@
-0.7.1
+0.5.2-SNAPSHOT
+------
+Notable changes:
+* [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.7.3`
+
+0.5.1
 ------
 Notable changes:
 * [stub-runner-spring](https://github.com/4finance/stub-runner-spring) upgraded to version `0.2.1`

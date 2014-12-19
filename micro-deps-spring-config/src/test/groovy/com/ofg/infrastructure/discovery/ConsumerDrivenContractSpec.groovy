@@ -33,14 +33,14 @@ class ConsumerDrivenContractSpec extends Specification {
         given:
             ServiceResolver serviceResolver = applicationContext.getBean(ServiceResolver)
         expect:
-            serviceResolver.getUrl('foo-bar').isPresent()
+            serviceResolver.getUri(new ServicePath('/com/ofg/foo/bar')).isPresent()
     }
 
     def 'should set up a stubbed http endpoint'()  {
         given:
             ServiceResolver serviceResolver = applicationContext.getBean(ServiceResolver)
         and:
-            String fooBarUrl = serviceResolver.getUrl('foo-bar').get()
+            URI fooBarUrl = serviceResolver.getUri(new ServicePath('/com/ofg/foo/bar')).get()
         expect:
             get("$fooBarUrl/foobar").then().assertThat().body(equalTo(GENERIC_FOOBAR));
             get("$fooBarUrl/pl/foobar").then().assertThat().body(equalTo(CONTEXT_SPECIFIC_FOOBAR));

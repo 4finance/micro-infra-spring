@@ -27,7 +27,7 @@ class ServiceResolverSpec extends Specification {
             setupStubs(serviceConfigurationResolver, curatorFramework)
             serviceResolver.start()
         expect:
-            serviceResolver.getUrl("foo-bar").isPresent()
+            serviceResolver.getUri(new ServicePath("/com/ofg/foo/bar")).isPresent()
         cleanup:
             applicationContext.close()
     }

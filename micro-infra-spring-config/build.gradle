@@ -14,7 +14,7 @@ dependencies {
     compile("org.springframework.cloud:spring-cloud-config-server:$springCloudVersion") {
         exclude group: 'ch.qos.logback', module: 'logback-classic'
     }
-    compile('com.ofg:micro-deps:0.7.1') {
+    compile('com.ofg:micro-deps:0.7.4-SNAPSHOT') {
         //Required with micro-deps 0.4.0 as it uses groovy-all-indy which confuses Intellij Idea (both jars are added to dependencies)
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
@@ -22,6 +22,7 @@ dependencies {
     compile "org.eclipse.jgit:org.eclipse.jgit:2.3.1.201302201838-r"
     compile "org.codehaus.groovy:groovy-all"
     compile "org.aspectj:aspectjrt:1.8.3"
+    compile "commons-io:commons-io:2.4"
 
     testCompile "org.spockframework:spock-core:$spock10Version"
     testRuntime "org.springframework:spring-test"

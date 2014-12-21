@@ -63,7 +63,7 @@ configure(srcSubprojects) {
 
     dependencyManagement {
         dependencies {
-            dependencySet(group: "com.ofg", version: "0.5.1") {
+            dependencySet(group: "com.ofg", version: "0.5.2-SNAPSHOT") {
                 entry "micro-deps-spring-config"
                 entry "micro-deps-spring-test-config"
             }

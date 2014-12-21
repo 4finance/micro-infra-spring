@@ -1,6 +1,8 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
 
+import com.ofg.infrastructure.discovery.ServiceAlias
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
+import com.ofg.infrastructure.discovery.ServicePath
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import groovy.transform.CompileStatic
@@ -94,9 +96,11 @@ class ServiceRestClient {
      * @return builder for the specified HttpMethod
      */
     public HttpMethodBuilder forService(String serviceName) {
-        Map serviceSettings = configurationResolver.dependencies[serviceName] as Map
-        PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(serviceSettings)
-        return new HttpMethodBuilder(serviceResolver.fetchUrl(serviceName), restOperations, predefinedHeaders)
+        final Map serviceSettings = configurationResolver.dependencies[serviceName] as Map
+        final PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(serviceSettings)
+        final ServicePath path = serviceResolver.resolveAlias(new ServiceAlias(serviceName))
+        final URI uri = serviceResolver.fetchUri(path)
+        return new HttpMethodBuilder(uri.toString(), restOperations, predefinedHeaders)
     }
 
     /**

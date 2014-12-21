@@ -1,8 +1,10 @@
 package com.ofg.infrastructure.healthcheck
 
 import com.google.common.base.Optional as GuavaOptional
+import com.ofg.infrastructure.discovery.ServiceAlias
 import com.ofg.infrastructure.discovery.ServicePath
 import com.ofg.infrastructure.discovery.ServiceResolver
+import org.apache.commons.lang.StringUtils
 import spock.lang.Specification
 
 import static com.ofg.infrastructure.healthcheck.CollaboratorStatus.DOWN
@@ -71,7 +73,9 @@ class CollaboratorsConnectivityControllerSpec extends Specification {
     private void instancesOfMicroservices(Map<String, List<String>> instances) {
         serviceResolverMock.fetchAllServices() >> instances.keySet().collect { new ServicePath(it) }.toSet()
         instances.each { path, urls ->
-            ServicePath wrappedPath = new ServicePath(path)
+            final ServicePath wrappedPath = new ServicePath(path)
+            final ServiceAlias alias = new ServiceAlias(StringUtils.substringAfterLast(path, '/'))
+            serviceResolverMock.resolveAlias(alias) >> wrappedPath
             serviceResolverMock.fetchAllUris(wrappedPath) >> urls.toSet()
         }
     }
@@ -173,6 +177,38 @@ class CollaboratorsConnectivityControllerSpec extends Specification {
 
         then:
             info['/com/micro1'] == [:]
+    }
+
+    def 'should adjust collaborators response from micro-infra-spring version < 0.7.4'() {
+        given:
+            instancesOfMicroservices(['/com/micro1': [MICRO_1A_URL],
+                                      '/com/micro3': [MICRO_3A_URL, MICRO_3B_URL]])
+            serviceReturnsLegacyCollaboratorsFormat(MICRO_1A_URL)
+            noCollaboratorsOfRemainingServices()
+
+        when:
+            Map info = controller.allCollaboratorsConnectivityInfo
+
+        then:
+            info.size() == 2
+            info['/com/micro1'] == [
+                    (MICRO_1A_URL): [
+                            status       : UP,
+                            collaborators: [
+                                    '/com/micro3': [
+                                            (MICRO_3A_URL): UP,
+                                            (MICRO_3B_URL): UP]]]]
+            info['/com/micro3'] == [
+                    (MICRO_3A_URL): [
+                            status       : UP,
+                            collaborators: [:]],
+                    (MICRO_3B_URL): [
+                            status       : UP,
+                            collaborators: [:]]]
+    }
+
+    private serviceReturnsLegacyCollaboratorsFormat(URI uri) {
+        collaboratorsStatusOf(uri, ['micro3': 'CONNECTED'])
     }
 
 }

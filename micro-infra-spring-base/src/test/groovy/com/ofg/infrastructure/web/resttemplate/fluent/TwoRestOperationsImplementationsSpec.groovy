@@ -4,7 +4,6 @@ import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
-import com.ofg.infrastructure.discovery.ServiceUnavailableException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.SpringApplicationContextLoader
@@ -16,6 +15,8 @@ import org.springframework.context.annotation.Primary
 import org.springframework.core.io.Resource
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.web.client.RestOperations
+
+import java.lang.reflect.InvocationHandler
 
 @ContextConfiguration(classes = Config, loader = SpringApplicationContextLoader)
 class TwoRestOperationsImplementationsSpec extends MvcCorrelationIdSettingIntegrationSpec {
@@ -53,32 +54,8 @@ class TwoRestOperationsImplementationsSpec extends MvcCorrelationIdSettingIntegr
         @Bean
         @Primary
         ServiceResolver stubForServiceResolver() {
-            new ServiceResolver() {
-                @Override
-                com.google.common.base.Optional<String> getUrl(String service) {
-                    return null
-                }
-
-                @Override
-                String fetchUrl(String service) throws ServiceUnavailableException {
-                    return null
-                }
-
-                @Override
-                Set<String> fetchCollaboratorsNames() {
-                    return [] as Set
-                }
-
-                @Override
-                void start() {
-
-                }
-
-                @Override
-                void close() {
-
-                }
-            }
+            final InvocationHandler handler = { inv -> throw new UnsupportedOperationException() }
+            return java.lang.reflect.Proxy.newProxyInstance(TwoRestOperationsImplementationsSpec.class.classLoader, [ServiceResolver] as Class[], handler)
         }
     }
 

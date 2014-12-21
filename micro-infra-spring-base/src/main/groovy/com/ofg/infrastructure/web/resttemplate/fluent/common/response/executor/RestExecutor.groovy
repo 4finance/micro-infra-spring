@@ -12,6 +12,8 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
+import java.util.concurrent.ExecutionException
+
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.UrlParsingUtils.appendPathToHost
 
 /**
@@ -28,7 +30,11 @@ final class RestExecutor<T> {
     }
 
     ResponseEntity<T> exchange(HttpMethod httpMethod, Map params, Class<T> responseType) {
-        return exchangeInternal(params, httpMethod, responseType).get()
+        try {
+            return exchangeInternal(params, httpMethod, responseType).get()
+        } catch (ExecutionException e) {
+            throw e.cause
+        }
     }
 
     ListenableFuture<ResponseEntity<T>> exchangeAsync(HttpMethod httpMethod, Map params, Class<T> responseType) {

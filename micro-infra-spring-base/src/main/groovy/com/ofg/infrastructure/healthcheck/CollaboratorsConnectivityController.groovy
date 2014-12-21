@@ -48,7 +48,8 @@ class CollaboratorsConnectivityController {
     private Map<String, String> statusOfAllCollaboratorInstances(ServicePath service) {
         Set<URI> allUrisOfService = serviceResolver.fetchAllUris(service)
         return allUrisOfService.collectEntries { URI instanceUrl ->
-            return [instanceUrl, checkConnectionStatus(instanceUrl)]
+            boolean status = checkConnectionStatus(instanceUrl)
+            return [instanceUrl, CollaboratorStatus.of(status)]
         }
     }
 
@@ -68,13 +69,32 @@ class CollaboratorsConnectivityController {
     }
 
     private Map checkCollaborators(URI url) {
-        Optional<Map> collaborators = pingClient
-                .checkCollaborators(url)
-                .transform({tryAdjustLegacyCollaboratorsResponse(it)})
+        Optional<Map> collaborators = establishCollaboratorsStatus(url)
         return [
                 status: CollaboratorStatus.of(collaborators.isPresent()),
                 collaborators: collaborators.or([:])
         ]
+    }
+
+    private Optional<Map> establishCollaboratorsStatus(URI url) {
+        Optional<Map> collaborators = tryCallingCollaborators(url)
+        return fallbackWithPingIfCollaboratorsFailed(collaborators, url)
+    }
+
+    Optional<Map> fallbackWithPingIfCollaboratorsFailed(Optional<Map> maybeCollaborators, URI url) {
+        if (maybeCollaborators.isPresent()) {
+            return maybeCollaborators
+        }
+        return checkConnectionStatus(url) ?
+                Optional.of([:]) :
+                Optional.absent()
+    }
+
+    private Optional<Map> tryCallingCollaborators(URI url) {
+        Optional<Map> collaborators = pingClient
+                .checkCollaborators(url)
+                .transform({ tryAdjustLegacyCollaboratorsResponse(it) })
+        return collaborators
     }
 
     private Map tryAdjustLegacyCollaboratorsResponse(Map collaboratorsResponse) {
@@ -98,12 +118,12 @@ class CollaboratorsConnectivityController {
 
     private boolean isLegacyResponse(Map collaboratorsResponse) {
         return !collaboratorsResponse.empty &&
-                collaboratorsResponse.values().any{!it instanceof Map}
+                collaboratorsResponse.values().any{!(it instanceof Map)}
     }
 
-    private String checkConnectionStatus(URI url) {
+    private boolean checkConnectionStatus(URI url) {
         final GuavaOptional<String> pingResult = pingClient.ping(url)
-        return CollaboratorStatus.of(pingResult == GuavaOptional.of('OK'))
+        return pingResult == GuavaOptional.of('OK')
     }
 
 }

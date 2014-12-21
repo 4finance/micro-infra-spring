@@ -58,11 +58,11 @@ class CollaboratorsConnectivityControllerSpec extends Specification {
         then:
             info.size() == 2
             info['/com/micro1'] == [
-                    (MICRO_1A_URL): 'UP',
-                    (MICRO_1B_URL): 'DOWN'
+                    (MICRO_1A_URL): UP,
+                    (MICRO_1B_URL): DOWN
             ]
             info['/com/micro2'] == [
-                    (MICRO_2_URL): 'UP'
+                    (MICRO_2_URL): UP
             ]
     }
 
@@ -203,6 +203,24 @@ class CollaboratorsConnectivityControllerSpec extends Specification {
                             status       : UP,
                             collaborators: [:]],
                     (MICRO_3B_URL): [
+                            status       : UP,
+                            collaborators: [:]]]
+    }
+
+    def 'when /collaborators is unavailable, try to at least call /ping and degrade response gracefully'() {
+        given:
+            instancesOfMicroservices(['/com/micro1': [MICRO_1A_URL]])
+            collaboratorsCheckFailed(MICRO_1A_URL)
+        and:
+            theseAreOk(MICRO_1A_URL)
+
+        when:
+            Map info = controller.allCollaboratorsConnectivityInfo
+
+        then:
+            info.size() == 1
+            info['/com/micro1'] == [
+                    (MICRO_1A_URL): [
                             status       : UP,
                             collaborators: [:]]]
     }

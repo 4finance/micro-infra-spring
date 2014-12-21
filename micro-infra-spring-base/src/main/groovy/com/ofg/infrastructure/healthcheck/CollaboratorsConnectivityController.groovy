@@ -2,6 +2,7 @@ package com.ofg.infrastructure.healthcheck
 
 import com.google.common.base.Optional
 import com.google.common.base.Optional as GuavaOptional
+import com.ofg.infrastructure.discovery.ServiceAlias
 import com.ofg.infrastructure.discovery.ServicePath
 import com.ofg.infrastructure.discovery.ServiceResolver
 import groovy.transform.CompileStatic
@@ -67,12 +68,37 @@ class CollaboratorsConnectivityController {
     }
 
     private Map checkCollaborators(URI url) {
-        Optional<Map> collaborators = pingClient.checkCollaborators(url)
-        //todo Check older version of /collaborators, degrade gracefully
+        Optional<Map> collaborators = pingClient
+                .checkCollaborators(url)
+                .transform({tryAdjustLegacyCollaboratorsResponse(it)})
         return [
                 status: CollaboratorStatus.of(collaborators.isPresent()),
                 collaborators: collaborators.or([:])
         ]
+    }
+
+    private Map tryAdjustLegacyCollaboratorsResponse(Map collaboratorsResponse) {
+        if (isLegacyResponse(collaboratorsResponse)) {
+            return adjustLegacyCollaboratorsResponse(collaboratorsResponse)
+        } else {
+            return collaboratorsResponse;
+        }
+    }
+
+    private Map adjustLegacyCollaboratorsResponse(Map collaboratorsResponse) {
+        collaboratorsResponse.collectEntries {alias, statusStr ->
+            final ServicePath path = serviceResolver.resolveAlias(new ServiceAlias(alias as String))
+            final Set<URI> allInstances = serviceResolver.fetchAllUris(path)
+            CollaboratorStatus status = CollaboratorStatus.of(statusStr == 'CONNECTED')
+            return [
+                    path.path, allInstances.collectEntries{uri -> [uri, status]}
+            ]
+        }
+    }
+
+    private boolean isLegacyResponse(Map collaboratorsResponse) {
+        return !collaboratorsResponse.empty &&
+                collaboratorsResponse.values().any{!it instanceof Map}
     }
 
     private String checkConnectionStatus(URI url) {

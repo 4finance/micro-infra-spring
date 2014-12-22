@@ -74,7 +74,7 @@ class ZookeeperServiceResolver implements ServiceResolver {
     }
 
     @Override
-    Set<ServicePath> fetchCollaboratorsNames() {
+    Set<ServicePath> fetchMyDependencies() {
         serviceConfigurationResolver
                 .dependencies
                 .values()
@@ -87,7 +87,7 @@ class ZookeeperServiceResolver implements ServiceResolver {
     }
 
     @Override
-    Set<ServicePath> fetchAllServices() {
+    Set<ServicePath> fetchAllDependencies() {
         return findLeavesOf(serviceConfigurationResolver.basePath)
     }
 

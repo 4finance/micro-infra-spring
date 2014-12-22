@@ -55,12 +55,12 @@ class StubbedServiceResolver implements ServiceResolver {
     }
 
     @Override
-    Set<ServicePath> fetchCollaboratorsNames() {
+    Set<ServicePath> fetchMyDependencies() {
         return stubbedDeps.keySet()
     }
 
     @Override
-    Set<ServicePath> fetchAllServices() {
+    Set<ServicePath> fetchAllDependencies() {
         return stubbedDeps.keySet()
     }
 

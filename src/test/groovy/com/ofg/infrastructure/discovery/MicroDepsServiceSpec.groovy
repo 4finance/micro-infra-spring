@@ -155,7 +155,7 @@ class MicroDepsServiceSpec extends Specification {
             new MicroDepsService(server.connectString, "rest", "microDUrl", 8800, MICRO_D).start()
 
         when:
-            Set<ServicePath> names = service.serviceResolver.fetchAllServices()
+            Set<ServicePath> names = service.serviceResolver.fetchAllDependencies()
 
         then:
             names*.path.toSet() == ['com/test/microA', 'com/test/microB', 'com/test/special/microC', 'org/dee/microD'].toSet()
@@ -230,7 +230,7 @@ class MicroDepsServiceSpec extends Specification {
             service.start()
 
         when:
-            Set<ServicePath> collaborators = service.serviceResolver.fetchCollaboratorsNames()
+            Set<ServicePath> collaborators = service.serviceResolver.fetchMyDependencies()
 
         then:
             collaborators == [new ServicePath('com/test/microA')].toSet()

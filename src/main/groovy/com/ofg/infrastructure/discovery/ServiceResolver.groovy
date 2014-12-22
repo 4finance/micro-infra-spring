@@ -39,12 +39,12 @@ interface ServiceResolver extends AutoCloseable {
      *
      * @return map from name (alias) to path in registry
      */
-    Set<ServicePath> fetchCollaboratorsNames()
+    Set<ServicePath> fetchMyDependencies()
 
     /**
      * Returns names of all services existing in service registry
      */
-    Set<ServicePath> fetchAllServices()
+    Set<ServicePath> fetchAllDependencies()
 
     /**
      * Start service resolver (e.g. start all service providers)

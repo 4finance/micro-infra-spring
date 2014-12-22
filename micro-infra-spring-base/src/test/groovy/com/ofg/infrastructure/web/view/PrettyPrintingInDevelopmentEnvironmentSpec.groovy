@@ -9,23 +9,33 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.web.servlet.MvcResult
+import org.springframework.test.web.servlet.ResultMatcher
 
 import static com.ofg.config.BasicProfiles.DEVELOPMENT
+import static org.springframework.test.util.AssertionErrors.assertEquals
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 
 @ContextConfiguration(classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery],
                       loader = SpringApplicationContextLoader)
 @ActiveProfiles(DEVELOPMENT)
 class PrettyPrintingInDevelopmentEnvironmentSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
+    private static final String CRLF = "\r\n"
+    private static final String LF = "\n"
     String PRETTY_PRINTED_RESULT = new ClassPathResource("prettyPrinted.json").inputStream.text.trim()
 
     def "should return pretty JSON when development profile is active"() {
         expect:
             mockMvc.perform(get("/test"))
-                .andExpect(content().string(PRETTY_PRINTED_RESULT))
-    }
+                .andExpect(new ResultMatcher() {
+                    @Override
+                    void match(MvcResult result) throws Exception {
+                        assertEquals("Response content", PRETTY_PRINTED_RESULT,
+                                result.getResponse().getContentAsString().replace(CRLF, LF));
+                    }
+                })
+}
 
     @Configuration
     static class Config {

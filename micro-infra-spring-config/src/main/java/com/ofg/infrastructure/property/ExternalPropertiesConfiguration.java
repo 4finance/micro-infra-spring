@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.encrypt.TextEncryptor;
 import java.io.File;
 
 @Configuration
+@Profile("!test")
 public class ExternalPropertiesConfiguration implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
 
     @Autowired(required = false)

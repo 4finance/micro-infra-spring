@@ -47,7 +47,7 @@ public class FileSystemLocator implements PropertySourceLocator {
     private String[] toSearchLocations(List<File> propertiesPath) {
         final String[] files = new String[propertiesPath.size()];
         for (int i = 0; i < propertiesPath.size(); i++) {
-            files[i] = propertiesPath.get(i).getAbsolutePath();
+            files[i] = propertiesPath.get(i).toURI().toString();
         }
         return files;
     }

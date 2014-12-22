@@ -37,12 +37,6 @@ apply plugin: 'groovy'
 apply from: 'build/release/gradle/publish.gradle'
 apply from: 'build/release/gradle/release.gradle'
 
-bintray {
-    pkg {
-        repo = 'micro'
-    }
-}
-
 sourceCompatibility = 1.7
 
 apply plugin: 'com.ofg.uptodate'
@@ -155,6 +149,10 @@ task bootJars(dependsOn: build)
 
 bootJars {
     dependsOn = [sourcesJar, javadocJar, fatJarBoot]
+}
+
+artifacts {
+    archives fatJar
 }
 
 project.tasks.findAll { it.name.startsWith('publish') || it.name == 'bintrayUpload' }*.dependsOn(bootJars)

@@ -96,7 +96,7 @@ subprojects {
     dependencies {
         compile 'org.codehaus.groovy:groovy-all:2.3.8'
         compile "org.springframework:spring-context:$springVersion"
-        compile('com.ofg:micro-deps:0.7.3') {
+        compile('com.ofg:micro-deps:0.7.4') {
             exclude group: 'log4j'
             exclude group: "org.slf4j", module: "slf4j-log4j12"
             exclude group: "org.slf4j", module: "log4j-over-slf4j"

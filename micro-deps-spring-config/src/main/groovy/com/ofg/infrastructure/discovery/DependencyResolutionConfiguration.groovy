@@ -5,6 +5,7 @@ import com.ofg.infrastructure.discovery.watcher.presence.DefaultDependencyPresen
 import com.ofg.infrastructure.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
+import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.x.discovery.ServiceDiscovery
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -40,8 +41,8 @@ class DependencyResolutionConfiguration {
     }
 
     @Bean(initMethod = 'start', destroyMethod = 'close')
-    ServiceResolver zooKeeperServiceResolver(ServiceConfigurationResolver serviceConfigurationResolver, ServiceDiscovery serviceDiscovery) {
-        return new ZookeeperServiceResolver(serviceConfigurationResolver, serviceDiscovery)
+    ServiceResolver zooKeeperServiceResolver(ServiceConfigurationResolver serviceConfigurationResolver, ServiceDiscovery serviceDiscovery, CuratorFramework curatorFramework) {
+        return new ZookeeperServiceResolver(serviceConfigurationResolver, serviceDiscovery, curatorFramework)
     }
 
     @PackageScope

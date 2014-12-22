@@ -73,6 +73,11 @@ class ServiceDiscoveryInfrastructureConfiguration {
     ServiceDiscovery serviceDiscovery(CuratorFramework curatorFramework, 
                                       ServiceInstance serviceInstance,
                                       ServiceConfigurationResolver serviceConfigurationResolver) {
-        return ServiceDiscoveryBuilder.builder(Void).basePath(serviceConfigurationResolver.basePath).client(curatorFramework).thisInstance(serviceInstance).build()
+        return ServiceDiscoveryBuilder
+                .builder(Void)
+                .basePath('/' + serviceConfigurationResolver.basePath)
+                .client(curatorFramework)
+                .thisInstance(serviceInstance)
+                .build()
     }            
 }

@@ -9,11 +9,8 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.web.servlet.MvcResult
-import org.springframework.test.web.servlet.ResultMatcher
 
 import static com.ofg.config.BasicProfiles.DEVELOPMENT
-import static org.springframework.test.util.AssertionErrors.assertEquals
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 
 @ContextConfiguration(classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery],
@@ -28,14 +25,10 @@ class PrettyPrintingInDevelopmentEnvironmentSpec extends MvcCorrelationIdSetting
     def "should return pretty JSON when development profile is active"() {
         expect:
             mockMvc.perform(get("/test"))
-                .andExpect(new ResultMatcher() {
-                    @Override
-                    void match(MvcResult result) throws Exception {
-                        assertEquals("Response content", PRETTY_PRINTED_RESULT,
-                                result.getResponse().getContentAsString().replace(CRLF, LF));
-                    }
-                })
-}
+                .andExpect({result ->
+                    assert PRETTY_PRINTED_RESULT == result.getResponse().getContentAsString().replace(CRLF, LF), "Response content"
+            })
+    }
 
     @Configuration
     static class Config {

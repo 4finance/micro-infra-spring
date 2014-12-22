@@ -39,7 +39,7 @@ class CollaboratorsConnectivityController {
      */
     @RequestMapping
     Map getCollaboratorsConnectivityInfo() {
-        Set<ServicePath> myCollaborators = serviceResolver.fetchCollaboratorsNames()
+        Set<ServicePath> myCollaborators = serviceResolver.fetchMyDependencies()
         return myCollaborators.collectEntries { ServicePath service ->
             return [service.path, statusOfAllCollaboratorInstances(service)]
         }
@@ -55,7 +55,7 @@ class CollaboratorsConnectivityController {
 
     @RequestMapping('/all')
     Map getAllCollaboratorsConnectivityInfo() {
-        final Set<ServicePath> allServices = serviceResolver.fetchAllServices()
+        final Set<ServicePath> allServices = serviceResolver.fetchAllDependencies()
         allServices.collectEntries { ServicePath service ->
             return [service.path, collaboratorsStatusOfAllInstances(service)]
         }

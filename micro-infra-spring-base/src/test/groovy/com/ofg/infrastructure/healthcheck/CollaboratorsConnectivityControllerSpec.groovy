@@ -67,11 +67,11 @@ class CollaboratorsConnectivityControllerSpec extends Specification {
     }
 
     def myCollaboratorsAre(String... strings) {
-        serviceResolverMock.fetchCollaboratorsNames() >> strings.collect { new ServicePath(it) }.toList().toSet()
+        serviceResolverMock.fetchMyDependencies() >> strings.collect { new ServicePath(it) }.toList().toSet()
     }
 
     private void instancesOfMicroservices(Map<String, List<String>> instances) {
-        serviceResolverMock.fetchAllServices() >> instances.keySet().collect { new ServicePath(it) }.toSet()
+        serviceResolverMock.fetchAllDependencies() >> instances.keySet().collect { new ServicePath(it) }.toSet()
         instances.each { path, urls ->
             final ServicePath wrappedPath = new ServicePath(path)
             final ServiceAlias alias = new ServiceAlias(StringUtils.substringAfterLast(path, '/'))

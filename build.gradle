@@ -77,7 +77,7 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.1.2'
     compile 'args4j:args4j:2.0.29'
     compile 'javax.servlet:javax.servlet-api:3.0.1'
-    compile 'com.ofg:micro-deps:0.7.3'
+    compile 'com.ofg:micro-deps:0.7.4'
 
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
 }
@@ -108,8 +108,6 @@ task addHashFile << {
     new File("commitHash.txt").withWriter { it << proc.in.text }
 }
 
-
-// TODO is it possible to re-use publishing defined in common-release?
 publishing {
     publications {
         mavenJava(MavenPublication) {

@@ -10,13 +10,15 @@ import com.google.common.base.Optional
  */
 interface ServiceResolver extends AutoCloseable {
 
+    ServicePath resolveAlias(ServiceAlias alias)
+
     /**
      * Returns address of microservice
      *
      * @param service - alias from microservice configuration {@see ServiceConfigurationResolver}
      * @return {@see com.google.common.base.Optional} that may contain the address of the microservice
      */
-    Optional<String> getUrl(String service)
+    Optional<URI> getUri(ServicePath service)
 
     /**
      * Returns address of microservice
@@ -25,14 +27,24 @@ interface ServiceResolver extends AutoCloseable {
      * @return address of the microservice
      * @throws ServiceUnavailableException - if microservice is unavailable
      */
-    String fetchUrl(String service) throws ServiceUnavailableException
+    URI fetchUri(ServicePath service) throws ServiceUnavailableException
+
+    /**
+     * Returns all existing addresses of arbitrary running service.
+     */
+    Set<URI> fetchAllUris(ServicePath service);
 
     /**
      * Returns names of microservices this service depends on
      *
-     * @return names of microservices
+     * @return map from name (alias) to path in registry
      */
-    Set<String> fetchCollaboratorsNames()
+    Set<ServicePath> fetchMyDependencies()
+
+    /**
+     * Returns names of all services existing in service registry
+     */
+    Set<ServicePath> fetchAllDependencies()
 
     /**
      * Start service resolver (e.g. start all service providers)

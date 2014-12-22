@@ -63,6 +63,7 @@ dependencies {
     compile "org.apache.curator:curator-test:$curatorVersion"
     compile 'com.google.guava:guava:18.0'
     compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
+    compile 'org.apache.ivy:ivy:2.3.0'
 
     testCompile"org.spockframework:spock-core:$spockVersion"
     testCompile 'com.jayway.awaitility:awaitility-groovy:1.6.3'

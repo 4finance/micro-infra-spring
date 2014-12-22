@@ -6,7 +6,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class StubbedServiceResolver implements ServiceResolver {
 
-    Map<String, String> stubbedDeps = [:]
+    private final Map<ServicePath, URI> stubbedDeps = [:]
     private final Integer wiremockPort
     private final String wiremockUrl
 
@@ -15,7 +15,7 @@ class StubbedServiceResolver implements ServiceResolver {
         this.wiremockUrl = wiremockUrl
     }
 
-    void stubDependency(String dependency, String address) {
+    void stubDependency(ServicePath dependency, URI address) {
         stubbedDeps[dependency] = address
     }
 
@@ -25,27 +25,42 @@ class StubbedServiceResolver implements ServiceResolver {
 
     void stubDependenciesFrom(ServiceConfigurationResolver serviceConfigurationResolver) {
         serviceConfigurationResolver.dependencies.each {
-            String dependencyName = it.key as String
-            stubDependency(dependencyName, 'http://$wiremockUrl:$wiremockPort/$dependencyName')
+            String dependencyName = it.value['path'] as String
+            stubDependency(new ServicePath(dependencyName), 'http://$wiremockUrl:$wiremockPort/$dependencyName'.toURI())
         }
     }
 
     @Override
-    GuavaOptional<String> getUrl(String dependency) {
+    ServicePath resolveAlias(ServiceAlias alias) {
+        return new ServicePath(alias.name)
+    }
+
+    @Override
+    GuavaOptional<URI> getUri(ServicePath dependency) {
         return GuavaOptional.fromNullable(stubbedDeps[dependency])
     }
 
     @Override
-    String fetchUrl(String service) {
+    Set<URI> fetchAllUris(ServicePath service) {
+        return stubbedDeps.values().toSet()
+    }
+
+    @Override
+    URI fetchUri(ServicePath service) {
         if (stubbedDeps[service]) {
             return stubbedDeps[service]
         } else {
-            throw new ServiceUnavailableException(service)
+            throw new ServiceUnavailableException(service.path)
         }
     }
 
     @Override
-    Set<String> fetchCollaboratorsNames() {
+    Set<ServicePath> fetchMyDependencies() {
+        return stubbedDeps.keySet()
+    }
+
+    @Override
+    Set<ServicePath> fetchAllDependencies() {
         return stubbedDeps.keySet()
     }
 

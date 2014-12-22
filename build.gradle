@@ -1,7 +1,3 @@
-apply plugin: 'groovy'
-apply plugin: 'com.ofg.uptodate'
-apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
 apply plugin: 'spring-boot'
 
 buildscript {
@@ -11,28 +7,46 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.ofg:uptodate-gradle-plugin:1.1.0'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
+        classpath 'com.ofg:uptodate-gradle-plugin:+'
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.8.RELEASE'
-        classpath 'pl.allegro.tech.build:axion-release-plugin:0.9.9'
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
+    }
+    dependencies {
+        classpath 'com.ofg:micro-common-release:+'
+    }
+    dependencies {
+        ant.unjar src: configurations.classpath.find { it.name.startsWith("micro-common-release") }, dest: 'build/release'
     }
 }
 
-apply plugin: 'axion-release'
+apply plugin: 'pl.allegro.tech.build.axion-release'
 
 scmVersion {
     tag {
         prefix = ''
-        createReleaseCommit = true
     }
+    createReleaseCommit = true
+    releaseCommitMessage { version, position -> "release version: ${version}\n\n[ci skip]" }
 }
+
+version = scmVersion.version
+group = 'com.ofg'
+description = 'Runs stubs for service collaborators'
+
+apply plugin: 'groovy'
+apply from: 'build/release/gradle/publish.gradle'
+apply from: 'build/release/gradle/release.gradle'
 
 sourceCompatibility = 1.7
 
-group = 'com.ofg'
-description = 'Runs stubs for service collaborators'
-version = scmVersion.version
+apply plugin: 'com.ofg.uptodate'
+apply plugin: 'spring-boot'
+
+repositories {
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+}
 
 ext {
     stubRepositoryPath = 'repository'
@@ -43,12 +57,6 @@ ext {
 
     curatorVersion = '2.6.0'
     slf4jVersion = '1.7.7'
-}
-
-repositories {
-    mavenLocal()
-    jcenter()
-    mavenCentral()
 }
 
 project.gradle.projectsEvaluated {
@@ -100,29 +108,11 @@ task addHashFile << {
     new File("commitHash.txt").withWriter { it << proc.in.text }
 }
 
-bintrayUpload.dependsOn 'build'
 
-bintray {
-    user = System.properties['bintrayUser']
-    key = System.properties['bintrayKey']
-
-    publications = ['mavenJava']
-    pkg {
-        repo = 'micro'
-        userOrg = '4finance'
-        name = project.name
-        desc = project.description
-        licenses = ['Apache-2.0']
-        labels = ['microservice']
-    }
-}
-
+// TODO is it possible to re-use publishing defined in common-release?
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
             artifact fatJar {
                 classifier "fatJar"
             }
@@ -147,16 +137,6 @@ jar {
     exclude('logback.xml')
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: groovydoc) {
-    classifier = 'javadoc'
-    from groovydoc.destinationDir
-}
-
 task fatJar(type: Jar) {
     classifier = 'fatJar'
     from sourceSets.main.output
@@ -173,8 +153,7 @@ bootJars {
 }
 
 artifacts {
-    archives sourcesJar
-    archives javadocJar
+    archives fatJar
 }
 
 project.tasks.findAll { it.name.startsWith('publish') || it.name == 'bintrayUpload' }*.dependsOn(bootJars)

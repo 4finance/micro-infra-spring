@@ -1,12 +1,32 @@
+install:
+- true
+
+script:
+- set -e
+- ./gradlew check --info --stacktrace --continue -Pcoverage -Pcompatibility
+- source build/release/gradle/setGitVariables.sh
+- ./gradlew release -Prelease.disableRemoteCheck -Prelease.localOnly --info --stacktrace
+- ./gradlew finalizeRelease publishUploadedArtifacts -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --info --stacktrace
+
+after_success:
+- ./gradlew jacocoTestReport coveralls -Pcoverage
+
+
 language: groovy
+
 jdk:
 - oraclejdk8
 
+matrix:
+  include:
+    # Release not skipped only in Java 7 build
+    - jdk: oraclejdk7
+      env: SKIP_RELEASE=false
 
-script:
-- ./gradlew build --info --stacktrace
-
-
-after_success:
-- ./gradlew test jacocoTestReport coveralls -Pcoverage
-- ./gradlew uptodate
+env:
+  global:
+  - TERM=dumb
+  - SKIP_RELEASE=true
+  - secure: QvTik8hBBw8TtoAS+sAeYaYq96yO/EIySye4c4fcKNnMcNUMiMmbOz8KBFzfhStiEwwrfMwtDJsFFaTuIoFjTnZTGp78eSXMtA1fkVf5VEmHSI0UbNT9nykns/YlUSjtKOmQxU73lFog6Q36YJHzOISjT/HMdoYMLYnyGGr1tW4=
+  - secure: C+XNL6uGveU1izF43PkYV+sNUJIPDWzGnTzBPpeSCbvG77JXry9u6nyxRZZJ0ebSnoAvgY3in4er6dTUexwi7Exhd0jC/lxj78w0Q6vyAxhnNmFUmEg/u9nBGac4wHSd+grrXi9j7htAI9n7nnqC4pqUohEasqwMyVnkYWTTPxo=
+  - secure: l30zL0xepdTh+jVzAVaEqkxxhtzqvMZIMOfeCR1pLOJV0YxELgNebkf62GDpDibTvEZJcVsTIWBMYbJ+J1FkrB2GiyhwLsH6rSCaGfHqyc0T3WCLK3s0Kdy2bBXmEHtz3t3ED50s/x8Qyu/kmD4hgHBB/nJj7BJXT+ZEHKjlo+U=

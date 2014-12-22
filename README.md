@@ -3,9 +3,7 @@
 Stub-runner
 ===========
 
-Runs stubs for service collaborators.
-
-Treating stubs as contracts of services allows to use stub-runner as an implementation of Consumer Driven Contracts.
+Runs stubs for service collaborators. Treating stubs as contracts of services allows to use stub-runner as an implementation of [Consumer Driven Contracts](http://martinfowler.com/articles/consumerDrivenContracts.html).
 
 ### Running stubs
 
@@ -24,9 +22,9 @@ To run all stubs execute `gradle runStubs`.
 
 Having the following *project* files:
 
-fooBar.json
+`fooBar.json`:
 
-```
+```json
 {
     "pl": [
         "com/ofg/foo/bar"
@@ -34,9 +32,9 @@ fooBar.json
 }
 ```
 
-healthCheck.json
+`healthCheck.json`:
 
-```
+```json
 {
     "pl": [
         "com/ofg/ping"
@@ -58,8 +56,8 @@ and the following *mappings* folder structure:
 will result in:
 
 * Loading one Zookeeper instance
-* Setting up Wiremock instance with stubs from */com/ofg/ping/ping.json* since it's described in *healthCheck.json*
-* Setting up Wiremock instance with stubs loading first */com/ofg/foo/bar/foobar.json* and then */pl/com/ofg/foo/bar/pl_foobar.json* since it's described in *fooBar.json*
+* Setting up Wiremock instance with stubs from `/com/ofg/ping/ping.json` since it's described in `healthCheck.json`
+* Setting up Wiremock instance with stubs loading first `/com/ofg/foo/bar/foobar.json` and then `/pl/com/ofg/foo/bar/pl_foobar.json` since it's described in `fooBar.json`
 and they share common root path whereas there are some context specific mappings
 
 #### Running from fat jar
@@ -121,7 +119,7 @@ Service collaborators are defined in project metadata file (JSON document) with 
 ```
 
 Example:
-```
+```json
 {
     "pl": [
         "com/ofg/foo",
@@ -136,7 +134,7 @@ By default project metadata definitions are stored in `projects` directory insid
 
 Assuming the following metadata configuration:
 
-```
+```json
 {
     "pl": [
         "com/ofg/foo",
@@ -170,7 +168,7 @@ For each collaborator defined in project metadata all collaborator mappings (stu
 Stubs are defined in JSON documents, whose syntax is defined in [WireMock documentation](http://wiremock.org/stubbing.html)
 
 Example:
-```
+```json
 {
     "request": {
         "method": "GET",

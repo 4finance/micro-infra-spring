@@ -118,9 +118,6 @@ task addHashFile << {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
             artifact fatJar {
                 classifier "fatJar"
             }

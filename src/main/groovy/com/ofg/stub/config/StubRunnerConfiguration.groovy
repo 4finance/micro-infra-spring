@@ -10,6 +10,10 @@ import com.ofg.stub.registry.StubRegistry
 import com.ofg.stub.spring.ZipCategory
 import groovy.grape.Grape
 import groovy.util.logging.Slf4j
+import org.apache.curator.RetryPolicy
+import org.apache.curator.framework.CuratorFramework
+import org.apache.curator.framework.CuratorFrameworkFactory
+import org.apache.curator.retry.RetryNTimes
 import org.apache.curator.test.TestingServer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -58,6 +62,7 @@ class StubRunnerConfiguration {
     private static final String LATEST_MODULE = '*'
     private static final String REPOSITORY_NAME = 'dependency-repository'
     private static final String STUB_RUNNER_TEMP_DIR_PREFIX = 'stub-runner'
+    private static final RetryPolicy RETRY_POLICY = new RetryNTimes(50, 100)
 
     /**
      * Bean that initializes stub runners, runs them and on shutdown closes them. Upon its instantiation
@@ -85,11 +90,12 @@ class StubRunnerConfiguration {
         URI stubJarUri = findGrabbedStubJars(skipLocalRepo, stubRepositoryRoot, stubsGroup, stubsModule)
         File unzippedStubsDir = unpackStubJarToATemporaryFolder(stubJarUri)
         String context = serviceConfigurationResolver.basePath
+        CuratorFramework client = CuratorFrameworkFactory.newClient(testingServer.connectString, RETRY_POLICY)
         List<StubRunner> stubRunners = serviceConfigurationResolver.dependencies.collect { String alias, Map dependencyConfig ->
             String dependencyMappingsPath = dependencyConfig[PATH]
             List<ProjectMetadata> projects = [new ProjectMetadata(alias, dependencyMappingsPath, serviceConfigurationResolver.basePath)]
             Arguments arguments = new Arguments(unzippedStubsDir.path, dependencyMappingsPath, testingServer.port, minPortValue, maxPortValue, context, testingServer.connectString, projects)
-            return new StubRunner(arguments, new StubRegistry(testingServer))
+            return new StubRunner(arguments, new StubRegistry(testingServer.connectString, client))
         }
         return new BatchStubRunner(stubRunners)
     }

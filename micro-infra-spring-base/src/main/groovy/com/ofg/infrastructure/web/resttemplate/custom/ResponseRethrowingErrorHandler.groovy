@@ -28,8 +28,17 @@ class ResponseRethrowingErrorHandler implements ResponseErrorHandler {
     }
 
     protected String getLoggedErrorResponseBody(ClientHttpResponse response) {
-        String responseBody = response.body?.text
+        String responseBody = getResponseBody(response)
         log.error("Response error: status code [$response.statusCode], headers [$response.headers], body [$responseBody]")
         return responseBody
+    }
+
+    private String getResponseBody(ClientHttpResponse response) {
+        try {
+            return response.body?.text
+        } catch (IOException e) {
+            log.debug("Exception while loading body from error response", e)
+            return null
+        }
     }
 }

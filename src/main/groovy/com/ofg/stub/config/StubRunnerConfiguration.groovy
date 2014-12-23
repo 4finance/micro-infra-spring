@@ -91,6 +91,7 @@ class StubRunnerConfiguration {
         File unzippedStubsDir = unpackStubJarToATemporaryFolder(stubJarUri)
         String context = serviceConfigurationResolver.basePath
         CuratorFramework client = CuratorFrameworkFactory.newClient(testingServer.connectString, RETRY_POLICY)
+        client.start()
         List<StubRunner> stubRunners = serviceConfigurationResolver.dependencies.collect { String alias, Map dependencyConfig ->
             String dependencyMappingsPath = dependencyConfig[PATH]
             List<ProjectMetadata> projects = [new ProjectMetadata(alias, dependencyMappingsPath, serviceConfigurationResolver.basePath)]

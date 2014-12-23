@@ -68,6 +68,13 @@ class StubRunner implements StubRunning {
         }
     }
 
+    StubRunner(Arguments arguments, StubRegistry stubRegistry) {
+        this.arguments = arguments
+        this.stubRegistry = stubRegistry
+        this.zookeeperServer = resolveZookeeperServer()
+        this.stubRepository = new StubRepository(new File(arguments.repositoryPath))
+    }
+
     private ZookeeperServer resolveZookeeperServer() {
         if (isNotBlank(zookeeperLocation)) {
             return new ZookeeperServer(zookeeperLocation)
@@ -75,12 +82,6 @@ class StubRunner implements StubRunning {
             return new ZookeeperServer(testingZookeeperPort)
         }
         throw new IllegalArgumentException('You have to provide either Zookeeper port or a path to a local Zookeeper')
-    }
-
-    StubRunner(Arguments arguments, StubRegistry stubRegistry) {
-        this.arguments = arguments
-        this.stubRegistry = stubRegistry
-        this.stubRepository = new StubRepository(new File(arguments.repositoryPath))
     }
 
     private void printErrorMessage(CmdLineException e, CmdLineParser parser) {
@@ -108,6 +109,7 @@ class StubRunner implements StubRunning {
 
     @Override
     void runStubs() {
+        zookeeperServer.start()
         AvailablePortScanner portScanner = new AvailablePortScanner(arguments.minPortValue, arguments.maxPortValue)
         Collection<ProjectMetadata> projects = resolveProjects(stubRepository, arguments)
         StubRunnerExecutor localStubRunner = new StubRunnerExecutor(portScanner, stubRegistry)
@@ -116,13 +118,15 @@ class StubRunner implements StubRunning {
     }
 
     private Collection<ProjectMetadata> resolveProjects(StubRepository repository, Arguments args) {
-        if (useZookeeperDepResolution) {
-            return ProjectMetadataResolver.resolveFromZookeeper(serviceName, context, zookeeperServer)
-        } else if (arguments.projects) {
+        if (arguments.projects) {
             return arguments.projects
         } else if (args.projectRelativePath) {
             File metadata = new File(repository.getProjectMetadataLocation(args.projectRelativePath))
             return ProjectMetadataResolver.resolveFromMetadata(metadata)
+        } else if (useZookeeperDepResolution) {
+            String name = serviceName ? serviceName : args.projectRelativePath
+            String ctx = context ? context : args.context
+            return ProjectMetadataResolver.resolveFromZookeeper(name, ctx, zookeeperServer)
         } else {
             return ProjectMetadataResolver.resolveAllProjectsFromRepository(repository, args.context)
         }

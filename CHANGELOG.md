@@ -1,7 +1,11 @@
-0.3.2-SNAPSHOT
+0.3.2
 -----
 Bug fixes:
 * [Issue 16](https://github.com/4finance/stub-runner/issues/16) logback.xml should not be packaged into JAR
+
+New features:
+* [Issue 15](https://github.com/4finance/stub-runner/issues/15) Remove project definition from json file
+* [Issue 20](https://github.com/4finance/stub-runner/issues/20) Switch production releasing to new mechanism
 
 0.3.1
 -----

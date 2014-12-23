@@ -13,7 +13,7 @@ import groovy.util.logging.Slf4j
 import org.apache.curator.RetryPolicy
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
-import org.apache.curator.retry.RetryNTimes
+import org.apache.curator.retry.ExponentialBackoffRetry
 import org.apache.curator.test.TestingServer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -62,7 +62,7 @@ class StubRunnerConfiguration {
     private static final String LATEST_MODULE = '*'
     private static final String REPOSITORY_NAME = 'dependency-repository'
     private static final String STUB_RUNNER_TEMP_DIR_PREFIX = 'stub-runner'
-    private static final RetryPolicy RETRY_POLICY = new RetryNTimes(50, 100)
+    private static final RetryPolicy RETRY_POLICY = new ExponentialBackoffRetry(50, 20, 500)
 
     /**
      * Bean that initializes stub runners, runs them and on shutdown closes them. Upon its instantiation

@@ -15,10 +15,10 @@ class RestTemplateSpec extends Specification {
 
     @Shared
     @AutoCleanup("stop")
-    private static WireMockServer wireMockServer = new WireMockServer(0)
+    private WireMockServer wireMockServer = new WireMockServer(0)
 
     @Shared
-    private static int port
+    private int port
 
     def setupSpec() {
         wireMockServer.start()

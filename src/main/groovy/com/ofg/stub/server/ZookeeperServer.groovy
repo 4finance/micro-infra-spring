@@ -4,12 +4,12 @@ import org.apache.commons.lang.StringUtils
 import org.apache.curator.RetryPolicy
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
-import org.apache.curator.retry.RetryNTimes
+import org.apache.curator.retry.ExponentialBackoffRetry
 import org.apache.curator.test.TestingServer
 
 class ZookeeperServer {
 
-    private static final RetryPolicy RETRY_POLICY = new RetryNTimes(50, 100)
+    private static final RetryPolicy RETRY_POLICY = new ExponentialBackoffRetry(50, 20, 500)
 
     private CuratorFramework curatorFramework
     private String localZookeeperPath
@@ -24,7 +24,7 @@ class ZookeeperServer {
     }
 
     void start() {
-        curatorFramework = CuratorFrameworkFactory.newClient(getConnectString(), RETRY_POLICY)
+        curatorFramework = CuratorFrameworkFactory.newClient(connectString, RETRY_POLICY)
         curatorFramework.start()
     }
 

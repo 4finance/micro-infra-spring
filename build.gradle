@@ -55,7 +55,7 @@ ext {
     maxStubPortNumber = 2399
     context = 'pl'
 
-    curatorVersion = '2.6.0'
+    curatorVersion = '2.7.0'
     slf4jVersion = '1.7.7'
 }
 

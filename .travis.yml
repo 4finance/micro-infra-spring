@@ -8,8 +8,8 @@ before_script:
  - "export JAVA_OPTS=-Xmx512m"
 
 script:
-- ./gradlew clean build --info --stacktrace
+- ./gradlew -Dstubrunner.skip-local-repo=true clean build --info --stacktrace
 
 after_success:
-- ./gradlew test jacocoTestReport coveralls -Pcoverage
+- ./gradlew -Dstubrunner.skip-local-repo=true test jacocoTestReport coveralls -Pcoverage
 - ./gradlew uptodate

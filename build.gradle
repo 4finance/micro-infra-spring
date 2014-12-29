@@ -154,6 +154,8 @@ subprojects {
     }
 
     test {
+        jvmArgs(project.gradle.startParameter.systemPropertiesArgs.entrySet().collect{"-D${it.key}=${it.value}"})
+
         if (project.hasProperty("coverage")) {
             jacoco {
                 enabled = true
@@ -206,5 +208,3 @@ project(':micro-deps-spring-test-config') {
         testCompile "com.jayway.restassured:rest-assured:$restAssuredVersion"
     }
 }
-
-

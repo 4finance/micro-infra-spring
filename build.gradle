@@ -41,7 +41,7 @@ repositories {
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.3.7'
     compile 'com.ofg:micro-deps:0.7.4'
-    compile 'com.ofg:stub-runner:0.3.2'
+    compile 'com.ofg:stub-runner:0.3.3'
     compile 'org.springframework:spring-context:4.1.1.RELEASE'
     compile 'org.apache.ivy:ivy:2.3.0'
 

@@ -188,7 +188,6 @@ if(project.hasProperty("coverage")) {
         }
 
         test {
-            ignoreFailures = true
             jacoco {
                 excludes = ['*Configuration']
             }

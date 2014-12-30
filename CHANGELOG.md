@@ -1,4 +1,9 @@
-0.5.2-SNAPSHOT
+0.5.3
+------
+* [Issue 16](https://github.com/4finance/micro-deps-spring-config/issues/16) Copying provided arguments to tests.
+* [micro-deps](https://github.com/4finance/stub-runner-spring) upgraded from version `0.2.2` to `0.2.3`
+
+0.5.2
 ------
 Notable changes:
 * [micro-deps](https://github.com/4finance/micro-deps) upgraded to version `0.7.3`

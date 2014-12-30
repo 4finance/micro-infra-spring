@@ -1,13 +1,15 @@
-subprojects {
+project(':micro-deps:micro-deps-spring-config') {
+    description = 'Microservice dependency manager - default Spring configuration'
+
     dependencies {
-        compile 'org.codehaus.groovy:groovy-all'
-        compile "org.springframework:spring-context"
         compile('com.ofg:micro-deps:0.7.4') {
             exclude group: 'log4j'
             exclude group: "org.slf4j", module: "slf4j-log4j12"
             exclude group: "org.slf4j", module: "log4j-over-slf4j"
         }
         compile 'com.ofg:stub-runner-spring:0.2.3'
+        compile 'org.codehaus.groovy:groovy-all'
+        compile "org.springframework:spring-context"
 
         testCompile "org.spockframework:spock-core"
         testCompile "org.spockframework:spock-spring"
@@ -18,15 +20,12 @@ subprojects {
     }
 }
 
-project(':micro-deps:micro-deps-spring-config') {
-    description = 'Microservice dependency manager - default Spring configuration'
-}
-
 project(':micro-deps:micro-deps-spring-test-config') {
     description = 'Microservice dependency manager - Spring test configuration'
 
     dependencies {
         compile project(':micro-deps:micro-deps-spring-config')
+        compile 'org.codehaus.groovy:groovy-all'
         compile 'cglib:cglib-nodep:3.1'
         compile 'org.objenesis:objenesis:2.1'
         compile 'org.aspectj:aspectjweaver:1.8.4'

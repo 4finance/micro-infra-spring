@@ -1,3 +1,15 @@
+[0.7.3](https://github.com/4finance/micro-infra-spring/tree/0.7.3)
+-----
+New features:
+ * [Issue 107](https://github.com/4finance/micro-infra-spring/issues/107) Every `ServiceRestClient` call should be measured
+ * [Issue 105](https://github.com/4finance/micro-infra-spring/issues/105) `@EnableServiceRestClient` alone is useless
+ * [Issue 79](https://github.com/4finance/micro-infra-spring/issues/79) Make it possible to draw diagrams of dependencies between services
+
+Bug fixes:
+ * [Issue 144](https://github.com/4finance/micro-infra-spring/issues/144) `ResponseRethrowingErrorHandler` fails in getBody() when handling exceptions  bug
+ * [Issue 139](https://github.com/4finance/micro-infra-spring/issues/139) `RestServiceClient` from latest micro-infra-spring throws ExecutionException instead of ResponseException
+ * [Issue 138](https://github.com/4finance/micro-infra-spring/issues/138) External configuration management should be disabled during tests 
+
 [0.7.2](https://github.com/4finance/micro-infra-spring/tree/0.7.2)
 -----
 New features:

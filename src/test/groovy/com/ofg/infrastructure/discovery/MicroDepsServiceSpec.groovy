@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit
 class MicroDepsServiceSpec extends Specification {
 
     private static final RetryPolicy RETRY_POLICY = new RetryNTimes(50, 100)
-    @AutoCleanup('close')
+    @AutoCleanup
     TestingServer server
     private CuratorFramework curatorFramework
 
@@ -248,6 +248,46 @@ class MicroDepsServiceSpec extends Specification {
         then:
             ServiceUnavailableException e = thrown(ServiceUnavailableException)
             e.message.contains(unavailableService)
+    }
+
+    def 'should optionally return URL'() {
+        given:
+            new MicroDepsService(server.connectString, "api", "micro-a", 8876, MICRO_A).start()
+            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B)
+            service.start()
+
+        when:
+            ServicePath path = service.serviceResolver.resolveAlias(new ServiceAlias('microA'))
+            URI uri = service.serviceResolver.fetchUri(path)
+
+        then:
+            uri == 'http://micro-a:8876/api'.toURI()
+    }
+
+    def 'should return URL'() {
+        given:
+            new MicroDepsService(server.connectString, "api", "micro-a", 8876, MICRO_A).start()
+            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B)
+            service.start()
+
+        when:
+            String url = service.serviceResolver.fetchUrl('microA')
+
+        then:
+            url == 'http://micro-a:8876/api'
+    }
+
+    def 'should return all URLs of my collaborators'() {
+        given:
+            new MicroDepsService(server.connectString, "api", "micro-a", 8876, MICRO_A).start()
+            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B)
+            service.start()
+
+        when:
+            Set<String> names = service.serviceResolver.fetchCollaboratorsNames()
+
+        then:
+            names == ['microA'].toSet()
     }
 
 }

@@ -47,6 +47,36 @@ interface ServiceResolver extends AutoCloseable {
     Set<ServicePath> fetchAllDependencies()
 
     /**
+     * Returns address of microservice
+     *
+     * @deprecated Use {@link #getUri(com.ofg.infrastructure.discovery.ServicePath)}  instead
+     * @param service - alias from microservice configuration {@see ServiceConfigurationResolver}
+     * @return {@see com.google.common.base.Optional} that may contain the address of the microservice
+     */
+    @Deprecated
+    Optional<String> getUrl(String service)
+
+    /**
+     * Returns address of microservice
+     *
+     * @deprecated Use {@link #fetchUri(com.ofg.infrastructure.discovery.ServicePath)}
+     * @param service - alias from microservice configuration {@see ServiceConfigurationResolver}
+     * @return address of the microservice
+     * @throws ServiceUnavailableException - if microservice is unavailable
+     */
+    @Deprecated
+    String fetchUrl(String service) throws ServiceUnavailableException
+
+    /**
+     * Returns names of microservices this service depends on
+     *
+     * @deprecated Use {@link #fetchMyDependencies()}
+     * @return names of microservices
+     */
+    @Deprecated
+    Set<String> fetchCollaboratorsNames()
+
+    /**
      * Start service resolver (e.g. start all service providers)
      */
     void start()

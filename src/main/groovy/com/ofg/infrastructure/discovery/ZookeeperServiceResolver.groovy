@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.discovery
 
+import com.google.common.base.Function
 import com.google.common.base.Optional
 import groovy.transform.CompileStatic
 import org.apache.curator.framework.CuratorFramework
@@ -89,6 +90,30 @@ class ZookeeperServiceResolver implements ServiceResolver {
     @Override
     Set<ServicePath> fetchAllDependencies() {
         return findLeavesOf(serviceConfigurationResolver.basePath)
+    }
+
+    @Override
+    Optional<String> getUrl(String service) {
+        return getUri(toPath(service))
+                .transform({uri -> uri.toString()} as Function)
+    }
+
+    @Override
+    String fetchUrl(String service) throws ServiceUnavailableException {
+        return fetchUri(toPath(service)).toString()
+    }
+
+    @Override
+    Set<String> fetchCollaboratorsNames() {
+        return serviceConfigurationResolver
+                .dependencies
+                .keySet()
+                .collect{it.toString()}
+                .toSet()
+    }
+
+    private ServicePath toPath(String service) {
+        return resolveAlias(new ServiceAlias(service))
     }
 
     private Set<ServicePath> findLeavesOf(String root) {

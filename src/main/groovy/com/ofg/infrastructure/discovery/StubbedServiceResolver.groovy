@@ -1,5 +1,7 @@
 package com.ofg.infrastructure.discovery
 
+import com.google.common.base.Function
+import com.google.common.base.Optional
 import com.google.common.base.Optional as GuavaOptional
 import groovy.transform.CompileStatic
 
@@ -62,6 +64,25 @@ class StubbedServiceResolver implements ServiceResolver {
     @Override
     Set<ServicePath> fetchAllDependencies() {
         return stubbedDeps.keySet()
+    }
+
+    @Override
+    Optional<String> getUrl(String service) {
+        return getUriByName(service).transform({it.toString()} as Function)
+    }
+
+    @Override
+    String fetchUrl(String service) throws ServiceUnavailableException {
+        return getUriByName(service).get()
+    }
+
+    private Optional<URI> getUriByName(String service) {
+        return getUri(new ServicePath(service))
+    }
+
+    @Override
+    Set<String> fetchCollaboratorsNames() {
+        return fetchMyDependencies().collect({it.toString()}).toSet()
     }
 
     @Override

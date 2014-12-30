@@ -28,7 +28,7 @@ dependencies {
     testRuntime "org.springframework:spring-test"
     testRuntime "org.spockframework:spock-spring:$spock10Version"
     testRuntime "ch.qos.logback:logback-classic"
-    testCompile 'com.jayway.awaitility:awaitility:1.6.2'
+    testCompile "com.jayway.awaitility:awaitility"
 }
 
 test {

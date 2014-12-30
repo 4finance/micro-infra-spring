@@ -65,8 +65,10 @@ configure(srcSubprojects) {
         dependencies {
             "org.codehaus.groovy:groovy-all" "2.3.7"
             "org.springframework.boot:spring-boot-starter-web" "1.1.8.RELEASE"
+
             "ch.qos.logback:logback-classic" "1.1.2"
             "com.jayway.restassured:rest-assured" "2.4.0"
+            "com.jayway.awaitility:awaitility" "1.6.3"
 
             dependencySet(group:'org.spockframework', version: '0.7-groovy-2.0') {
                 entry "spock-core"

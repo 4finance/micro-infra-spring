@@ -81,11 +81,12 @@ class MicroDepsService {
         dependencyWatcher.registerDependencyStateChangeListener(listener)
     }
 
-    void start() {
+    MicroDepsService start() {
         curatorFramework.start()
         serviceDiscovery.start()
         dependencyWatcher.registerDependencies()
         serviceResolver.start()
+        return this
     }
 
     void stop() {

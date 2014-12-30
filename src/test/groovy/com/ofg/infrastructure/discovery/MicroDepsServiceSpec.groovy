@@ -72,8 +72,7 @@ class MicroDepsServiceSpec extends Specification {
     def 'should register dependencies of a service as payload'() {
         given:
             MicroDepsService testService =
-                    new MicroDepsService(server.connectString, "pl", "microUrl", 8866, MicroserviceConfiguration.FLAT_CONFIGURATION)
-            testService.start()
+                    new MicroDepsService(server.connectString, "pl", "microUrl", 8866, MicroserviceConfiguration.FLAT_CONFIGURATION).start()
         when:
             CuratorFramework curatorFramework = CuratorFrameworkFactory.newClient(server.connectString, RETRY_POLICY)
             curatorFramework.start()
@@ -148,8 +147,7 @@ class MicroDepsServiceSpec extends Specification {
 
     def 'should enumerate names of all microservices'() {
         given:
-            MicroDepsService service = new MicroDepsService(server.connectString, "rest", "microAUrl", 8877, MICRO_A)
-            service.start()
+            MicroDepsService service = new MicroDepsService(server.connectString, "rest", "microAUrl", 8877, MICRO_A).start()
             new MicroDepsService(server.connectString, "rest", "microBUrl", 8888, MICRO_B).start()
             new MicroDepsService(server.connectString, "rest", "microCUrl", 8899, MICRO_C).start()
             new MicroDepsService(server.connectString, "rest", "microDUrl", 8800, MICRO_D).start()
@@ -163,8 +161,7 @@ class MicroDepsServiceSpec extends Specification {
 
     def 'should enumerate all instances of a microservices'() {
         given:
-            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-a", 8877, MICRO_A)
-            service.start()
+            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-a", 8877, MICRO_A).start()
             new MicroDepsService(server.connectString, "api", "micro-a", 8878, MICRO_A).start()
 
         when:
@@ -176,8 +173,7 @@ class MicroDepsServiceSpec extends Specification {
 
     def 'should resolve alias to full path'() {
         given:
-            MicroDepsService service = new MicroDepsService(server.connectString, "rest", "microBUrl", 8877, MICRO_B)
-            service.start()
+            MicroDepsService service = new MicroDepsService(server.connectString, "rest", "microBUrl", 8877, MICRO_B).start()
 
         when:
             ServicePath path = service.serviceResolver.resolveAlias(new ServiceAlias('microA'))
@@ -188,8 +184,7 @@ class MicroDepsServiceSpec extends Specification {
 
     def 'should fail to resolve not our dependency'() {
         given:
-            MicroDepsService service = new MicroDepsService(server.connectString, "rest", "microBUrl", 8877, MICRO_B)
-            service.start()
+            MicroDepsService service = new MicroDepsService(server.connectString, "rest", "microBUrl", 8877, MICRO_B).start()
 
         when:
             service.serviceResolver.resolveAlias(new ServiceAlias('microXXX'))
@@ -202,8 +197,7 @@ class MicroDepsServiceSpec extends Specification {
 
     def 'should return single available URI for given service path'() {
         given:
-            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B)
-            service.start()
+            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B).start()
 
         when:
             Optional<URI> uri = service.serviceResolver.getUri(new ServicePath('com/test/microB'))
@@ -214,8 +208,7 @@ class MicroDepsServiceSpec extends Specification {
 
     def 'should always return single available URI for given service path'() {
         given:
-            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B)
-            service.start()
+            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B).start()
 
         when:
             URI uri = service.serviceResolver.fetchUri(new ServicePath('com/test/microB'))
@@ -226,8 +219,7 @@ class MicroDepsServiceSpec extends Specification {
 
     def 'should return names of my collaborators'() {
         given:
-            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8888, MICRO_B)
-            service.start()
+            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8888, MICRO_B).start()
 
         when:
             Set<ServicePath> collaborators = service.serviceResolver.fetchMyDependencies()
@@ -238,8 +230,7 @@ class MicroDepsServiceSpec extends Specification {
 
     def 'fetchUri() should fail when no instance of given service is available'() {
         given:
-            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B)
-            service.start()
+            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B).start()
             final String unavailableService = 'com/test/microA'
 
         when:
@@ -253,8 +244,7 @@ class MicroDepsServiceSpec extends Specification {
     def 'should optionally return URL'() {
         given:
             new MicroDepsService(server.connectString, "api", "micro-a", 8876, MICRO_A).start()
-            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B)
-            service.start()
+            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B).start()
 
         when:
             ServicePath path = service.serviceResolver.resolveAlias(new ServiceAlias('microA'))
@@ -267,8 +257,7 @@ class MicroDepsServiceSpec extends Specification {
     def 'should return URL'() {
         given:
             new MicroDepsService(server.connectString, "api", "micro-a", 8876, MICRO_A).start()
-            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B)
-            service.start()
+            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B).start()
 
         when:
             String url = service.serviceResolver.fetchUrl('microA')
@@ -280,8 +269,7 @@ class MicroDepsServiceSpec extends Specification {
     def 'should return all URLs of my collaborators'() {
         given:
             new MicroDepsService(server.connectString, "api", "micro-a", 8876, MICRO_A).start()
-            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B)
-            service.start()
+            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B).start()
 
         when:
             Set<String> names = service.serviceResolver.fetchCollaboratorsNames()

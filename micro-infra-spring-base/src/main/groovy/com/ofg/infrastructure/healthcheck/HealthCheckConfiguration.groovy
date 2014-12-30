@@ -22,8 +22,13 @@ class HealthCheckConfiguration {
     }
 
     @Bean
-    CollaboratorsConnectivityController collaboratorsConnectivityController(ServiceRestClient serviceRestClient, ServiceResolver serviceResolver) {
-        return new CollaboratorsConnectivityController(serviceRestClient, serviceResolver)
+    CollaboratorsConnectivityController collaboratorsConnectivityController(ServiceResolver serviceResolver, PingClient pingClient) {
+        return new CollaboratorsConnectivityController(serviceResolver, pingClient)
+    }
+
+    @Bean
+    PingClient pingClient(ServiceRestClient serviceRestClient) {
+        return new PingClient(serviceRestClient)
     }
 
 }

@@ -2,7 +2,9 @@ package com.ofg.infrastructure.web.resttemplate.fluent
 
 import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor
+import com.ofg.infrastructure.discovery.ServiceAlias
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
+import com.ofg.infrastructure.discovery.ServicePath
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.discovery.ServiceUnavailableException
 import org.springframework.http.HttpEntity
@@ -44,18 +46,23 @@ class ServiceRestClientSpec extends Specification {
             String path = 'some/serviceUrl'
             URI expectedUri = new URI("${SOME_SERVICE_URL}/$path")
         and:
-            serviceResolver.fetchUrl(COLA_COLLABORATOR_NAME) >> SOME_SERVICE_URL
+            aliasReturnsUrl(COLA_COLLABORATOR_NAME, SOME_SERVICE_URL)
         when:
             serviceRestClient.forService(COLA_COLLABORATOR_NAME).get().onUrl(path).ignoringResponse()
         then:
             1 * restOperations.exchange(expectedUri, GET, _ as HttpEntity, _ as Class)
     }
 
+    def aliasReturnsUrl(String collaboratorName, String url) {
+        serviceResolver.resolveAlias(new ServiceAlias(collaboratorName)) >> new ServicePath(collaboratorName)
+        serviceResolver.fetchUri(new ServicePath(collaboratorName)) >> url.toURI()
+    }
+
     def 'should send a request to provided URL with Content-Type set when calling service'() {
         given:
             String path = 'some/serviceUrl'
         and:
-            serviceResolver.fetchUrl(COLA_COLLABORATOR_NAME) >> SOME_SERVICE_URL
+            aliasReturnsUrl(COLA_COLLABORATOR_NAME, SOME_SERVICE_URL)
         when:
             serviceRestClient.forService(COLA_COLLABORATOR_NAME).get().onUrl(path).ignoringResponse()
         then:
@@ -68,7 +75,7 @@ class ServiceRestClientSpec extends Specification {
         given:
             String path = 'some/serviceUrl'
         and:
-            serviceResolver.fetchUrl(COLA_COLLABORATOR_NAME) >> SOME_SERVICE_URL
+            aliasReturnsUrl(COLA_COLLABORATOR_NAME, SOME_SERVICE_URL)
         when:
             serviceRestClient.forService(COLA_COLLABORATOR_NAME).get().onUrl(path).ignoringResponse()
         then:
@@ -82,7 +89,7 @@ class ServiceRestClientSpec extends Specification {
             String serviceUrl = SOME_SERVICE_URL
             String path = 'some/serviceUrl'
         and:
-            serviceResolver.fetchUrl(COLA_COLLABORATOR_NAME) >> serviceUrl
+            aliasReturnsUrl(COLA_COLLABORATOR_NAME, serviceUrl)
         when:
             serviceRestClient.forService(COLA_COLLABORATOR_NAME).get().onUrl(path).ignoringResponse()
         then:
@@ -94,7 +101,8 @@ class ServiceRestClientSpec extends Specification {
 
     def 'should throw an exception when trying to access an unavailable service'() {
         given:
-            serviceResolver.fetchUrl(COLA_COLLABORATOR_NAME) >> {
+            serviceResolver.resolveAlias(new ServiceAlias(COLA_COLLABORATOR_NAME)) >> new ServicePath(COLA_COLLABORATOR_NAME)
+            serviceResolver.fetchUri(new ServicePath(COLA_COLLABORATOR_NAME)) >> {
                 throw new ServiceUnavailableException(COLA_COLLABORATOR_NAME)
             }
         when:

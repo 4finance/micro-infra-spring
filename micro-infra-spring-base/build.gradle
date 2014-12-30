@@ -10,10 +10,8 @@ sourceSets.main.java.srcDirs = []
 sourceSets.main.groovy.srcDirs += ["src/main/java", "src/main/groovy"]
 
 dependencies {
-    compile("com.ofg:micro-deps-spring-config") {
-        //Required with micro-deps 0.4.0 as it uses groovy-all-indy which confuses Intellij Idea (both jars are added to dependencies)
-        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
-    }
+    compile project(":micro-deps:micro-deps-spring-config")
+
     compile "org.codehaus.groovy:groovy-all"
     compile 'com.fasterxml.jackson.core:jackson-databind:2.4.3'
     compile "org.springframework.boot:spring-boot-starter-web"

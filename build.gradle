@@ -63,19 +63,20 @@ configure(srcSubprojects) {
 
     dependencyManagement {
         dependencies {
-            dependencySet(group: "com.ofg", version: "0.5.3") {
-                entry "micro-deps-spring-config"
-                entry "micro-deps-spring-test-config"
-            }
             "org.codehaus.groovy:groovy-all" "2.3.7"
             "org.springframework.boot:spring-boot-starter-web" "1.1.8.RELEASE"
             "ch.qos.logback:logback-classic" "1.1.2"
+            "com.jayway.restassured:rest-assured" "2.4.0"
 
             dependencySet(group:'org.spockframework', version: '0.7-groovy-2.0') {
                 entry "spock-core"
                 entry "spock-spring"
             }
-            "org.springframework:spring-test" "4.1.1.RELEASE"
+            dependencySet(group:'org.springframework', version: '4.1.1.RELEASE') {
+                entry "spring-webmvc"
+                entry "spring-context"
+                entry "spring-test"
+            }
         }
     }
 

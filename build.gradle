@@ -81,6 +81,7 @@ configure(srcSubprojects) {
 
     //Workaround for the issue with Java 8u11 and 7u65 - http://www.infoq.com/news/2014/08/Java8-U11-Broke-Tools
     test {
+        jvmArgs project.gradle.startParameter.systemPropertiesArgs.entrySet().collect{"-D${it.key}=${it.value}"}
         jvmArgs '-noverify'
     }
 

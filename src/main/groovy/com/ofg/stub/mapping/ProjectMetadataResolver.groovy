@@ -14,7 +14,7 @@ class ProjectMetadataResolver {
     private static final Closure PASSING_THROUGH_FILTER = { String context, Collection<String> projectPaths -> true }
 
     static Collection<ProjectMetadata> resolveFromZookeeper(String serviceName, String context, ZookeeperServer zookeeperServer) {
-        List<String> dependencies = resolveServcieDependenciesFromZookeeper(context, zookeeperServer, serviceName)
+        List<String> dependencies = resolveServiceDependenciesFromZookeeper(context, zookeeperServer, serviceName)
         Set<ProjectMetadata> projects = []
         dependencies.each {
             projects << new ProjectMetadata(serviceName, it, context)
@@ -22,7 +22,7 @@ class ProjectMetadataResolver {
         return projects
     }
 
-    private static List<String> resolveServcieDependenciesFromZookeeper(String context, ZookeeperServer zookeeperServer, String serviceName) {
+    private static List<String> resolveServiceDependenciesFromZookeeper(String context, ZookeeperServer zookeeperServer, String serviceName) {
         ServiceDiscovery discovery = ServiceDiscoveryBuilder.builder(InstanceDetails)
                 .basePath(context)
                 .client(zookeeperServer.curatorFramework)

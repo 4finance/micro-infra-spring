@@ -10,6 +10,7 @@ import groovy.util.logging.Slf4j
 import org.kohsuke.args4j.CmdLineException
 import org.kohsuke.args4j.CmdLineParser
 import org.kohsuke.args4j.Option
+import org.kohsuke.args4j.spi.ExplicitBooleanOptionHandler
 
 import static org.apache.commons.lang.StringUtils.isNotBlank
 import static org.kohsuke.args4j.OptionHandlerFilter.ALL
@@ -40,13 +41,13 @@ class StubRunner implements StubRunning {
     @Option(name = "-maxp", aliases = ['--maxPort'], usage = "Maximum port value to be assigned to the Wiremock instance (e.g. 12345)", required = true)
     private Integer maxPortValue
 
-    @Option(name = "-c", aliases = ['--context'], usage = "Context for which the project should be run (e.g. 'pl', 'lt')")
+    @Option(name = "-c", aliases = ['--context'], usage = "Context for which the project should be run (e.g. 'pl', 'lt')", required = true)
     private String context
 
     @Option(name = "-n", aliases = ['--serviceName'], usage = "Name of the service for which the project should be run (e.g. 'com/service/name')")
     private String serviceName
 
-    @Option(name = "-uz", aliases = ['--useZookeeperDepResolution'], usage = "Switch to use Zookeeper server to resolve dependencies of the service and run stubs for them")
+    @Option(name = "-uz", aliases = ['--useZookeeperDepResolution'], usage = "Switch to use Zookeeper server to resolve dependencies of the service and run stubs for them", handler = ExplicitBooleanOptionHandler)
     private boolean useZookeeperDepResolution = true
 
     private final Arguments arguments

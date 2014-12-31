@@ -1,0 +1,93 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.ofg:uptodate-gradle-plugin:+'
+        if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.0' }
+    }
+    dependencies {
+        classpath "com.ofg:micro-common-release:+"
+    }
+    dependencies {
+        ant.unjar src: configurations.classpath.find { it.name.startsWith("micro-common-release") }, dest: 'build/release'
+    }
+}
+
+apply plugin: 'pl.allegro.tech.build.axion-release'
+
+scmVersion {
+    tag {
+        prefix = ''
+    }
+    createReleaseCommit = true
+    releaseCommitMessage { version, position -> "release version: ${version}\n\n[ci skip]" }
+}
+
+project.version = scmVersion.version
+group = 'com.ofg'
+description = 'Microservice dependency manager'
+
+
+apply plugin: 'groovy'
+apply from: 'build/release/gradle/publish.gradle'
+apply from: 'build/release/gradle/release.gradle'
+
+bintray {
+    pkg {
+        repo = 'micro-deps'
+    }
+}
+
+sourceCompatibility = 1.7
+
+apply plugin: 'com.ofg.uptodate'
+
+repositories {
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+}
+
+ext {
+    groovyVersion = '2.3.8'
+    spockVersion = '0.7-groovy-2.0'
+    curatorVersion = '2.7.0'
+}
+
+dependencies {
+    compile "org.codehaus.groovy:groovy-all:$groovyVersion"
+    compile "org.apache.curator:curator-x-discovery:$curatorVersion"
+    compile "org.apache.curator:curator-test:$curatorVersion"
+    compile 'com.google.guava:guava:18.0'
+    compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
+
+    testCompile"org.spockframework:spock-core:$spockVersion"
+    testCompile 'com.jayway.awaitility:awaitility-groovy:1.6.3'
+}
+
+if(project.hasProperty("coverage")) {
+    apply plugin: 'jacoco'
+    apply plugin: 'com.github.kt3k.coveralls'
+
+    jacoco {
+        toolVersion = '0.7.1.201405082137'
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled = true // coveralls plugin depends on xml format report
+            html.enabled = true
+        }
+    }
+
+    test {
+        ignoreFailures = true
+    }
+}
+
+wrapper {
+    gradleVersion '2.2'
+}

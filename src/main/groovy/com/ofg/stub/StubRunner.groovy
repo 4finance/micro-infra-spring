@@ -61,6 +61,7 @@ class StubRunner implements StubRunning {
             parser.parseArgument(args)
             this.arguments = new Arguments(repositoryPath, projectRelativePath, testingZookeeperPort, minPortValue, maxPortValue, context, zookeeperLocation)
             this.zookeeperServer = resolveZookeeperServer()
+            this.zookeeperServer.start()
             this.stubRegistry = new StubRegistry(zookeeperServer.connectString, zookeeperServer.curatorFramework)
             this.stubRepository = new StubRepository(new File(repositoryPath))
         } catch (CmdLineException e) {

@@ -1,9 +1,10 @@
 package com.ofg.infrastructure.healthcheck
 
-import groovy.json.JsonSlurper
+import com.fasterxml.jackson.annotation.JsonRawValue
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
 import org.springframework.core.io.Resource
+import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -22,15 +23,31 @@ class MicroserviceConfigurationController {
         this.microserviceConfig = microserviceConfig
     }
 
-    @RequestMapping(value = "/config", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    Object getMicroserviceConfiguration() {
-        return getContent()
+    @RequestMapping(value = '/${endpoints.microservicejson.id:microservice.json}', method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    Json getMicroserviceConfiguration() {
+        return new Json(configurationContent())
     }
 
     @Memoized
-    private Object getContent() {
-        String configurationContent = microserviceConfig.inputStream.text
-        return new JsonSlurper().parseText(configurationContent)
+    private String configurationContent() {
+        return microserviceConfig.inputStream.text
+    }
+
+    /**
+     * Wrapper class for the content of configuration file.
+     */
+    public static class Json {
+
+        private final String configuration
+
+        public Json(String configuration) {
+            this.configuration = configuration
+        }
+
+        @JsonRawValue
+        public String configuration() {
+            return configuration
+        }
     }
 
 }

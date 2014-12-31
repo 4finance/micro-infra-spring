@@ -20,8 +20,8 @@ apply plugin: 'axion-release'
 scmVersion {
     tag {
         prefix = ''
-        createReleaseCommit = true
     }
+    createReleaseCommit = true
 }
 
 allprojects {
@@ -50,7 +50,7 @@ task addHashFile << {
     new File("commitHash.txt").withWriter { it << proc.in.text }
 }
 
-def srcSubprojects = subprojects - project(':swagger')
+def srcSubprojects = subprojects - project(':swagger') - project(':micro-deps')
 configure(srcSubprojects) {
     apply plugin: 'groovy'
     apply plugin: 'maven'
@@ -65,19 +65,30 @@ configure(srcSubprojects) {
         dependencies {
             "org.codehaus.groovy:groovy-all" "2.3.7"
             "org.springframework.boot:spring-boot-starter-web" "1.1.8.RELEASE"
+            "com.google.guava:guava" "18.0"
 
+
+            dependencySet(group:'org.springframework', version: '4.1.1.RELEASE') {
+                entry "spring-webmvc"
+                entry "spring-context"
+                entry "spring-test"
+            }
+            dependencySet(group:"org.apache.curator", version: "2.7.0") {
+                entry "curator-x-discovery"
+                entry "curator-test"
+            }
+
+            //test
             "ch.qos.logback:logback-classic" "1.1.2"
             "com.jayway.restassured:rest-assured" "2.4.0"
-            "com.jayway.awaitility:awaitility" "1.6.3"
 
             dependencySet(group:'org.spockframework', version: '0.7-groovy-2.0') {
                 entry "spock-core"
                 entry "spock-spring"
             }
-            dependencySet(group:'org.springframework', version: '4.1.1.RELEASE') {
-                entry "spring-webmvc"
-                entry "spring-context"
-                entry "spring-test"
+            dependencySet(group:'com.jayway.awaitility', version: '1.6.3') {
+                entry "awaitility"
+                entry "awaitility-groovy"
             }
         }
     }

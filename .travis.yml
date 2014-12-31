@@ -12,7 +12,7 @@ before_script:
  - "export JAVA_OPTS=-Xmx512m"
 
 script:
-- ./gradlew check --info --stacktrace --continue -Pcoverage -Pcompatibility
+- ./gradlew check --info --stacktrace --continue -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true
 
 env:
 - TERM=dumb

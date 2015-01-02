@@ -67,7 +67,6 @@ configure(srcSubprojects) {
             "org.springframework.boot:spring-boot-starter-web" "1.1.8.RELEASE"
             "com.google.guava:guava" "18.0"
 
-
             dependencySet(group:'org.springframework', version: '4.1.1.RELEASE') {
                 entry "spring-webmvc"
                 entry "spring-context"
@@ -77,10 +76,15 @@ configure(srcSubprojects) {
                 entry "curator-x-discovery"
                 entry "curator-test"
             }
+            dependencySet(group:"org.slf4j", version: "1.7.9") {
+                entry "slf4j-api"
+                entry "log4j-over-slf4j"
+            }
 
             //test
             "ch.qos.logback:logback-classic" "1.1.2"
             "com.jayway.restassured:rest-assured" "2.4.0"
+            "com.github.tomakehurst:wiremock" "1.52"
 
             dependencySet(group:'org.spockframework', version: '0.7-groovy-2.0') {
                 entry "spock-core"
@@ -186,7 +190,7 @@ configure(srcSubprojects) {
     task allInsight(type: DependencyInsightReportTask) {}
 }
 
-if(project.hasProperty("coverage")) {
+if (project.hasProperty("coverage")) {
     configure(srcSubprojects + rootProject) {
         apply plugin: 'jacoco'
 

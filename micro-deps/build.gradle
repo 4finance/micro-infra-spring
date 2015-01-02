@@ -54,7 +54,7 @@ project(':micro-deps:micro-deps-spring-test-config') {
         compile "org.spockframework:spock-spring"
         compile "org.springframework:spring-webmvc"
         compile "org.springframework:spring-test"
-        compile 'com.github.tomakehurst:wiremock:1.52'
+        compile 'com.github.tomakehurst:wiremock'
 
         testCompile "com.jayway.restassured:rest-assured"
     }

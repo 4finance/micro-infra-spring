@@ -2,7 +2,7 @@ description = 'Spring configuration for stub-runner'
 
 dependencies {
     compile project(':micro-deps:micro-deps')
-    compile 'com.ofg:stub-runner:0.3.3'
+    compile project(':stub-runner:stub-runner')
 
     compile 'org.codehaus.groovy:groovy-all'
     compile 'org.springframework:spring-context'

@@ -1,0 +1,13 @@
+{
+    "request": {
+        "method": "GET",
+        "url": "/another"
+    },
+    "response": {
+        "status": 200,
+        "body": "Another project",
+        "headers": {
+            "Content-Type": "text/plain"
+        }
+    }
+}

@@ -1,0 +1,181 @@
+apply plugin: 'spring-boot'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.ofg:uptodate-gradle-plugin:+'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.8.RELEASE'
+        if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
+    }
+    dependencies {
+        classpath 'com.ofg:micro-common-release:+'
+    }
+    dependencies {
+        ant.unjar src: configurations.classpath.find { it.name.startsWith("micro-common-release") }, dest: 'build/release'
+    }
+}
+
+apply plugin: 'pl.allegro.tech.build.axion-release'
+
+scmVersion {
+    tag {
+        prefix = ''
+    }
+    createReleaseCommit = true
+    releaseCommitMessage { version, position -> "release version: ${version}\n\n[ci skip]" }
+}
+
+version = scmVersion.version
+group = 'com.ofg'
+description = 'Runs stubs for service collaborators'
+
+apply plugin: 'groovy'
+apply from: 'build/release/gradle/publish.gradle'
+apply from: 'build/release/gradle/release.gradle'
+
+sourceCompatibility = 1.7
+
+apply plugin: 'com.ofg.uptodate'
+apply plugin: 'spring-boot'
+
+repositories {
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+}
+
+ext {
+    stubRepositoryPath = 'repository'
+    stubRegistryPort = 2181
+    minStubPortNumber = 2300
+    maxStubPortNumber = 2399
+    context = 'pl'
+
+    curatorVersion = '2.7.0'
+    slf4jVersion = '1.7.7'
+}
+
+project.gradle.projectsEvaluated {
+    applicationDefaultJvmArgs = project.gradle.startParameter.systemPropertiesArgs.entrySet().collect {
+        "-D${it.key}=${it.value}"
+    }
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.3.7'
+    compile ('com.github.tomakehurst:wiremock:1.52') {
+        exclude group: 'org.mortbay.jetty', module: 'servlet-api'
+    }
+    compile "org.apache.curator:curator-x-discovery:$curatorVersion"
+    compile "org.apache.curator:curator-test:$curatorVersion"
+    compile "org.slf4j:slf4j-api:$slf4jVersion"
+    compile "org.slf4j:log4j-over-slf4j:$slf4jVersion"
+    compile 'ch.qos.logback:logback-classic:1.1.2'
+    compile 'args4j:args4j:2.0.29'
+    compile 'javax.servlet:javax.servlet-api:3.0.1'
+    compile 'com.ofg:micro-deps:0.7.4'
+
+    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+}
+
+tasks.addRule('Pattern: run<Project>Stubs: Run stubs for project') { String taskName ->
+    if (taskName == 'runStubs') {
+        executeStubRunner(taskName, "-r $stubRepositoryPath -a true -z $stubRegistryPort -minp $minStubPortNumber -maxp $maxStubPortNumber -c $context")
+    } else if (taskName.startsWith('run') && taskName.endsWith('Stubs')) {
+        String projectName = taskName[3..(taskName.size() - 6)]
+        String metadataFileName = projectName[0].toLowerCase() + projectName.substring(1)
+        executeStubRunner(taskName, "-r $stubRepositoryPath -p ${metadataFileName}.json -z $stubRegistryPort -minp $minStubPortNumber -maxp $maxStubPortNumber")
+    }
+}
+
+void executeStubRunner(String taskName, String arguments) {
+    task (taskName, type: JavaExec, dependsOn: classes) {
+        main = 'com.ofg.stub.StubRunner'
+        classpath = sourceSets.main.output + configurations.compile
+        args = arguments.split(' ') as List
+        println "Running task with args $args"
+    }
+}
+
+task addHashFile << {
+    String gitCmd = "git log --pretty=format:'%H' -n 1"
+    def proc = gitCmd.execute()
+    proc.waitFor()
+    new File("commitHash.txt").withWriter { it << proc.in.text }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact fatJar {
+                classifier "fatJar"
+            }
+        }
+    }
+}
+
+springBoot {
+    backupSource = false
+}
+
+bootRepackage {
+    classifier = 'fatJar'
+}
+
+jar {
+    dependsOn addHashFile
+    from "commitHash.txt"
+    from('repository') {
+        into 'repository'
+    }
+    exclude('logback.xml')
+}
+
+task fatJar(type: Jar) {
+    classifier = 'fatJar'
+    from sourceSets.main.output
+}
+
+task fatJarBoot(type: BootRepackage, dependsOn: fatJar) {
+    withJarTask = fatJar
+}
+
+task bootJars(dependsOn: build)
+
+bootJars {
+    dependsOn = [sourcesJar, javadocJar, fatJarBoot]
+}
+
+artifacts {
+    archives fatJar
+}
+
+project.tasks.findAll { it.name.startsWith('publish') || it.name == 'bintrayUpload' }*.dependsOn(bootJars)
+
+if(project.hasProperty("coverage")) {
+    apply plugin: 'jacoco'
+    apply plugin: 'com.github.kt3k.coveralls'
+
+    jacoco {
+        toolVersion = '0.7.1.201405082137'
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
+    }
+
+    test {
+        ignoreFailures = true
+    }
+}
+
+wrapper {
+    gradleVersion '2.2'
+}

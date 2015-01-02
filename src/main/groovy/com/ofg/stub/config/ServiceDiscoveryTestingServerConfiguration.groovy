@@ -22,6 +22,6 @@ class ServiceDiscoveryTestingServerConfiguration {
     @Bean(destroyMethod = 'close')
     TestingServer testingServer(@Value('${service.resolver.url:}') String serviceResolverUrl) {
         String serviceUrl = Strings.nullToEmpty(serviceResolverUrl)
-        return new TestingServer(PortResolver.getPortFromUrlOrRandom(serviceUrl).or(-1))
+        return new TestingServer(PortResolver.tryGetPortFromUrl(serviceUrl).or(-1))
     }
 }

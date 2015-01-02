@@ -2,8 +2,8 @@ package com.ofg.stub.util;
 
 import com.google.common.base.Optional;
 import com.google.common.net.HostAndPort;
+import org.apache.commons.lang.StringUtils;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -17,12 +17,9 @@ public class PortResolver {
      * @return empty if no port present or port
      * @throws IllegalArgumentException when url don't have colon
      */
-    public static Optional<Integer> getPortFromUrlOrRandom(String url) {
+    public static Optional<Integer> tryGetPortFromUrl(String url) {
         checkNotNull(url);
-        int colonIndex = url.indexOf(":");
-        checkArgument(colonIndex != -1);
-        String portNumberString = url.substring(colonIndex + 1);
-        if (isNullOrEmpty(portNumberString)) {
+        if (isNullOrEmpty(StringUtils.substringAfterLast(url, ":"))) {
             return Optional.absent();
         } else {
             return Optional.of(HostAndPort.fromString(url).getPort());

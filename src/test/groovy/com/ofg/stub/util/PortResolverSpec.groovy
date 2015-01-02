@@ -19,7 +19,7 @@ class PortResolverSpec extends Specification {
         random.get() == 2000
     }
 
-    def "return -1 if no port present"() {
+    def "return absent if no port present"() {
         when:
         Optional<Integer> port = PortResolver.tryGetPortFromUrl("localhost:")
         then:

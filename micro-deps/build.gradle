@@ -25,12 +25,10 @@ project(':micro-deps:micro-deps-spring-config') {
     description = 'Microservice dependency manager - default Spring configuration'
 
     dependencies {
-        compile('com.ofg:micro-deps:0.7.4') {
-            exclude group: 'log4j'
-            exclude group: "org.slf4j", module: "slf4j-log4j12"
+        compile project(':micro-deps:micro-deps')
+        compile(project(':stub-runner:stub-runner-spring')) {
             exclude group: "org.slf4j", module: "log4j-over-slf4j"
         }
-        compile 'com.ofg:stub-runner-spring:0.2.3'
         compile 'org.codehaus.groovy:groovy-all'
         compile "org.springframework:spring-context"
 

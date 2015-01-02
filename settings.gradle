@@ -1,3 +1,4 @@
+include ':stub-runner:stub-runner-spring'
 include 'micro-infra-spring-boot-starter'
 include 'micro-infra-spring-base'
 include 'micro-infra-spring-reactor'

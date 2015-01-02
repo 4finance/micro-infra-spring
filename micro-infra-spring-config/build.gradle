@@ -8,15 +8,13 @@ ext {
 }
 
 dependencies {
+    compile project(':micro-deps:micro-deps')
+
     compile("org.springframework.cloud:spring-cloud-config-client:$springCloudVersion") {
         exclude group: 'ch.qos.logback', module: 'logback-classic'
     }
     compile("org.springframework.cloud:spring-cloud-config-server:$springCloudVersion") {
         exclude group: 'ch.qos.logback', module: 'logback-classic'
-    }
-    compile('com.ofg:micro-deps:0.7.4') {
-        //Required with micro-deps 0.4.0 as it uses groovy-all-indy which confuses Intellij Idea (both jars are added to dependencies)
-        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
     compile "org.springframework.security:spring-security-rsa:$springSecurityRsaVersion"
     compile "org.eclipse.jgit:org.eclipse.jgit:2.3.1.201302201838-r"

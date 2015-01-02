@@ -1,6 +1,7 @@
 package com.ofg.stub.util
 
 import spock.lang.Specification
+import com.google.common.base.Optional
 
 class PortResolverSpec extends Specification {
 
@@ -20,16 +21,16 @@ class PortResolverSpec extends Specification {
 
     def "returns correct port"() {
         when:
-        int random = PortResolver.getPortFromUrlOrRandom("localhost:2000")
+        Optional<Integer> random = PortResolver.getPortFromUrlOrRandom("localhost:2000")
         then:
-        random == 2000
+        random.get() == 2000
     }
 
     def "return -1 if no port present"() {
         when:
-        int port = PortResolver.getPortFromUrlOrRandom("localhost:")
+        Optional<Integer> port = PortResolver.getPortFromUrlOrRandom("localhost:")
         then:
-        port == -1
+        !port.isPresent()
     }
 
 }

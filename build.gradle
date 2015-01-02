@@ -37,10 +37,16 @@ allprojects {
         all {
             resolutionStrategy {
                 exclude group: 'log4j', module: 'log4j'
+                force 'org.apache.httpcomponents:httpclient:4.3.+'
+                force 'org.jboss.logging:jboss-logging:3.1.4.GA'
+
+                eachDependency { DependencyResolveDetails details ->
+                    if (details.requested.group == 'org.slf4j') { details.useVersion '1.7.9' }
+                    if (details.requested.group == 'com.fasterxml.jackson.core') { details.useVersion "2.4.4" }
+                }
             }
         }
     }
-
 }
 
 task addHashFile << {
@@ -50,7 +56,9 @@ task addHashFile << {
     new File("commitHash.txt").withWriter { it << proc.in.text }
 }
 
-def srcSubprojects = subprojects - project(':swagger') - project(':micro-deps')
+Set emptySubprojects = [project(':swagger'), project(':micro-deps'), project(':stub-runner')]
+Set srcSubprojects = subprojects - emptySubprojects
+
 configure(srcSubprojects) {
     apply plugin: 'groovy'
     apply plugin: 'maven'
@@ -71,6 +79,7 @@ configure(srcSubprojects) {
                 entry "spring-webmvc"
                 entry "spring-context"
                 entry "spring-test"
+                entry "spring-aop"
             }
             dependencySet(group:"org.apache.curator", version: "2.7.0") {
                 entry "curator-x-discovery"
@@ -79,6 +88,10 @@ configure(srcSubprojects) {
             dependencySet(group:"org.slf4j", version: "1.7.9") {
                 entry "slf4j-api"
                 entry "log4j-over-slf4j"
+            }
+            dependencySet(group:"com.fasterxml.jackson.core", version: "2.4.4") {
+                entry "jackson-databind"
+                entry "jackson-core"
             }
 
             //test
@@ -97,9 +110,9 @@ configure(srcSubprojects) {
         }
     }
 
-    //Workaround for the issue with Java 8u11 and 7u65 - http://www.infoq.com/news/2014/08/Java8-U11-Broke-Tools
     test {
         jvmArgs project.gradle.startParameter.systemPropertiesArgs.entrySet().collect{"-D${it.key}=${it.value}"}
+        //Workaround for the issue with Java 8u11 and 7u65 - http://www.infoq.com/news/2014/08/Java8-U11-Broke-Tools
         jvmArgs '-noverify'
     }
 

@@ -13,7 +13,7 @@ dependencies {
     compile project(":micro-deps:micro-deps-spring-config")
 
     compile "org.codehaus.groovy:groovy-all"
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.4.3'
+    compile 'com.fasterxml.jackson.core:jackson-databind'
     compile "org.springframework.boot:spring-boot-starter-web"
     compile "org.codehaus.jackson:jackson-mapper-asl:$jacksonMapper"
     compile "org.codehaus.jackson:jackson-core-asl:$jacksonMapper"

@@ -89,7 +89,21 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
             1 * restOperations.exchange(FULL_URL, GET, _ as HttpEntity, BigDecimal, OBJECT_ID)
     }
 
-    def "should treat url as path when sending request to a service to a path conaining a slash"() {
+    def "should extract variables from GString and apply them as parameters"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(restOperations)
+        when:
+            httpMethodBuilder
+                .get()
+                    .onUrl("http://example.com/$OBJECT_ID")
+                    .andExecuteFor()
+                        .anObject()
+                        .ofType(BigDecimal)
+        then:
+            1 * restOperations.exchange("http://example.com/{p0}", GET, _ as HttpEntity, BigDecimal, OBJECT_ID)
+    }
+
+    def "should treat url as path when sending request to a service to a path containing a slash"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
         when:            

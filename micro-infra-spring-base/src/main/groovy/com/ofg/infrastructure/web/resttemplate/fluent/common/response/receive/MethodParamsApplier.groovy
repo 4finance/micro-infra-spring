@@ -16,6 +16,21 @@ trait MethodParamsApplier<M, EM, PM> implements HttpMethod<M, PM>, HttpEntitySen
         this
     }
 
+    M onUrl(GString url) {
+        final String urlTemplate = gStringToParameterizedUrlTemplate(url)
+        params.urlTemplate = urlTemplate
+        params.urlVariablesArray = url.values
+        this
+    }
+
+    private String gStringToParameterizedUrlTemplate(GString url) {
+        String urlTemplate = url.strings.head()
+        url.strings.tail().eachWithIndex { String entry, int index ->
+            urlTemplate += "{p$index}$entry"
+        }
+        return urlTemplate
+    }
+
     EM httpEntity(HttpEntity httpEntity) {
         params.httpEntity = httpEntity
         this

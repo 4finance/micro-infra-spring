@@ -29,6 +29,14 @@ interface HttpMethod<U, T> {
     U onUrl(String url)
 
     /**
+     * Provides a GString url to which you want to send a request.
+     * Extracts parameters from Groovy's string.
+     *
+     * @param url
+     */
+    U onUrl(GString url)
+
+    /**
      * Provides a template URL to which you want to send a request.  
      *
      * @param url

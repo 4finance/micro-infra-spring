@@ -7,22 +7,27 @@ buildscript {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.8.RELEASE'
         classpath 'com.ofg:uptodate-gradle-plugin:+'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
-        classpath 'pl.allegro.tech.build:axion-release-plugin:0.9.9'
+        classpath "com.ofg:micro-common-release:+"
         classpath "io.spring.gradle:dependency-management-plugin:0.2.1.RELEASE"
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
         if (project.hasProperty("compatibility")) { classpath "be.insaneprogramming.gradle:animalsniffer-gradle-plugin:+" }
     }
+    dependencies {
+        ant.unjar src: configurations.classpath.find { it.name.startsWith("micro-common-release") }, dest: 'build/release'
+    }
 }
 
-apply plugin: 'base'
-apply plugin: 'axion-release'
+apply plugin: 'pl.allegro.tech.build.axion-release'
 
 scmVersion {
     tag {
         prefix = ''
     }
     createReleaseCommit = true
+    releaseCommitMessage { version, position -> "release version: ${version}\n\n[ci skip]" }
 }
+
+apply plugin: 'base'
 
 allprojects {
     group = 'com.ofg'
@@ -61,9 +66,9 @@ Set srcSubprojects = subprojects - emptySubprojects
 
 configure(srcSubprojects) {
     apply plugin: 'groovy'
-    apply plugin: 'maven'
-    apply plugin: 'maven-publish'
-    apply plugin: 'com.jfrog.bintray'
+
+    apply from: "${rootProject.buildDir}/release/gradle/publish.gradle"
+
     apply plugin: 'com.ofg.uptodate'
     apply plugin: "io.spring.dependency-management"
 
@@ -128,53 +133,9 @@ configure(srcSubprojects) {
         }
     }
 
-    bintrayUpload.dependsOn 'build'
-
     bintray {
-        user = System.properties['bintrayUser']
-        key = System.properties['bintrayKey']
-
-        publications = ['mavenJava']
         pkg {
-            repo = 'micro'
-            userOrg = '4finance'
-            name = project.name
-            desc = project.description
-            licenses = ['Apache-2.0']
-            labels = ['microservice']
-        }
-    }
-
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
-                artifact sourcesJar
-                artifact javadocJar
-
-                //#89 - workaround to not to have only runtime dependencies in generated pom.xml
-                //Known limitation in maven-publish -  - http://forums.gradle.org/gradle/topics/maven_publish_plugin_generated_pom_making_dependency_scope_runtime#reply_14120711
-                pom.withXml {
-                    asNode().dependencies.'*'.findAll() {
-                        it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
-                            dep.name == it.artifactId.text()
-                        }
-                    }.each() {
-                        it.scope*.value = 'compile'
-                    }
-                    //#70 - workaround for empty version in pom.xml when dependency-management-plugin is used
-                    //Known limitation of new Gradle publishing mechanism - https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/8
-                    asNode().dependencies[0]?.get('dependency')?.each() { dep ->
-                        String pomVer = dep.get("version").text();
-                        String pomArtifactId = dep.get("artifactId").text();
-                        String pomGroupId = dep.get("groupId").text();
-                        if (pomVer.isEmpty()) {
-                            def depVer = project.dependencyManagement.getManagedVersion("$pomGroupId", "$pomArtifactId")
-                            dep.appendNode('version', depVer)
-                        }
-                    }
-                }
-            }
+            repo = project.name.startsWith("micro-deps") ? 'micro-deps' : 'micro'
         }
     }
 
@@ -183,24 +144,15 @@ configure(srcSubprojects) {
         from "commitHash.txt"
     }
 
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    task javadocJar(type: Jar, dependsOn: groovydoc) {
-        classifier = 'javadoc'
-        from groovydoc.destinationDir
-    }
-
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
-    }
-
     //Dependencies in all subprojects - http://solidsoft.wordpress.com/2014/11/13/gradle-tricks-display-dependencies-for-all-subprojects-in-multi-project-build/
     task allDeps(type: DependencyReportTask) {}
     task allInsight(type: DependencyInsightReportTask) {}
+}
+
+apply from: "${rootProject.buildDir}/release/gradle/release.gradle"
+
+publishUploadedArtifacts {
+    requestBody = [discard: 'true']    //TODO: Temporary, remove it
 }
 
 if (project.hasProperty("coverage")) {

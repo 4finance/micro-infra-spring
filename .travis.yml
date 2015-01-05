@@ -3,7 +3,7 @@ install:
 
 before_script:
  - "echo $JAVA_OPTS"
- - "export JAVA_OPTS=-Xmx512m"
+ - "export JAVA_OPTS='-Xmx512m -XX:MaxPermSize=128m'"
 
 script:
 - set -e

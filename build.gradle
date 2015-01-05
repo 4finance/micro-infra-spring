@@ -65,6 +65,12 @@ allprojects {
                 eachDependency { DependencyResolveDetails details ->
                     if (details.requested.group == 'org.slf4j') { details.useVersion '1.7.9' }
                     if (details.requested.group == 'com.fasterxml.jackson.core') { details.useVersion "2.4.4" }
+
+                    // To prevent an accidental usage of groovy-all.jar and groovy.jar in different versions
+                    // all modularized Groovy jars are replaced with groovy-all.jar by default.
+                    if (details.requested.group == 'org.codehaus.groovy' && details.requested.name != "groovy-all") {
+                        details.useTarget("org.codehaus.groovy:groovy-all:${details.requested.version}")
+                    }
                 }
             }
         }
@@ -79,7 +85,7 @@ task addHashFile << {
 }
 
 
-configure(emptySubprojects) {
+configure(emptySubprojects + rootProject) {
     apply plugin: 'base'
 }
 

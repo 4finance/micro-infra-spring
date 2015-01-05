@@ -13,8 +13,9 @@ script:
 - ./gradlew release -Prelease.disableRemoteCheck -Prelease.localOnly --info --stacktrace
 - ./gradlew finalizeRelease publishUploadedArtifacts -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --info --stacktrace
 
-after_success:
-- ./gradlew jacocoRootReport coveralls -Pcoverage
+#Temporarily disabled until fixed
+#after_success:
+#- ./gradlew jacocoRootReport coveralls -Pcoverage
 
 
 language: groovy

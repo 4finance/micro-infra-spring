@@ -1,22 +1,36 @@
-language: groovy
-
-jdk:
-- oraclejdk8
-- oraclejdk7
-
 install:
-- true
+- ./gradlew assemble --stacktrace
 
 before_script:
  - "echo $JAVA_OPTS"
  - "export JAVA_OPTS=-Xmx512m"
 
 script:
-- ./gradlew check --info --stacktrace --continue -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true
-
-env:
-- TERM=dumb
+- set -e
+- ./gradlew check -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true --info --stacktrace --continue
+- source build/release/gradle/setGitVariables.sh
+- ./gradlew release -Prelease.disableRemoteCheck -Prelease.localOnly --info --stacktrace
+- ./gradlew finalizeRelease publishUploadedArtifacts -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --info --stacktrace
 
 after_success:
 - ./gradlew jacocoRootReport coveralls -Pcoverage
 
+
+language: groovy
+
+jdk:
+- oraclejdk8
+
+matrix:
+  include:
+    # Release not skipped only in Java 7 build
+    - jdk: oraclejdk7
+      env: SKIP_RELEASE=false
+
+env:
+  global:
+    - TERM=dumb
+    - SKIP_RELEASE=true
+    - secure: bfDBE6D+46A8h4+LGS9Spczjq0/8hXBCsyt1rb6kzouw3QP5hkVLdd3mF1T250DGa6qfDWTskLVDzo+Oe1ceOsvbMSb/A/A6hvaGIFIlmyRI5Ird3B9fhSKhFUjn9kkHaUVy/ix98UsAL59e7mqkNIcz4LUw6StiKugAUF3Wzk8=
+    - secure: J4fk9XkFDpm5GCP2kBd7aKHW3CgFAr3zSpfnDTQV3n7qlvzQNUU+OfMSi86+J5Rxm3HOkl0SypYQjQv4NBytnaV/mV6ZAztHnoC0YYx0D3B3OSzFVstrkyddIF19R/ejEwTezAJg/bLXdZemTveHJHoEnbkv0fN+CIZ9kz/9bt4=
+    - secure: ogwhc2NiNb0YIiWuUu7K24plJiSYVEeOj9rOh1PG6RoSRVJ1Bh6+hQ//vCaak4Z/pPmLkikPhFjfnYMQlyvmc9qhXUABjJ1SzZRozoZETRpMrFXu//Q6fCkh2P5ygKezNaAgD+zKbf+8DEkUW/7XOTNczTQZ1mL6XgS3BThPUA8=

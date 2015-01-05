@@ -23,16 +23,33 @@ scmVersion {
     tag {
         prefix = ''
     }
-    createReleaseCommit = true
-    releaseCommitMessage { version, position -> "release version: ${version}\n\n[ci skip]" }
+    //NOTE: All other release and publishing modifications (including further scmVersion closure) should be put AFTER the apply of publish.gradle and/or release.gradle
+    //      (to be not overridden by the default values applied in those files)
 }
-
-apply plugin: 'base'
 
 allprojects {
     group = 'com.ofg'
     project.version = scmVersion.version
+}
 
+Set emptySubprojects = [project(':swagger'), project(':micro-deps'), project(':stub-runner')]
+Set srcSubprojects = subprojects - emptySubprojects
+
+configure(srcSubprojects) {
+    apply plugin: 'groovy'
+    apply from: "${rootProject.buildDir}/release/gradle/publish.gradle"
+
+    bintray {
+        pkg {
+            repo = project.name.startsWith("micro-deps") ? 'micro-deps' : 'micro'
+        }
+    }
+}
+
+apply from: "${rootProject.buildDir}/release/gradle/release.gradle"
+
+
+allprojects {
     repositories {
         mavenLocal()
         jcenter()
@@ -61,13 +78,12 @@ task addHashFile << {
     new File("commitHash.txt").withWriter { it << proc.in.text }
 }
 
-Set emptySubprojects = [project(':swagger'), project(':micro-deps'), project(':stub-runner')]
-Set srcSubprojects = subprojects - emptySubprojects
+
+configure(emptySubprojects) {
+    apply plugin: 'base'
+}
 
 configure(srcSubprojects) {
-    apply plugin: 'groovy'
-
-    apply from: "${rootProject.buildDir}/release/gradle/publish.gradle"
 
     apply plugin: 'com.ofg.uptodate'
     apply plugin: "io.spring.dependency-management"
@@ -133,12 +149,6 @@ configure(srcSubprojects) {
         }
     }
 
-    bintray {
-        pkg {
-            repo = project.name.startsWith("micro-deps") ? 'micro-deps' : 'micro'
-        }
-    }
-
     jar {
         dependsOn addHashFile
         from "commitHash.txt"
@@ -147,12 +157,6 @@ configure(srcSubprojects) {
     //Dependencies in all subprojects - http://solidsoft.wordpress.com/2014/11/13/gradle-tricks-display-dependencies-for-all-subprojects-in-multi-project-build/
     task allDeps(type: DependencyReportTask) {}
     task allInsight(type: DependencyInsightReportTask) {}
-}
-
-apply from: "${rootProject.buildDir}/release/gradle/release.gradle"
-
-publishUploadedArtifacts {
-    requestBody = [discard: 'true']    //TODO: Temporary, remove it
 }
 
 if (project.hasProperty("coverage")) {

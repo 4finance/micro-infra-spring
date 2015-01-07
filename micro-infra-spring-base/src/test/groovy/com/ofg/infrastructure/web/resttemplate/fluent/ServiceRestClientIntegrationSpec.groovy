@@ -1,11 +1,15 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
 
+import ch.qos.logback.classic.Logger
+import ch.qos.logback.classic.spi.ILoggingEvent
+import ch.qos.logback.core.Appender
 import com.ofg.config.BasicProfiles
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcWiremockIntegrationSpec
 import com.ofg.infrastructure.base.ServiceDiscoveryStubbingApplicationConfiguration
 import org.junit.ClassRule
 import org.junit.contrib.java.lang.system.ProvideSystemProperty
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.http.ResponseEntity
@@ -21,10 +25,12 @@ class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
     private static final String PATH = '/pl/foobar'
     private static final String CONTEXT_SPECIFIC_FOOBAR = 'foobar Poland'
 
-    @Shared @ClassRule
+    @Shared
+    @ClassRule
     public ProvideSystemProperty resolverUrlPropertyIsSet = new ProvideSystemProperty('service.resolver.url', 'localhost:2183');
 
-    @Autowired ServiceRestClient serviceRestClient
+    @Autowired
+    ServiceRestClient serviceRestClient
 
     def "should send a request to provided URL with appending host when calling service"() {
         when:
@@ -38,5 +44,39 @@ class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
         then:
             result.body == CONTEXT_SPECIFIC_FOOBAR
     }
-    
+
+    def 'should log HTTP response using Logback'() {
+        given:
+            final Appender mockAppender = insertAppender(Mock(Appender.class))
+        when:
+            ResponseEntity<String> result = serviceRestClient
+                    .forService(COLLABORATOR_NAME)
+                    .get()
+                    .onUrl(PATH)
+                    .andExecuteFor()
+                    .aResponseEntity()
+                    .ofType(String)
+        then:
+            (1.._) * mockAppender.doAppend({ILoggingEvent e ->
+                e.formattedMessage.contains(CONTEXT_SPECIFIC_FOOBAR)
+            })
+        and:
+            result.body == CONTEXT_SPECIFIC_FOOBAR
+        cleanup:
+            removeAppender(mockAppender)
+    }
+
+    Appender insertAppender(Appender appender) {
+        root().addAppender(appender);
+        return appender
+    }
+
+    void removeAppender(Appender appender) {
+        root().detachAppender(appender)
+    }
+
+    private Logger root() {
+        return (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)
+    }
+
 }

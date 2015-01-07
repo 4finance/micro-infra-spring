@@ -11,6 +11,7 @@ import com.ofg.infrastructure.web.resttemplate.MetricsAspect
 import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.BeansException
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
@@ -35,6 +36,14 @@ import java.util.concurrent.ThreadFactory
 @EnableServiceDiscovery
 class ServiceRestClientConfiguration {
 
+    @Autowired
+    @Value('${rest.client.maxLogResponseChars:4096}')
+    int maxLogResponseChars
+
+    @Autowired
+    @Value('${retry.threads:10}')
+    int retryPoolThreads
+
     @Bean
     ServiceRestClient serviceRestClient(ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver) {
         return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, configurationResolver)
@@ -42,15 +51,15 @@ class ServiceRestClientConfiguration {
 
     @Bean
     RestOperations microInfraSpringRestTemplate() {
-        return new RestTemplate()
+        return new RestTemplate(maxLogResponseChars)
     }
 
     @Bean
-    AsyncRetryExecutor retryExecutor(@Value('${retry.threads:10}') int retryPoolThreads) {
-        return new AsyncRetryExecutor(retryExecutorService(retryPoolThreads))
+    AsyncRetryExecutor retryExecutor() {
+        return new AsyncRetryExecutor(retryExecutorService())
     }
 
-    private ScheduledExecutorService retryExecutorService(@Value('${retry.threads:10}') int retryPoolThreads) {
+    private ScheduledExecutorService retryExecutorService() {
         return Executors.newScheduledThreadPool(retryPoolThreads, retryThreadFactory())
     }
 

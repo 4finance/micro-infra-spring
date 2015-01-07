@@ -7,7 +7,7 @@ buildscript {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.8.RELEASE'
         classpath 'com.ofg:uptodate-gradle-plugin:+'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
-        classpath "com.ofg:micro-common-release:+"
+        classpath "com.ofg:micro-common-release:0.1.11"
         classpath "io.spring.gradle:dependency-management-plugin:0.2.1.RELEASE"
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
         if (project.hasProperty("compatibility")) { classpath "be.insaneprogramming.gradle:animalsniffer-gradle-plugin:+" }

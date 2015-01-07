@@ -175,9 +175,9 @@ class StubRunnerConfiguration {
             log.info("Resolving dependency ${depToGrab} location in local repository...")
             try {
                 resolveDependencyLocation(depToGrab)
-            } catch (Exception e) {
-                log.warn("Unable to find dependency $depToGrab in local repository")
-                delegate.resolveDependencyLocation(depToGrab)
+            } catch (Exception ignored) {
+                log.warn("Unable to find dependency $depToGrab in local repository, trying $stubRepositoryRoot")
+                delegate.resolveDependency(stubRepositoryRoot, depToGrab)
             }
         }
 

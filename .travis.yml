@@ -1,7 +1,8 @@
 before_install:
- - "echo $JAVA_OPTS"
- - "export JAVA_OPTS='-Xmx512m -XX:MaxPermSize=256m'"
- - "echo $JAVA_OPTS"
+  - "echo $JAVA_OPTS"
+  - "export JAVA_OPTS='-Xmx512m -XX:MaxPermSize=256m'"
+  - "echo $GRADLE_OPTS"
+  - "export GRADLE_OPTS='-Dorg.gradle.daemon=true'"
 
 install:
 - ./gradlew assemble --stacktrace

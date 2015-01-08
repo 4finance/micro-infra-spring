@@ -18,15 +18,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ActiveProfiles(DEVELOPMENT)
 class PrettyPrintingInDevelopmentEnvironmentSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
-    private static final String CRLF = "\r\n"
-    private static final String LF = "\n"
     String PRETTY_PRINTED_RESULT = new ClassPathResource("prettyPrinted.json").inputStream.text.trim()
 
     def "should return pretty JSON when development profile is active"() {
         expect:
             mockMvc.perform(get("/test"))
                 .andExpect({result ->
-                    assert PRETTY_PRINTED_RESULT == result.getResponse().getContentAsString().replace(CRLF, LF), "Response content"
+                    assert PRETTY_PRINTED_RESULT.readLines() ==
+                            result.getResponse().getContentAsString().readLines(), "Response content"
             })
     }
 

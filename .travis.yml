@@ -1,6 +1,6 @@
 before_install:
   - "echo $JAVA_OPTS"
-  - "export JAVA_OPTS='-Xmx512m -XX:MaxPermSize=256m'"
+  - "export JAVA_OPTS='-Xmx768m -XX:MaxPermSize=384m'"
   - "echo $GRADLE_OPTS"
   - "export GRADLE_OPTS='-Dorg.gradle.daemon=true'"
 

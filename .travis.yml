@@ -9,10 +9,9 @@ install:
 
 script:
 - set -e
-- ./gradlew check -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true --stacktrace --continue
 - source build/release/gradle/setGitVariables.sh
 - ./gradlew release -Prelease.disableRemoteCheck -Prelease.localOnly --stacktrace --continue
-- ./gradlew finalizeRelease publishUploadedArtifacts -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace --continue
+- ./gradlew check finalizeRelease publishUploadedArtifacts -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace --continue
 
 after_success:
 - ./gradlew jacocoRootReport coveralls -Pcoverage --continue

@@ -1,0 +1,10 @@
+{
+    "pl": {
+        "this": "test-twitter-places-analyzer",
+        "dependencies": {
+            "correlator" : {
+                "path": "correlator"
+            }
+        }
+    }
+}

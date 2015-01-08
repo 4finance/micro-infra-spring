@@ -1,0 +1,61 @@
+subprojects {
+    bintray {
+        pkg {
+            repo = 'micro-deps'
+        }
+    }
+}
+
+project(':micro-deps:micro-deps') {
+    description = 'Microservice dependency manager'
+
+    dependencies {
+        compile "org.codehaus.groovy:groovy-all"
+        compile "org.apache.curator:curator-x-discovery"
+        compile "org.apache.curator:curator-test"
+        compile 'com.google.guava:guava'
+        compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
+
+        testCompile "org.spockframework:spock-core"
+        testCompile 'com.jayway.awaitility:awaitility-groovy'
+    }
+}
+
+project(':micro-deps:micro-deps-spring-config') {
+    description = 'Microservice dependency manager - default Spring configuration'
+
+    dependencies {
+        compile project(':micro-deps:micro-deps')
+        compile(project(':stub-runner:stub-runner-spring')) {
+            exclude group: "org.slf4j", module: "log4j-over-slf4j"
+        }
+        compile 'org.codehaus.groovy:groovy-all'
+        compile "org.springframework:spring-context"
+
+        testCompile "org.spockframework:spock-core"
+        testCompile "org.spockframework:spock-spring"
+        testCompile "org.springframework:spring-test"
+        testCompile "org.springframework:spring-webmvc"
+        testCompile "com.jayway.restassured:rest-assured"
+        testCompile 'org.slf4j:slf4j-api:1.7.9'
+    }
+}
+
+project(':micro-deps:micro-deps-spring-test-config') {
+    description = 'Microservice dependency manager - Spring test configuration'
+
+    dependencies {
+        compile project(':micro-deps:micro-deps-spring-config')
+        compile 'org.codehaus.groovy:groovy-all'
+        compile 'cglib:cglib-nodep:3.1'
+        compile 'org.objenesis:objenesis:2.1'
+        compile 'org.aspectj:aspectjweaver:1.8.4'
+        compile "org.spockframework:spock-core"
+        compile "org.spockframework:spock-spring"
+        compile "org.springframework:spring-webmvc"
+        compile "org.springframework:spring-test"
+        compile 'com.github.tomakehurst:wiremock'
+
+        testCompile "com.jayway.restassured:rest-assured"
+    }
+}

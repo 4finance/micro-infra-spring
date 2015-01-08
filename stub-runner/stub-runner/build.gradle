@@ -1,0 +1,101 @@
+description = 'Runs stubs for service collaborators'
+
+dependencies {
+    compile project(':micro-deps:micro-deps')
+
+    compile 'org.codehaus.groovy:groovy-all'
+    compile ('com.github.tomakehurst:wiremock') {
+        exclude group: 'org.mortbay.jetty', module: 'servlet-api'
+    }
+    compile "org.apache.curator:curator-x-discovery"
+    compile "org.apache.curator:curator-test"
+    compile "org.slf4j:slf4j-api"
+    compile "org.slf4j:log4j-over-slf4j"
+    compile 'ch.qos.logback:logback-classic:1.1.2'
+    compile 'args4j:args4j:2.0.29'
+    compile 'javax.servlet:javax.servlet-api:3.0.1'
+
+    testCompile 'org.spockframework:spock-core'
+}
+
+if (rootProject.hasProperty("withFatJars")) {
+
+    apply plugin: 'spring-boot'
+
+    ext {
+        stubRepositoryPath = 'repository'
+        stubRegistryPort = 2181
+        minStubPortNumber = 2300
+        maxStubPortNumber = 2399
+        context = 'pl'
+    }
+
+    project.gradle.projectsEvaluated {
+        applicationDefaultJvmArgs = project.gradle.startParameter.systemPropertiesArgs.entrySet().collect {
+            "-D${it.key}=${it.value}"
+        }
+    }
+
+
+    tasks.addRule('Pattern: run<Project>Stubs: Run stubs for project') { String taskName ->
+        if (taskName == 'runStubs') {
+            executeStubRunner(taskName, "-r $stubRepositoryPath -a true -z $stubRegistryPort -minp $minStubPortNumber -maxp $maxStubPortNumber -c $context")
+        } else if (taskName.startsWith('run') && taskName.endsWith('Stubs')) {
+            String projectName = taskName[3..(taskName.size() - 6)]
+            String metadataFileName = projectName[0].toLowerCase() + projectName.substring(1)
+            executeStubRunner(taskName, "-r $stubRepositoryPath -p ${metadataFileName}.json -z $stubRegistryPort -minp $minStubPortNumber -maxp $maxStubPortNumber")
+        }
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                artifact fatJar {
+                    classifier "fatJar"
+                }
+            }
+        }
+    }
+
+    springBoot {
+        backupSource = false
+    }
+
+    bootRepackage {
+        classifier = 'fatJar'
+    }
+
+    jar {
+        exclude('logback.xml')
+    }
+
+    task fatJar(type: Jar) {
+        classifier = 'fatJar'
+        from sourceSets.main.output
+    }
+
+    task fatJarBoot(type: BootRepackage, dependsOn: fatJar) {
+        withJarTask = fatJar
+    }
+
+    task bootJars(dependsOn: build)
+
+    bootJars {
+        dependsOn = [sourcesJar, javadocJar, fatJarBoot]
+    }
+
+    artifacts {
+        archives fatJar
+    }
+
+    project.tasks.findAll { it.name.startsWith('publish') || it.name == 'bintrayUpload' }*.dependsOn(bootJars)
+}
+
+void executeStubRunner(String taskName, String arguments) {
+    task (taskName, type: JavaExec, dependsOn: classes) {
+        main = 'com.ofg.stub.StubRunner'
+        classpath = sourceSets.main.output + configurations.compile
+        args = arguments.split(' ') as List
+        println "Running task with args $args"
+    }
+}

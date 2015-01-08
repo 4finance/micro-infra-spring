@@ -11,11 +11,11 @@ script:
 - set -e
 - ./gradlew check -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true --stacktrace --continue
 - source build/release/gradle/setGitVariables.sh
-- ./gradlew release -Prelease.disableRemoteCheck -Prelease.localOnly --info --stacktrace
-- ./gradlew finalizeRelease publishUploadedArtifacts -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --info --stacktrace
+- ./gradlew release -Prelease.disableRemoteCheck -Prelease.localOnly --info --stacktrace --continue
+- ./gradlew finalizeRelease publishUploadedArtifacts -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --info --stacktrace  --continue
 
 after_success:
-- ./gradlew jacocoRootReport coveralls -Pcoverage
+- ./gradlew jacocoRootReport coveralls -Pcoverage --continue
 
 
 language: groovy

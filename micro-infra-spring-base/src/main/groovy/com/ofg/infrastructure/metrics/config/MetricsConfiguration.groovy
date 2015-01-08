@@ -11,6 +11,7 @@ import com.ofg.infrastructure.metrics.registry.PathPrependingMetricRegistry
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 
@@ -41,12 +42,14 @@ class MetricsConfiguration {
 
     @Bean
     @Profile(BasicProfiles.PRODUCTION)
+    @Conditional(IsGraphitePublishingEnabled.class)
     Graphite graphite(@Value('${graphite.host:graphite.4finance.net}') String hostname, @Value('${graphite.port:2003}') int port) {
         return new Graphite(new InetSocketAddress(hostname, port))
     }
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     @Profile(BasicProfiles.PRODUCTION)
+    @Conditional(IsGraphitePublishingEnabled.class)
     GraphitePublisher graphitePublisher(Graphite graphite, MetricRegistry metricRegistry,
                                         @Value('${graphite.publishing.interval:15000}') long publishingIntervalInMs) {
         PublishingInterval publishingInterval = new PublishingInterval(publishingIntervalInMs, MILLISECONDS)

@@ -7,7 +7,7 @@ buildscript {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.8.RELEASE'
         classpath 'com.ofg:uptodate-gradle-plugin:+'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
-        classpath "com.ofg:micro-common-release:0.1.11"
+        classpath "com.ofg:micro-common-release:0.1.12"
         classpath "io.spring.gradle:dependency-management-plugin:0.2.1.RELEASE"
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
         if (project.hasProperty("compatibility")) { classpath "be.insaneprogramming.gradle:animalsniffer-gradle-plugin:+" }
@@ -17,14 +17,10 @@ buildscript {
     }
 }
 
-apply plugin: 'pl.allegro.tech.build.axion-release'
+apply from: "${rootProject.buildDir}/release/gradle/version.gradle"
 
 scmVersion {
-    tag {
-        prefix = ''
-    }
-    //NOTE: All other release and publishing modifications (including further scmVersion closure) should be put AFTER the apply of publish.gradle and/or release.gradle
-    //      (to be not overridden by the default values applied in those files)
+    tag { prefix = '' }
 }
 
 allprojects {
@@ -47,6 +43,9 @@ configure(srcSubprojects) {
 }
 
 apply from: "${rootProject.buildDir}/release/gradle/release.gradle"
+
+//NOTE: All release and publishing modifications (including further scmVersion closure) should be put AFTER the apply of publish.gradle and/or release.gradle
+//      (to be not overridden by the default values applied in those files)
 
 
 allprojects {

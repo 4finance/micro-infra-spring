@@ -67,7 +67,7 @@ class MicroDepsService {
                 .thisInstance(serviceInstance)
                 .build()
         dependencyWatcher = new DependencyWatcher(configurationResolver.dependencies, serviceDiscovery, new DefaultDependencyPresenceOnStartupVerifier())
-        serviceResolver = new ZookeeperServiceResolver(configurationResolver, serviceDiscovery, curatorFramework)
+        serviceResolver = new ZookeeperServiceResolver(configurationResolver, serviceDiscovery, curatorFramework, new ProviderStrategyFactory())
     }
 
     private InstanceDetails instanceDetails() {

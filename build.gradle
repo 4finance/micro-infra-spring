@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.8.RELEASE'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.1.RELEASE'
         classpath 'com.ofg:uptodate-gradle-plugin:+'
         classpath "com.ofg:micro-common-release:0.1.12"
         classpath "io.spring.gradle:dependency-management-plugin:0.2.1.RELEASE"
@@ -69,6 +69,8 @@ allprojects {
                     if (details.requested.group == 'org.codehaus.groovy' && details.requested.name != "groovy-all") {
                         details.useTarget("org.codehaus.groovy:groovy-all:${details.requested.version}")
                     }
+                    if (details.requested.group == 'org.springframework.boot') { details.useVersion "1.2.1.RELEASE" }
+                    if (details.requested.group == 'org.springframework') { details.useVersion "4.1.4.RELEASE" }
                 }
             }
         }
@@ -97,10 +99,10 @@ configure(srcSubprojects) {
     dependencyManagement {
         dependencies {
             "org.codehaus.groovy:groovy-all" "2.3.7"
-            "org.springframework.boot:spring-boot-starter-web" "1.1.8.RELEASE"
+            "org.springframework.boot:spring-boot-starter-web" "1.2.1.RELEASE"
             "com.google.guava:guava" "18.0"
 
-            dependencySet(group:'org.springframework', version: '4.1.1.RELEASE') {
+            dependencySet(group:'org.springframework', version: '4.1.4.RELEASE') {
                 entry "spring-webmvc"
                 entry "spring-context"
                 entry "spring-test"

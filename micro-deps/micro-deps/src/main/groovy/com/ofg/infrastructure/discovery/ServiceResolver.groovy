@@ -10,39 +10,51 @@ import com.google.common.base.Optional
  */
 interface ServiceResolver extends AutoCloseable {
 
+    /**
+     * Translates from {@link ServiceAlias} to {@link ServicePath}.
+     * For convenience fully qualified hierarchical service names are aliased in microservice.json. This method allows
+     * translating from alias to full, globally unique name.
+     *
+     * @param alias Symbolic name of one of our collaborators, as found in microservice.json
+     * @return Path to service, fully qualified name of microservice
+     */
     ServicePath resolveAlias(ServiceAlias alias)
 
     /**
-     * Returns address of microservice
+     * Returns address of an arbitrary microservice in the system.
      *
-     * @param service - alias from microservice configuration {@see ServiceConfigurationResolver}
+     * @param service - path to microservice, as defined in service registry (<em>this</em> attribute in microservice.json)
      * @return {@see com.google.common.base.Optional} that may contain the address of the microservice
      */
     Optional<URI> getUri(ServicePath service)
 
     /**
-     * Returns address of microservice
+     * Same as {@link ServiceResolver#getUri(com.ofg.infrastructure.discovery.ServicePath)} but fails if no instance is available.
      *
-     * @param service - alias from microservice configuration {@see ServiceConfigurationResolver}
+     * @param service - path to microservice
      * @return address of the microservice
      * @throws ServiceUnavailableException - if microservice is unavailable
      */
     URI fetchUri(ServicePath service) throws ServiceUnavailableException
 
     /**
-     * Returns all existing addresses of arbitrary running service.
+     * Returns all existing instances of arbitrary running service.
+     * @return Empty set if no instance is currently running
      */
     Set<URI> fetchAllUris(ServicePath service);
 
     /**
-     * Returns names of microservices this service depends on
+     * Returns names of microservices this service depends on.
+     * Use e.g. {@link ServiceResolver#fetchAllUris(com.ofg.infrastructure.discovery.ServicePath)} to fetch physical addresses
+     * of each and every microservice (path).
      *
      * @return map from name (alias) to path in registry
      */
     Set<ServicePath> fetchMyDependencies()
 
     /**
-     * Returns names of all services existing in service registry
+     * Returns symbolic names (paths) of all services existing in service registry.
+     * @see {@link ServiceResolver#fetchMyDependencies()} to get only our dependencies, not all in system.
      */
     Set<ServicePath> fetchAllDependencies()
 

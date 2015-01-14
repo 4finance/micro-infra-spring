@@ -27,10 +27,7 @@ sign them up for newsletters and send confirmation emails).
         "prod": {
             "this": "foo/bar/registration",
             "dependencies": {
-                "users": {
-                    "path": "foo/bar/users",
-                    "required": true
-                },
+                "users": "foo/bar/users",
                 "newsletter": {
                     "path": "foo/bar/comms/newsletter",
                     "contentTypeTemplate": "application/vnd.newsletter.$version+json",

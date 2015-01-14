@@ -3,6 +3,7 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 
 /**
  * Configuration that registers {@link HttpMockServer} as a Spring bean. Takes care
@@ -13,6 +14,11 @@ import org.springframework.context.annotation.Configuration
 @CompileStatic
 @Configuration
 class MockServerConfiguration {
+
+    @Bean
+    PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 
     @Bean(initMethod = 'start', destroyMethod = 'shutdownServer')
     HttpMockServer httpMockServer(@Value('${wiremock.port:8030}') Integer wiremockPort) {

@@ -21,6 +21,8 @@ class MetricsAspectSpec extends Specification {
             'http://bar:7090/buzz'                 || 'bar.7090.buzz'
             'http://db:1000/customer/{id}/address' || 'db.1000.customer.id.address'
             'http://db:1000/data.xml'              || 'db.1000.data_xml'
+            'http://db/data.xml'                   || 'db.80.data_xml'
+            'http://db:6006/data?foo=bar'          || 'db.6006.data'
     }
 
 }

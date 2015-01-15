@@ -26,7 +26,7 @@ class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
     private static final String PATH = '/pl/foobar'
     private static final String CONTEXT_SPECIFIC_FOOBAR = 'foobar Poland'
 
-    @Value('${microservice.restclient.readTimeout}')
+    @Value('${rest.client.readTimeout}')
     int readTimeoutMillis
 
     @Shared
@@ -53,7 +53,6 @@ class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
         given:
             stubInteraction(wireMockGet('/delayed'), aResponse()
                     .withFixedDelay(readTimeoutMillis * 2)
-                    .withBody("THIS SHOULD TIME OUT")
             )
         when:
             serviceRestClient.forExternalService()

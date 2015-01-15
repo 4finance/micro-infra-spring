@@ -37,8 +37,8 @@ import java.util.concurrent.ThreadFactory
 @EnableServiceDiscovery
 class ServiceRestClientConfiguration {
 
-    @Value('${microservice.restclient.connectionTimeout:-1}') int connectionTimeoutMillis
-    @Value('${microservice.restclient.readTimeout:-1}') int readTimeoutMillis
+    @Value('${rest.client.connectionTimeout:-1}') int connectionTimeoutMillis
+    @Value('${rest.client.readTimeout:-1}') int readTimeoutMillis
 
     @Bean
     ServiceRestClient serviceRestClient(ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver) {

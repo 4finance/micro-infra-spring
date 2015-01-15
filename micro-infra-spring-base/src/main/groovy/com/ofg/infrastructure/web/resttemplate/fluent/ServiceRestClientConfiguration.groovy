@@ -17,6 +17,8 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.Ordered
+import org.springframework.http.client.ClientHttpRequestFactory
+import org.springframework.http.client.SimpleClientHttpRequestFactory
 import org.springframework.web.client.RestOperations
 
 import java.util.concurrent.Executors
@@ -25,7 +27,7 @@ import java.util.concurrent.ThreadFactory
 
 /**
  * Creates a bean of abstraction over {@link RestOperations}.
- * 
+ *
  * @see ServiceRestClient
  * @see ServiceResolver
  */
@@ -35,6 +37,9 @@ import java.util.concurrent.ThreadFactory
 @EnableServiceDiscovery
 class ServiceRestClientConfiguration {
 
+    @Value('${microservice.restclient.connectionTimeout:-1}') int connectionTimeoutMillis
+    @Value('${microservice.restclient.readTimeout:-1}') int readTimeoutMillis
+
     @Bean
     ServiceRestClient serviceRestClient(ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver) {
         return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, configurationResolver)
@@ -42,7 +47,17 @@ class ServiceRestClientConfiguration {
 
     @Bean
     RestOperations microInfraSpringRestTemplate() {
-        return new RestTemplate()
+        def restTemplate = new RestTemplate()
+        restTemplate.setRequestFactory(requestFactory())
+        return restTemplate
+    }
+
+    @Bean
+    ClientHttpRequestFactory requestFactory() {
+        def requestFactory = new SimpleClientHttpRequestFactory()
+        requestFactory.setConnectTimeout(connectionTimeoutMillis)
+        requestFactory.setReadTimeout(readTimeoutMillis)
+        return requestFactory
     }
 
     @Bean

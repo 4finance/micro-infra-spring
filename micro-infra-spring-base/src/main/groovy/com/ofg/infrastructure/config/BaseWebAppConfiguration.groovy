@@ -1,11 +1,8 @@
 package com.ofg.infrastructure.config
 
 import com.ofg.infrastructure.discovery.EnableServiceDiscovery
-import com.ofg.infrastructure.discovery.ServiceDiscoveryConfiguration
 import com.ofg.infrastructure.healthcheck.EnableHealthCheck
-import com.ofg.infrastructure.healthcheck.HealthCheckConfiguration
 import com.ofg.infrastructure.metrics.config.EnableMetrics
-import com.ofg.infrastructure.metrics.config.MetricsConfiguration
 import com.ofg.infrastructure.web.config.WebInfrastructureConfiguration
 import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Configuration

@@ -2,8 +2,11 @@ package com.ofg.infrastructure.discovery
 
 import com.google.common.base.Function
 import com.google.common.base.Optional
+import com.ofg.infrastructure.discovery.util.LoadBalancerType
+import com.ofg.infrastructure.discovery.util.ProviderStrategyFactory
 import groovy.transform.CompileStatic
 import org.apache.curator.framework.CuratorFramework
+import org.apache.curator.x.discovery.ProviderStrategy
 import org.apache.curator.x.discovery.ServiceDiscovery
 import org.apache.curator.x.discovery.ServiceProvider
 
@@ -16,13 +19,16 @@ class ZookeeperServiceResolver implements ServiceResolver {
     private final ServiceDiscovery serviceDiscovery
     private final ConcurrentMap<ServicePath, ServiceProvider> providersCache = new ConcurrentHashMap<>()
     private final CuratorFramework curatorFramework
+    private final ProviderStrategyFactory providerStrategyFactory
 
     ZookeeperServiceResolver(ServiceConfigurationResolver serviceConfigurationResolver,
                              ServiceDiscovery serviceDiscovery,
-                             CuratorFramework curatorFramework) {
+                             CuratorFramework curatorFramework,
+                             ProviderStrategyFactory providerStrategyFactory) {
         this.serviceDiscovery = serviceDiscovery
         this.serviceConfigurationResolver = serviceConfigurationResolver
         this.curatorFramework = curatorFramework
+        this.providerStrategyFactory = providerStrategyFactory
     }
 
     @Override
@@ -58,11 +64,11 @@ class ZookeeperServiceResolver implements ServiceResolver {
         ServiceProvider serviceProvider = serviceDiscovery
                 .serviceProviderBuilder()
                 .serviceName(servicePath.path)
+                .providerStrategy(loadBalancerStrategyFor(servicePath))
                 .build()
         serviceProvider.start()
         return serviceProvider
     }
-
 
     @Override
     URI fetchUri(ServicePath service) {
@@ -150,9 +156,13 @@ class ZookeeperServiceResolver implements ServiceResolver {
             serviceProvider = startedServiceProvider(service)
             ServiceProvider previousProvider = providersCache.putIfAbsent(service, serviceProvider)
             previousProvider?.close()
-
         }
         return serviceProvider
+    }
+
+    private ProviderStrategy loadBalancerStrategyFor(ServicePath service) {
+        LoadBalancerType type = serviceConfigurationResolver.getLoadBalancerTypeOf(service)
+        return providerStrategyFactory.createProviderStrategy(type)
     }
 
 }

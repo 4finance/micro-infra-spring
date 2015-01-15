@@ -1,14 +1,11 @@
 package com.ofg.infrastructure.web.resttemplate.custom
 
-import com.google.common.base.Charsets
-import com.google.common.io.ByteStreams
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.util.logging.Slf4j
 import org.springframework.http.ResponseEntity
 import org.springframework.http.client.ClientHttpResponse
 import org.springframework.web.client.ResponseExtractor
-
 
 @CompileStatic
 @PackageScope

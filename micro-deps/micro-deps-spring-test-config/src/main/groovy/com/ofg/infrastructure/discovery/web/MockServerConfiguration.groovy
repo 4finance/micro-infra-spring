@@ -1,4 +1,6 @@
 package com.ofg.infrastructure.discovery.web
+
+import com.ofg.stub.server.AvailablePortScanner
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -8,7 +10,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 /**
  * Configuration that registers {@link HttpMockServer} as a Spring bean. Takes care
  * of graceful shutdown process.
- * 
+ *
  * @see HttpMockServer
  */
 @CompileStatic
@@ -21,8 +23,13 @@ class MockServerConfiguration {
     }
 
     @Bean(initMethod = 'start', destroyMethod = 'shutdownServer')
-    HttpMockServer httpMockServer(@Value('${wiremock.port:8030}') Integer wiremockPort) {
-        return new HttpMockServer(wiremockPort)
+    HttpMockServer httpMockServer(AvailablePortScanner availablePortScanner) {
+        return new HttpMockServer(availablePortScanner.nextAvailablePort())
     }
-    
+
+    @Bean
+    AvailablePortScanner availablePortScanner() {
+        return new AvailablePortScanner(8030, 10000)
+    }
+
 }

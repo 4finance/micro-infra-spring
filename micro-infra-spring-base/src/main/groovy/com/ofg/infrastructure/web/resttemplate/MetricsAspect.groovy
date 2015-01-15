@@ -31,7 +31,7 @@ class MetricsAspect {
             final long startTime = System.currentTimeMillis()
             Object result = pjp.proceed()
             final long done = System.currentTimeMillis() - startTime
-            log.debug("Calling '$url' took ${done}ms")
+            log.debug("Calling '$url' [$name] took ${done}ms")
             return result
         }
     }
@@ -40,7 +40,8 @@ class MetricsAspect {
         String uriString = url.toString().replaceAll("[{}]", "")
         final URI uri = new URI(uriString)
         final String path = fixSpecialCharacters(uri.path)
-        return trimDots("${PREFIX}.${uri.host}.${uri.port}.${path}")
+        int port = (uri.port > 0)? uri.port : 80
+        return trimDots("${PREFIX}.${uri.host}.${port}.${path}")
     }
 
     private static String fixSpecialCharacters(String value) {

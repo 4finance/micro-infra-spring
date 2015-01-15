@@ -11,12 +11,14 @@ import com.ofg.infrastructure.web.resttemplate.MetricsAspect
 import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.BeansException
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.Ordered
+import org.springframework.http.client.BufferingClientHttpRequestFactory
 import org.springframework.http.client.ClientHttpRequestFactory
 import org.springframework.http.client.SimpleClientHttpRequestFactory
 import org.springframework.web.client.RestOperations
@@ -39,6 +41,8 @@ class ServiceRestClientConfiguration {
 
     @Value('${rest.client.connectionTimeout:-1}') int connectionTimeoutMillis
     @Value('${rest.client.readTimeout:-1}') int readTimeoutMillis
+    @Value('${rest.client.maxLogResponseChars:4096}') int maxLogResponseChars
+    @Value('${retry.threads:10}') int retryPoolThreads
 
     @Bean
     ServiceRestClient serviceRestClient(ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver) {
@@ -47,25 +51,25 @@ class ServiceRestClientConfiguration {
 
     @Bean
     RestOperations microInfraSpringRestTemplate() {
-        def restTemplate = new RestTemplate()
-        restTemplate.setRequestFactory(requestFactory())
+        RestTemplate restTemplate = new RestTemplate(maxLogResponseChars)
+        restTemplate.requestFactory = requestFactory()
         return restTemplate
     }
 
     @Bean
     ClientHttpRequestFactory requestFactory() {
-        def requestFactory = new SimpleClientHttpRequestFactory()
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory()
         requestFactory.setConnectTimeout(connectionTimeoutMillis)
         requestFactory.setReadTimeout(readTimeoutMillis)
-        return requestFactory
+        return new BufferingClientHttpRequestFactory(requestFactory)
     }
 
     @Bean
-    AsyncRetryExecutor retryExecutor(@Value('${retry.threads:10}') int retryPoolThreads) {
-        return new AsyncRetryExecutor(retryExecutorService(retryPoolThreads))
+    AsyncRetryExecutor retryExecutor() {
+        return new AsyncRetryExecutor(retryExecutorService())
     }
 
-    private ScheduledExecutorService retryExecutorService(@Value('${retry.threads:10}') int retryPoolThreads) {
+    private ScheduledExecutorService retryExecutorService() {
         return Executors.newScheduledThreadPool(retryPoolThreads, retryThreadFactory())
     }
 

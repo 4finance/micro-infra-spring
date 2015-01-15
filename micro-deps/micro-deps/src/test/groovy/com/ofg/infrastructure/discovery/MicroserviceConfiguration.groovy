@@ -2,6 +2,35 @@ package com.ofg.infrastructure.discovery
 
 class MicroserviceConfiguration {
 
+    public static final String LOAD_BALANCING_DEPENDENCIES = """
+                            {
+                                "pl": {
+                                    "this": "com/ofg/service",
+                                    "dependencies": {
+                                        "ping" : {
+                                            "path": "com/ofg/ping",
+                                            "load-balancer": "STICKY"
+                                        },
+                                        "pong" : {
+                                            "path": "com/ofg/pong"
+                                        },
+                                        "some" : {
+                                            "path": "com/ofg/some",
+                                            "load-balancer": "random"
+                                        },
+                                        "another" : {
+                                            "path": "com/ofg/another",
+                                            "load-balancer": "roundrobin"
+                                        },
+                                        "another2" : {
+                                            "path": "com/ofg/another2",
+                                            "load-balancer": "round-robin"
+                                        }
+                                    }
+                                }
+                            }
+                            """
+
     public static final String REQUIRED_DEPENDENCY = """
                             {
                                 "pl": {

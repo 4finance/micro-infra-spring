@@ -3,6 +3,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
 import spock.lang.Specification
 import spock.lang.Unroll
 
+@Unroll
 class UrlParsingUtilsSpec extends Specification {
 
     def 'should fail to instantiate a utility class'() {
@@ -37,21 +38,19 @@ class UrlParsingUtilsSpec extends Specification {
     def "should prepend a slash if string path doesn't start with a slash"() {
         given:
             String uri = 'some/path'
-            String expectedUri = "/$uri"
         when:
             String actualUri = UrlParsingUtils.prependSlashIfPathDoesNotStartWithSlash(uri)
         then:
-            actualUri == expectedUri  
+            actualUri == '/some/path'
     }
     
     def 'should leave path as it is if string path starts with a slash'() {
         given:
             String uri = '/some/path'
-            String expectedUri = "$uri"
         when:
             String actualUri = UrlParsingUtils.prependSlashIfPathDoesNotStartWithSlash(uri)
         then:
-            actualUri == expectedUri  
+            actualUri == uri
     }
     
     def 'should leave path as it is if path is absolute'() {
@@ -64,13 +63,12 @@ class UrlParsingUtilsSpec extends Specification {
         then:
             actualUri == expectedUri  
     }
-   
-    @Unroll
-    def 'should append host [#host] to String path for [#path] to receive url [#expectedUri]'() {
+
+    def 'should append host "#host" to String path for "#path" to receive url "#expectedUri"'() {
         when:
             String actualUri = UrlParsingUtils.appendPathToHost(host, path)
         then:
-            actualUri == expectedUri  
+            actualUri == expectedUri
         where:
             host                    | path                                           || expectedUri
             ''                      | 'http://localhost:1234'                        || 'http://localhost:1234'
@@ -81,18 +79,5 @@ class UrlParsingUtilsSpec extends Specification {
             'http://localhost:1234' | '/some/{var}/path/{var2}'                      || 'http://localhost:1234/some/{var}/path/{var2}'
             'http://localhost:1234' | 'INVALID_/\\_URI'                              || 'http://localhost:1234/INVALID_/\\_URI'
     }
-    
-    @Unroll
-    def 'should append host [#host] to path for [#path] to receive url [#expectedUri]'() {
-        when:
-            String actualUri = UrlParsingUtils.appendPathToHost(host, path)
-        then:
-            actualUri == expectedUri  
-        where:
-            host                    | path                    || expectedUri
-            ''                      | 'http://localhost:1234' || 'http://localhost:1234'
-            'http://localhost:1234' | 'some/path'             || 'http://localhost:1234/some/path'
-            'http://localhost:1234' | '/some/path'            || 'http://localhost:1234/some/path'
-    }
-    
+
 }

@@ -30,6 +30,7 @@ sign them up for newsletters and send confirmation emails).
                 "users": "foo/bar/users",
                 "newsletter": {
                     "path": "foo/bar/comms/newsletter",
+                    "load-balancer": "random",
                     "contentTypeTemplate": "application/vnd.newsletter.$version+json",
                     "version": "v1"                    
                 },
@@ -70,6 +71,7 @@ or is not available during the microservice boot and then what happens when a de
 Dependencies are always defined with a key and a value. The key must be an unique identifier that you will reference from
 your code, while the value is a map containing configuration properties. Here are supported properties:
 * **path** - value of this property is fully qualified name of the dependency (when the path to the dependency changes, you do not have to change it everywhere in the code, just in this one place),
+* **load-balancer** - sets a type of load balancer strategy (available values are `sticky`, `random` and `round-robin/round_robin/roundrobin`); if provided type is not a correct one or the type is not set then the default one is set, i.e. round robin strategy,
 * **contentTypeTemplate** - template of a Content-Type HTTP header send to the service (it can contain `$version` variable that will be updated with the value assigned to the version property),
 * **version** - contains a version number of the MIME type we are using sending requests to the service,
 * **headers** - a map containing key-value entries that are directly set as HTTP headers of the request send to the service,

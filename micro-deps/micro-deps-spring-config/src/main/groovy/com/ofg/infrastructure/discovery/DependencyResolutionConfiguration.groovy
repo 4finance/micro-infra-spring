@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.discovery
 
+import com.ofg.infrastructure.discovery.util.ProviderStrategyFactory
 import com.ofg.infrastructure.discovery.watcher.DependencyWatcher
 import com.ofg.infrastructure.discovery.watcher.presence.DefaultDependencyPresenceOnStartupVerifier
 import com.ofg.infrastructure.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
@@ -34,6 +35,9 @@ class DependencyResolutionConfiguration {
     @Autowired(required = false)
     private DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier
 
+    @Autowired(required = false)
+    private ProviderStrategyFactory providerStrategyFactory
+
     @PackageScope
     @Bean(initMethod = 'registerDependencies', destroyMethod = 'unregisterDependencies')
     DependencyWatcher dependencyWatcher(ServiceConfigurationResolver serviceConfigurationResolver, ServiceDiscovery serviceDiscovery) {
@@ -42,7 +46,7 @@ class DependencyResolutionConfiguration {
 
     @Bean(initMethod = 'start', destroyMethod = 'close')
     ServiceResolver zooKeeperServiceResolver(ServiceConfigurationResolver serviceConfigurationResolver, ServiceDiscovery serviceDiscovery, CuratorFramework curatorFramework) {
-        return new ZookeeperServiceResolver(serviceConfigurationResolver, serviceDiscovery, curatorFramework)
+        return new ZookeeperServiceResolver(serviceConfigurationResolver, serviceDiscovery, curatorFramework, providerStrategyFactory ?: new ProviderStrategyFactory())
     }
 
     @PackageScope

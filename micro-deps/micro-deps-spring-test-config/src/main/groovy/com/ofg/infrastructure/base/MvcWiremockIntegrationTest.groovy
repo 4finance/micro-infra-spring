@@ -30,7 +30,7 @@ import static com.ofg.config.BasicProfiles.TEST
 @RunWith(SpringJUnit4ClassRunner)
 @ContextConfiguration(classes = [MockServerConfiguration])
 @ActiveProfiles(TEST)
-class MvcWiremockIntegrationTest extends MvcIntegrationTest {
+abstract class MvcWiremockIntegrationTest extends MvcIntegrationTest {
 
     WireMock wireMock
     @Autowired HttpMockServer httpMockServer    

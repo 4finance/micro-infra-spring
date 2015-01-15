@@ -1,4 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.ofg.infrastructure.autoconfigure.MicroserviceAutoConfiguration,\
-com.ofg.infrastructure.autoconfigure.MicroserviceDocumentationAutoConfiguration
+com.ofg.infrastructure.autoconfigure.MicroserviceDocumentationAutoConfiguration,\
+com.ofg.infrastructure.autoconfigure.MicroserviceCircuitBreakingServletAutoConfiguration
 

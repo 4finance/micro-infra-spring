@@ -9,6 +9,7 @@ import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.metrics.config.EnableMetrics
 import com.ofg.infrastructure.web.resttemplate.MetricsAspect
 import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
+import com.ofg.infrastructure.web.resttemplate.fluent.config.ServiceRestClientConfigurer
 import groovy.transform.CompileStatic
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.annotation.Autowired
@@ -44,6 +45,9 @@ class ServiceRestClientConfiguration {
     @Value('${rest.client.maxLogResponseChars:4096}') int maxLogResponseChars
     @Value('${retry.threads:10}') int retryPoolThreads
 
+    @Autowired(required = false)
+    private ServiceRestClientConfigurer serviceRestClientConfigurer
+
     @Bean
     ServiceRestClient serviceRestClient(ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver) {
         return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, configurationResolver)
@@ -51,6 +55,14 @@ class ServiceRestClientConfiguration {
 
     @Bean
     RestOperations microInfraSpringRestTemplate() {
+        if (serviceRestClientConfigurer?.restTemplate) {
+            return serviceRestClientConfigurer.restTemplate
+        } else {
+            return createDefaultRestTemplate()
+        }
+    }
+
+    private RestTemplate createDefaultRestTemplate() {
         RestTemplate restTemplate = new RestTemplate(maxLogResponseChars)
         restTemplate.requestFactory = requestFactory()
         return restTemplate

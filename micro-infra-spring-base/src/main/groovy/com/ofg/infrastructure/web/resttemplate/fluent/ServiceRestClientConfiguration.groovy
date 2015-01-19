@@ -55,11 +55,7 @@ class ServiceRestClientConfiguration {
 
     @Bean
     RestOperations microInfraSpringRestTemplate() {
-        if (serviceRestClientConfigurer?.restTemplate) {
-            return serviceRestClientConfigurer.restTemplate
-        } else {
-            return createDefaultRestTemplate()
-        }
+        return serviceRestClientConfigurer?.restTemplate ?: createDefaultRestTemplate()
     }
 
     private RestTemplate createDefaultRestTemplate() {

@@ -1,9 +1,8 @@
 description = 'Microservice Spring infrastructure for properties management'
 
 ext {
-    //TODO: Switch to 1.0.0.M3 when available
-    springCloudVersion = "1.0.0.M2"
-    springSecurityRsaVersion = springCloudVersion
+    springCloudVersion = "1.0.0.RC1"
+    springSecurityRsaVersion = "1.0.0.M1"
     spock10Version = "1.0-groovy-2.0-SNAPSHOT"
 }
 

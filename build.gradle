@@ -1,12 +1,15 @@
 buildscript {
+    ext {
+        springBootVersion = "1.2.1.RELEASE"
+    }
     repositories {
         mavenLocal()
         jcenter()
     }
     dependencies {
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.1.8.RELEASE'
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
         classpath 'com.ofg:uptodate-gradle-plugin:+'
-        classpath "com.ofg:micro-common-release:0.1.12"
+        classpath "com.ofg:micro-common-release:0.1.14"
         classpath "io.spring.gradle:dependency-management-plugin:0.2.1.RELEASE"
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
         if (project.hasProperty("compatibility")) { classpath "be.insaneprogramming.gradle:animalsniffer-gradle-plugin:+" }
@@ -69,6 +72,8 @@ allprojects {
                     if (details.requested.group == 'org.codehaus.groovy' && details.requested.name != "groovy-all") {
                         details.useTarget("org.codehaus.groovy:groovy-all:${details.requested.version}")
                     }
+                    if (details.requested.group == 'org.springframework.boot') { details.useVersion springBootVersion }
+                    if (details.requested.group == 'org.springframework') { details.useVersion "4.1.4.RELEASE" }
                 }
             }
         }
@@ -97,26 +102,11 @@ configure(srcSubprojects) {
     dependencyManagement {
         dependencies {
             "org.codehaus.groovy:groovy-all" "2.3.7"
-            "org.springframework.boot:spring-boot-starter-web" "1.1.8.RELEASE"
             "com.google.guava:guava" "18.0"
 
-            dependencySet(group:'org.springframework', version: '4.1.1.RELEASE') {
-                entry "spring-webmvc"
-                entry "spring-context"
-                entry "spring-test"
-                entry "spring-aop"
-            }
             dependencySet(group:"org.apache.curator", version: "2.7.0") {
                 entry "curator-x-discovery"
                 entry "curator-test"
-            }
-            dependencySet(group:"org.slf4j", version: "1.7.9") {
-                entry "slf4j-api"
-                entry "log4j-over-slf4j"
-            }
-            dependencySet(group:"com.fasterxml.jackson.core", version: "2.4.4") {
-                entry "jackson-databind"
-                entry "jackson-core"
             }
 
             //test

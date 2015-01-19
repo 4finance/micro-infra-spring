@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
 
 import com.ofg.infrastructure.base.BaseConfiguration
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.RestExecutor
+import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
 import com.ofg.infrastructure.web.resttemplate.fluent.config.ServiceRestClientConfigurer
 import com.ofg.infrastructure.web.resttemplate.fluent.config.ServiceRestClientConfigurerSupport
 import groovy.transform.CompileStatic
@@ -13,10 +13,9 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.web.client.RestOperations
-import spock.lang.Specification
 
 @ContextConfiguration(classes = CustomConfig, loader = SpringApplicationContextLoader)
-class ServiceRestClientCustomizationSpec extends Specification {
+class ServiceRestClientCustomizationSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
     @Autowired
     private ServiceRestClient serviceRestClient

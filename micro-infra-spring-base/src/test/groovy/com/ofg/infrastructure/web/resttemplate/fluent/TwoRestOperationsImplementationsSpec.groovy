@@ -36,7 +36,7 @@ class TwoRestOperationsImplementationsSpec extends MvcCorrelationIdSettingIntegr
     static class Config {
 
         @Bean
-        RestOperations customRestOperationsImplementation() {
+        TestRestTemplate customRestOperationsImplementation() {
             return new TestRestTemplate()
         }
 
@@ -46,7 +46,7 @@ class TwoRestOperationsImplementationsSpec extends MvcCorrelationIdSettingIntegr
         }
 
         @Bean
-        ComponentWithTwoRestOperationsImplementations componentWithTwoRestOperationsImplementations(RestOperations restOperations,
+        ComponentWithTwoRestOperationsImplementations componentWithTwoRestOperationsImplementations(TestRestTemplate restOperations,
                                                                                                     ServiceRestClient serviceRestClient) {
             return new ComponentWithTwoRestOperationsImplementations(serviceRestClient, restOperations)
         }
@@ -54,8 +54,7 @@ class TwoRestOperationsImplementationsSpec extends MvcCorrelationIdSettingIntegr
         @Bean
         @Primary
         ServiceResolver stubForServiceResolver() {
-            final InvocationHandler handler = { inv -> throw new UnsupportedOperationException() }
-            return java.lang.reflect.Proxy.newProxyInstance(TwoRestOperationsImplementationsSpec.class.classLoader, [ServiceResolver] as Class[], handler)
+            return {} as ServiceResolver
         }
     }
 

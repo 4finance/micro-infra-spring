@@ -1,14 +1,12 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
 
-import org.springframework.web.client.RestOperations
-
 class ComponentWithTwoRestOperationsImplementations {
 
     private ServiceRestClient serviceRestClient
-    private RestOperations restOperations
+    private TestRestTemplate restOperations
 
     ComponentWithTwoRestOperationsImplementations(ServiceRestClient serviceRestClient,
-                                                  RestOperations restOperations) {
+                                                  TestRestTemplate restOperations) {
         this.serviceRestClient = serviceRestClient
         this.restOperations = restOperations
     }

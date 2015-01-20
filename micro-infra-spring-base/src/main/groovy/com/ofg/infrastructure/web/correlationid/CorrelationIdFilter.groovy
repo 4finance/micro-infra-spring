@@ -17,11 +17,11 @@ import static org.springframework.util.StringUtils.hasText
 /**
  * Filter that takes the value of the {@link com.ofg.infrastructure.correlationid.CorrelationIdHolder#CORRELATION_ID_HEADER} header
  * from either request or response and sets it in the {@link com.ofg.infrastructure.correlationid.CorrelationIdHolder}. It also provides
- * that value in {@link org.apache.log4j.MDC} logging related class so that logger prints the value of
+ * that value in {@link org.slf4j.MDC} logging related class so that logger prints the value of
  * correlation id at each log.
  * 
  * @see com.ofg.infrastructure.correlationid.CorrelationIdHolder
- * @see org.apache.log4j.MDC
+ * @see org.slf4j.MDC
  */
 @Slf4j
 @CompileStatic

@@ -31,7 +31,7 @@ class MetricsAspect {
             final long startTime = System.currentTimeMillis()
             Object result = pjp.proceed()
             final long done = System.currentTimeMillis() - startTime
-            log.debug("Calling '$url' [$name] took ${done}ms")
+            log.debug("Call to '$url' [$name] took ${done}ms")
             return result
         }
     }

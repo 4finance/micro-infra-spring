@@ -58,7 +58,7 @@ public class AppCoordinates {
 
     private static String findEnvironment() {
         final String envOrNull = PropertyUtils.getProperty(APP_ENV, null);
-        return requireNonNull(envOrNull, "No " + APP_ENV + " property found");
+        return requireNonNull(envOrNull, "No " + APP_ENV + " property found. Good candidates are: 'dev', 'prod-01', etc.");
     }
 
     public String getEnvironment() {

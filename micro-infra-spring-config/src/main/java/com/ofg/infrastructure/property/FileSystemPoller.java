@@ -63,7 +63,9 @@ public class FileSystemPoller {
             watcher = FileSystems.getDefault().newWatchService();
             configPath.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
         } catch (IOException e) {
-            throw new IllegalStateException("Can't poll for configuration changes", e);
+            final String msg = "Can't poll for configuration changes. Make sure your configuration folder is at " + configPath +
+                    ". See also: https://github.com/4finance/micro-infra-spring/wiki/Centralized-configuration-management";
+            throw new IllegalStateException(msg, e);
         }
     }
 

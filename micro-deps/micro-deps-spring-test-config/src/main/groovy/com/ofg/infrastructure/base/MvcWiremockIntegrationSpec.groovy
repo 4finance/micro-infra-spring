@@ -23,10 +23,11 @@ import static com.ofg.config.BasicProfiles.TEST
 @CompileStatic
 @ContextConfiguration(classes = [MockServerConfiguration])
 @ActiveProfiles(TEST)
-class MvcWiremockIntegrationSpec extends MvcIntegrationSpec {
+abstract class MvcWiremockIntegrationSpec extends MvcIntegrationSpec {
 
-    WireMock wireMock
-    @Autowired HttpMockServer httpMockServer
+    @Autowired protected HttpMockServer httpMockServer
+
+    protected WireMock wireMock
     
     void setup() {
         wireMock = new WireMock('localhost', httpMockServer.port())
@@ -36,5 +37,4 @@ class MvcWiremockIntegrationSpec extends MvcIntegrationSpec {
     protected void stubInteraction(MappingBuilder mapping, ResponseDefinitionBuilder response) {
         wireMock.register(mapping.willReturn(response))
     }
-    
 }

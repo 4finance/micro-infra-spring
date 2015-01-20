@@ -4,6 +4,7 @@ import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.SpringApplicationContextLoader
@@ -15,8 +16,6 @@ import org.springframework.context.annotation.Primary
 import org.springframework.core.io.Resource
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.web.client.RestOperations
-
-import java.lang.reflect.InvocationHandler
 
 @ContextConfiguration(classes = Config, loader = SpringApplicationContextLoader)
 class TwoRestOperationsImplementationsSpec extends MvcCorrelationIdSettingIntegrationSpec {
@@ -32,6 +31,7 @@ class TwoRestOperationsImplementationsSpec extends MvcCorrelationIdSettingIntegr
     @Configuration
     @Import(BaseConfiguration)
     @EnableServiceRestClient
+    @CompileStatic
     @EnableAspectJAutoProxy(proxyTargetClass = true)
     static class Config {
 
@@ -54,9 +54,8 @@ class TwoRestOperationsImplementationsSpec extends MvcCorrelationIdSettingIntegr
         @Bean
         @Primary
         ServiceResolver stubForServiceResolver() {
-            final InvocationHandler handler = { inv -> throw new UnsupportedOperationException() }
-            return java.lang.reflect.Proxy.newProxyInstance(TwoRestOperationsImplementationsSpec.class.classLoader, [ServiceResolver] as Class[], handler)
+            //Empty close() to prevent "WARN DisposableBeanAdapter | Invocation of destroy method 'close' failed on bean with name 'stubForServiceResolver'" at context shutdown
+            return ([close: {}].withDefault { throw new UnsupportedOperationException() }).asType(ServiceResolver)
         }
     }
-
 }

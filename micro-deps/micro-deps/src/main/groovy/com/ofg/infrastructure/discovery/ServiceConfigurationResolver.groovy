@@ -86,10 +86,6 @@ class ServiceConfigurationResolver {
         return parsedConfiguration.dependencies
     }
 
-    String getDependencyConfigByName(String dependencyName) {
-        return parsedConfiguration[dependencyName]
-    }
-
     LoadBalancerType getLoadBalancerTypeOf(ServicePath dependencyPath) {
         Map dependencyConfig = getDependencyConfigByPath(dependencyPath.path)
         String strategyName = dependencyConfig['load-balancer']

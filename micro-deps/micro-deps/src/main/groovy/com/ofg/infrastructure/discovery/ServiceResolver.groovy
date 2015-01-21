@@ -14,6 +14,8 @@ interface ServiceResolver extends AutoCloseable {
      * Translates from {@link ServiceAlias} to {@link ServicePath}.
      * For convenience fully qualified hierarchical service names are aliased in microservice.json. This method allows
      * translating from alias to full, globally unique name.
+     * NB: This method will only work for dependencies declared in <code>microservice.json</code> since aliases
+     * are declared only there, locally.
      *
      * @param alias Symbolic name of one of our collaborators, as found in microservice.json
      * @return Path to service, fully qualified name of microservice

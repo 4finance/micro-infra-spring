@@ -1,4 +1,8 @@
 package com.ofg.infrastructure.discovery.web
+
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
+import com.ofg.infrastructure.stub.Stub
+import com.ofg.stub.StubRunning
 import com.ofg.stub.server.AvailablePortScanner
 import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Bean
@@ -26,6 +30,11 @@ class MockServerConfiguration {
     @Bean
     AvailablePortScanner availablePortScanner() {
         return new AvailablePortScanner(8030, 10000)
+    }
+
+    @Bean(destroyMethod = 'shutdown')
+    Stub stub(ServiceConfigurationResolver configurationResolver, StubRunning stubRunning) {
+        return new Stub(configurationResolver, stubRunning)
     }
 
 }

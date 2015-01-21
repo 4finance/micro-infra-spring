@@ -17,6 +17,8 @@ dependencies {
     compile 'javax.servlet:javax.servlet-api:3.0.1'
 
     testCompile 'org.spockframework:spock-core'
+    testCompile 'cglib:cglib-nodep'
+    testCompile 'org.objenesis:objenesis'
 }
 
 if (rootProject.hasProperty("withFatJars")) {

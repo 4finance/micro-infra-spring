@@ -116,6 +116,8 @@ configure(srcSubprojects) {
             "ch.qos.logback:logback-classic" "1.1.2"
             "com.jayway.restassured:rest-assured" "2.4.0"
             "com.github.tomakehurst:wiremock" "1.52"
+            "cglib:cglib-nodep" "3.1"
+            "org.objenesis:objenesis" "1.2"
 
             dependencySet(group:'org.spockframework', version: '1.0-groovy-2.0-SNAPSHOT') {
                 entry "spock-core"

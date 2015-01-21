@@ -1,5 +1,6 @@
 package com.ofg.stub
 
+import com.google.common.base.Optional
 import com.ofg.stub.mapping.ProjectMetadata
 import com.ofg.stub.mapping.ProjectMetadataResolver
 import com.ofg.stub.mapping.StubRepository
@@ -117,6 +118,11 @@ class StubRunner implements StubRunning {
         StubRunnerExecutor localStubRunner = new StubRunnerExecutor(portScanner, stubRegistry)
         stubRunner.set(localStubRunner)
         localStubRunner.runStubs(stubRepository, projects)
+    }
+
+    @Override
+    Optional<URL> findStubUrlByRelativePath(String relativePath) {
+        return stubRunner.get().getStubUrlByRelativePath(relativePath)
     }
 
     private Collection<ProjectMetadata> resolveProjects(StubRepository repository) {

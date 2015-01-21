@@ -9,4 +9,6 @@ dependencies {
     compile 'org.apache.ivy:ivy:2.4.0'
 
     testCompile 'org.spockframework:spock-core'
+    testCompile 'cglib:cglib-nodep'
+    testCompile 'org.objenesis:objenesis'
 }

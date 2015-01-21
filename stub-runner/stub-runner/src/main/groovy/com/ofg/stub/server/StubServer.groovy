@@ -40,6 +40,10 @@ class StubServer {
         return wireMockServer.port()
     }
 
+    URL getStubUrl() {
+        return new URL("http://localhost:$port")
+    }
+
     private void registerStubMappings() {
         WireMock wireMock = new WireMock('localhost', wireMockServer.port())
         List<MappingDescriptor> sortedMappings =  mappings.sort(byGlobalMappingsFirst())

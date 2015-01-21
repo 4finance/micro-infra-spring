@@ -3,7 +3,7 @@
         "this": "test-twitter-places-analyzer",
         "dependencies": {
             "correlator" : {
-                "path": "correlator"
+                "path": "com/ofg/correlator"
             }
         }
     }

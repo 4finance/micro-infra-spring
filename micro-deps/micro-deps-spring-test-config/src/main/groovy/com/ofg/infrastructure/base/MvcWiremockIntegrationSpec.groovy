@@ -1,15 +1,18 @@
 package com.ofg.infrastructure.base
+
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.ofg.infrastructure.discovery.web.HttpMockServer
 import com.ofg.infrastructure.discovery.web.MockServerConfiguration
+import com.ofg.infrastructure.stub.Stub
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 
 import static com.ofg.config.BasicProfiles.TEST
+
 /**
  * Base specification for tests that use Wiremock as HTTP server stub.
  * By extending this specification you gain a bean with {@link HttpMockServer} and a {@link WireMock} 
@@ -26,7 +29,7 @@ import static com.ofg.config.BasicProfiles.TEST
 abstract class MvcWiremockIntegrationSpec extends MvcIntegrationSpec {
 
     @Autowired protected HttpMockServer httpMockServer
-
+    @Autowired protected Stub stub
     protected WireMock wireMock
     
     void setup() {
@@ -37,4 +40,13 @@ abstract class MvcWiremockIntegrationSpec extends MvcIntegrationSpec {
     protected void stubInteraction(MappingBuilder mapping, ResponseDefinitionBuilder response) {
         wireMock.register(mapping.willReturn(response))
     }
+
+    protected WireMock stubOf(String collaboratorName) {
+        return stub.of(collaboratorName)
+    }
+
+    protected void cleanup() {
+        stub.resetAll()
+    }
+
 }

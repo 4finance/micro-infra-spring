@@ -106,13 +106,30 @@ class CollaboratorsConnectivityController {
     }
 
     private Map adjustLegacyCollaboratorsResponse(Map collaboratorsResponse) {
-        collaboratorsResponse.collectEntries {alias, statusStr ->
-            final ServicePath path = serviceResolver.resolveAlias(new ServiceAlias(alias as String))
-            final Set<URI> allInstances = serviceResolver.fetchAllUris(path)
-            CollaboratorStatus status = CollaboratorStatus.of(statusStr == 'CONNECTED')
-            return [
-                    path.path, allInstances.collectEntries{uri -> [uri, status]}
-            ]
+        Map result = [:]
+        collaboratorsResponse.each {alias, statusStr ->
+            tryResolveAlias(alias as String).transform ({ ServicePath path ->
+                result << suspectedStatusOfAllInstances(path, statusStr as String)
+            })
+        }
+        return result
+    }
+
+    private Map suspectedStatusOfAllInstances(ServicePath service, String statusStr) {
+        final Set<URI> allInstances = serviceResolver.fetchAllUris(service)
+        CollaboratorStatus status = CollaboratorStatus.of(statusStr == 'CONNECTED')
+        return [
+                (service.path): allInstances.collectEntries { uri -> [uri, status] }
+        ]
+    }
+
+    private GuavaOptional<ServicePath> tryResolveAlias(String alias) {
+        try {
+            ServiceAlias serviceAlias = new ServiceAlias(alias as String)
+            return GuavaOptional.of(serviceResolver.resolveAlias(serviceAlias))
+        } catch (NoSuchElementException e) {
+            log.warn("Unable to resolve alias $alias", e)
+            return GuavaOptional.absent()
         }
     }
 
@@ -123,7 +140,8 @@ class CollaboratorsConnectivityController {
 
     private boolean checkConnectionStatus(URI url) {
         final GuavaOptional<String> pingResult = pingClient.ping(url)
-        return pingResult == GuavaOptional.of('OK')
+        return pingResult == GuavaOptional.of('OK') ||
+                pingResult == GuavaOptional.of('')
     }
 
 }

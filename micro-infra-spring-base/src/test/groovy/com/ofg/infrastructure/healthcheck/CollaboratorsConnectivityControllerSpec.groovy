@@ -207,6 +207,24 @@ class CollaboratorsConnectivityControllerSpec extends Specification {
                             collaborators: [:]]]
     }
 
+    def 'should ignore unresolvable aliases coming from legacy /collaborators response'() {
+        given:
+            instancesOfMicroservices(['/com/micro1': [MICRO_1A_URL]])
+            serviceReturnsLegacyCollaboratorsFormat(MICRO_1A_URL)
+            noCollaboratorsOfRemainingServices()
+            unresolvableAlias('micro3')
+
+        when:
+            Map info = controller.allCollaboratorsConnectivityInfo
+
+        then:
+            info.size() == 1
+            info['/com/micro1'] == [
+                    (MICRO_1A_URL): [
+                            status       : UP,
+                            collaborators: [:]]]
+    }
+
     def 'when /collaborators is unavailable, try to at least call /ping and degrade response gracefully'() {
         given:
             instancesOfMicroservices(['/com/micro1': [MICRO_1A_URL]])
@@ -225,8 +243,12 @@ class CollaboratorsConnectivityControllerSpec extends Specification {
                             collaborators: [:]]]
     }
 
-    private serviceReturnsLegacyCollaboratorsFormat(URI uri) {
+    private def serviceReturnsLegacyCollaboratorsFormat(URI uri) {
         collaboratorsStatusOf(uri, ['micro3': 'CONNECTED'])
+    }
+
+    private def unresolvableAlias(String alias) {
+        serviceResolverMock.resolveAlias(new ServiceAlias(alias)) >> {throw new NoSuchElementException(alias)}
     }
 
 }

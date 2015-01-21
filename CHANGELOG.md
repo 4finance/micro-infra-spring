@@ -1,3 +1,5 @@
+# See: [Releases](https://github.com/4finance/micro-infra-spring/releases)
+
 [0.7.3](https://github.com/4finance/micro-infra-spring/tree/0.7.3)
 -----
 New features:

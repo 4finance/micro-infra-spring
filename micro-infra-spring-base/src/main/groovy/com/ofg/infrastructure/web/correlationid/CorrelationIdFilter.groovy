@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.web.correlationid
 
+import com.google.common.base.Function
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
@@ -10,6 +11,8 @@ import javax.servlet.FilterChain
 import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import java.util.regex.Pattern
+import com.google.common.base.Optional as GOptional
 
 import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
 import static org.springframework.util.StringUtils.hasText
@@ -27,6 +30,20 @@ import static org.springframework.util.StringUtils.hasText
 @CompileStatic
 //inspired by http://taidevcouk.wordpress.com/2014/05/26/implementing-correlation-ids-in-spring-boot/
 class CorrelationIdFilter extends OncePerRequestFilter {
+
+    public static final Pattern DEFAULT_SKIP_PATTERN =
+            ~/\/api-docs.*|\/autoconfig|\/configprops|\/dump|\/info|\/metrics.*|\/mappings|\/trace|\/swagger.*|.*\.png|.*\.css|.*\.js|.*\.html/
+
+    private final GOptional<Pattern> skipCorrId
+
+    CorrelationIdFilter() {
+        this.skipCorrId = GOptional.absent()
+    }
+
+    CorrelationIdFilter(Pattern skipCorrId) {
+        this.skipCorrId = GOptional.of(skipCorrId)
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         setupCorrelationId(request, response)
@@ -39,7 +56,9 @@ class CorrelationIdFilter extends OncePerRequestFilter {
 
     private void setupCorrelationId(HttpServletRequest request, HttpServletResponse response) {
         String correlationId = getCorrelationIdFrom(request) ?: getCorrelationIdFrom(response)
-        correlationId = createNewCorrIdIfEmpty(correlationId)
+        if(!hasText(correlationId) && shouldGenerateCorrId(request)) {
+            correlationId = createNewCorrIdIfEmpty()
+        }
         CorrelationIdHolder.set(correlationId)
         addCorrelationIdToResponseIfNotPresent(response, correlationId)
     }
@@ -61,14 +80,19 @@ class CorrelationIdFilter extends OncePerRequestFilter {
         return correlationId
     }
 
-    //TODO: add microservice id to corrId, so that we know where it was created
-    private String createNewCorrIdIfEmpty(String currentCorrId) {
-        if (!hasText(currentCorrId)) {
-            currentCorrId = UUID.randomUUID().toString()
-            MDC.put(CORRELATION_ID_HEADER, currentCorrId)
-            log.debug("Generating new correlationId: " + currentCorrId)
-        }
+    private String createNewCorrIdIfEmpty() {
+        String currentCorrId = UUID.randomUUID().toString()
+        MDC.put(CORRELATION_ID_HEADER, currentCorrId)
+        log.debug("Generating new correlationId: " + currentCorrId)
         return currentCorrId
+    }
+
+    protected boolean shouldGenerateCorrId(HttpServletRequest request) {
+        String uri = request.requestURI?: ''
+        boolean skip = skipCorrId
+                .transform({Pattern skipPattern -> uri.matches(skipPattern)} as Function<Pattern, Boolean>)
+                .or(false)
+        return !skip
     }
 
     private void addCorrelationIdToResponseIfNotPresent(HttpServletResponse response, String correlationId) {

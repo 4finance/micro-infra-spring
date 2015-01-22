@@ -10,3 +10,4 @@
 * You should avoid breaking backward compatibility, especially repackaging and changing `public` methods
 * Be carefull when changing dependencies
 * You don't have to assign person and milestone
+* Document new features in [Wiki](https://github.com/4finance/micro-infra-spring/wiki), especially new [configuration properties](https://github.com/4finance/micro-infra-spring/wiki/Configuration) after they are merged

@@ -66,7 +66,7 @@ class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
         when:
             serviceRestClient.forExternalService()
                     .get()
-                    .onUrl("http://$wiremockUrl:${httpMockServer.port()}/delayed")
+                    .onUrl("http://localhost:${httpMockServer.port()}/delayed")
                     .andExecuteFor()
                     .anObject().ofType(String)
         then:

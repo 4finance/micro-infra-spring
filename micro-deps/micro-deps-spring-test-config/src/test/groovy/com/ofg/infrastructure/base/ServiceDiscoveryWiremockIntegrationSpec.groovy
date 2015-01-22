@@ -20,16 +20,11 @@ class ServiceDiscoveryWiremockIntegrationSpec extends MvcWiremockIntegrationSpec
     @Autowired ServiceResolver serviceResolver
     @Autowired ServiceConfigurationResolver serviceConfigurationResolver
 
-    def 'should inject wiremock properties'() {
-        expect:
-            wiremockUrl != null
-    }
-    
     def "should bind zookeeper stub's address with wiremock"() {
         given:
             stubInteraction(wireMockGet('/correlator'), aResponse().withStatus(OK.value()))
         expect:
-            get("http://$wiremockUrl:${DEFAULT_PORT}/correlator").then().statusCode(OK.value())
+            get("http://localhost:${DEFAULT_PORT}/correlator").then().statusCode(OK.value())
     }
 
 }

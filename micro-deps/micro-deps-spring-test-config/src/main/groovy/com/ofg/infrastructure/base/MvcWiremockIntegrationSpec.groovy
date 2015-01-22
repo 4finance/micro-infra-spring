@@ -6,7 +6,6 @@ import com.ofg.infrastructure.discovery.web.HttpMockServer
 import com.ofg.infrastructure.discovery.web.MockServerConfiguration
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 
@@ -27,11 +26,10 @@ import static com.ofg.config.BasicProfiles.TEST
 class MvcWiremockIntegrationSpec extends MvcIntegrationSpec {
 
     WireMock wireMock
-    @Autowired HttpMockServer httpMockServer    
-    @Value('${wiremock.url:localhost}') String wiremockUrl
+    @Autowired HttpMockServer httpMockServer
     
     void setup() {
-        wireMock = new WireMock(wiremockUrl, httpMockServer.port())
+        wireMock = new WireMock('localhost', httpMockServer.port())
         wireMock.resetToDefaultMappings()
     }
 

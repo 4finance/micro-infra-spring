@@ -13,10 +13,9 @@ import org.springframework.beans.factory.annotation.Value
 class MvcWiremockIntegrationSpec extends MvcIntegrationSpec {
     protected WireMock colaWireMock
     @Autowired HttpMockServer httpMockServer
-    @Value('${wiremock.url:localhost}') String wiremockUrl
 
     void setup() {
-        colaWireMock = new WireMock(wiremockUrl, httpMockServer.port())
+        colaWireMock = new WireMock('localhost', httpMockServer.port())
         colaWireMock.resetMappings()
     }
 

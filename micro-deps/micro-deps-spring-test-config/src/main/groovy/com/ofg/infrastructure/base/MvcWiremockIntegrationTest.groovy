@@ -9,7 +9,6 @@ import groovy.transform.CompileStatic
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
@@ -34,12 +33,11 @@ abstract class MvcWiremockIntegrationTest extends MvcIntegrationTest {
 
     WireMock wireMock
     @Autowired HttpMockServer httpMockServer    
-    @Value('${wiremock.url:localhost}') String wiremockUrl
 
     @Before
     void setup() {
         super.setup()
-        wireMock = new WireMock(wiremockUrl, httpMockServer.port())
+        wireMock = new WireMock('localhost', httpMockServer.port())
         wireMock.resetToDefaultMappings()
     }
 

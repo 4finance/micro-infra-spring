@@ -45,5 +45,37 @@ class CorrelationIdUpdater {
         }
     }
 
-
+    /**
+     * Propagates correlation ID inside nested Closure, passing one input parameter.
+     *
+     * Useful in situation when a closure is implicit called in a separate thread, for example with GPars.
+     *
+     * <pre><code>
+     * List<Location> extractedLocations = [] as ConcurrentArrayList
+     *
+     * GParsPool.withPool {
+     *     tweets.eachParallel CorrelationIdUpdater.closureWithId { Tweet tweet ->
+     *         extractedLocations << locationExtractor.fromTweet(tweet)
+     *     }
+     * }
+     * </code></pre>
+     *
+     * <b>Note</b>: Passing only one input parameter currently is supported.
+     *
+     * @param closure code block to execute in a thread with a correlation ID taken from original thread
+     * @return wrapping closure
+     * @since 0.8.4
+     */
+    static <T> Closure<T> closureWithId(Closure<T> closure) {
+        final String temporaryCorrelationId = CorrelationIdHolder.get()
+        return { Object arg ->
+            final String oldCorrelationId = CorrelationIdHolder.get()
+            try {
+                updateCorrelationId(temporaryCorrelationId)
+                return closure(arg)
+            } finally {
+                updateCorrelationId(oldCorrelationId)
+            }
+        }
+    }
 }

@@ -32,4 +32,5 @@ dependencies {
     testCompile 'com.jayway.jsonpath:json-path-assert:0.9.1'
     testCompile 'com.github.stefanbirkner:system-rules:1.7.0'
     testCompile project(':micro-infra-spring-test')
+    testCompile 'org.codehaus.gpars:gpars:1.2.1'
 }

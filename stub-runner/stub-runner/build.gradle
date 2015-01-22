@@ -9,6 +9,7 @@ dependencies {
     }
     compile "org.apache.curator:curator-x-discovery"
     compile "org.apache.curator:curator-test"
+    compile "commons-io:commons-io"
     compile "org.slf4j:slf4j-api"
     compile "org.slf4j:log4j-over-slf4j"
     compile 'ch.qos.logback:logback-classic:1.1.2'

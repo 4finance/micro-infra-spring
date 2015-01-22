@@ -1,45 +1,47 @@
 package com.ofg.stub.server
-
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
+import org.apache.commons.io.IOUtils
+import org.apache.commons.lang.math.RandomUtils
 
 @CompileStatic
 @Slf4j
 class AvailablePortScanner {
 
+    public static final int MAX_RETRY_COUNT = 1000
     private final int minPortNumber
     private final int maxPortNumber
-    private int portToScan
 
     AvailablePortScanner(int minPortNumber, int maxPortNumber) {
-        this.portToScan = minPortNumber
         this.minPortNumber = minPortNumber
         this.maxPortNumber = maxPortNumber
     }
 
-    int nextAvailablePort() {
-        ServerSocket socket = null
-        while (portToScan <= maxPortNumber) {
+    public <T> T tryToExecuteWithFreePort(Closure<T> closure) {
+        int counter = MAX_RETRY_COUNT
+        while (--counter > 0) {
             try {
-                socket = new ServerSocket(portToScan)
-                return portToScan
-            } catch (IOException e) {
-                log.debug("Port $portToScan not available")
-            } finally {
-                closeSocket(socket)
-                portToScan++
+                int portToScan = RandomUtils.nextInt(maxPortNumber - minPortNumber) + minPortNumber
+                checkIfPortIsAvailable(portToScan)
+                return executeLogicForAvailablePort(portToScan, closure)
+            } catch (Exception exception) {
+                log.debug("Failed to execute closure", exception)
             }
         }
         throw new NoPortAvailableException(minPortNumber, maxPortNumber)
     }
 
-    private void closeSocket(ServerSocket socket) {
-        if (socket) {
-            try {
-                socket.close()
-            } catch (IOException e) {
-                log.debug("Failed to close socket listening at port $portToScan")
-            }
+    private <T> T executeLogicForAvailablePort(int portToScan, Closure<T> closure) {
+        log.debug("Trying to execute closure with port [$portToScan]")
+        return closure(portToScan)
+    }
+
+    private void checkIfPortIsAvailable(int portToScan) {
+        ServerSocket socket = null
+        try {
+            socket = new ServerSocket(portToScan)
+        } finally {
+            IOUtils.closeQuietly(socket)
         }
     }
 

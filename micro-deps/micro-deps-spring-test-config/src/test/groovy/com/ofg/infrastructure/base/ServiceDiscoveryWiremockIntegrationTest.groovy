@@ -13,7 +13,6 @@ import org.springframework.test.context.ContextConfiguration
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import static com.jayway.restassured.RestAssured.get
 import static com.ofg.infrastructure.base.dsl.WireMockHttpRequestMapper.wireMockGet
-import static com.ofg.infrastructure.discovery.web.HttpMockServer.DEFAULT_PORT
 import static org.springframework.http.HttpStatus.OK
 
 @ContextConfiguration(classes = [MockServerConfiguration, BaseConfiguration, ServiceResolverConfiguration])
@@ -31,7 +30,7 @@ class ServiceDiscoveryWiremockIntegrationTest extends MvcWiremockIntegrationTest
     void "should bind zookeeper stub's address with wiremock"() {
         stubInteraction(wireMockGet('/correlator'), aResponse().withStatus(OK.value()))
 
-        get("http://localhost:${DEFAULT_PORT}/correlator").then().statusCode(OK.value())
+        get("http://localhost:${httpMockServer.port()}/correlator").then().statusCode(OK.value())
     }
     
 }

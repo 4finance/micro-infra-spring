@@ -19,7 +19,7 @@ dependencies {
     compile "org.eclipse.jgit:org.eclipse.jgit:2.3.1.201302201838-r"
     compile "org.codehaus.groovy:groovy-all"
     compile "org.aspectj:aspectjrt:1.8.3"
-    compile "commons-io:commons-io:2.4"
+    compile "commons-io:commons-io"
 
     testCompile "org.spockframework:spock-core:$spock10Version"
     testRuntime "org.springframework:spring-test"

@@ -24,14 +24,16 @@ class StubServer {
         wireMockServer = new WireMockServer(wireMockConfig().port(port))
     }
 
-    void start() {
+    StubServer start() {
         wireMockServer.start()
         log.info("Started stub server for project $projectMetadata.projectRelativePath on port ${wireMockServer.port()}")
         registerStubMappings()
+        return this
     }
 
-    void stop() {
+    StubServer stop() {
         wireMockServer.stop()
+        return this
     }
 
     int getPort() {

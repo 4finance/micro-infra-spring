@@ -103,6 +103,7 @@ configure(srcSubprojects) {
         dependencies {
             "org.codehaus.groovy:groovy-all" "2.3.7"
             "com.google.guava:guava" "18.0"
+            "commons-io:commons-io" "2.4"
 
             dependencySet(group:"org.apache.curator", version: "2.7.0") {
                 entry "curator-x-discovery"

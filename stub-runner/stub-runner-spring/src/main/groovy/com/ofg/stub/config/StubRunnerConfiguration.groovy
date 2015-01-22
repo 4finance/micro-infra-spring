@@ -204,7 +204,7 @@ class StubRunnerConfiguration {
 
     }
 
-    class DependencyResolutionException extends Exception {
+    class DependencyResolutionException extends RuntimeException {
 
         DependencyResolutionException(String message, Throwable cause) {
             super(message, cause)

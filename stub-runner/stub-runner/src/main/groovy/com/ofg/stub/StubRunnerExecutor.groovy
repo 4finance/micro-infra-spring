@@ -33,11 +33,11 @@ class StubRunnerExecutor {
     }
 
     private void startStubServers(Collection<ProjectMetadata> projects, StubRepository repository) {
-        projects.each { ProjectMetadata projectMetadata ->
+        stubServers.addAll(projects.collect { ProjectMetadata projectMetadata ->
             List<MappingDescriptor> mappings = repository.getProjectDescriptors(projectMetadata)
-            StubServer stubServer = new StubServer(portScanner.nextAvailablePort(), projectMetadata, mappings)
-            stubServer.start()
-            stubServers << stubServer
-        }
+            return portScanner.tryToExecuteWithFreePort { int availablePort ->
+                return new StubServer(availablePort, projectMetadata, mappings).start()
+            }
+        })
     }
 }

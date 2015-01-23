@@ -3,7 +3,6 @@ description = 'Microservice Spring infrastructure for properties management'
 ext {
     springCloudVersion = "1.0.0.RC1"
     springSecurityRsaVersion = "1.0.0.M1"
-    spock10Version = "1.0-groovy-2.0-SNAPSHOT"
 }
 
 dependencies {
@@ -21,9 +20,9 @@ dependencies {
     compile "org.aspectj:aspectjrt:1.8.3"
     compile "commons-io:commons-io"
 
-    testCompile "org.spockframework:spock-core:$spock10Version"
+    testCompile "org.spockframework:spock-core"
     testRuntime "org.springframework:spring-test"
-    testRuntime "org.spockframework:spock-spring:$spock10Version"
+    testRuntime "org.spockframework:spock-spring"
     testRuntime "ch.qos.logback:logback-classic"
     testCompile "com.jayway.awaitility:awaitility"
 }

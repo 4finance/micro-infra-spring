@@ -54,6 +54,7 @@ allprojects {
     repositories {
         mavenLocal()
         jcenter()
+        maven { url "http://oss.sonatype.org/content/repositories/snapshots/" } //Spock 1.0-SNAPSHOT
     }
 
     configurations {
@@ -115,7 +116,7 @@ configure(srcSubprojects) {
             "com.jayway.restassured:rest-assured" "2.4.0"
             "com.github.tomakehurst:wiremock" "1.52"
 
-            dependencySet(group:'org.spockframework', version: '0.7-groovy-2.0') {
+            dependencySet(group:'org.spockframework', version: '1.0-groovy-2.0-SNAPSHOT') {
                 entry "spock-core"
                 entry "spock-spring"
             }

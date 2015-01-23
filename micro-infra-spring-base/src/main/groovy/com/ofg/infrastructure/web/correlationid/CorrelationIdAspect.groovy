@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.web.correlationid
 
-import com.ofg.infrastructure.correlationid.CorrelationCallable
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder
+import com.ofg.infrastructure.correlationid.CorrelationIdUpdater
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.aspectj.lang.ProceedingJoinPoint
@@ -27,8 +27,8 @@ import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATI
  * </ul>
  * 
  * For controllers an around aspect is created that wraps the {@link Callable#call()} method execution
- * in {@link com.ofg.infrastructure.correlationid.CorrelationCallable#withCorrelationId(groovy.lang.Closure)}
- * 
+ * in {@link com.ofg.infrastructure.correlationid.CorrelationIdUpdater#wrapCallableWithId(Callable)}
+ *
  * For {@link org.springframework.web.client.RestOperations} we are wrapping all executions of the
  * <b>exchange</b> methods and we are extracting {@link HttpHeaders} from the passed {@link HttpEntity}.
  * Next we are adding correlation id header {@link com.ofg.infrastructure.correlationid.CorrelationIdHolder#CORRELATION_ID_HEADER} with
@@ -64,7 +64,7 @@ class CorrelationIdAspect {
     Object wrapWithCorrelationId(ProceedingJoinPoint pjp) throws Throwable {
         Callable callable = pjp.proceed() as Callable
         log.debug("Wrapping callable with correlation id [${CorrelationIdHolder.get()}]")
-        return CorrelationCallable.withCorrelationId {
+        return CorrelationIdUpdater.wrapCallableWithId {
             callable.call()
         }
     }

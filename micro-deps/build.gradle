@@ -44,14 +44,17 @@ project(':micro-deps:micro-deps-spring-config') {
 project(':micro-deps:micro-deps-spring-test-config') {
     description = 'Microservice dependency manager - Spring test configuration'
 
+    ext {
+        spock07Version = "0.7-groovy-2.0"
+    }
     dependencies {
         compile project(':micro-deps:micro-deps-spring-config')
         compile 'org.codehaus.groovy:groovy-all'
         compile 'cglib:cglib-nodep:3.1'
         compile 'org.objenesis:objenesis:2.1'
         compile 'org.aspectj:aspectjweaver:1.8.4'
-        compile "org.spockframework:spock-core"
-        compile "org.spockframework:spock-spring"
+        compile "org.spockframework:spock-core:$spock07Version"
+        compile "org.spockframework:spock-spring:$spock07Version"
         compile "org.springframework:spring-webmvc"
         compile "org.springframework:spring-test"
         compile 'com.github.tomakehurst:wiremock'

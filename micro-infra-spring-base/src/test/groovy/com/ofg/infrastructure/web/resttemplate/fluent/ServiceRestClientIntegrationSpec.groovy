@@ -160,7 +160,7 @@ class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
     }
 
     private URI uriOf(String collaboratorAlias) {
-        ServicePath path = serviceResolver.resolveAlias(new ServiceAlias(COLLABORATOR_NAME))
+        ServicePath path = serviceResolver.resolveAlias(new ServiceAlias(collaboratorAlias))
         return serviceResolver.getUri(path).get()
     }
 

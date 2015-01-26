@@ -26,5 +26,5 @@ abstract class CorrelatedCommand<R> extends HystrixCommand<R> {
         }
     }
 
-    abstract R doRun()
+    abstract R doRun() throws Exception
 }

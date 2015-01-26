@@ -236,6 +236,26 @@ class ServiceRestClientSpec extends Specification {
             }
     }
 
+    def 'should not propagate Hystrix exceptions but unwrap them'() {
+        given:
+            HystrixCommand.Setter circuitBreaker = HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("Group"))
+                    .andCommandKey(HystrixCommandKey.Factory.asKey("Command"))
+        and:
+            restOperations.exchange(_, GET, _ as HttpEntity, _ as Class) >> {
+                throw new RestClientException("Simulated A")
+            }
+        when:
+            serviceRestClient
+                    .forExternalService()
+                    .get()
+                    .withCircuitBreaker(circuitBreaker)
+                    .onUrl(SOME_SERVICE_URL)
+                    .ignoringResponse()
+
+        then:
+            thrown(RestClientException)
+    }
+
     def 'should not wrap HTTP call inside Hystrix command if not requested'() {
         when:
             serviceRestClient

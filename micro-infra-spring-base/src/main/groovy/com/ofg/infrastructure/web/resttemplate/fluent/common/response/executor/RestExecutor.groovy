@@ -2,6 +2,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
 
 import com.google.common.util.concurrent.ListenableFuture
 import com.netflix.hystrix.HystrixCommand
+import com.netflix.hystrix.exception.HystrixRuntimeException
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder
@@ -90,14 +91,22 @@ final class RestExecutor<T> {
 
     private ResponseEntity<T> callHttp(HystrixCommand.Setter hystrix, Closure<ResponseEntity<T>> httpInvocation) {
         if(hystrix) {
+            return runInsideHystrixCommand(hystrix, httpInvocation)
+        } else {
+            return httpInvocation.call()
+        }
+    }
+
+    private ResponseEntity<T> runInsideHystrixCommand(HystrixCommand.Setter hystrix, Closure<ResponseEntity<T>> httpInvocation) {
+        try {
             return new CorrelatedCommand<ResponseEntity<T>>(hystrix) {
                 @Override
                 ResponseEntity<T> doRun() throws Exception {
                     return httpInvocation.call()
                 }
             }.execute()
-        } else {
-            return httpInvocation.call()
+        } catch(HystrixRuntimeException e) {
+            throw e.getCause()
         }
     }
 

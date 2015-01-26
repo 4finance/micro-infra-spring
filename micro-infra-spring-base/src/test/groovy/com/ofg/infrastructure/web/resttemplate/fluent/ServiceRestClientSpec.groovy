@@ -1,6 +1,9 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
 
 import com.google.common.util.concurrent.ListenableFuture
+import com.netflix.hystrix.HystrixCommand
+import com.netflix.hystrix.HystrixCommandGroupKey
+import com.netflix.hystrix.HystrixCommandKey
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor
 import com.ofg.infrastructure.discovery.ServiceAlias
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
@@ -212,6 +215,44 @@ class ServiceRestClientSpec extends Specification {
             } >> null
             Exception e = thrown(Exception)
             e.message.contains("Simulated C")
+    }
+
+    def 'should wrap HTTP call inside Hystrix command'() {
+        given:
+            HystrixCommand.Setter circuitBreaker = HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("Group"))
+                    .andCommandKey(HystrixCommandKey.Factory.asKey("Command"))
+        when:
+            serviceRestClient
+                    .forExternalService()
+                    .put()
+                    .withCircuitBreaker(circuitBreaker)
+                    .onUrl(SOME_SERVICE_URL)
+                    .body('')
+                    .ignoringResponse()
+        then:
+            1 * restOperations.exchange(_, _, _ as HttpEntity, _ as Class) >> {
+                assert runsInHystrixThread()
+                return null
+            }
+    }
+
+    def 'should not wrap HTTP call inside Hystrix command if not requested'() {
+        when:
+            serviceRestClient
+                    .forExternalService()
+                    .put()
+                    .onUrl(SOME_SERVICE_URL)
+                    .body('')
+                    .ignoringResponse()
+        then:
+            1 * restOperations.exchange(_, _, _ as HttpEntity, _ as Class) >> {
+                assert !runsInHystrixThread()
+                return null
+            }
+    }
+
+    private boolean runsInHystrixThread() {
+        return Thread.currentThread().name.startsWith("hystrix-")
     }
 
 }

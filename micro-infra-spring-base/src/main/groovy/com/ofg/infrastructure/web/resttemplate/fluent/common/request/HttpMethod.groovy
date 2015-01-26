@@ -1,5 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.request
 
+import com.netflix.hystrix.HystrixCommand
+
 /**
  * Starting point of the fluent interface.
  * 
@@ -42,5 +44,10 @@ interface HttpMethod<U, T> {
      * @param url
      */
     T onUrlFromTemplate(String urlTemplate)
+
+    /**
+     * Adds Hystrix circuit breaker around every REST call
+     */
+    HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter)
 
 }

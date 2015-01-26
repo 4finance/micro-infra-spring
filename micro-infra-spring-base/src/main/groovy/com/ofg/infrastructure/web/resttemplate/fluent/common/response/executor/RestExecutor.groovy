@@ -1,10 +1,12 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
 
 import com.google.common.util.concurrent.ListenableFuture
+import com.netflix.hystrix.HystrixCommand
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder
 import com.ofg.infrastructure.correlationid.CorrelationIdUpdater
+import com.ofg.infrastructure.hystrix.CorrelatedCommand
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -56,9 +58,8 @@ final class RestExecutor<T> {
             throw new IllegalStateException("Async execution is only enabled with retrying executor. Try .retryUsing(executor.dontRetry()) ")
     }
 
-
     private ListenableFuture<ResponseEntity<T>> urlTemplateExchange(HttpMethod httpMethod, Map params, Class<T> responseType) {
-        return withRetry {
+        return withRetry(params.hystrix as HystrixCommand.Setter) {
             restOperations.exchange(
                     appendPathToHost(params.host as String, params.urlTemplate as String),
                     httpMethod,
@@ -68,9 +69,8 @@ final class RestExecutor<T> {
         }
     }
 
-
     private ListenableFuture<ResponseEntity<T>> urlExchange(HttpMethod httpMethod, Map params, Class<T> responseType) {
-        return withRetry {
+        return withRetry(params.hystrix as HystrixCommand.Setter) {
             return restOperations.exchange(
                     new URI(appendPathToHost(params.host as String, params.url as URI)),
                     httpMethod,
@@ -79,12 +79,25 @@ final class RestExecutor<T> {
         }
     }
 
-    private ListenableFuture<ResponseEntity<T>> withRetry(Closure<ResponseEntity<T>> httpInvocation) {
+    private ListenableFuture<ResponseEntity<T>> withRetry(HystrixCommand.Setter hystrix, Closure<ResponseEntity<T>> httpInvocation) {
         String correlationId = CorrelationIdHolder.get()
         return retryExecutor.getWithRetry {
             return CorrelationIdUpdater.withId(correlationId) {
-                return httpInvocation.call()
+                return callHttp(hystrix, httpInvocation)
             }
+        }
+    }
+
+    private ResponseEntity<T> callHttp(HystrixCommand.Setter hystrix, Closure<ResponseEntity<T>> httpInvocation) {
+        if(hystrix) {
+            return new CorrelatedCommand<ResponseEntity<T>>(hystrix) {
+                @Override
+                ResponseEntity<T> doRun() throws Exception {
+                    return httpInvocation.call()
+                }
+            }.execute()
+        } else {
+            return httpInvocation.call()
         }
     }
 

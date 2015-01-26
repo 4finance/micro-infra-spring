@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive
 
+import com.netflix.hystrix.HystrixCommand
 import com.ofg.infrastructure.web.resttemplate.fluent.common.request.HttpMethod
 import com.ofg.infrastructure.web.resttemplate.fluent.common.request.ParametrizedUrlHavingWith
 import org.apache.commons.lang.StringUtils
@@ -64,5 +65,10 @@ trait MethodParamsApplier<M, EM, PM> implements HttpMethod<M, PM>, HttpEntitySen
     M withVariables(Map<String, ?> urlVariables) {
         params.urlVariablesMap = urlVariables
         this
+    }
+
+    HttpMethod<M, PM> withCircuitBreaker(HystrixCommand.Setter setter) {
+        params.hystrix = setter
+        return this
     }
 }

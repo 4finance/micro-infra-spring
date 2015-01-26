@@ -15,7 +15,7 @@ abstract class CorrelatedCommand<R> extends HystrixCommand<R> {
         super(group)
     }
 
-    protected CorrelatedCommand(HystrixCommand.Setter setter) {
+    protected CorrelatedCommand(Setter setter) {
         super(setter)
     }
 

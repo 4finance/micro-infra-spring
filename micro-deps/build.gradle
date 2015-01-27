@@ -37,7 +37,7 @@ project(':micro-deps:micro-deps-spring-config') {
         testCompile "org.springframework:spring-test"
         testCompile "org.springframework:spring-webmvc"
         testCompile "com.jayway.restassured:rest-assured"
-        testCompile 'org.slf4j:slf4j-api:1.7.9'
+        testCompile 'org.slf4j:slf4j-api'
     }
 }
 
@@ -52,7 +52,7 @@ project(':micro-deps:micro-deps-spring-test-config') {
         compile 'org.codehaus.groovy:groovy-all'
         compile 'cglib:cglib-nodep:3.1'
         compile 'org.objenesis:objenesis:2.1'
-        compile 'org.aspectj:aspectjweaver:1.8.4'
+        compile 'org.aspectj:aspectjweaver'
         compile "org.spockframework:spock-core:$spock07Version"
         compile "org.spockframework:spock-spring:$spock07Version"
         compile "org.springframework:spring-webmvc"

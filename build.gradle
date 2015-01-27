@@ -65,8 +65,8 @@ allprojects {
                 force 'org.jboss.logging:jboss-logging:3.1.4.GA'
 
                 eachDependency { DependencyResolveDetails details ->
-                    if (details.requested.group == 'org.slf4j') { details.useVersion '1.7.9' }
-                    if (details.requested.group == 'com.fasterxml.jackson.core') { details.useVersion "2.4.4" }
+                    if (details.requested.group == 'org.slf4j') { details.useVersion '1.7.10' }
+                    if (details.requested.group == 'com.fasterxml.jackson.core') { details.useVersion "2.5.0" }
 
                     // To prevent an accidental usage of groovy-all.jar and groovy.jar in different versions
                     // all modularized Groovy jars are replaced with groovy-all.jar by default.
@@ -75,6 +75,7 @@ allprojects {
                     }
                     if (details.requested.group == 'org.springframework.boot') { details.useVersion springBootVersion }
                     if (details.requested.group == 'org.springframework') { details.useVersion "4.1.4.RELEASE" }
+                    if (details.requested.group == 'org.aspectj') { details.useVersion "1.8.4" }
                 }
             }
         }
@@ -102,7 +103,7 @@ configure(srcSubprojects) {
 
     dependencyManagement {
         dependencies {
-            "org.codehaus.groovy:groovy-all" "2.3.7"
+            "org.codehaus.groovy:groovy-all" "2.4.0"
             "com.google.guava:guava" "18.0"
             "commons-io:commons-io" "2.4"
 

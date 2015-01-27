@@ -6,7 +6,7 @@ dependencies {
 
     compile 'org.codehaus.groovy:groovy-all'
     compile 'org.springframework:spring-context'
-    compile 'org.apache.ivy:ivy:2.3.0'
+    compile 'org.apache.ivy:ivy:2.4.0'
 
     testCompile 'org.spockframework:spock-core'
 }

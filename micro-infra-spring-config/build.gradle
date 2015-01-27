@@ -17,7 +17,7 @@ dependencies {
     compile "org.springframework.security:spring-security-rsa:$springSecurityRsaVersion"
     compile "org.eclipse.jgit:org.eclipse.jgit:2.3.1.201302201838-r"
     compile "org.codehaus.groovy:groovy-all"
-    compile "org.aspectj:aspectjrt:1.8.3"
+    compile "org.aspectj:aspectjrt"
     compile "commons-io:commons-io"
 
     testCompile "org.spockframework:spock-core"

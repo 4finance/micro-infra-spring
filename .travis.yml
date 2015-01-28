@@ -12,6 +12,7 @@ script:
 - source build/release/gradle/setGitVariables.sh
 - ./gradlew release -Prelease.disableRemoteCheck -Prelease.localOnly --stacktrace --continue
 - ./gradlew check finalizeRelease publishUploadedArtifacts -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace --continue
+- if [ $DO_ACCEPTANCE_TESTS == true ]; then ./gradle/runBootMicroserviceAcceptanceTests.sh; fi
 
 after_success:
 - ./gradlew jacocoRootReport coveralls -Pcoverage --continue
@@ -19,14 +20,14 @@ after_success:
 
 language: groovy
 
-jdk:
-- oraclejdk8
-
 matrix:
   include:
     # Release not skipped only in Java 7 build
     - jdk: oraclejdk7
       env: SKIP_RELEASE=false
+    # Build on Java 8 with acceptance tests in boot-microservice
+    - jdk: oraclejdk8
+      env: DO_ACCEPTANCE_TESTS=true
 
 env:
   global:

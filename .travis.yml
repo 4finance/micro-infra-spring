@@ -12,7 +12,7 @@ script:
 - source build/release/gradle/setGitVariables.sh
 - ./gradlew release -Prelease.disableRemoteCheck -Prelease.localOnly --stacktrace --continue
 - ./gradlew check publishToMavenLocal --stacktrace --continue
-- if [ $DO_ACCEPTANCE_TESTS == true ]; then ./gradle/runBootMicroserviceAcceptanceTests.sh; fi
+- if [ $DO_ACCEPTANCE_TESTS == true ]; then jdk_switcher use oraclejdk8; ./gradle/runBootMicroserviceAcceptanceTests.sh; jdk_switcher use oraclejdk7; fi
 - ./gradlew finalizeRelease publishUploadedArtifacts -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace --continue
 
 after_success:

@@ -46,7 +46,13 @@ interface HttpMethod<U, T> {
     T onUrlFromTemplate(String urlTemplate)
 
     /**
-     * Adds Hystrix circuit breaker around every REST call
+     * Adds Hystrix circuit breaker around every REST call.
+     * 
+     * Example:
+     * <code>
+     * .withCircuitBreaker(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("Group"))
+     *      .andCommandKey(HystrixCommandKey.Factory.asKey("Command")))
+     * </code>
      */
     HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter)
 

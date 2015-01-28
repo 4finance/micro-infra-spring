@@ -13,7 +13,7 @@ function cloneAndDoBuild {
     cd "$1"
     echo "microInfraSpringVersion="`cat ~/.microInfraSpringCurrentVersion.txt` >> gradle.properties
     cat gradle.properties
-    ./gradlew check
+    ./gradlew check --stacktrace --continue
     cd ..
 }
 

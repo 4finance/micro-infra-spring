@@ -10,6 +10,8 @@ import com.codahale.metrics.jvm.FileDescriptorRatioGauge
 import com.codahale.metrics.jvm.GarbageCollectorMetricSet
 import com.codahale.metrics.jvm.MemoryUsageGaugeSet
 import com.codahale.metrics.jvm.ThreadStatesGaugeSet
+import com.netflix.hystrix.contrib.codahalemetricspublisher.HystrixCodaHaleMetricsPublisher
+import com.netflix.hystrix.strategy.HystrixPlugins
 import com.ofg.config.BasicProfiles
 import com.ofg.infrastructure.metrics.publishing.GraphitePublisher
 import com.ofg.infrastructure.metrics.publishing.JmxPublisher
@@ -100,5 +102,13 @@ class MetricsConfiguration {
         metricRegistry.register(MetricRegistry.name("jvm", "fd"), new FileDescriptorRatioGauge());
         metricRegistry.register(MetricRegistry.name("jvm", "classloading"), new ClassLoadingGaugeSet());
         return metricRegistry;
+    }
+
+    @Bean
+    HystrixCodaHaleMetricsPublisher hystrixCodaHaleMetricsPublisher(MetricRegistry metricRegistry) {
+        def publisher = new HystrixCodaHaleMetricsPublisher(metricRegistry)
+        HystrixPlugins.reset()
+        HystrixPlugins.instance.registerMetricsPublisher(publisher)
+        return publisher
     }
 }

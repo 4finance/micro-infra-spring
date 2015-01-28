@@ -3,6 +3,7 @@ description = 'Microservice base infrastructure registered in Spring'
 ext {
     metricsVersion = '3.1.0'
     jacksonMapper = '1.9.13'
+    hystrixVersion = '1.4.0-RC6'
 }
 
 sourceSets.main.java.srcDirs = []
@@ -21,8 +22,9 @@ dependencies {
     compile "io.dropwizard.metrics:metrics-jvm:$metricsVersion"
     compile "io.dropwizard.metrics:metrics-graphite:$metricsVersion"
     compile 'com.nurkiewicz.asyncretry:asyncretry-jdk7:0.0.6'
-    compile 'com.netflix.hystrix:hystrix-core:1.4.0-RC6'
-    compile 'com.netflix.hystrix:hystrix-metrics-event-stream:1.4.0-RC6'
+    compile "com.netflix.hystrix:hystrix-core:$hystrixVersion"
+    compile "com.netflix.hystrix:hystrix-metrics-event-stream:$hystrixVersion"
+    compile "com.netflix.hystrix:hystrix-codahale-metrics-publisher:$hystrixVersion"
 
     runtime "org.aspectj:aspectjweaver"
 

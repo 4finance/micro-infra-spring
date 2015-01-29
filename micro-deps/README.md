@@ -1,8 +1,4 @@
-[![Build Status](https://travis-ci.org/4finance/micro-deps-spring-config.svg?branch=master)](https://travis-ci.org/4finance/micro-deps-spring-config) 
-[![Coverage Status](http://img.shields.io/coveralls/4finance/micro-deps-spring-config/master.svg)](https://coveralls.io/r/4finance/micro-deps-spring-config)
-[ ![Download](https://api.bintray.com/packages/4finance/micro-deps/micro-deps-spring-config/images/download.svg) ](https://bintray.com/4finance/micro-deps/micro-deps-spring-config/_latestVersion)
-
-Micro-deps-spring-config 
+Micro-deps-spring-config
 =================
 
 Default Micro-deps Spring configuration
@@ -41,7 +37,7 @@ service.resolver.connection.retry.times=5
 service.resolver.connection.retry.wait=1000
 ```
 
-Take a look at [stub-runner-spring project](https://github.com/4finance/stub-runner-spring/wiki/How-to-use-it) for more information on our [Consumer Driven Contracts](http://martinfowler.com/articles/consumerDrivenContracts.html) implementation. Below you can find the properties that you can set in that regard together with default values:
+Take a look at [stub-runner-spring project](https://github.com/4finance/micro-infra-spring/wiki/Stub-runner) for more information on our [Consumer Driven Contracts](http://martinfowler.com/articles/consumerDrivenContracts.html) implementation. Below you can find the properties that you can set in that regard together with default values:
 
 ```
 # minPortValue min port value of the Wiremock instance for the given collaborator
@@ -67,7 +63,6 @@ Running microservice with `com.ofg.config.BasicProfiles.PRODUCTION` profile acti
 Otherwise, an in-memory instance of Zookeeper will be started. For development purposes, you can enable standalone Zookeeper connector manually
 via environment property `zookeeper.standalone.enabled`.
 
-Micro-deps-spring-test-config  [ ![Download](https://api.bintray.com/packages/4finance/micro-deps/micro-deps-spring-test-config/images/download.svg) ](https://bintray.com/4finance/micro-deps/micro-deps-spring-test-config/_latestVersion)
 =================
 
 Default Micro-deps Spring test configuration - both for JUnit and Spock

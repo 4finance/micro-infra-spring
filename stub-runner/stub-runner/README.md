@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/4finance/stub-runner.svg?branch=master)](https://travis-ci.org/4finance/stub-runner)[![Coverage Status](http://img.shields.io/coveralls/4finance/stub-runner/master.svg)](https://coveralls.io/r/4finance/stub-runner)  [ ![Download](https://api.bintray.com/packages/4finance/micro/stub-runner/images/download.svg) ](https://bintray.com/4finance/micro/stub-runner/_latestVersion)
-
 Stub-runner
 ===========
 
@@ -193,4 +191,4 @@ Every stubbed collaborator exposes list of defined mappings under `__/admin/` en
 
 ## Other projects basing on *stub-runner*
 
-- [Stub Runner Spring](https://github.com/4finance/stub-runner-spring) - adds automatic downloading of the newest versions of stubs to your tests
+- [Stub Runner Spring](https://github.com/4finance/micro-infra-spring/wiki/Stub-runner) - adds automatic downloading of the newest versions of stubs to your tests

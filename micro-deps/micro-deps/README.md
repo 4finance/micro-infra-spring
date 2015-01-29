@@ -1,6 +1,3 @@
-[![Build Status](https://travis-ci.org/4finance/micro-deps.svg?branch=master)](https://travis-ci.org/4finance/micro-deps)  [![Coverage Status](http://img.shields.io/coveralls/4finance/micro-deps/master.svg)](https://coveralls.io/r/4finance/micro-deps) [ ![Download](https://api.bintray.com/packages/4finance/micro-deps/micro-deps/images/download.svg) ](https://bintray.com/4finance/micro-deps/micro-deps/_latestVersion) 
-
-
 Microservice Dependency Manager
 ===============================
                                     
@@ -82,7 +79,7 @@ Usage
 
 ### Register your service ###
 
-If you are using spring, checkout the [microdeps-spring-config](//github.com/4finance/micro-deps-spring-config) 
+If you are using spring, checkout the [microdeps-spring-config](https://github.com/4finance/micro-infra-spring/blob/master/micro-deps/README.md)
 that will create all the needed beans.
 
 In all other cases it will most probably make sense for you to check out `com.ofg.infrastructure.discovery.util.MicroDepsService`.

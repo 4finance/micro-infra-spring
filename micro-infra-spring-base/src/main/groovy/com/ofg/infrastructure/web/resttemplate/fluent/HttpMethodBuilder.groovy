@@ -57,6 +57,24 @@ class HttpMethodBuilder {
         this.serviceUrl = serviceUrl
     }
 
+    /**
+     * Attaches pre-configured {@link RetryExecutor} to this request in order to retry in case of failure.
+     * The easiest way to add retry to your requests is to inject built-in {@link AsyncRetryExecutor}
+     * and customize it, e.g. to retry 3 times after failure with 500 millisecond delays between attempts:
+     *
+     * <pre>
+     * {@code
+     * @Autowired AsyncRetryExecutor executor
+     *
+     * //...
+     *
+     * .retryUsing(executor.withMaxRetries(3).withFixedBackoff(500))
+     * }
+     * </pre>
+     *
+     * @param retryExecutor
+     * @see <a href="https://github.com/nurkiewicz/async-retry">github.com/nurkiewicz/async-retry</a>
+     */
     HttpMethodBuilder retryUsing(RetryExecutor retryExecutor) {
         this.retryExecutor = retryExecutor
         return this

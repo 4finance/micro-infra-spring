@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.metrics.config
 
-import com.codahale.metrics.graphite.Graphite
+import com.codahale.metrics.graphite.GraphiteSender
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.metrics.publishing.GraphitePublisher
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
@@ -31,7 +31,7 @@ class GraphitePublisherRegistrationSpec extends Specification {
             applicationContext.refresh()
         expect:
             beanIsPresent(GraphitePublisher)
-            beanIsPresent(Graphite)
+            beanIsPresent(GraphiteSender)
         where:
             flagValue << ['yes', 'on', 'true']
     }
@@ -43,7 +43,7 @@ class GraphitePublisherRegistrationSpec extends Specification {
             applicationContext.refresh()
         expect:
             beanIsAbsent(GraphitePublisher)
-            beanIsAbsent(Graphite)
+            beanIsAbsent(GraphiteSender)
         where:
             flagValue << ['no', 'off', 'false']
     }
@@ -53,7 +53,7 @@ class GraphitePublisherRegistrationSpec extends Specification {
             applicationContext.refresh()
         expect:
             beanIsPresent(GraphitePublisher)
-            beanIsPresent(Graphite)
+            beanIsPresent(GraphiteSender)
     }
 
     def 'should register Graphite beans when Graphite publishing is enabled in application properties file'() {
@@ -62,7 +62,7 @@ class GraphitePublisherRegistrationSpec extends Specification {
             applicationContext.refresh()
         expect:
             beanIsPresent(GraphitePublisher)
-            beanIsPresent(Graphite)
+            beanIsPresent(GraphiteSender)
     }
 
     def 'should not register Graphite beans when Graphite publishing is disabled in application properties file'() {
@@ -71,7 +71,7 @@ class GraphitePublisherRegistrationSpec extends Specification {
             applicationContext.refresh()
         expect:
             beanIsAbsent(GraphitePublisher)
-            beanIsAbsent(Graphite)
+            beanIsAbsent(GraphiteSender)
     }
 
     private registerInContext(PropertySource propertySource) {

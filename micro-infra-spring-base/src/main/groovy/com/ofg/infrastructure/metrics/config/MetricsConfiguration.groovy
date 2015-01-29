@@ -5,6 +5,7 @@ import com.codahale.metrics.graphite.Graphite
 import com.codahale.metrics.graphite.GraphiteSender
 import com.codahale.metrics.graphite.GraphiteUDP
 import com.codahale.metrics.graphite.PickledGraphite
+import com.codahale.metrics.jvm.ClassLoadingGaugeSet
 import com.codahale.metrics.jvm.FileDescriptorRatioGauge
 import com.codahale.metrics.jvm.GarbageCollectorMetricSet
 import com.codahale.metrics.jvm.MemoryUsageGaugeSet
@@ -16,12 +17,16 @@ import com.ofg.infrastructure.metrics.publishing.PublishingInterval
 import com.ofg.infrastructure.metrics.registry.MetricPathProvider
 import com.ofg.infrastructure.metrics.registry.PathPrependingMetricRegistry
 import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 
+import static com.ofg.infrastructure.metrics.config.GraphiteFormat.PICKLE
+import static com.ofg.infrastructure.metrics.config.GraphiteFormat.TCP
+import static com.ofg.infrastructure.metrics.config.GraphiteFormat.UDP
 import static java.util.concurrent.TimeUnit.MILLISECONDS
 import static java.util.concurrent.TimeUnit.MINUTES
 
@@ -39,6 +44,7 @@ import static java.util.concurrent.TimeUnit.MINUTES
  */
 @Configuration
 @CompileStatic
+@Slf4j
 class MetricsConfiguration {
 
     @Bean(initMethod = "start", destroyMethod = "stop")
@@ -47,23 +53,29 @@ class MetricsConfiguration {
         return new JmxPublisher(metricRegistry, MINUTES, MILLISECONDS)
     }
 
-    @Bean
-    @Conditional(MetricsActivationConditions.GraphiteEnabledCondition)
+    @Bean(destroyMethod = "close")
+    @Profile(BasicProfiles.PRODUCTION)
+    @Conditional(IsGraphitePublishingEnabled)
     GraphiteSender graphite(@Value('${graphite.host:graphite.4finance.net}') String hostname,
                       @Value('${graphite.port:2003}') int port,
-                      @Value('${graphite.format:plain}') String format) {
+                      @Value('${graphite.format:TCP}') GraphiteFormat format) {
+        final InetSocketAddress address = new InetSocketAddress(hostname, port)
+        log.info("Connecting to Graphite $address using $format format")
         switch (format) {
-            case "plain":
-                return new GraphiteUDP(new InetSocketAddress(hostname, port))
-            case "pickle":
-                return new PickledGraphite(new InetSocketAddress(hostname, port))
+            case UDP:
+                return new GraphiteUDP(address)
+            case TCP:
+                return new Graphite(address)
+            case PICKLE:
+                return new PickledGraphite(address)
             default:
-                throw new IllegalArgumentException("Unexpected graphite.format value. Expected values are [plain, pickle]")
+                throw new IllegalArgumentException("Unexpected graphite.format value: $format. Expected values are: ${GraphiteFormat.values()}")
         }
     }
 
     @Bean(initMethod = "start", destroyMethod = "stop")
-    @Conditional(MetricsActivationConditions.GraphiteEnabledCondition)
+    @Profile(BasicProfiles.PRODUCTION)
+    @Conditional(IsGraphitePublishingEnabled)
     GraphitePublisher graphitePublisher(GraphiteSender graphite,
                                         MetricRegistry metricRegistry,
                                         @Value('${graphite.publishing.interval:15000}') long publishingIntervalInMs) {
@@ -85,7 +97,8 @@ class MetricsConfiguration {
         metricRegistry.register(MetricRegistry.name("jvm", "gc"), new GarbageCollectorMetricSet());
         metricRegistry.register(MetricRegistry.name("jvm", "memory"), new MemoryUsageGaugeSet());
         metricRegistry.register(MetricRegistry.name("jvm", "thread-states"), new ThreadStatesGaugeSet());
-        metricRegistry.register(MetricRegistry.name("jvm", "fd", "usage"), new FileDescriptorRatioGauge());
+        metricRegistry.register(MetricRegistry.name("jvm", "fd"), new FileDescriptorRatioGauge());
+        metricRegistry.register(MetricRegistry.name("jvm", "classloading"), new ClassLoadingGaugeSet());
         return metricRegistry;
     }
 }

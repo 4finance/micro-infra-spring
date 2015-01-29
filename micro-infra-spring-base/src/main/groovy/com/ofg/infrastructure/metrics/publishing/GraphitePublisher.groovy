@@ -2,8 +2,8 @@ package com.ofg.infrastructure.metrics.publishing
 
 import com.codahale.metrics.MetricFilter
 import com.codahale.metrics.MetricRegistry
-import com.codahale.metrics.graphite.GraphiteSender
 import com.codahale.metrics.graphite.GraphiteReporter
+import com.codahale.metrics.graphite.GraphiteSender
 import groovy.transform.CompileStatic
 
 import java.util.concurrent.TimeUnit
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
  * A publisher to <a href="http://graphite.wikidot.com/">Graphite</a>. Creates a {@link GraphiteReporter} instance
  * that in a given {@link com.ofg.infrastructure.metrics.publishing.PublishingInterval} publishes
  * data to Graphite. 
- *
+ * 
  * @see GraphiteReporter
  * @see com.ofg.infrastructure.metrics.publishing.PublishingInterval
  */
@@ -23,16 +23,16 @@ class GraphitePublisher implements MetricsPublishing {
 
     GraphitePublisher(GraphiteSender graphite, PublishingInterval publishingInterval, MetricRegistry metricRegistry,
                       TimeUnit reportedRatesTimeUnit, TimeUnit reportedDurationsTimeUnit) {
-        this(graphite, publishingInterval, metricRegistry, reportedRatesTimeUnit, reportedDurationsTimeUnit, null)
+        this(graphite, publishingInterval, metricRegistry, reportedRatesTimeUnit, reportedDurationsTimeUnit, MetricFilter.ALL)
     }
 
     GraphitePublisher(GraphiteSender graphite, PublishingInterval publishingInterval, MetricRegistry metricRegistry,
-                      TimeUnit reportedRatesTimeUnit, TimeUnit reportedDurationsTimeUnit, String metricsPrefix) {
-        this(graphite, publishingInterval, metricRegistry, reportedRatesTimeUnit, reportedDurationsTimeUnit, metricsPrefix, MetricFilter.ALL)
+                      TimeUnit reportedRatesTimeUnit, TimeUnit reportedDurationsTimeUnit, MetricFilter metricFilter) {
+        this(graphite, publishingInterval, metricRegistry, reportedRatesTimeUnit, reportedDurationsTimeUnit, metricFilter, null)
     }
 
     GraphitePublisher(GraphiteSender graphite, PublishingInterval publishingInterval, MetricRegistry metricRegistry,
-                      TimeUnit reportedRatesTimeUnit, TimeUnit reportedDurationsTimeUnit, String metricsPrefix, MetricFilter metricFilter) {
+                      TimeUnit reportedRatesTimeUnit, TimeUnit reportedDurationsTimeUnit, MetricFilter metricFilter, String metricsPrefix) {
         graphiteReporter = GraphiteReporter
                 .forRegistry(metricRegistry)
                 .convertRatesTo(reportedRatesTimeUnit)

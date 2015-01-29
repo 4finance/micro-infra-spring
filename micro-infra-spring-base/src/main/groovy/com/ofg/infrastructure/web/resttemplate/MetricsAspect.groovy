@@ -37,7 +37,7 @@ class MetricsAspect {
     }
 
     static String metricName(url) {
-        String uriString = url.toString().replaceAll("[{}]", "")
+        String uriString = url.toString().replaceAll(/[{}]/, "")
         final URI uri = new URI(uriString)
         final String path = fixSpecialCharacters(uri.path)
         int port = (uri.port > 0)? uri.port : 80
@@ -47,7 +47,7 @@ class MetricsAspect {
     private static String fixSpecialCharacters(String value) {
         final String result = value
                 .replaceAll("\\.", "_")
-                .replaceAll("/", ".");
+                .replaceAll("/", ".")
         return trimDots(result)
     }
 

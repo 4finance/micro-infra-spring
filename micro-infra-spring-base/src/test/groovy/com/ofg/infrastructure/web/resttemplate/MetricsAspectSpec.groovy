@@ -23,6 +23,9 @@ class MetricsAspectSpec extends Specification {
             'http://db:1000/data.xml'              || 'db.1000.data_xml'
             'http://db/data.xml'                   || 'db.80.data_xml'
             'http://db:6006/data?foo=bar'          || 'db.6006.data'
+            'http://192.168.1.100:6006'            || '192.168.1.100.6006'
+            'http://192.168.1.100:6006/ticket/pay' || '192.168.1.100.6006.ticket.pay'
+            'https://foo:5757/api/secure'          || 'foo.5757.api.secure'
     }
 
 }

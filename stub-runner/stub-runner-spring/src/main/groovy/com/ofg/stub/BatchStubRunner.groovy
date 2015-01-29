@@ -1,11 +1,12 @@
 package com.ofg.stub
 
+import com.google.common.base.Optional
 import groovy.transform.CompileStatic
 
 /**
  * Manages lifecycle of multiple {@link StubRunner} instances.
  *
- * * @see StubRunner
+ * @see StubRunner
  */
 @CompileStatic
 class BatchStubRunner implements StubRunning {
@@ -19,6 +20,16 @@ class BatchStubRunner implements StubRunning {
     @Override
     void runStubs() {
         stubRunners*.runStubs()
+    }
+
+    @Override
+    Optional<URL> findStubUrlByRelativePath(String relativePath) {
+        return stubRunners.findResult(Optional.absent()) {
+            def optionalUrl = it.findStubUrlByRelativePath(relativePath)
+            if(optionalUrl.present) {
+                return optionalUrl
+            }
+        } as Optional
     }
 
     @Override

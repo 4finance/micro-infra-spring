@@ -3,7 +3,6 @@ import com.ofg.stub.server.AvailablePortScanner
 import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 /**
  * Configuration that registers {@link HttpMockServer} as a Spring bean. Takes care
  * of graceful shutdown process.
@@ -13,11 +12,6 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 @CompileStatic
 @Configuration
 class MockServerConfiguration {
-
-    @Bean
-    static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
 
     @Bean(destroyMethod = 'shutdownServer')
     HttpMockServer httpMockServer(AvailablePortScanner availablePortScanner) {

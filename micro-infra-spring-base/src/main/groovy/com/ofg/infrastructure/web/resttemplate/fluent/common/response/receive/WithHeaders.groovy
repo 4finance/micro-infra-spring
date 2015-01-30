@@ -119,13 +119,13 @@ class WithHeaders<T> implements HeadersSetting<T>, HeadersHaving<T> {
     }
 
     @Override
-    WithHeaders authorization(String authorization) {
+    WithHeaders authentication(String authorization) {
         return header(AUTHORIZATION, authorization)
     }
 
     @Override
-    WithHeaders basicAuthorization(String username, String password) {
-        return authorization("Basic " + encodeCredentials(username, password))
+    WithHeaders basicAuthentication(String username, String password) {
+        return authentication("Basic " + encodeCredentials(username, password))
     }
 
     private void updateHeaderParams() {

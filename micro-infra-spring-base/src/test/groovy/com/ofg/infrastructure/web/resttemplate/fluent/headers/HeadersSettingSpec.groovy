@@ -1,6 +1,5 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.headers
 
-import com.ofg.infrastructure.web.resttemplate.fluent.HTTPAuthorizationUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
@@ -313,7 +312,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
                 .onUrlFromTemplate(TEMPLATE_URL)
                 .withVariables(OBJECT_ID)
                 .withHeaders()
-                .basicAuthorization(username, password)
+                .basicAuthentication(username, password)
                 .andExecuteFor()
                 .anObject()
                 .ofType(BigDecimal)
@@ -327,6 +326,17 @@ class HeadersSettingSpec extends HttpMethodSpec {
             username = "AuthUsername"
             password = "AuthPassword"
             authorizationValue = ("Basic " + encodeCredentials(username, password)) as String
+    }
+
+    def "encode basic authentication credentials"() {
+        when:
+            def encodedResult = encodeCredentials(username, password)
+        then:
+            encodedResult == authorizationValue
+        where:
+            username  | password      || authorizationValue
+            'Aladdin' | 'open sesame' || 'QWxhZGRpbjpvcGVuIHNlc2FtZQ=='
+            'Denis'   | "Denis123"    || 'RGVuaXM6RGVuaXMxMjM='
     }
 
     private HttpHeaders createHeaders() {

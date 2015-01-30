@@ -125,4 +125,23 @@ interface HeadersSetting<T> extends Executable<T> {
      */
     HeadersSetting<T> headers(HttpHeaders httpHeaders)
 
+    /**
+     * Sets value for the {@link HttpHeaders#AUTHORIZATION} header
+     *
+     * @param authorization
+     *
+     * @return itself
+     */
+    HeadersSetting<T> authorization(String authorization)
+
+    /**
+     * Sets basic authorization value for the {@link HttpHeaders#AUTHORIZATION} header
+     *
+     * @param username
+     * @param password
+     *
+     * @return itself
+     */
+    HeadersSetting<T> basicAuthorization(String username, String password)
+
 }

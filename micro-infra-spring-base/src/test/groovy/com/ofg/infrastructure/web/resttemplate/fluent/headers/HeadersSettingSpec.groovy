@@ -1,12 +1,15 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.headers
 
+import com.ofg.infrastructure.web.resttemplate.fluent.HTTPAuthorizationUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import spock.lang.Unroll
 
+import static com.ofg.infrastructure.web.resttemplate.fluent.HTTPAuthorizationUtils.encodeCredentials
 import static org.springframework.http.HttpMethod.*
 import static org.springframework.http.MediaType.APPLICATION_JSON
 
@@ -298,6 +301,32 @@ class HeadersSettingSpec extends HttpMethodSpec {
                     { HttpEntity httpEntity -> httpEntity.headers['Content-Type'] == [MediaType.APPLICATION_XML_VALUE] } as HttpEntity,
                     _ as Class,
                     _ as Long)
+    }
+
+    @Unroll
+    def "should have 'Authorization' header with value: '#authorizationValue'"() {
+        given:
+        httpMethodBuilder = new HttpMethodBuilder(restOperations)
+        when:
+        httpMethodBuilder
+                .get()
+                .onUrlFromTemplate(TEMPLATE_URL)
+                .withVariables(OBJECT_ID)
+                .withHeaders()
+                .basicAuthorization(username, password)
+                .andExecuteFor()
+                .anObject()
+                .ofType(BigDecimal)
+        then:
+        1 * restOperations.exchange(TEMPLATE_URL,
+                GET,
+                { HttpEntity httpEntity -> httpEntity.headers['Authorization'] == [authorizationValue] } as HttpEntity,
+                _ as Class,
+                _ as Long)
+        where:
+            username = "AuthUsername"
+            password = "AuthPassword"
+            authorizationValue = ("Basic " + encodeCredentials(username, password)) as String
     }
 
     private HttpHeaders createHeaders() {

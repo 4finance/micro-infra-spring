@@ -328,17 +328,6 @@ class HeadersSettingSpec extends HttpMethodSpec {
             authorizationValue = ("Basic " + encodeCredentials(username, password)) as String
     }
 
-    def "encode basic authentication credentials"() {
-        when:
-            def encodedResult = encodeCredentials(username, password)
-        then:
-            encodedResult == authorizationValue
-        where:
-            username  | password      || authorizationValue
-            'Aladdin' | 'open sesame' || 'QWxhZGRpbjpvcGVuIHNlc2FtZQ=='
-            'Denis'   | "Denis123"    || 'RGVuaXM6RGVuaXMxMjM='
-    }
-
     private HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders(
                 accept: [APPLICATION_JSON],

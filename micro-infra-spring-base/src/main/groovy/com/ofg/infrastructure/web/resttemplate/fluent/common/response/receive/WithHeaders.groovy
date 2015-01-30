@@ -4,6 +4,8 @@ import groovy.transform.TypeChecked
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 
+import static com.ofg.infrastructure.web.resttemplate.fluent.HTTPAuthorizationUtils.encodeCredentials
+import static org.springframework.http.HttpHeaders.AUTHORIZATION
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.http.MediaType.APPLICATION_XML
 
@@ -114,6 +116,16 @@ class WithHeaders<T> implements HeadersSetting<T>, HeadersHaving<T> {
     HeadersSetting<T> headers(HttpHeaders httpHeaders) {
         params.headers = httpHeaders
         return this
+    }
+
+    @Override
+    WithHeaders authentication(String authorization) {
+        return header(AUTHORIZATION, authorization)
+    }
+
+    @Override
+    WithHeaders basicAuthentication(String username, String password) {
+        return authentication("Basic " + encodeCredentials(username, password))
     }
 
     private void updateHeaderParams() {

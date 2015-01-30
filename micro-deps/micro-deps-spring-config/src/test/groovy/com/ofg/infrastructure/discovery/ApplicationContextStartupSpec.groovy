@@ -2,6 +2,7 @@ package com.ofg.infrastructure.discovery
 
 import com.ofg.infrastructure.discovery.config.PropertySourceConfiguration
 import com.ofg.infrastructure.discovery.watcher.presence.checker.NoInstancesRunningException
+import com.ofg.stub.server.AvailablePortScanner
 import org.apache.curator.test.TestingServer
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import spock.lang.Specification
@@ -13,7 +14,7 @@ class ApplicationContextStartupSpec extends Specification {
 
     def 'should fail to start application context if resource is missing when default bean is missing deps'() {
         given:
-            TestingServer testingServer = new TestingServer(2181)
+            TestingServer testingServer = startedZooKeeper()
         and:
             AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext()
             applicationContext.environment.setActiveProfiles(PRODUCTION)
@@ -27,6 +28,11 @@ class ApplicationContextStartupSpec extends Specification {
             applicationContext?.close()
             testingServer?.close()
     }
-         
+
+    TestingServer startedZooKeeper() {
+        return new AvailablePortScanner(2000, 3000).tryToExecuteWithFreePort {int port ->
+            return new TestingServer(port)
+        }
+    }
 }
 

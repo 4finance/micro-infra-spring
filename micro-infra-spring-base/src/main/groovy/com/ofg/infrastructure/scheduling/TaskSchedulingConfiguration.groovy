@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.scheduling
 
+import com.ofg.infrastructure.correlationid.UuidGenerator
 import groovy.transform.CompileStatic
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -17,7 +18,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableAspectJAutoProxy
 class TaskSchedulingConfiguration {
 
-    @Bean ScheduledTaskWithCorrelationIdAspect scheduledTaskPointcut() {
-        return new ScheduledTaskWithCorrelationIdAspect()
+    @Bean ScheduledTaskWithCorrelationIdAspect scheduledTaskPointcut(UuidGenerator uuidGenerator) {
+        return new ScheduledTaskWithCorrelationIdAspect(uuidGenerator)
     }
 }

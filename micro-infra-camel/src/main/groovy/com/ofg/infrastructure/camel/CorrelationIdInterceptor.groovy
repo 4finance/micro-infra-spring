@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.camel
 
+import com.ofg.infrastructure.correlationid.UuidGenerator
 import groovy.transform.CompileStatic
 import org.apache.camel.Message
 
@@ -16,7 +17,12 @@ import org.apache.camel.Processor
 @CompileStatic
 class CorrelationIdInterceptor implements Processor {
 
-    /**
+    private final UuidGenerator uuidGenerator
+
+    CorrelationIdInterceptor(UuidGenerator uuidGenerator) {
+        this.uuidGenerator = uuidGenerator
+    }
+/**
      * Ensures correlationId header is set in incoming message (if is missing a new correlationId is created and set).
      *
      * @param exchange Camel's container holding received message
@@ -34,7 +40,7 @@ class CorrelationIdInterceptor implements Processor {
         String correlationIdHeader = exchange.in.getHeader(CORRELATION_ID_HEADER)
         if (!correlationIdHeader) {
             log.debug('No correlationId has been set in request inbound message. Creating new one.')
-            correlationIdHeader = UUID.randomUUID().toString()
+            correlationIdHeader = uuidGenerator.create()
         }
         return correlationIdHeader
     }

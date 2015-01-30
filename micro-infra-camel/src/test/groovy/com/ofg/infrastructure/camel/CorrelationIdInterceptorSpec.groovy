@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.camel
 
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder
+import com.ofg.infrastructure.correlationid.UuidGenerator
 import org.apache.camel.CamelContext
 import org.apache.camel.Exchange
 import org.apache.camel.impl.DefaultCamelContext
@@ -12,10 +13,13 @@ class CorrelationIdInterceptorSpec extends Specification {
     def 'should set new correlationId header in request inbound message if missing'() {
         given:
             Exchange exchange = defaultExchange()
+        and:
+            UuidGenerator uuidGeneratorMock = Mock(UuidGenerator)
+            uuidGeneratorMock.create() >> '42'
         when:
-            new CorrelationIdInterceptor().process(exchange)
+            new CorrelationIdInterceptor(uuidGeneratorMock).process(exchange)
         then:
-            exchange.in.getHeader(CorrelationIdHolder.CORRELATION_ID_HEADER) != null
+            exchange.in.getHeader(CorrelationIdHolder.CORRELATION_ID_HEADER) == '42'
     }
 
     def 'should set correlationId in holder from header of inbound message'() {
@@ -24,7 +28,7 @@ class CorrelationIdInterceptorSpec extends Specification {
             def correlationIdValue = UUID.randomUUID().toString()
             exchange.in.setHeader(CorrelationIdHolder.CORRELATION_ID_HEADER, correlationIdValue)
         when:
-            new CorrelationIdInterceptor().process(exchange)
+            new CorrelationIdInterceptor(Stub(UuidGenerator)).process(exchange)
         then:
             CorrelationIdHolder.get() == correlationIdValue
     }

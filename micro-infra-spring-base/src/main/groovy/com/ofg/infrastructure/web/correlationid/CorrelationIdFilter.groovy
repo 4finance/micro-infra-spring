@@ -1,7 +1,9 @@
 package com.ofg.infrastructure.web.correlationid
 
 import com.google.common.base.Function
+import com.google.common.base.Optional as GOptional
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder
+import com.ofg.infrastructure.correlationid.UuidGenerator
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.slf4j.MDC
@@ -12,7 +14,6 @@ import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import java.util.regex.Pattern
-import com.google.common.base.Optional as GOptional
 
 import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
 import static org.springframework.util.StringUtils.hasText
@@ -35,12 +36,15 @@ class CorrelationIdFilter extends OncePerRequestFilter {
             ~/\/api-docs.*|\/autoconfig|\/configprops|\/dump|\/info|\/metrics.*|\/mappings|\/trace|\/swagger.*|.*\.png|.*\.css|.*\.js|.*\.html/
 
     private final GOptional<Pattern> skipCorrId
+    private final UuidGenerator uuidGenerator
 
     CorrelationIdFilter() {
+        this.uuidGenerator = new UuidGenerator()
         this.skipCorrId = GOptional.absent()
     }
 
-    CorrelationIdFilter(Pattern skipCorrId) {
+    CorrelationIdFilter(UuidGenerator uuidGenerator, Pattern skipCorrId) {
+        this.uuidGenerator = uuidGenerator
         this.skipCorrId = GOptional.of(skipCorrId)
     }
 
@@ -81,7 +85,7 @@ class CorrelationIdFilter extends OncePerRequestFilter {
     }
 
     private String createNewCorrIdIfEmpty() {
-        String currentCorrId = UUID.randomUUID().toString()
+        String currentCorrId = uuidGenerator.create()
         MDC.put(CORRELATION_ID_HEADER, currentCorrId)
         log.debug("Generating new correlationId: " + currentCorrId)
         return currentCorrId

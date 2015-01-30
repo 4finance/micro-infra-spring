@@ -1,11 +1,12 @@
 package com.ofg.infrastructure.scheduling
 
+import com.ofg.infrastructure.web.correlationid.CorrelationIdConfiguration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
-@ContextConfiguration(classes = [TaskSchedulingConfiguration, ScheduledBeanConfiguration])
+@ContextConfiguration(classes = [TaskSchedulingConfiguration, ScheduledBeanConfiguration, CorrelationIdConfiguration])
 class CorrelationIdOnScheduledMethodSpec extends Specification {
 
     @Autowired TestBeanWithScheduledMethod beanWithScheduledMethod

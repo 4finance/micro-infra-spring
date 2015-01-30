@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.web.correlationid
 
+import com.ofg.infrastructure.correlationid.UuidGenerator
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -13,7 +14,7 @@ import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATI
 @Unroll
 class CorrelationIdFilterSkipPatternTest extends Specification {
 
-    CorrelationIdFilter filter = new CorrelationIdFilter(CorrelationIdFilter.DEFAULT_SKIP_PATTERN)
+    CorrelationIdFilter filter = new CorrelationIdFilter(Stub(UuidGenerator), CorrelationIdFilter.DEFAULT_SKIP_PATTERN)
 
     def 'should skip meaningless URIs like #uri'() {
         given:

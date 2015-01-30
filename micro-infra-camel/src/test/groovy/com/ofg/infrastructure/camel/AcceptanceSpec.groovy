@@ -2,6 +2,7 @@ package com.ofg.infrastructure.camel
 
 import com.ofg.infrastructure.camel.config.CamelRouteAsBeanConfiguration
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder
+import com.ofg.infrastructure.web.correlationid.CorrelationIdConfiguration
 import org.apache.camel.model.ModelCamelContext
 import org.apache.camel.model.RouteDefinition
 import spock.lang.AutoCleanup
@@ -18,7 +19,7 @@ import spock.lang.Specification
 import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
 
 @Slf4j
-@ContextConfiguration(classes = [CamelRouteAsBeanConfiguration.class])
+@ContextConfiguration(classes = [CamelRouteAsBeanConfiguration, CorrelationIdConfiguration])
 class AcceptanceSpec extends Specification {
 
     @Autowired ModelCamelContext camelContext

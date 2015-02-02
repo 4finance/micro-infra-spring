@@ -11,7 +11,6 @@ import groovy.util.logging.Slf4j
 import org.kohsuke.args4j.CmdLineException
 import org.kohsuke.args4j.CmdLineParser
 import org.kohsuke.args4j.Option
-import org.kohsuke.args4j.spi.ExplicitBooleanOptionHandler
 
 import static org.apache.commons.lang.StringUtils.isNotBlank
 import static org.kohsuke.args4j.OptionHandlerFilter.ALL
@@ -47,9 +46,6 @@ class StubRunner implements StubRunning {
 
     @Option(name = "-n", aliases = ['--serviceName'], usage = "Name of the service for which the project should be run (e.g. 'com/service/name')")
     private String serviceName
-
-    @Option(name = "-uz", aliases = ['--useZookeeperDepResolution'], usage = "Switch to use Zookeeper server to resolve dependencies of the service and run stubs for them", handler = ExplicitBooleanOptionHandler)
-    private boolean useZookeeperDepResolution = true
 
     private final Arguments arguments
     private final StubRegistry stubRegistry
@@ -114,7 +110,7 @@ class StubRunner implements StubRunning {
     void runStubs() {
         zookeeperServer.start()
         AvailablePortScanner portScanner = new AvailablePortScanner(arguments.minPortValue, arguments.maxPortValue)
-        Collection<ProjectMetadata> projects = resolveProjects(stubRepository)
+        Collection<ProjectMetadata> projects = resolveProjects()
         StubRunnerExecutor localStubRunner = new StubRunnerExecutor(portScanner, stubRegistry)
         stubRunner.set(localStubRunner)
         localStubRunner.runStubs(stubRepository, projects)
@@ -125,18 +121,13 @@ class StubRunner implements StubRunning {
         return stubRunner.get().getStubUrlByRelativePath(relativePath)
     }
 
-    private Collection<ProjectMetadata> resolveProjects(StubRepository repository) {
+    private Collection<ProjectMetadata> resolveProjects() {
         if (arguments.projects) {
             return arguments.projects
-        } else if (arguments.projectRelativePath) {
-            File metadata = new File(repository.getProjectMetadataLocation(arguments.projectRelativePath))
-            return ProjectMetadataResolver.resolveFromMetadata(metadata)
-        } else if (useZookeeperDepResolution) {
+        } else {
             String name = serviceName ? serviceName : arguments.projectRelativePath
             String ctx = context ? context : arguments.context
             return ProjectMetadataResolver.resolveFromZookeeper(name, ctx, zookeeperServer)
-        } else {
-            return ProjectMetadataResolver.resolveAllProjectsFromRepository(repository, arguments.context)
         }
     }
 

@@ -9,7 +9,8 @@ function dumpCurrentMicroInfraSpringVersionToFile {
 function cloneAndDoBuild {
 
     echo Checking out and building $1 with micro-infra-spring `cat ~/.microInfraSpringCurrentVersion.txt`
-    git clone https://github.com/4finance/"$1".git
+    # TODO: Verify depth=1 with the second branch
+    git clone --depth=1 https://github.com/4finance/"$1".git
     cd "$1"
     echo "microInfraSpringVersion="`cat ~/.microInfraSpringCurrentVersion.txt` >> gradle.properties
     cat gradle.properties

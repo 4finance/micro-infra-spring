@@ -1,6 +1,7 @@
 # Before submitting pull request
 
-* Your branch should be named `issues/XYZ`, where `XYZ` is an issue number on GitHub. When your pull request is not related to any issue, branch name is arbitrary
+* Your branch should be named `issues/XYZ` (or `issues/XYZ-shortDesc`), where `XYZ` is an issue number on GitHub. When your pull request is not related to any issue, branch name is arbitrary
+* It is important to put meaningful description (in addition to issue number) in a pull request name
 * Run full build:
 
         ./gradlew clean build

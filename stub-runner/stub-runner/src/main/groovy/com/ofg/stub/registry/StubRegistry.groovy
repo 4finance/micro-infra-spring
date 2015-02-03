@@ -1,15 +1,11 @@
 package com.ofg.stub.registry
 
+import com.ofg.infrastructure.discovery.InstanceDetails
 import com.ofg.stub.server.StubServer
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.util.logging.Slf4j
-import org.apache.commons.lang.StringUtils
-import org.apache.curator.RetryPolicy
 import org.apache.curator.framework.CuratorFramework
-import org.apache.curator.framework.CuratorFrameworkFactory
-import org.apache.curator.retry.RetryNTimes
-import org.apache.curator.test.TestingServer
 import org.apache.curator.x.discovery.ServiceDiscovery
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
 import org.apache.curator.x.discovery.ServiceInstance
@@ -47,7 +43,7 @@ class StubRegistry {
     @PackageScope
     static ServiceDiscovery serviceDiscoveryFor(StubServer stubServer, CuratorFramework client) {
         ServiceInstance serviceInstance = serviceInstanceOf(stubServer)
-        return ServiceDiscoveryBuilder.builder(Void)
+        return ServiceDiscoveryBuilder.builder(InstanceDetails)
                 .basePath(stubServer.projectMetadata.context)
                 .client(client)
                 .thisInstance(serviceInstance)

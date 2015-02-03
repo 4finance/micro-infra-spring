@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.base
 
+import com.ofg.infrastructure.discovery.InstanceDetails
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
@@ -39,7 +40,7 @@ class SpecWithZookeper extends Specification {
                 .build()
         curatorFramework = CuratorFrameworkFactory.newClient(server.connectString, new ExponentialBackoffRetry(20, 20, 500))
         curatorFramework.start()
-        serviceDiscovery = ServiceDiscoveryBuilder.builder(Void)
+        serviceDiscovery = ServiceDiscoveryBuilder.builder(InstanceDetails)
                 .basePath(this.serviceConfigurationResolver.basePath)
                 .client(curatorFramework)
                 .thisInstance(this.serviceInstance)

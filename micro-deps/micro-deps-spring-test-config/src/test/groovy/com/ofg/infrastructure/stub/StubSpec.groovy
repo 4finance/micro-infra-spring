@@ -50,7 +50,7 @@ class StubSpec extends Specification {
             predefinedPongInteraction()
             simulatedSinglePongInteraction()
         when:
-            Stub stub = new Stub(configurationResolver, stubRunning)
+            Stubs stub = new Stubs(configurationResolver, stubRunning)
             stub.of(PONG).verifyThat(expectedRequest())
         then:
             noExceptionThrown()
@@ -62,7 +62,7 @@ class StubSpec extends Specification {
         given:
             predefinedPongInteraction()
         when:
-            Stub stub = new Stub(configurationResolver, stubRunning)
+            Stubs stub = new Stubs(configurationResolver, stubRunning)
             stub.of(PONG).verifyThat(expectedRequest())
         then:
             thrown(VerificationException)
@@ -75,7 +75,7 @@ class StubSpec extends Specification {
             predefinedPongInteraction()
             multiplePongInteractions(3)
         when:
-            Stub stub = new Stub(configurationResolver, stubRunning)
+            Stubs stub = new Stubs(configurationResolver, stubRunning)
             stub.of(PONG).verifyThat(3, expectedRequest())
         then:
             noExceptionThrown()
@@ -89,7 +89,7 @@ class StubSpec extends Specification {
             predefinedPongInteraction()
             multiplePongInteractions(3)
         when:
-            Stub stub = new Stub(configurationResolver, stubRunning)
+            Stubs stub = new Stubs(configurationResolver, stubRunning)
             stub.of(PONG).verifyThat(2, expectedRequest())
         then:
             thrown(VerificationException)
@@ -103,7 +103,7 @@ class StubSpec extends Specification {
 
     def 'should throw exception for unknown collaborator name'() {
         given:
-            Stub stub = new Stub(configurationResolver, stubRunning)
+            Stubs stub = new Stubs(configurationResolver, stubRunning)
         when:
             stub.of(UNKOWN_COLLABORATOR)
         then:
@@ -115,7 +115,7 @@ class StubSpec extends Specification {
 
     def 'should throw exception for missing stub URL of well-known collaborator name'() {
         given:
-            Stub stub = new Stub(configurationResolver, stubRunning)
+            Stubs stub = new Stubs(configurationResolver, stubRunning)
         when:
             stub.of(PING)
         then:

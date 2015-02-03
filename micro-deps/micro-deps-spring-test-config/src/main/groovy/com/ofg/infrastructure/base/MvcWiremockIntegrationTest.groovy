@@ -6,6 +6,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.ofg.infrastructure.discovery.web.HttpMockServer
 import com.ofg.infrastructure.discovery.web.MockServerConfiguration
 import com.ofg.infrastructure.stub.Stub
+import com.ofg.infrastructure.stub.Stubs
 import groovy.transform.CompileStatic
 import org.junit.Before
 import org.junit.runner.RunWith
@@ -34,7 +35,7 @@ abstract class MvcWiremockIntegrationTest extends MvcIntegrationTest {
 
     WireMock wireMock
     @Autowired protected HttpMockServer httpMockServer
-    @Autowired protected Stub stub
+    @Autowired protected Stubs stubs
 
     @Before
     void setup() {
@@ -47,12 +48,12 @@ abstract class MvcWiremockIntegrationTest extends MvcIntegrationTest {
         wireMock.register(mapping.willReturn(response))
     }
 
-    protected WireMock stubOf(String collaboratorName) {
-        return stub.of(collaboratorName)
+    protected Stub stubOf(String collaboratorName) {
+        return stubs.of(collaboratorName)
     }
 
     protected void cleanup() {
-        stub.resetAll()
+        stubs.resetAll()
     }
     
 }

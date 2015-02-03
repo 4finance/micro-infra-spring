@@ -21,26 +21,26 @@ import org.springframework.test.context.ContextConfiguration
 class CollaboratorStubIntegrationSpec extends MvcWiremockIntegrationSpec {
 
     @Autowired StubRunning stubRunning
-    final String stubName = 'correlator'
-    final String stubPath = "com/ofg/$stubName"
+    static final String STUB_NAME = 'correlator'
+    static final String STUB_PATH = "com/ofg/$STUB_NAME"
 
     def 'should verify interaction with stub'() {
         given:
             simulatedInteractionWithStub()
         expect:
-            stubOf(stubName).verifyThat(expectedRequest())
+            stubOf(STUB_NAME).verifyThat(expectedRequest())
     }
 
     private void simulatedInteractionWithStub() {
-        URL stubUrl = stubRunning.findStubUrlByRelativePath(stubPath).get()
+        URL stubUrl = stubRunning.findStubUrlByRelativePath(STUB_PATH).get()
         def http = new HTTPBuilder(stubUrl)
-        http.get(path: "/$stubName")
+        http.get(path: "/$STUB_NAME")
         http.shutdown()
     }
 
     private RequestPatternBuilder expectedRequest() {
         def matchingPongEndpoint = new UrlMatchingStrategy()
-        matchingPongEndpoint.setUrlPath("/$stubName")
+        matchingPongEndpoint.setUrlPath("/$STUB_NAME")
         return new RequestPatternBuilder(RequestMethod.GET, matchingPongEndpoint)
     }
 

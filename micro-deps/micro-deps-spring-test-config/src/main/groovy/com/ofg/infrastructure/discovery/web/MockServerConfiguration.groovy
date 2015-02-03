@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.discovery.web
 
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
-import com.ofg.infrastructure.stub.Stub
+import com.ofg.infrastructure.stub.Stubs
 import com.ofg.stub.StubRunning
 import com.ofg.stub.server.AvailablePortScanner
 import groovy.transform.CompileStatic
@@ -33,8 +33,8 @@ class MockServerConfiguration {
     }
 
     @Bean(destroyMethod = 'shutdown')
-    Stub stub(ServiceConfigurationResolver configurationResolver, StubRunning stubRunning) {
-        return new Stub(configurationResolver, stubRunning)
+    Stubs stubs(ServiceConfigurationResolver configurationResolver, StubRunning stubRunning) {
+        return new Stubs(configurationResolver, stubRunning)
     }
 
 }

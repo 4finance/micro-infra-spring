@@ -18,7 +18,7 @@ class SpecWithZookeper extends Specification {
 
     TestingServer server
     ServiceConfigurationResolver serviceConfigurationResolver
-    ServiceInstance<Void> serviceInstance
+    ServiceInstance<InstanceDetails> serviceInstance
     CuratorFramework curatorFramework
     ServiceDiscovery serviceDiscovery
     

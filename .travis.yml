@@ -3,6 +3,8 @@ before_install:
   - "export JAVA_OPTS='-Xmx768m -XX:MaxPermSize=384m'"
   - "echo $GRADLE_OPTS"
 #  - "export GRADLE_OPTS='-Dorg.gradle.daemon=true'"
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
 
 install:
 - ./gradlew assemble --stacktrace

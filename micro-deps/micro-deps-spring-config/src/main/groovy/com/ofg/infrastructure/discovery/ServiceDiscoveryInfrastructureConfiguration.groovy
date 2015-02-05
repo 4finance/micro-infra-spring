@@ -1,5 +1,4 @@
 package com.ofg.infrastructure.discovery
-
 import com.ofg.config.BasicProfiles
 import groovy.transform.CompileStatic
 import org.apache.curator.framework.CuratorFramework
@@ -15,9 +14,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
-
-import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.PATH
-
 /**
  * Class holding configuration to Zookeeper server, Zookeeper service instance and to Curator framework.
  *
@@ -68,7 +64,6 @@ class ServiceDiscoveryInfrastructureConfiguration {
                                         .address(addressProvider.host)
                                         .port(addressProvider.port)
                                         .name(serviceConfigurationResolver.microserviceName)
-                                        .payload(instanceDetails(serviceConfigurationResolver))
                                         .build()
     }
 
@@ -77,17 +72,11 @@ class ServiceDiscoveryInfrastructureConfiguration {
                                       ServiceInstance serviceInstance,
                                       ServiceConfigurationResolver serviceConfigurationResolver) {
         return ServiceDiscoveryBuilder
-                .builder(InstanceDetails)
+                .builder(Void)
                 .basePath('/' + serviceConfigurationResolver.basePath)
                 .client(curatorFramework)
                 .thisInstance(serviceInstance)
                 .build()
     }
 
-    private InstanceDetails instanceDetails(ServiceConfigurationResolver configurationResolver) {
-        List<String> dependenciesList = configurationResolver.dependencies.collect { entry ->
-            entry.value[PATH] as String
-        }
-        return new InstanceDetails(dependenciesList)
-    }
 }

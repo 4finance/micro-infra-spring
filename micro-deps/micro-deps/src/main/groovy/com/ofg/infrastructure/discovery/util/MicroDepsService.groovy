@@ -1,6 +1,5 @@
 package com.ofg.infrastructure.discovery.util
 
-import com.ofg.infrastructure.discovery.InstanceDetails
 import com.google.common.annotations.VisibleForTesting
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
@@ -17,8 +16,6 @@ import org.apache.curator.x.discovery.ServiceDiscovery
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
 import org.apache.curator.x.discovery.ServiceInstance
 import org.apache.curator.x.discovery.UriSpec
-
-import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.*
 
 /**
  * Class that registers microservice in Zookeeper server and enables its discovery using Curator framework.
@@ -58,23 +55,15 @@ class MicroDepsService {
                 .address(microserviceUrl)
                 .port(microservicePort)
                 .name(configurationResolver.microserviceName)
-                .payload(instanceDetails())
                 .build()
         serviceDiscovery = ServiceDiscoveryBuilder
-                .builder(InstanceDetails)
+                .builder(Void)
                 .basePath(configurationResolver.basePath)
                 .client(curatorFramework)
                 .thisInstance(serviceInstance)
                 .build()
         dependencyWatcher = new DependencyWatcher(configurationResolver.dependencies, serviceDiscovery, new DefaultDependencyPresenceOnStartupVerifier())
         serviceResolver = new ZookeeperServiceResolver(configurationResolver, serviceDiscovery, curatorFramework, new ProviderStrategyFactory())
-    }
-
-    private InstanceDetails instanceDetails() {
-        List<String> dependenciesList = configurationResolver.dependencies.collect { entry ->
-            entry.value[PATH] as String
-        }
-        return new InstanceDetails(dependenciesList)
     }
 
     void registerDependencyStateChangeListener(DependencyWatcherListener listener) {

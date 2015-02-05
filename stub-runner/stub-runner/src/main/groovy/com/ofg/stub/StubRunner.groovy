@@ -1,8 +1,6 @@
 package com.ofg.stub
-
 import com.google.common.base.Optional
 import com.ofg.stub.mapping.ProjectMetadata
-import com.ofg.stub.mapping.ProjectMetadataResolver
 import com.ofg.stub.mapping.StubRepository
 import com.ofg.stub.registry.StubRegistry
 import com.ofg.stub.server.AvailablePortScanner
@@ -125,9 +123,7 @@ class StubRunner implements StubRunning {
         if (arguments.projects) {
             return arguments.projects
         } else {
-            String name = serviceName ? serviceName : arguments.projectRelativePath
-            String ctx = context ? context : arguments.context
-            return ProjectMetadataResolver.resolveFromZookeeper(name, ctx, zookeeperServer)
+            throw new UnsupportedOperationException("Zookeeper based dependency resolution is blocked by https://github.com/4finance/micro-infra-spring/issues/253")
         }
     }
 

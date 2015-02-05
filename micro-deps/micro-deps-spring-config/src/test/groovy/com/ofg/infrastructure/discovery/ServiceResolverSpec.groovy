@@ -39,7 +39,7 @@ class ServiceResolverSpec extends Specification {
                     .port(8030)
                     .name(it.key)
                     .build()
-            ServiceDiscoveryBuilder.builder(InstanceDetails).basePath(serviceConfigurationResolver.basePath).client(curatorFramework).thisInstance(serviceInstance).build().start()
+            ServiceDiscoveryBuilder.builder(Void).basePath(serviceConfigurationResolver.basePath).client(curatorFramework).thisInstance(serviceInstance).build().start()
         }
     }
 

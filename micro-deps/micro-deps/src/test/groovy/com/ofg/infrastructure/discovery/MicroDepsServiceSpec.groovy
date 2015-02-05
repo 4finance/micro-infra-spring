@@ -10,9 +10,6 @@ import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
 import org.apache.curator.retry.RetryNTimes
 import org.apache.curator.test.TestingServer
-import org.apache.curator.x.discovery.ServiceDiscovery
-import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
-import org.apache.curator.x.discovery.ServiceProvider
 import spock.lang.AutoCleanup
 import spock.lang.Specification
 
@@ -67,32 +64,6 @@ class MicroDepsServiceSpec extends Specification {
         server = new TestingServer()
         curatorFramework = CuratorFrameworkFactory.newClient(server.connectString, RETRY_POLICY)
         curatorFramework.start()
-    }
-
-    def 'should register dependencies of a service as payload'() {
-        given:
-            MicroDepsService testService =
-                    new MicroDepsService(server.connectString, "pl", "microUrl", 8866, MicroserviceConfiguration.FLAT_CONFIGURATION).start()
-        when:
-            CuratorFramework curatorFramework = CuratorFrameworkFactory.newClient(server.connectString, RETRY_POLICY)
-            curatorFramework.start()
-            ServiceDiscovery discovery = ServiceDiscoveryBuilder.builder(InstanceDetails)
-                    .basePath('/pl')
-                    .client(curatorFramework)
-                    .build()
-            discovery.start()
-            ServiceProvider serviceProvider = discovery.serviceProviderBuilder().serviceName('com/ofg/service').build()
-            serviceProvider.start()
-            InstanceDetails payload = serviceProvider.instance.payload
-        then:
-            payload.dependencies.size() == 2
-            payload.dependencies.contains('com/ofg/pong')
-            payload.dependencies.contains('com/ofg/ping')
-        cleanup:
-            serviceProvider?.close()
-            discovery?.close()
-            testService?.stop()
-            curatorFramework?.close()
     }
 
     def "should setup service discovery properly"() {

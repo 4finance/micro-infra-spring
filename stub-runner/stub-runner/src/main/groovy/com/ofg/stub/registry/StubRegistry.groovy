@@ -1,6 +1,5 @@
 package com.ofg.stub.registry
 
-import com.ofg.infrastructure.discovery.InstanceDetails
 import com.ofg.stub.server.StubServer
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -43,7 +42,7 @@ class StubRegistry {
     @PackageScope
     static ServiceDiscovery serviceDiscoveryFor(StubServer stubServer, CuratorFramework client) {
         ServiceInstance serviceInstance = serviceInstanceOf(stubServer)
-        return ServiceDiscoveryBuilder.builder(InstanceDetails)
+        return ServiceDiscoveryBuilder.builder(Void)
                 .basePath(stubServer.projectMetadata.context)
                 .client(client)
                 .thisInstance(serviceInstance)

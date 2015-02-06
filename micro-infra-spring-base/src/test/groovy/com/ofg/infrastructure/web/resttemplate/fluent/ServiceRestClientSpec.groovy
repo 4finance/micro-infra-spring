@@ -258,7 +258,7 @@ class ServiceRestClientSpec extends Specification {
             thrown(RestClientException)
     }
 
-    def 'should use hystrix callback when provided'() {
+    def 'should use hystrix fallback when provided instead of throwing unwrapped exception'() {
         given:
             HystrixCommand.Setter circuitBreaker = HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("Group"))
                     .andCommandKey(HystrixCommandKey.Factory.asKey("Command"))
@@ -277,6 +277,7 @@ class ServiceRestClientSpec extends Specification {
                     .ignoringResponse()
 
         then:
+            notThrown(RestClientException)
             1 * fallbackClosure.call()
     }
 

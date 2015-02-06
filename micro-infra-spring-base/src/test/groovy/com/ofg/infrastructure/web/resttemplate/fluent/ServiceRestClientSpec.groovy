@@ -11,6 +11,8 @@ import com.ofg.infrastructure.discovery.ServicePath
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.discovery.ServiceUnavailableException
 import org.springframework.http.HttpEntity
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestOperations
 import spock.lang.AutoCleanup
@@ -254,6 +256,28 @@ class ServiceRestClientSpec extends Specification {
 
         then:
             thrown(RestClientException)
+    }
+
+    def 'should use hystrix callback when provided'() {
+        given:
+            HystrixCommand.Setter circuitBreaker = HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("Group"))
+                    .andCommandKey(HystrixCommandKey.Factory.asKey("Command"))
+            Closure<ResponseEntity<String>> fallbackClosure = Mock()
+
+        and:
+            restOperations.exchange(_, GET, _ as HttpEntity, _ as Class) >> {
+                throw new RestClientException("Simulated A")
+            }
+        when:
+            serviceRestClient
+                    .forExternalService()
+                    .get()
+                    .withCircuitBreaker(circuitBreaker, fallbackClosure)
+                    .onUrl(SOME_SERVICE_URL)
+                    .ignoringResponse()
+
+        then:
+            1 * fallbackClosure.call()
     }
 
     def 'should not wrap HTTP call inside Hystrix command if not requested'() {

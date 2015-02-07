@@ -53,6 +53,10 @@ interface HttpMethod<U, T> {
      * .withCircuitBreaker(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("Group"))
      *      .andCommandKey(HystrixCommandKey.Factory.asKey("Command")))
      * </code>
+     *
+     * @param setter
+     *      Fluent interface for HystrixCommand constructor arguments
+     *
      */
     HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter)
 
@@ -64,6 +68,11 @@ interface HttpMethod<U, T> {
      * .withCircuitBreaker(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("Group"))
      *      .andCommandKey(HystrixCommandKey.Factory.asKey("Command")), {return new ResponseEntity<String>("service unavailable", HttpStatus.METHOD_FAILURE)})
      * </code>
+     *
+     * @param setter
+     *      Fluent interface for HystrixCommand constructor arguments
+     * @param fallback
+     *      @see HystrixCommand#getFallback()
      */
-    HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter, Closure closure)
+    HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter, Closure fallback)
 }

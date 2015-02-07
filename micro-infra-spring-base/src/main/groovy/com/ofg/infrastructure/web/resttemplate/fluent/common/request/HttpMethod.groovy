@@ -71,8 +71,8 @@ interface HttpMethod<U, T> {
      *
      * @param setter
      *      Fluent interface for HystrixCommand constructor arguments
-     * @param fallback
+     * @param hystrixFallback
      *      @see HystrixCommand#getFallback()
      */
-    HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter, Closure fallback)
+    HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter, Closure hystrixFallback)
 }

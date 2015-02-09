@@ -23,14 +23,13 @@ class AvailablePortScanner {
     }
 
     public <T> T tryToExecuteWithFreePort(Closure<T> closure) {
-        int counter = maxRetryCount
-        while (--counter > 0) {
+        for (i in (1..maxRetryCount)) {
             try {
                 int portToScan = RandomUtils.nextInt(maxPortNumber - minPortNumber) + minPortNumber
                 checkIfPortIsAvailable(portToScan)
                 return executeLogicForAvailablePort(portToScan, closure)
             } catch (Exception exception) {
-                log.debug("Failed to execute closure (counter: $counter)", exception)
+                log.debug("Failed to execute closure (try: $i/$maxRetryCount)", exception)
             }
         }
         throw new NoPortAvailableException(minPortNumber, maxPortNumber)

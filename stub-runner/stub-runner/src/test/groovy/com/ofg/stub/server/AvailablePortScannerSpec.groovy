@@ -14,9 +14,10 @@ class AvailablePortScannerSpec extends Specification {
         given:
             AvailablePortScanner portScanner = new AvailablePortScanner(MIN_PORT, MAX_PORT)
         when:
-            portScanner.tryToExecuteWithFreePort {}
+            int usedPort = portScanner.tryToExecuteWithFreePort { int port -> port }
         then:
             noExceptionThrown()
+            usedPort == MIN_PORT
     }
 
     def 'should throw exception when free port number cannot be found'() {
@@ -47,5 +48,4 @@ class AvailablePortScannerSpec extends Specification {
             MAX_PORT | MIN_PORT
             MIN_PORT | MIN_PORT
     }
-
 }

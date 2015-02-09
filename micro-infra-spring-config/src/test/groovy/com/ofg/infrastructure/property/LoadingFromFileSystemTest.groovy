@@ -50,12 +50,12 @@ class LoadingFromFileSystemTest extends AbstractIntegrationTest {
 
     def 'should override property from country-specific .properties file'() {
         expect:
-            myBean.globalDefaultKey == 'overriden default value'
+            myBean.globalDefaultKey == 'overridden default value'
     }
 
     def 'should override property from country-specific .yaml file'() {
         expect:
-            myBean.globalYamlDefault == 'overriden default yaml value'
+            myBean.globalYamlDefault == 'overridden default yaml value'
     }
 
     def '.yaml has priority over .properties'() {

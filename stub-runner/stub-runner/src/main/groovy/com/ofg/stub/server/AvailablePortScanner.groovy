@@ -1,5 +1,7 @@
 package com.ofg.stub.server
+
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang.math.RandomUtils
@@ -8,24 +10,27 @@ import org.apache.commons.lang.math.RandomUtils
 @Slf4j
 class AvailablePortScanner {
 
-    public static final int MAX_RETRY_COUNT = 1000
+    private static final int MAX_RETRY_COUNT = 1000
+
     private final int minPortNumber
     private final int maxPortNumber
+    private final int maxRetryCount
 
-    AvailablePortScanner(int minPortNumber, int maxPortNumber) {
+    AvailablePortScanner(int minPortNumber, int maxPortNumber, int maxRetryCount = MAX_RETRY_COUNT) {
         this.minPortNumber = minPortNumber
         this.maxPortNumber = maxPortNumber
+        this.maxRetryCount = maxRetryCount
     }
 
     public <T> T tryToExecuteWithFreePort(Closure<T> closure) {
-        int counter = MAX_RETRY_COUNT
+        int counter = maxRetryCount
         while (--counter > 0) {
             try {
                 int portToScan = RandomUtils.nextInt(maxPortNumber - minPortNumber) + minPortNumber
                 checkIfPortIsAvailable(portToScan)
                 return executeLogicForAvailablePort(portToScan, closure)
             } catch (Exception exception) {
-                log.debug("Failed to execute closure", exception)
+                log.debug("Failed to execute closure (counter: $counter)", exception)
             }
         }
         throw new NoPortAvailableException(minPortNumber, maxPortNumber)
@@ -45,7 +50,8 @@ class AvailablePortScanner {
         }
     }
 
-    private static class NoPortAvailableException extends RuntimeException {
+    static class NoPortAvailableException extends RuntimeException {
+        @PackageScope
         NoPortAvailableException(int loweBound, int upperBound) {
             super("Could not find available port in range $loweBound:$upperBound")
         }

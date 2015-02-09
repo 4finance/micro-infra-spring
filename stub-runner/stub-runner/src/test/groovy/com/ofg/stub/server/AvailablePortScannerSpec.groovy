@@ -8,6 +8,7 @@ class AvailablePortScannerSpec extends Specification {
 
     private static final int MIN_PORT = 8989
     private static final int MAX_PORT = 8990
+    private static final int MAX_RETRY_COUNT_FOR_NEGATIVE_SCENARIOS = 2
 
     def 'should execute given closure with the next available port number'() {
         given:
@@ -23,7 +24,7 @@ class AvailablePortScannerSpec extends Specification {
             TestingServer server1 = new TestingServer(MIN_PORT, true)
             TestingServer server2 = new TestingServer(MAX_PORT, true)
         when:
-            new AvailablePortScanner(MIN_PORT, MAX_PORT).tryToExecuteWithFreePort {}
+            new AvailablePortScanner(MIN_PORT, MAX_PORT, MAX_RETRY_COUNT_FOR_NEGATIVE_SCENARIOS).tryToExecuteWithFreePort {}
         then:
             def ex = thrown(AvailablePortScanner.NoPortAvailableException)
             ex.message == "Could not find available port in range $MIN_PORT:$MAX_PORT"
@@ -35,7 +36,7 @@ class AvailablePortScannerSpec extends Specification {
     @Unroll("should throw exception for improper range [#minPort:#maxPort]")
     def 'should throw exception when improper range has been provided'() {
         given:
-            AvailablePortScanner portScanner = new AvailablePortScanner(minPort, maxPort)
+            AvailablePortScanner portScanner = new AvailablePortScanner(minPort, maxPort, MAX_RETRY_COUNT_FOR_NEGATIVE_SCENARIOS)
         when:
             portScanner.tryToExecuteWithFreePort {}
         then:

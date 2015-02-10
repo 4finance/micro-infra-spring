@@ -1,6 +1,5 @@
 package com.ofg.infrastructure
 
-import com.ofg.infrastructure.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
 import groovy.transform.TypeChecked
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

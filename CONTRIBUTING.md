@@ -4,7 +4,7 @@
 * It is important to put meaningful description (in addition to issue number) in a pull request name
 * Run full build:
 
-        ./gradlew clean build
+        $ ./gradlew clean build
 
 * Make sure you wrote unit tests, both for new features or bug fixes
 * Add JavaDoc when applicable
@@ -12,3 +12,20 @@
 * Be carefull when changing dependencies
 * You don't have to assign person and milestone
 * Document new features in [Wiki](https://github.com/4finance/micro-infra-spring/wiki), especially new [configuration properties](https://github.com/4finance/micro-infra-spring/wiki/Configuration) after they are merged
+
+# Rebasing your pull request
+You should prefer rebasing your pull request instead of merging it. Let's assume that you have
+a branch named `cool-feature`. Here are instructions needed to rebase your branch on top of master:
+
+        $ git checkout master
+        $ git pull
+        $ git checkout cool-feature
+        $ git rebase master
+        (Resolve conflicts if any.)
+        $ git push origin cool-feature -f
+        (Wait for Travis/Snap CI results, making sure your code isn't broken after rebase.)
+        $ git checkout master
+        $ git merge --ff-only cool-feature
+        $ git push origin master
+
+GitHub will detect automatically these operations and mark your pull request as merged.

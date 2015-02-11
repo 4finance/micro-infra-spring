@@ -34,7 +34,7 @@ class ServiceResolverSpec extends Specification {
 
     void setupStubs(ServiceConfigurationResolver serviceConfigurationResolver, CuratorFramework curatorFramework) {
         serviceConfigurationResolver.dependencies.each {
-            ServiceInstance<Void> serviceInstance = ServiceInstance.builder().uriSpec(new UriSpec("{scheme}://{address}:{port}/${it.value[PATH]}"))
+            ServiceInstance<InstanceDetails> serviceInstance = ServiceInstance.builder().uriSpec(new UriSpec("{scheme}://{address}:{port}/${it.value[PATH]}"))
                     .address('localhost')
                     .port(8030)
                     .name(it.key)

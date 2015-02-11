@@ -6,20 +6,21 @@ function dumpCurrentMicroInfraSpringVersionToFile {
     cat ~/.microInfraSpringCurrentVersion.txt
 }
 
-function cloneAndDoBuild {
+function updateMicroInfraSpringVersionInConfigurationFile {
 
-    echo Checking out and building $1 with micro-infra-spring `cat ~/.microInfraSpringCurrentVersion.txt`
-    # TODO: Verify depth=1 with the second branch
-    git clone --depth=1 https://github.com/4finance/"$1".git
-    cd "$1"
     echo "microInfraSpringVersion="`cat ~/.microInfraSpringCurrentVersion.txt` >> gradle.properties
     cat gradle.properties
-    ./gradlew check --stacktrace --continue
-    cd ..
 }
-
 
 set -e
 dumpCurrentMicroInfraSpringVersionToFile
-cloneAndDoBuild boot-microservice
-#cloneAndDoBuild boot-microservice-gui
+
+git clone https://github.com/4finance/boot-microservice.git
+cd boot-microservice
+updateMicroInfraSpringVersionInConfigurationFile
+./gradlew clean check --stacktrace --continue
+
+git reset --hard
+git checkout boot-microservice-gui
+updateMicroInfraSpringVersionInConfigurationFile
+./gradlew clean check --stacktrace --continue

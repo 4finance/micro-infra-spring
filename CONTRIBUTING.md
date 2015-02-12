@@ -29,3 +29,7 @@ a branch named `cool-feature`. Here are instructions needed to rebase your branc
         $ git push origin master
 
 GitHub will detect automatically these operations and mark your pull request as merged.
+
+**Note**. If you prefer to merge with --ff-only from GUI (when possible) go to GitHub [contact section](https://github.com/contact) and write about it. Sample message to copy/paste.
+
+> Hi. It would be useful to be able to optionally merge PRs without a merge commit from GUI (if there were no other commits to master in the meantime).

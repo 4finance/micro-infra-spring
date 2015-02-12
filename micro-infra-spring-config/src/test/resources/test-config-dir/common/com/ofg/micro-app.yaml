@@ -1,0 +1,9 @@
+common:
+  yaml:
+    key: common yaml value
+  default:
+    yaml:
+      key: common default yaml value
+custom:
+  common:
+    key: custom common yaml value

@@ -69,8 +69,8 @@ public class FileSystemLocator implements PropertySourceLocator {
         return composite;
     }
 
-    public File getConfigDir() {
-        return appCoordinates.getConfigFolder(propertiesFolder);
+    public ConfigLocations getConfigLocations() {
+        return appCoordinates.getConfigLocations(propertiesFolder);
     }
 
     private Map<String, Object> decrypt(Map<String, Object> sourceMap) {

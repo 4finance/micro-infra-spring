@@ -10,29 +10,24 @@ import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
+import java.nio.file.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
-import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
+import static java.nio.file.StandardWatchEventKinds.*;
 
 @ManagedResource
 public class FileSystemPoller {
 
     private static final Logger log = LoggerFactory.getLogger(FileSystemPoller.class);
 
-    private final Path configPath;
+    private final ConfigLocations configLocations;
     private final FileSystemLocator fileSystemLocator;
     private final ConfigurableEnvironment environment;
     private final RefreshScope refreshScope;
@@ -43,7 +38,7 @@ public class FileSystemPoller {
         this.fileSystemLocator = fileSystemLocator;
         this.environment = environment;
         this.refreshScope = refreshScope;
-        this.configPath = fileSystemLocator.getConfigDir().toPath();
+        this.configLocations = fileSystemLocator.getConfigLocations();
     }
 
     @PostConstruct
@@ -59,12 +54,29 @@ public class FileSystemPoller {
     }
 
     private void startWatcher() {
+        watcher = createWatchService();
+        List<Path> paths = configLocations.getConfigPaths();
+        for (Path path : paths) {
+            watchPathForChanges(path);
+        }
+    }
+
+    private WatchService createWatchService() {
         try {
-            watcher = FileSystems.getDefault().newWatchService();
-            configPath.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+            return FileSystems.getDefault().newWatchService();
         } catch (IOException e) {
-            final String msg = "Can't poll for configuration changes. Make sure your configuration folder is at " + configPath +
-                    ". See also: https://github.com/4finance/micro-infra-spring/wiki/Centralized-configuration-management";
+            throw new IllegalStateException("Cannot construct watch service", e);
+        }
+    }
+
+    private void watchPathForChanges(Path path) {
+        try {
+            path.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+        } catch (IOException e) {
+            final String msg = "Can't poll for configuration changes. Make sure your configuration folder is " +
+                    "at " + path +
+                    ". See also: https://github" +
+                    ".com/4finance/micro-infra-spring/wiki/Centralized-configuration-management";
             throw new IllegalStateException(msg, e);
         }
     }
@@ -75,15 +87,15 @@ public class FileSystemPoller {
     }
 
     @ManagedAttribute
-    public File getConfigPath() {
-        return configPath.toFile();
+    public ConfigLocations getConfigLocations() {
+        return configLocations;
     }
 
     private class PollerRunnable implements Runnable {
 
         @Override
         public void run() {
-            log.info("Started monitoring configuration directory for changes: {}", configPath);
+            log.info("Started monitoring configuration locations for changes: {}", configLocations);
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     waitForChanges();
@@ -94,6 +106,7 @@ public class FileSystemPoller {
                 log.error("Unexpected error, terminating", e);
             }
         }
+
         private void waitForChanges() throws InterruptedException {
             final WatchKey key = watcher.poll(10, TimeUnit.SECONDS);
             if (key != null) {

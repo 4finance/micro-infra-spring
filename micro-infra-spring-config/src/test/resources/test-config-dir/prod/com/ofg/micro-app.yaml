@@ -1,5 +1,10 @@
-global:
+env:
   yaml:
-    key: global yaml value
-    default: global default yaml value
-custom: yaml value
+    key: env yaml value
+common:
+  default:
+    yaml:
+      key: overridden env yaml value
+custom:
+  env:
+    key: custom env yaml value

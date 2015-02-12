@@ -16,6 +16,8 @@ public class AppCoordinates {
     public static final String CONFIG_FOLDER = "CONFIG_FOLDER";
     public static final String APP_ENV = "APP_ENV";
 
+    private static final String COMMON_DIR = "common";
+
     private final String environment;
     private final String applicationName;
     private final String countryCode;
@@ -39,9 +41,38 @@ public class AppCoordinates {
         this.countryCode = requireNonNull(countryCode);
     }
 
-    public File getConfigFolder(File rootFolder) {
+    public ConfigLocations getConfigLocations(File rootFolder) {
+        return new ConfigLocations(
+                getCommonConfigFolder(rootFolder),
+                getEnvConfigFolder(rootFolder),
+                getCountryConfigFolder(rootFolder)
+        );
+    }
+
+    private File getCommonConfigFolder(File rootFolder) {
+        File folder = new File(rootFolder, COMMON_DIR);
+        return addNameComponentsWithoutTheLastPartToFolder(folder);
+    }
+
+    private File getEnvConfigFolder(File rootFolder) {
         File folder = new File(rootFolder, environment);
+        return addNameComponentsWithoutTheLastPartToFolder(folder);
+    }
+
+    private File getCountryConfigFolder(File rootFolder) {
+        return new File(getEnvConfigFolder(rootFolder), countryCode);
+    }
+
+    /**
+     * It adds name components to folder but is skips last part of the name.
+     * For app name /com/ofg/micro-app, it adds only /com/ofg to a folder name.
+     *
+     * @param folder
+     * @return folder with added name components
+     */
+    private File addNameComponentsWithoutTheLastPartToFolder(File folder) {
         final String[] components = nameComponents();
+        // Skip last part of name
         for (int i = 0; i < components.length - 1; i++) {
             folder = new File(folder, components[i]);
         }
@@ -75,13 +106,21 @@ public class AppCoordinates {
 
     public List<File> getConfigFiles(File rootConfigFolder) {
         final String coreName = findBaseNameWithoutCountrySuffix(findBaseName());
-        final File root = getConfigFolder(rootConfigFolder);
-        final File regional = getRegionalConfigFolderFromAppConfigFolder(root);
+        final String countryName = getCountryName(coreName);
+
+        final ConfigLocations configLocations = getConfigLocations(rootConfigFolder);
+
         return Arrays.asList(
-                new File(root, coreName + ".properties"),
-                new File(root, coreName + ".yaml"),
-                new File(regional, coreName + "-" + countryCode + ".properties"),
-                new File(regional, coreName + "-" + countryCode + ".yaml"));
+                configLocations.commonPropertiesFile(coreName),
+                configLocations.commonYamlFile(coreName),
+                configLocations.envPropertiesFile(coreName),
+                configLocations.envYamlFile(coreName),
+                configLocations.countryPropertiesFile(countryName),
+                configLocations.countryYamlFile(countryName));
+    }
+
+    private String getCountryName(String coreName) {
+        return coreName + "-" + countryCode;
     }
 
     private String findBaseName() {
@@ -100,9 +139,5 @@ public class AppCoordinates {
         } else {
             return baseName;
         }
-    }
-
-    private File getRegionalConfigFolderFromAppConfigFolder(File appConfigFolder) {
-        return new File(appConfigFolder, countryCode);
     }
 }

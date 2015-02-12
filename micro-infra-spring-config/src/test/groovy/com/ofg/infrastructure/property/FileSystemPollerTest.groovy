@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration
 import spock.lang.AutoCleanup
 import spock.lang.IgnoreIf
 import spock.lang.Shared
+import spock.lang.Unroll
 import spock.util.concurrent.PollingConditions
 
 import javax.annotation.PostConstruct
@@ -18,6 +19,9 @@ import java.util.concurrent.atomic.AtomicInteger
 
 @IgnoreIf({ os.macOs }) //Due to problems with native file system poller implementation - https://github.com/4finance/micro-infra-spring/issues/119
 class FileSystemPollerTest extends AbstractIntegrationTest {
+
+    private static final String MICROSERVICE_NAME = 'micro-app'
+    private static final String PL_MICROSERVICE_NAME = MICROSERVICE_NAME + '-pl'
 
     @Shared
     @AutoCleanup
@@ -39,23 +43,33 @@ class FileSystemPollerTest extends AbstractIntegrationTest {
         poller = context.getBean(FileSystemPoller)
     }
 
-    def 'should reload configuration once when file system touched'() {
+    @Unroll
+    def 'should reload configuration once when file #configFile from config location with allowed name is touched'() {
         when:
-            oneConfigurationFileWasChanged("micro-app.yaml")
+            oneConfigurationFileWasChanged(configFile)
+
         then:
             conditions.eventually {
                 counter.value == old(counter.value) + 1
             }
             counter.value == old(counter.value) + 1
+
+        where:
+            configFile << [
+                    poller.getConfigLocations().commonPropertiesFile(MICROSERVICE_NAME),
+                    poller.getConfigLocations().commonYamlFile(MICROSERVICE_NAME),
+                    poller.getConfigLocations().envPropertiesFile(MICROSERVICE_NAME),
+                    poller.getConfigLocations().envYamlFile(MICROSERVICE_NAME),
+                    poller.getConfigLocations().countryPropertiesFile(PL_MICROSERVICE_NAME),
+                    poller.getConfigLocations().countryYamlFile(PL_MICROSERVICE_NAME)
+            ]
     }
 
-    private void oneConfigurationFileWasChanged(String configFile) {
-        File file = new File(poller.getConfigPath(), configFile)
-        assert file.exists()
-        file.setLastModified(System.currentTimeMillis())
+    private void oneConfigurationFileWasChanged(File configFile) {
+        assert configFile.exists()
+        configFile.setLastModified(System.currentTimeMillis())
     }
 }
-
 
 @Configuration
 @EnableAutoConfiguration

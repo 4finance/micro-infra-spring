@@ -53,7 +53,26 @@ interface HttpMethod<U, T> {
      * .withCircuitBreaker(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("Group"))
      *      .andCommandKey(HystrixCommandKey.Factory.asKey("Command")))
      * </code>
+     *
+     * @param setter
+     *      Fluent interface for HystrixCommand constructor arguments
+     *
      */
     HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter)
 
+    /**
+     * Adds Hystrix circuit breaker with fallback around every REST call.
+     *
+     * Example:
+     * <code>
+     * .withCircuitBreaker(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("Group"))
+     *      .andCommandKey(HystrixCommandKey.Factory.asKey("Command")), {return new ResponseEntity<String>("service unavailable", HttpStatus.METHOD_FAILURE)})
+     * </code>
+     *
+     * @param setter
+     *      Fluent interface for HystrixCommand constructor arguments
+     * @param hystrixFallback
+     *      @see HystrixCommand#getFallback()
+     */
+    HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter, Closure hystrixFallback)
 }

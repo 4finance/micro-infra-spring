@@ -71,4 +71,10 @@ trait MethodParamsApplier<M, EM, PM> implements HttpMethod<M, PM>, HttpEntitySen
         params.hystrix = setter
         return this
     }
+
+    @Override
+    HttpMethod<M, PM> withCircuitBreaker(HystrixCommand.Setter setter, Closure hystrixFallback) {
+        params.hystrixFallback = hystrixFallback
+        return withCircuitBreaker(setter)
+    }
 }

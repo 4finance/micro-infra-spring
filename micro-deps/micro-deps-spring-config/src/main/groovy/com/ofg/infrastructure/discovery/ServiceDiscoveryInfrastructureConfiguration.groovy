@@ -1,9 +1,10 @@
 package com.ofg.infrastructure.discovery
 import com.ofg.config.BasicProfiles
 import groovy.transform.CompileStatic
+import org.apache.curator.RetryPolicy
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
-import org.apache.curator.retry.RetryNTimes
+import org.apache.curator.retry.ExponentialBackoffRetry
 import org.apache.curator.test.TestingServer
 import org.apache.curator.x.discovery.ServiceDiscovery
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder
@@ -18,8 +19,9 @@ import org.springframework.context.annotation.Import
  * Class holding configuration to Zookeeper server, Zookeeper service instance and to Curator framework.
  *
  * All the beans are available only in the {@link BasicProfiles#PRODUCTION} profile.
- * 
+ *
  * @see CuratorFramework
+ * @see RetryPolicy
  * @see ServiceInstance
  * @see ServiceDiscovery
  */
@@ -28,11 +30,16 @@ import org.springframework.context.annotation.Import
 @Configuration
 class ServiceDiscoveryInfrastructureConfiguration {
 
+    @Bean
+    RetryPolicy exponentialBackoffRetry(@Value('${service.resolver.connection.retry.baseSleepMs:50}') int numberOfRetries,
+                                         @Value('${service.resolver.connection.retry.maxRetries:20}') int maxRetries,
+                                         @Value('${service.resolver.connection.retry.maxSleepMs:500}') int maxSleepMs) {
+        return new ExponentialBackoffRetry(50, 20, 500)
+    }
+
     @Bean(initMethod = 'start', destroyMethod = 'close')
-    CuratorFramework curatorFramework(ZookeeperConnector zookeeperConnector,
-                                      @Value('${service.resolver.connection.retry.times:5}') int numberOfRetries,
-                                      @Value('${service.resolver.connection.retry.wait:1000}') int sleepMsBetweenRetries) {
-        return CuratorFrameworkFactory.newClient(zookeeperConnector.serviceResolverUrl, new RetryNTimes(numberOfRetries, sleepMsBetweenRetries))
+    CuratorFramework curatorFramework(ZookeeperConnector zookeeperConnector, RetryPolicy retryPolicy) {
+        return CuratorFrameworkFactory.newClient(zookeeperConnector.serviceResolverUrl, retryPolicy)
     }
 
     @Bean

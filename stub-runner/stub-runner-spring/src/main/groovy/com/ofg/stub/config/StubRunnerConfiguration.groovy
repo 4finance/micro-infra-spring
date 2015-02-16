@@ -1,9 +1,7 @@
 package com.ofg.stub.config
+
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
-import com.ofg.stub.BatchStubRunner
-import com.ofg.stub.StubRunner
-import com.ofg.stub.StubRunnerFactory
-import com.ofg.stub.StubRunning
+import com.ofg.stub.*
 import groovy.grape.Grape
 import groovy.util.logging.Slf4j
 import org.apache.curator.test.TestingServer
@@ -11,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
+
+import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.PATH
 /**
  * Configuration that initializes a {@link BatchStubRunner} that runs {@link StubRunner} instance for each microservice's collaborator.
  *
@@ -53,8 +53,9 @@ class StubRunnerConfiguration {
      * @param minPortValue min port value of the Wiremock instance for the given collaborator
      * @param maxPortValue max port value of the Wiremock instance for the given collaborator
      * @param stubRepositoryRoot root URL from where the JAR with stub mappings will be downloaded
-     * @param stubsGroup group name of the dependency containing stub mappings
-     * @param stubsModule module name of the dependency containing stub mappings
+     * @param @Deprecated stubsGroup group name of the dependency containing stub mappings
+     * @param @Deprecated stubsModule module name of the dependency containing stub mappings
+     * @param stubsSuffix suffix for the jar containing stubs
      * @param skipLocalRepo avoids local repository in dependency resolution
      * @param useMicroserviceDefinitions use per microservice stub resolution rather than one jar for all microservices
      * @param testingServer test instance of Zookeeper
@@ -64,23 +65,20 @@ class StubRunnerConfiguration {
     StubRunning batchStubRunner(@Value('${stubrunner.port.range.min:10000}') Integer minPortValue,
                                 @Value('${stubrunner.port.range.max:15000}') Integer maxPortValue,
                                 @Value('${stubrunner.stubs.repository.root:http://nexus.4finance.net/content/repositories/Pipeline}') String stubRepositoryRoot,
-                                @Value('${stubrunner.stubs.group:com.ofg}') String stubsGroup,
-                                @Value('${stubrunner.stubs.module:stub-definitions}') String stubsModule,
+                                @Deprecated @Value('${stubrunner.stubs.group:com.ofg}') String stubsGroup,
+                                @Deprecated @Value('${stubrunner.stubs.module:stub-definitions}') String stubsModule,
+                                @Value('${stubrunner.stubs.suffix:stubs}') String stubsSuffx,
                                 @Value('${stubrunner.skip-local-repo:false}') boolean skipLocalRepo,
-                                @Value('${stubrunner.use-microservice-definitions:false}') boolean
-                                        useMicroserviceDefinitions,
+                                @Value('${stubrunner.use-microservice-definitions:false}') boolean useMicroserviceDefinitions,
                                 TestingServer testingServer,
                                 ServiceConfigurationResolver serviceConfigurationResolver) {
-        List<StubRunner> stubRunners
-        StubRunnerFactory stubRunnerFactory = new StubRunnerFactory(testingServer, serviceConfigurationResolver)
-                .withMinPortValue(minPortValue).withMaxPortValue(maxPortValue).withSkipLocalRepo(skipLocalRepo).withStubRepositoryRoot(stubRepositoryRoot)
-        if (!useMicroserviceDefinitions) {
-            stubRunnerFactory.withStubsGroup(stubsGroup).withStubsModule(stubsModule)
-            stubRunners = stubRunnerFactory.createStubsFromStubsModule()
-        } else {
-            stubRunners = stubRunnerFactory.createStubsFromServiceConfiguration()
+        StubRunnerOptions stubRunnerOptions = new StubRunnerOptions(minPortValue, maxPortValue, stubRepositoryRoot, stubsGroup, stubsModule, skipLocalRepo,
+                useMicroserviceDefinitions, testingServer.connectString, testingServer.port, stubsSuffx)
+        List<String> dependenciesPath = serviceConfigurationResolver.dependencies.collect { String alias, Map dependencyConfig ->
+            return dependencyConfig[PATH]
         }
-        return new BatchStubRunner(stubRunners)
+        Collaborators dependencies = new Collaborators(serviceConfigurationResolver.basePath, dependenciesPath)
+        return new BatchStubRunnerFactory(stubRunnerOptions, dependencies).buildBatchStubRunner()
     }
 
 

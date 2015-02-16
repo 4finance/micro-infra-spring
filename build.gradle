@@ -89,7 +89,6 @@ task addHashFile << {
     new File("commitHash.txt").withWriter { it << proc.in.text }
 }
 
-
 configure(emptySubprojects + rootProject) {
     apply plugin: 'base'
 }

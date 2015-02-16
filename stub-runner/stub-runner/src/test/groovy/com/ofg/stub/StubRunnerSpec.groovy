@@ -27,7 +27,8 @@ class StubRunnerSpec extends Specification {
 
     def argumentsWithProjectDefinition() {
         Collection<ProjectMetadata> projects = [new ProjectMetadata('bye', STUB_RELATIVE_PATH, 'pl')]
-        return new Arguments('src/test/resources/repository', '', ZOOKEEPER_PORT, MIN_PORT, MAX_PORT, '', '', projects)
+        StubRunnerOptions stubRunnerOptions = new StubRunnerOptions(minPortValue: MIN_PORT, maxPortValue: MAX_PORT, zookeeperPort: ZOOKEEPER_PORT)
+        return new Arguments(stubRunnerOptions, 'pl', 'src/test/resources/repository', '', projects)
     }
 
 }

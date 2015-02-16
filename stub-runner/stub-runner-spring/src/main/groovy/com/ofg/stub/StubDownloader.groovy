@@ -66,7 +66,7 @@ class StubDownloader {
         }
 
         private void failureHandler(String stubRepository, String reason, Exception cause) {
-            throw new DependencyResolutionException("Unable to open connection with stub repository [$stubRepository]. Reason: $reason", cause)
+            throw new DependencyResolutionException("Unable to resolve dependency in stub repository [$stubRepository]. Reason: $reason", cause)
         }
 
         private void ensureThatLatestVersionWillBePicked(URI resolvedUri) {
@@ -95,15 +95,15 @@ class StubDownloader {
         private DependencyResolver delegate = new RemoteDependencyResolver()
 
         URI resolveDependency(String stubRepositoryRoot, Map depToGrab) {
-            log.info("Resolving dependency ${depToGrab} location in local repository...")
-            URI location = resolveDependencyLocation(depToGrab)
-            if (location == null) {
+            try {
+                log.info("Resolving dependency ${depToGrab} location in local repository...")
+                return resolveDependencyLocation(depToGrab)
+            } catch (Exception e) { //Grape throws ordinary RuntimeException
                 log.warn("Unable to find dependency $depToGrab in local repository, trying $stubRepositoryRoot")
-                location = delegate.resolveDependency(stubRepositoryRoot, depToGrab)
+                log.debug("Unable to find dependency $depToGrab in local repository: ${e.getClass()}: ${e.message}")
+                return delegate.resolveDependency(stubRepositoryRoot, depToGrab)
             }
-            return location
         }
-
     }
 
     /**
@@ -132,7 +132,5 @@ class StubDownloader {
         DependencyResolutionException(String message, Throwable cause) {
             super(message, cause)
         }
-
     }
-
 }

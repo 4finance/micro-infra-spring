@@ -17,11 +17,9 @@
 You should prefer rebasing your pull request instead of merging it. Let's assume that you have
 a branch named `cool-feature`. Here are instructions needed to rebase your branch on top of master:
 
-        $ git checkout master
-        $ git pull
         $ git checkout cool-feature
-        $ git rebase master
-        (Resolve conflicts if any.)
+        $ git pull --rebase origin master
+        (Resolve conflicts if any. Squash commits if necessary.)
         $ git push origin cool-feature -f
         (Wait for Travis/Snap CI results, making sure your code isn't broken after rebase.)
         $ git checkout master

@@ -40,8 +40,9 @@ class MetricsAspect {
         String uriString = url.toString().replaceAll(/[{}]/, "")
         final URI uri = new URI(uriString)
         final String path = fixSpecialCharacters(uri.path)
-        int port = (uri.port > 0)? uri.port : 80
-        return trimDots("${PREFIX}.${uri.host}.${port}.${path}")
+        int port = (uri.port > 0) ? uri.port : 80
+        String host = uri.host?.replaceAll(/[\[\]]/, "")?.replaceAll("\\.","_")?.replaceAll(":+", "_")
+        return trimDots("${PREFIX}.${host}.${port}.${path}")
     }
 
     private static String fixSpecialCharacters(String value) {
@@ -55,6 +56,4 @@ class MetricsAspect {
         return trimTrailingCharacter(
                 trimLeadingCharacter(str, '.' as Character), '.' as Character)
     }
-
-
 }

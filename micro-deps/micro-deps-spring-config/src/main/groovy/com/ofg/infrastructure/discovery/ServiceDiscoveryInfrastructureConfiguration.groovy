@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.discovery
 import com.ofg.config.BasicProfiles
 import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 import org.apache.curator.RetryPolicy
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
@@ -28,6 +29,7 @@ import org.springframework.context.annotation.Import
 @CompileStatic
 @Import(ConsumerDrivenContractConfiguration)
 @Configuration
+@Slf4j
 class ServiceDiscoveryInfrastructureConfiguration {
 
     @Bean
@@ -78,6 +80,7 @@ class ServiceDiscoveryInfrastructureConfiguration {
     ServiceDiscovery serviceDiscovery(CuratorFramework curatorFramework, 
                                       ServiceInstance serviceInstance,
                                       ServiceConfigurationResolver serviceConfigurationResolver) {
+        log.info("Registering myself: $serviceInstance")
         return ServiceDiscoveryBuilder
                 .builder(Void)
                 .basePath('/' + serviceConfigurationResolver.basePath)

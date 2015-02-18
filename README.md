@@ -6,4 +6,3 @@ micro-infra-spring
 Sets up the whole Spring infrastructure stack that will turn your microservice into a beauty.
 
 Check out [the wiki](https://github.com/4finance/micro-infra-spring/wiki) to have a deeper insight into the project.
-

@@ -1,11 +1,8 @@
 package com.ofg.infrastructure.property;
 
-import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
-import com.google.common.collect.Lists;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,13 +35,8 @@ class ConfigLocations {
         this.envCountryDir = envCountryDir;
     }
 
-    List<Path> getConfigPaths() {
-        return Lists.transform(getAllDirs(), new Function<File, Path>() {
-            @Override
-            public Path apply(File dir) {
-                return dir.toPath();
-            }
-        });
+    List<File> getAllDirs() {
+        return Arrays.asList(commonDir, envDir, commonCountryDir, envCountryDir);
     }
 
     File commonPropertiesFile(String name) {
@@ -87,10 +79,6 @@ class ConfigLocations {
                 .add("commonCountryDir", commonCountryDir)
                 .add("envCountryDir", envCountryDir)
                 .toString();
-    }
-
-    private List<File> getAllDirs() {
-        return Arrays.asList(commonDir, envDir, commonCountryDir, envCountryDir);
     }
 
     private File propertiesFile(File parent, String name) {

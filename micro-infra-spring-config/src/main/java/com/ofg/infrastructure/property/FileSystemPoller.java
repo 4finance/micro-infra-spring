@@ -55,9 +55,13 @@ public class FileSystemPoller {
 
     private void startWatcher() {
         watcher = createWatchService();
-        List<Path> paths = configLocations.getConfigPaths();
-        for (Path path : paths) {
-            watchPathForChanges(path);
+        List<File> configDirs = configLocations.getAllDirs();
+        for (File configDir : configDirs) {
+            if (configDir.exists()) {
+                watchDirForChanges(configDir);
+            } else {
+                log.warn("Configuration directory {} doesn't exist", configDir.getAbsolutePath());
+            }
         }
     }
 
@@ -69,14 +73,12 @@ public class FileSystemPoller {
         }
     }
 
-    private void watchPathForChanges(Path path) {
+    private void watchDirForChanges(File dir) {
         try {
+            Path path = dir.toPath();
             path.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
         } catch (IOException e) {
-            final String msg = "Can't poll for configuration changes. Make sure your configuration folder is " +
-                    "at " + path +
-                    ". See also: https://github" +
-                    ".com/4finance/micro-infra-spring/wiki/Centralized-configuration-management";
+            final String msg = "Can't poll for configuration changes in " + dir.getAbsolutePath();
             throw new IllegalStateException(msg, e);
         }
     }

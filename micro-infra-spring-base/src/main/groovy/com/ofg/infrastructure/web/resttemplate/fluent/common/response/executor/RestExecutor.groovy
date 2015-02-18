@@ -1,6 +1,8 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
 
+import com.google.common.base.Throwables
 import com.google.common.util.concurrent.ListenableFuture
+import com.google.common.util.concurrent.UncheckedTimeoutException
 import com.netflix.hystrix.HystrixCommand
 import com.netflix.hystrix.exception.HystrixRuntimeException
 import com.nurkiewicz.asyncretry.RetryExecutor
@@ -16,6 +18,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
 import java.util.concurrent.ExecutionException
+import java.util.concurrent.TimeoutException
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.UrlParsingUtils.appendPathToHost
 
@@ -36,8 +39,15 @@ final class RestExecutor<T> {
         try {
             return exchangeInternal(params, httpMethod, responseType).get()
         } catch (ExecutionException e) {
-            throw e.cause
+            propagate(e.cause)
         }
+    }
+
+    private void propagate(Throwable throwable) {
+        if (throwable instanceof TimeoutException) {
+            throw new UncheckedTimeoutException(throwable)
+        }
+        Throwables.propagate(throwable)
     }
 
     ListenableFuture<ResponseEntity<T>> exchangeAsync(HttpMethod httpMethod, Map params, Class<T> responseType) {

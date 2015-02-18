@@ -3,6 +3,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.Appender
+import com.google.common.util.concurrent.UncheckedTimeoutException
 import com.ofg.config.BasicProfiles
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcWiremockIntegrationSpec
@@ -10,6 +11,7 @@ import com.ofg.infrastructure.base.ServiceDiscoveryStubbingApplicationConfigurat
 import com.ofg.infrastructure.discovery.ServiceAlias
 import com.ofg.infrastructure.discovery.ServicePath
 import com.ofg.infrastructure.discovery.ServiceResolver
+import com.ofg.infrastructure.hystrix.CircuitBreakers
 import org.junit.ClassRule
 import org.junit.contrib.java.lang.system.ProvideSystemProperty
 import org.slf4j.LoggerFactory
@@ -73,6 +75,23 @@ class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
             def exception = thrown(ResourceAccessException)
             exception.cause instanceof SocketTimeoutException
             exception.message.contains('Read timed out')
+    }
+
+    def "should be interrupted and throw UncheckedTimeoutException when service does not respond"() {
+        given:
+            Integer fixedResponseDelayMilliseconds = readTimeoutMillis / 2
+            Integer circuitBreakersTimeoutInMillis = fixedResponseDelayMilliseconds / 2
+            String delayedPath = "/delayed-for-interruption"
+            stubInteraction(wireMockGet(delayedPath), aResponse().withFixedDelay(fixedResponseDelayMilliseconds))
+        when:
+            serviceRestClient.forExternalService()
+                    .get()
+                    .withCircuitBreaker(CircuitBreakers.anyWithTimeout(circuitBreakersTimeoutInMillis))
+                    .onUrl("http://localhost:${httpMockServer.port()}${delayedPath}")
+                    .andExecuteFor()
+                    .anObject().ofType(String.class);
+        then:
+            thrown(UncheckedTimeoutException)
     }
 
     def 'should log HTTP response using Logback'() {

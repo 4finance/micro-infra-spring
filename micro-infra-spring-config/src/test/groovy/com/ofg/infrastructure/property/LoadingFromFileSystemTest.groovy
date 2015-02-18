@@ -38,6 +38,11 @@ class LoadingFromFileSystemTest extends AbstractIntegrationTest {
             myBean.envPropKey == 'env prop value'
     }
 
+    def 'should read property from common country-specific .properties file'() {
+        expect:
+            myBean.commonCountryPropKey== 'common country prop value'
+    }
+
     def 'should read property from country-specific .properties file'() {
         expect:
             myBean.countryPropKey == 'country prop value'
@@ -51,6 +56,11 @@ class LoadingFromFileSystemTest extends AbstractIntegrationTest {
     def 'should read property from env .yaml file'() {
         expect:
             myBean.envYamlKey == 'env yaml value'
+    }
+
+    def 'should read property from common country-specific .yaml file'() {
+        expect:
+            myBean.commonCountryYamlKey == 'common country yaml value'
     }
 
     def 'should read property from country-specific .yaml file'() {
@@ -72,6 +82,7 @@ class LoadingFromFileSystemTest extends AbstractIntegrationTest {
         expect:
             myBean.customCommonKey == 'custom common yaml value'
             myBean.customEnvKey == 'custom env yaml value'
+            myBean.customCommonCountryKey == 'custom common country yaml value'
             myBean.customCountryKey == 'custom country yaml value'
     }
 }
@@ -95,6 +106,9 @@ class MyBean {
     @Value('${env.prop.key}')
     String envPropKey
 
+    @Value('${common.country.prop.key}')
+    String commonCountryPropKey
+
     @Value('${country.prop.key}')
     String countryPropKey
 
@@ -103,6 +117,9 @@ class MyBean {
 
     @Value('${env.yaml.key}')
     String envYamlKey
+
+    @Value('${common.country.yaml.key}')
+    String commonCountryYamlKey
 
     @Value('${country.yaml.key}')
     String countryYamlKey
@@ -119,7 +136,9 @@ class MyBean {
     @Value('${custom.env.key}')
     String customEnvKey
 
+    @Value('${custom.common.country.key}')
+    String customCommonCountryKey
+
     @Value('${custom.country.key}')
     String customCountryKey
-
 }

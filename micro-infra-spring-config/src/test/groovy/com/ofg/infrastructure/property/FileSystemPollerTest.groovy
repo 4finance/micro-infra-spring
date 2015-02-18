@@ -60,8 +60,10 @@ class FileSystemPollerTest extends AbstractIntegrationTest {
                     poller.getConfigLocations().commonYamlFile(MICROSERVICE_NAME),
                     poller.getConfigLocations().envPropertiesFile(MICROSERVICE_NAME),
                     poller.getConfigLocations().envYamlFile(MICROSERVICE_NAME),
-                    poller.getConfigLocations().countryPropertiesFile(PL_MICROSERVICE_NAME),
-                    poller.getConfigLocations().countryYamlFile(PL_MICROSERVICE_NAME)
+                    poller.getConfigLocations().commonCountryPropertiesFile(PL_MICROSERVICE_NAME),
+                    poller.getConfigLocations().commonCountryYamlFile(PL_MICROSERVICE_NAME),
+                    poller.getConfigLocations().envCountryPropertiesFile(PL_MICROSERVICE_NAME),
+                    poller.getConfigLocations().envCountryYamlFile(PL_MICROSERVICE_NAME)
             ]
     }
 

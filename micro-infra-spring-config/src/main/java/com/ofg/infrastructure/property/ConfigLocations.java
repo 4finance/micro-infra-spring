@@ -17,19 +17,25 @@ class ConfigLocations {
     private final File commonDir;
 
     /**
+     * Country specific shared properties across environments.
+     */
+    private final File commonCountryDir;
+
+    /**
      * Properties environment specific.
      */
     private final File envDir;
 
     /**
-     * Properties country specific.
+     * Properties country specific in given environment.
      */
-    private final File countryDir;
+    private final File envCountryDir;
 
-    ConfigLocations(File commonDir, File envDir, File countryDir) {
+    ConfigLocations(File commonDir, File envDir, File commonCountryDir, File envCountryDir) {
         this.commonDir = commonDir;
         this.envDir = envDir;
-        this.countryDir = countryDir;
+        this.commonCountryDir = commonCountryDir;
+        this.envCountryDir = envCountryDir;
     }
 
     List<Path> getConfigPaths() {
@@ -57,12 +63,20 @@ class ConfigLocations {
         return yamlFile(envDir, name);
     }
 
-    File countryPropertiesFile(String name) {
-        return propertiesFile(countryDir, name);
+    File commonCountryPropertiesFile(String name) {
+        return propertiesFile(commonCountryDir, name);
     }
 
-    File countryYamlFile(String name) {
-        return yamlFile(countryDir, name);
+    File commonCountryYamlFile(String name) {
+        return yamlFile(commonCountryDir, name);
+    }
+
+    File envCountryPropertiesFile(String name) {
+        return propertiesFile(envCountryDir, name);
+    }
+
+    File envCountryYamlFile(String name) {
+        return yamlFile(envCountryDir, name);
     }
 
     @Override
@@ -70,12 +84,13 @@ class ConfigLocations {
         return MoreObjects.toStringHelper(this)
                 .add("commonDir", commonDir)
                 .add("envDir", envDir)
-                .add("countryDir", countryDir)
+                .add("commonCountryDir", commonCountryDir)
+                .add("envCountryDir", envCountryDir)
                 .toString();
     }
 
     private List<File> getAllDirs() {
-        return Arrays.asList(commonDir, envDir, countryDir);
+        return Arrays.asList(commonDir, envDir, commonCountryDir, envCountryDir);
     }
 
     private File propertiesFile(File parent, String name) {

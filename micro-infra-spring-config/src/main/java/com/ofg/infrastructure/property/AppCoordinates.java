@@ -45,6 +45,7 @@ public class AppCoordinates {
         return new ConfigLocations(
                 getCommonConfigFolder(rootFolder),
                 getEnvConfigFolder(rootFolder),
+                getCommonCountryConfigFolder(rootFolder),
                 getCountryConfigFolder(rootFolder)
         );
     }
@@ -52,6 +53,10 @@ public class AppCoordinates {
     private File getCommonConfigFolder(File rootFolder) {
         File folder = new File(rootFolder, COMMON_DIR);
         return addNameComponentsWithoutTheLastPartToFolder(folder);
+    }
+
+    private File getCommonCountryConfigFolder(File rootFolder) {
+        return new File(getCommonConfigFolder(rootFolder), countryCode);
     }
 
     private File getEnvConfigFolder(File rootFolder) {
@@ -115,8 +120,10 @@ public class AppCoordinates {
                 configLocations.commonYamlFile(coreName),
                 configLocations.envPropertiesFile(coreName),
                 configLocations.envYamlFile(coreName),
-                configLocations.countryPropertiesFile(countryName),
-                configLocations.countryYamlFile(countryName));
+                configLocations.commonCountryPropertiesFile(countryName),
+                configLocations.commonCountryYamlFile(countryName),
+                configLocations.envCountryPropertiesFile(countryName),
+                configLocations.envCountryYamlFile(countryName));
     }
 
     private String getCountryName(String coreName) {

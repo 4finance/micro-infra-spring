@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration
 import spock.lang.AutoCleanup
 import spock.lang.Shared
 
-class LoadingFromFileSystemTest extends AbstractIntegrationTest {
+class LoadingFromFileSystemSpec extends AbstractIntegrationSpec {
 
     @Shared
     @AutoCleanup

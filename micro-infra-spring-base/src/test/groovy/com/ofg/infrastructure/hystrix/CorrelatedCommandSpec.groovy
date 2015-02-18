@@ -8,7 +8,7 @@ import static com.netflix.hystrix.HystrixCommand.Setter.withGroupKey
 import static com.netflix.hystrix.HystrixCommandGroupKey.Factory.asKey
 
 
-class CorrelatedCommandTest extends Specification {
+class CorrelatedCommandSpec extends Specification {
 
     public static final String CORRELATION_ID = 'A'
 

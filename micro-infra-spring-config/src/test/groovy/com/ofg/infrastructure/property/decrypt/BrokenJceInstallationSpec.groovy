@@ -8,7 +8,7 @@ import static com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthTestFi
 import static com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthTestFixture.strongEncryptionSupported
 
 @IgnoreIf({ isPropertiesDecryptionTestingExplicitDisabled() })
-class BrokenJceInstallationTest extends Specification {
+class BrokenJceInstallationSpec extends Specification {
 
     def "JCE US has to be installed for property values decryption - see exception message how to disable that"() {
         expect:

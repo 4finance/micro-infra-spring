@@ -2,7 +2,7 @@ package com.ofg.infrastructure.property
 
 import spock.lang.Specification
 
-class ConfigLocationsTest extends Specification {
+class ConfigLocationsSpec extends Specification {
 
     static final File COMMON_DIR = new File('props', 'common')
     static final File ENV_DIR = new File('props', 'prod')

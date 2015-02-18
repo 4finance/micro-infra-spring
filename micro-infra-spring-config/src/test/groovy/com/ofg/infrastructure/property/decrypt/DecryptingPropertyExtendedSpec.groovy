@@ -1,10 +1,10 @@
 package com.ofg.infrastructure.property.decrypt
 
-import com.ofg.infrastructure.property.AbstractIntegrationTest
+import com.ofg.infrastructure.property.AbstractIntegrationSpec
 import org.codehaus.groovy.runtime.StackTraceUtils
 import org.springframework.boot.builder.SpringApplicationBuilder
 
-class DecryptingPropertyExtendedTest extends AbstractIntegrationTest {
+class DecryptingPropertyExtendedSpec extends AbstractIntegrationSpec {
 
     def "should fail when wrong encryption key is provided and there are encrypted passwords"() {
         given:

@@ -12,7 +12,7 @@ import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATI
 
 
 @Unroll
-class CorrelationIdFilterSkipPatternTest extends Specification {
+class CorrelationIdFilterSkipPatternSpec extends Specification {
 
     CorrelationIdFilter filter = new CorrelationIdFilter(Stub(UuidGenerator), CorrelationIdFilter.DEFAULT_SKIP_PATTERN)
 

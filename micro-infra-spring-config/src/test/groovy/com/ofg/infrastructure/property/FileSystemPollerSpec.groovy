@@ -18,7 +18,7 @@ import javax.annotation.PostConstruct
 import java.util.concurrent.atomic.AtomicInteger
 
 @IgnoreIf({ os.macOs }) //Due to problems with native file system poller implementation - https://github.com/4finance/micro-infra-spring/issues/119
-class FileSystemPollerTest extends AbstractIntegrationTest {
+class FileSystemPollerSpec extends AbstractIntegrationSpec {
 
     private static final String MICROSERVICE_NAME = 'micro-app'
     private static final String PL_MICROSERVICE_NAME = MICROSERVICE_NAME + '-pl'

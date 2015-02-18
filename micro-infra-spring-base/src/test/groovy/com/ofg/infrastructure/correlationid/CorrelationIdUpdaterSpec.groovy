@@ -11,7 +11,7 @@ import java.util.concurrent.Executors
 import static java.util.concurrent.TimeUnit.SECONDS
 
 
-class CorrelationIdUpdaterTest extends Specification {
+class CorrelationIdUpdaterSpec extends Specification {
 
     def cleanup() {
         CorrelationIdHolder.remove()

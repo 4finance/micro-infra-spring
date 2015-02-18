@@ -5,7 +5,7 @@ import spock.lang.Unroll
 
 
 @Unroll
-class AppCoordinatesTest extends Specification {
+class AppCoordinatesSpec extends Specification {
 
     def 'should properly resolve config files for name #name'() {
         given:

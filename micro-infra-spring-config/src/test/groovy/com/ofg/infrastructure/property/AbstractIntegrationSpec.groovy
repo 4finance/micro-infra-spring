@@ -6,7 +6,7 @@ import spock.util.environment.RestoreSystemProperties
 
 @RestoreSystemProperties
 @ClassLevelRestoreSystemProperties
-abstract class AbstractIntegrationTest extends Specification {
+abstract class AbstractIntegrationSpec extends Specification {
 
     public static final String CLOUD_SERVER_ENALED = "spring.cloud.config.server.enabled"
 

@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.property.decrypt
 
-import com.ofg.infrastructure.property.AbstractIntegrationTest
+import com.ofg.infrastructure.property.AbstractIntegrationSpec
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -17,7 +17,7 @@ import spock.lang.Shared
 import static com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthTestFixture.shouldDecryptionTestsBeExecuted
 
 @IgnoreIf({ !shouldDecryptionTestsBeExecuted() })
-class DecryptingPropertyTest extends AbstractIntegrationTest {
+class DecryptingPropertySpec extends AbstractIntegrationSpec {
 
     @Shared
     @AutoCleanup

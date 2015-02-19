@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.camel
+
 import com.ofg.infrastructure.camel.config.CamelRouteAsBeanConfiguration
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder
 import com.ofg.infrastructure.web.correlationid.CorrelationIdConfiguration
@@ -9,6 +10,8 @@ import org.apache.camel.impl.DefaultProducerTemplate
 import org.apache.camel.impl.InterceptSendToEndpoint
 import org.apache.camel.model.ModelCamelContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Bean
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.AutoCleanup
 import spock.lang.Specification
@@ -16,12 +19,20 @@ import spock.lang.Specification
 import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
 
 @Slf4j
-@ContextConfiguration(classes = [CamelRouteAsBeanConfiguration, CorrelationIdConfiguration])
+@ContextConfiguration(classes = [CamelRouteAsBeanConfiguration, CorrelationIdConfiguration, Config])
 class AcceptanceSpec extends Specification {
 
     @Autowired ModelCamelContext camelContext
     @AutoCleanup('stop') ProducerTemplate template
     MockEndpoint resultEndpoint
+
+    static class Config {
+
+        @Bean
+        static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
+            return new PropertySourcesPlaceholderConfigurer()
+        }
+    }
 
     def setup() {
         resultEndpoint =

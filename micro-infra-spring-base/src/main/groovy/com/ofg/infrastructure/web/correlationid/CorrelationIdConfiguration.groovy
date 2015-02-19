@@ -20,17 +20,16 @@ import java.util.regex.Pattern
 @CompileStatic
 class CorrelationIdConfiguration {
 
-    @Value('${rest.correlationId.skipPattern:}')
-    private String skipPattern
-
     @Bean
     CorrelationIdAspect correlationIdAspect() {
         return new CorrelationIdAspect()
     }
 
     @Bean
-    FilterRegistrationBean correlationHeaderFilter(UuidGenerator uuidGenerator) {
-        Pattern pattern = StringUtils.isBlank(skipPattern)? Pattern.compile(skipPattern) : CorrelationIdFilter.DEFAULT_SKIP_PATTERN
+    FilterRegistrationBean correlationHeaderFilter(UuidGenerator uuidGenerator, @Value('${rest.correlationId.skipPattern:}') String skipPattern) {
+        Pattern pattern = StringUtils.isNotBlank(skipPattern)?
+                Pattern.compile(skipPattern) :
+                CorrelationIdFilter.DEFAULT_SKIP_PATTERN
         return new FilterRegistrationBean(new CorrelationIdFilter(uuidGenerator, pattern))
     }
 

@@ -1,4 +1,4 @@
-package com.ofg.stub.spring
+package com.ofg.stub.util
 
 import groovy.transform.CompileStatic
 

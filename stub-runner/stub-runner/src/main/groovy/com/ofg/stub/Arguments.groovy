@@ -4,31 +4,26 @@ import com.ofg.stub.mapping.ProjectMetadata
 import groovy.transform.CompileStatic
 import groovy.transform.ToString
 
+/**
+ * Arguments passed to the {@link StubRunner} application
+ *
+ * @see StubRunner
+ */
 @CompileStatic
 @ToString(includeNames = true)
 class Arguments {
-    final String repositoryPath
-    final String projectRelativePath
-    final Integer testingZookeeperPort
-    final Integer minPortValue
-    final Integer maxPortValue
+    final StubRunnerOptions stubRunnerOptions
     final String context
-    final String localZookeeperPath
+    final String repositoryPath
+    final String serviceName
     final List<ProjectMetadata> projects
 
-    Arguments(String repositoryPath, String projectRelativePath, Integer testingZookeeperPort, Integer minPortValue, Integer maxPortValue, String context, String localZookeeperPath, List<ProjectMetadata> projects) {
-        this.repositoryPath = repositoryPath
-        this.projectRelativePath = projectRelativePath
-        this.testingZookeeperPort = testingZookeeperPort
-        this.minPortValue = minPortValue
-        this.maxPortValue = maxPortValue
+    Arguments(StubRunnerOptions stubRunnerOptions, String context, String repositoryPath, String serviceName, List<ProjectMetadata> projects = null) {
+        this.stubRunnerOptions = stubRunnerOptions
         this.context = context
+        this.repositoryPath = repositoryPath
         this.projects = projects
-        this.localZookeeperPath = localZookeeperPath
-    }
-
-    Arguments(String repositoryPath, String projectRelativePath, Integer testingZookeeperPort, Integer minPortValue, Integer maxPortValue, String context, String localZookeeperPath) {
-        this(repositoryPath, projectRelativePath, testingZookeeperPort, minPortValue, maxPortValue, context, localZookeeperPath, null)
+        this.serviceName = serviceName
     }
 
 }

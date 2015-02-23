@@ -5,82 +5,48 @@ Runs stubs for service collaborators. Treating stubs as contracts of services al
 
 ### Running stubs
 
+#### Running using main app
 
-#### Running specified stubs
-To run stubs execute `gradle run<ProjectMetadataFileWithoutExtension>Stubs`.
-
-For example: to run stubs for `healthCheck` project execute `gradle runHealthCheckStubs`.
-This will:
-* start Zookeeper
-* run stubs for projects defined in healthCheck.json from both global nad realm specific context
-* register stubs in Zookeeper
-
-#### Running all stubs
-To run all stubs execute `gradle runStubs`.
-
-Having the following *project* files:
-
-`fooBar.json`:
-
-```json
-{
-    "pl": [
-        "com/ofg/foo/bar"
-    ]
-}
-```
-
-`healthCheck.json`:
-
-```json
-{
-    "pl": [
-        "com/ofg/ping"
-    ]
-}
-```
-
-and the following *mappings* folder structure:
-
-
-```
-/com/ofg/foo/bar/foobar.json
-/pl/com/ofg/foo/bar/foobar.json
-/com/ofg/ping/ping.json
-/com/ofg/another/mapping.json
-
-```
-
-will result in:
-
-* Loading one Zookeeper instance
-* Setting up Wiremock instance with stubs from `/com/ofg/ping/ping.json` since it's described in `healthCheck.json`
-* Setting up Wiremock instance with stubs loading first `/com/ofg/foo/bar/foobar.json` and then `/pl/com/ofg/foo/bar/pl_foobar.json` since it's described in `fooBar.json`
-and they share common root path whereas there are some context specific mappings
-
-#### Running from fat jar
-
-We deploy the stub-runner project as a JAR in jCenter. Since version 0.2.0 we provide easier way of providing options via Args4J library.
 You can set the following options to the main class:
 
 ```
 java -jar stub-runner.jar [options...] 
- -a (--runAllStubs) VAL        : Switch that signifies that you want to run all
-                                 stubs (e.g. 'true')
- -c (--context) VAL            : Context for which the project should be run
-                                 (e.g. 'pl', 'lt')
- -maxp (--maxPort) N           : Maximum port value to be assigned to the
-                                 Wiremock instance (e.g. 12345)
- -minp (--minPort) N           : Minimal port value to be assigned to the
-                                 Wiremock instance (e.g. 12345)
- -p (--projectPath) VAL        : Relative path to the project which you want to
-                                 run (e.g. '/com/ofg/foo/barProject.json')
- -r (--repository) VAL         : Path to repository containing the 'repository'
-                                 folder with 'project' and 'mapping' subfolders
-                                 (e.g. '/home/4finance/stubs/')
- -z (--zookeeperPort) N        : Port of the zookeeper instance (e.g. 2181)
- -zl (--zookeeperLocation) VAL : Location of local Zookeeper you want to
-                                 connect to (e.g. localhost:23456)
+ -c (--context) VAL                 : Context for which the project should be
+                                      run (e.g. 'pl', 'lt')
+ -maxp (--maxPort) N                : Maximum port value to be assigned to the
+                                      Wiremock instance (e.g. 12345)
+ -md (--useMicroserviceDefinitions) : Switch to define whether you want to use
+                                      the new approach with microservice
+                                      definitions. Defaults to 'true'. To use
+                                      old version switch to 'false'
+ -minp (--minPort) N                : Minimal port value to be assigned to the
+                                      Wiremock instance (e.g. 12345)
+ -n (--serviceName) VAL             : Name of the service under which it is
+                                      registered in Zookeeper. (e.g.
+                                      'com/service/name')
+ -r (--repository) VAL              : @Deprecated - Path to repository
+                                      containing the 'repository' folder with
+                                      'project' and 'mapping' subfolders (e.g.
+                                      '/home/4finance/stubs/')
+ -s (--skipLocalRepo)               : Switch to check whether local repository
+                                      check should be skipped and dependencies
+                                      should be grabbed directly from the net.
+                                      Defaults to 'false'
+ -sg (--stubsGroup) VAL             : @Deprecated - Name of the group where you
+                                      store your stub definitions (e.g. com.ofg)
+ -sm (--stubsModule) VAL            : @Deprecated - Name of the module where
+                                      you store your stub definitions (e.g.
+                                      stub-definitions)
+ -ss (--stubsSuffix) VAL            : Suffix for the jar containing stubs (e.g.
+                                      'stubs' if the stub jar would have a
+                                      'stubs' classifier for stubs: foobar-stubs
+                                      ). Defaults to 'stubs'
+ -sr (--stubRepositoryRoot) VAL     : Location of a Jar containing server where
+                                      you keep your stubs (e.g. http://nexus.4fi
+                                      nance.net/content/repositories/Pipeline)
+ -z (--zookeeperPort) N             : Port of the zookeeper instance (e.g. 2181)
+ -zl (--zookeeperLocation) VAL      : Location of local Zookeeper you want to
+                                      connect to (e.g. localhost:23456)
 ```
 
 ##### Running on an environment with already existing Zookeeper
@@ -93,53 +59,34 @@ When you want to register your stubs against an already existing Zookeeper insta
 
 that will point to the place where the Zookeper instance can be found
 
+##### Running on an environment without a Zookeeper
+
+When you want to register your stubs against an already existing Zookeeper instance it's enough to provide a switch
+
+```
+-z 1234
+```
+
+that will start a testing Zookeeper instance on port 1234
+
 
 ### Stub runner configuration
 
-Under `ext` block inside `build.gradle` you can configure stub runner with the following properties:
-* stubRepositoryPath
-* stubRegistryPort
-* minStubPortNumber
-* maxStubPortNumber
-* context
-    
-Project metadata that will be loaded is derived from the executed task name, e.g.: `gradle runHealthCheckStubs` will register collaborators defined in `healthCheck.json`.
+You can configure the stub runner by either passing the full arguments list with the `-Pargs` like this:
+
+```
+./gradlew stub-runner:stub-runner:run -Pargs="-c pl -minp 10000 -maxp 10005 -n com/ofg/twitter-places-analyzer -sr http://dl.bintray.com/4finance/micro -zl localhost:2181 -s"
+```
+
+or each parameter separately with a `-P` prefix and without the hyphen `-` in the name of the param
+
+```
+./gradlew stub-runner:stub-runner:run -Pc=pl -Pminp=10000 -Pmaxp=10005 -Pn=com/ofg/twitter-places-analyzer -Psr=http://dl.bintray.com/4finance/micro -Pzl=localhost:2181 -Ps
+```
 
 ### Defining collaborators' stubs
 
-#### Defining service collaborators
-
-Service collaborators are defined in project metadata file (JSON document) with the following structure:
-```
-{
-    "context": [ Fully qualified names of your collaborators ]
-}
-```
-
-Example:
-```json
-{
-    "pl": [
-        "com/ofg/foo",
-        "com/ofg/bar"
-    ]
-}
-```
-
-By default project metadata definitions are stored in `projects` directory inside stub repository.
-
 #### Global vs Realm specific stubs
-
-Assuming the following metadata configuration:
-
-```json
-{
-    "pl": [
-        "com/ofg/foo",
-        "com/ofg/bar"
-    ]
-}
-```
 
 You can define global stubbing behaviour (Wiremock will be fed with those stubs for all contexts) under the folder: 
 

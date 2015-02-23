@@ -1,8 +1,10 @@
 description = 'Runs stubs for service collaborators'
 
+apply plugin: 'application'
+
 dependencies {
     compile project(':micro-deps:micro-deps')
-
+    compile 'org.apache.ivy:ivy:2.4.0'
     compile 'org.codehaus.groovy:groovy-all'
     compile ('com.github.tomakehurst:wiremock') {
         exclude group: 'org.mortbay.jetty', module: 'servlet-api'
@@ -21,32 +23,78 @@ dependencies {
     testCompile 'org.objenesis:objenesis'
 }
 
+ext {
+    repositoryPath = getPropertyByEither('r', 'repository')
+    testingZookeeperPort = getPropertyByEither('z', 'zookeeperPort')
+    zookeeperLocation = getPropertyByEither('zl', 'zookeeperLocation')
+    stubRepositoryRoot = getPropertyByEither('sr', 'stubRepositoryRoot')
+    stubsGroup = getPropertyByEither('sg', 'stubsGroup')
+    stubsModule = getPropertyByEither('sm', 'stubsModule')
+    stubsSuffix = getPropertyByEither('ss', 'stubsSuffix')
+    minPortValue = getPropertyByEither('minp', 'minPort')
+    maxPortValue = getPropertyByEither('maxp', 'maxPort')
+    skipLocalRepo = getPropertyByEither('s', 'skipLocalRepo')
+    useMicroserviceDefinitions = getPropertyByEither('md', 'useMicroserviceDefinitions')
+    context = getPropertyByEither('c', 'context')
+    serviceName = getPropertyByEither('n', 'serviceName')
+    arguments = project.hasProperty('args') ? project.property('args') : []
+    /* example of args:
+     '-c pl -minp 10000 -maxp 10005 -n com/ofg/twitter-places-analyzer -sr http://dl.bintray.com/4finance/micro -zl localhost:2181 -s'
+     */
+}
+
+Object getPropertyByEither(String paramName1, String paramName2, Object defaultValue = null) {
+    return project.hasProperty(paramName1) ? project.property(paramName1) :
+            project.hasProperty(paramName2) ? project.property(paramName2) : defaultValue
+}
+
+run {
+    main = 'com.ofg.stub.StubRunnerMain'
+    List argumentList
+    if(arguments) {
+        argumentList = (arguments.split(' ') as List).findAll {it != null}
+    } else {
+        argumentList = parseArguments()
+    }
+    args = argumentList
+    println "Running task with args $args"
+}
+
+List parseArguments() {
+    println "Trying to parse the project arguments"
+    List arguments = []
+    appendToListIfNotNull(repositoryPath, '-r', arguments)
+    appendToListIfNotNull(testingZookeeperPort, '-z', arguments)
+    appendToListIfNotNull(zookeeperLocation, '-zl', arguments)
+    appendToListIfNotNull(stubRepositoryRoot, '-sr', arguments)
+    appendToListIfNotNull(stubsGroup, '-sg', arguments)
+    appendToListIfNotNull(stubsModule, '-sm', arguments)
+    appendToListIfNotNull(stubsSuffix, '-ss', arguments)
+    appendToListIfNotNull(minPortValue, '-minp', arguments)
+    appendToListIfNotNull(maxPortValue, '-maxp', arguments)
+    appendToListIfNotNull(skipLocalRepo, '-s', arguments)
+    appendToListIfNotNull(useMicroserviceDefinitions, '-md', arguments)
+    appendToListIfNotNull(context, '-c', arguments)
+    appendToListIfNotNull(serviceName, '-n', arguments)
+    return arguments
+}
+
+Object appendToListIfNotNull(String argument, String prefix, List list) {
+    if(argument != null) {
+        list << "$prefix"
+        if(!argument.isAllWhitespace()) {
+            list << argument
+        }
+    }
+}
+
 if (rootProject.hasProperty("withFatJars")) {
 
     apply plugin: 'spring-boot'
 
-    ext {
-        stubRepositoryPath = 'repository'
-        stubRegistryPort = 2181
-        minStubPortNumber = 2300
-        maxStubPortNumber = 2399
-        context = 'pl'
-    }
-
     project.gradle.projectsEvaluated {
         applicationDefaultJvmArgs = project.gradle.startParameter.systemPropertiesArgs.entrySet().collect {
             "-D${it.key}=${it.value}"
-        }
-    }
-
-
-    tasks.addRule('Pattern: run<Project>Stubs: Run stubs for project') { String taskName ->
-        if (taskName == 'runStubs') {
-            executeStubRunner(taskName, "-r $stubRepositoryPath -a true -z $stubRegistryPort -minp $minStubPortNumber -maxp $maxStubPortNumber -c $context")
-        } else if (taskName.startsWith('run') && taskName.endsWith('Stubs')) {
-            String projectName = taskName[3..(taskName.size() - 6)]
-            String metadataFileName = projectName[0].toLowerCase() + projectName.substring(1)
-            executeStubRunner(taskName, "-r $stubRepositoryPath -p ${metadataFileName}.json -z $stubRegistryPort -minp $minStubPortNumber -maxp $maxStubPortNumber")
         }
     }
 
@@ -92,13 +140,4 @@ if (rootProject.hasProperty("withFatJars")) {
     }
 
     project.tasks.findAll { it.name.startsWith('publish') || it.name == 'bintrayUpload' }*.dependsOn(bootJars)
-}
-
-void executeStubRunner(String taskName, String arguments) {
-    task (taskName, type: JavaExec, dependsOn: classes) {
-        main = 'com.ofg.stub.StubRunner'
-        classpath = sourceSets.main.output + configurations.compile
-        args = arguments.split(' ') as List
-        println "Running task with args $args"
-    }
 }

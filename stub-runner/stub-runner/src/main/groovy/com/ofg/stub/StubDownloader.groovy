@@ -1,6 +1,6 @@
 package com.ofg.stub
 
-import com.ofg.stub.spring.ZipCategory
+import com.ofg.stub.util.ZipCategory
 import groovy.util.logging.Slf4j
 
 import static groovy.grape.Grape.addResolver
@@ -8,6 +8,10 @@ import static groovy.grape.Grape.resolve
 import static groovy.io.FileType.FILES
 import static java.nio.file.Files.createTempDirectory
 
+
+/**
+ * Downloads stubs from an external repository and unpacks them locally
+ */
 @Slf4j
 class StubDownloader {
 
@@ -15,6 +19,17 @@ class StubDownloader {
     private static final String REPOSITORY_NAME = 'dependency-repository'
     private static final String STUB_RUNNER_TEMP_DIR_PREFIX = 'stub-runner'
 
+    /**
+     * Downloads stubs from an external repository and unpacks them locally.
+     * Depending on the switch either uses only local repository to check for
+     * stub presence.
+     *
+     * @param skipLocalRepo -flag that defines whether only local cache should be used
+     * @param stubRepositoryRoot - address of the repo from which deps should be grabbed
+     * @param stubsGroup - group name of the jar containing stubs
+     * @param stubsModule - module name of the jar containing stubs
+     * @return file where the stubs where unpacked
+     */
     File downloadAndUnpackStubJar(boolean skipLocalRepo, String stubRepositoryRoot, String stubsGroup, String
             stubsModule) {
         URI stubJarUri = findGrabbedStubJars(skipLocalRepo, stubRepositoryRoot, stubsGroup, stubsModule)

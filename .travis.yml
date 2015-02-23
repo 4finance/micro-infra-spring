@@ -1,3 +1,5 @@
+sudo: false
+
 before_install:
   - "echo $JAVA_OPTS"
   - "export JAVA_OPTS='-Xmx768m -XX:MaxPermSize=384m'"
@@ -20,6 +22,9 @@ script:
 after_success:
 - ./gradlew jacocoRootReport coveralls -Pcoverage --continue
 
+cache:
+  directories:
+  - $HOME/.gradle
 
 language: groovy
 

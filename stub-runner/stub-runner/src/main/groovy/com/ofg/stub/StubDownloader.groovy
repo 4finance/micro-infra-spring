@@ -81,7 +81,7 @@ class StubDownloader {
         }
 
         private void failureHandler(String stubRepository, String reason, Exception cause) {
-            throw new DependencyResolutionException("Unable to resolve dependency in stub repository [$stubRepository]. Reason: $reason", cause)
+            log.error("Unable to resolve dependency in stub repository [$stubRepository]. Reason: [$reason]", cause)
         }
 
         private void ensureThatLatestVersionWillBePicked(URI resolvedUri) {
@@ -142,10 +142,4 @@ class StubDownloader {
 
     }
 
-    class DependencyResolutionException extends RuntimeException {
-
-        DependencyResolutionException(String message, Throwable cause) {
-            super(message, cause)
-        }
-    }
 }

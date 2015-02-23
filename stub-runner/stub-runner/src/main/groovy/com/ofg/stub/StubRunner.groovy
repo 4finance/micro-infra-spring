@@ -19,7 +19,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank
 @CompileStatic
 class StubRunner implements StubRunning {
 
-    private static final ThreadLocal<StubRunnerExecutor> STUB_RUNNER = new ThreadLocal<>()
+    private static final ThreadLocal<StubRunnerExecutor> stubRunnerContainer = new ThreadLocal<>()
 
     private final Arguments arguments
     private final StubRegistry stubRegistry
@@ -48,14 +48,14 @@ class StubRunner implements StubRunning {
         AvailablePortScanner portScanner = new AvailablePortScanner(arguments.stubRunnerOptions.minPortValue, arguments.stubRunnerOptions.maxPortValue)
         Collection<ProjectMetadata> projects = arguments.projects
         StubRunnerExecutor localStubRunner = new StubRunnerExecutor(portScanner, stubRegistry)
-        STUB_RUNNER.set(localStubRunner)
+        stubRunnerContainer.set(localStubRunner)
         registerShutdownHook()
         localStubRunner.runStubs(stubRepository, projects)
     }
 
     @Override
     Optional<URL> findStubUrlByRelativePath(String relativePath) {
-        return STUB_RUNNER.get().getStubUrlByRelativePath(relativePath)
+        return stubRunnerContainer.get().getStubUrlByRelativePath(relativePath)
     }
 
     private void registerShutdownHook() {
@@ -66,6 +66,6 @@ class StubRunner implements StubRunning {
     @Override
     void close() throws IOException {
         zookeeperServer.shutdown()
-        STUB_RUNNER.get()?.shutdown()
+        stubRunnerContainer.get()?.shutdown()
     }
 }

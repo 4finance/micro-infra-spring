@@ -18,16 +18,12 @@ class Arguments {
     final String serviceName
     final List<ProjectMetadata> projects
 
-    Arguments(StubRunnerOptions stubRunnerOptions, String context, String repositoryPath, String serviceName, List<ProjectMetadata> projects) {
+    Arguments(StubRunnerOptions stubRunnerOptions, String context, String repositoryPath, String serviceName, List<ProjectMetadata> projects = null) {
         this.stubRunnerOptions = stubRunnerOptions
         this.context = context
         this.repositoryPath = repositoryPath
         this.projects = projects
         this.serviceName = serviceName
-    }
-
-    Arguments(StubRunnerOptions stubRunnerOptions, String context, String repositoryPath, String serviceName) {
-        this(stubRunnerOptions, context, repositoryPath, serviceName, null)
     }
 
 }

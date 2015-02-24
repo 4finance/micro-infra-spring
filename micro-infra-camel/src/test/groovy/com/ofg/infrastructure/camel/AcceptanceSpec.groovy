@@ -1,19 +1,16 @@
 package com.ofg.infrastructure.camel
-
 import com.ofg.infrastructure.camel.config.CamelRouteAsBeanConfiguration
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder
 import com.ofg.infrastructure.web.correlationid.CorrelationIdConfiguration
-import org.apache.camel.model.ModelCamelContext
-import org.apache.camel.model.RouteDefinition
-import spock.lang.AutoCleanup
-
 import groovy.util.logging.Slf4j
 import org.apache.camel.ProducerTemplate
 import org.apache.camel.component.mock.MockEndpoint
 import org.apache.camel.impl.DefaultProducerTemplate
 import org.apache.camel.impl.InterceptSendToEndpoint
+import org.apache.camel.model.ModelCamelContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
+import spock.lang.AutoCleanup
 import spock.lang.Specification
 
 import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
@@ -33,10 +30,6 @@ class AcceptanceSpec extends Specification {
                 camelContext,
                 camelContext.getEndpoint('direct:start'))
         template.start()
-    }
-
-    def cleanup() {
-        removeRouteDefinitions()
     }
 
     def 'should set correlationId from header of input message'() {
@@ -71,8 +64,4 @@ class AcceptanceSpec extends Specification {
             resultEndpoint.message(0).header(CORRELATION_ID_HEADER).isEqualTo(correlationIdValue)
     }
 
-    private void removeRouteDefinitions() {
-        List<RouteDefinition> routeDefinitions = camelContext.routeDefinitions
-        camelContext.removeRouteDefinitions(routeDefinitions)
-    }
 }

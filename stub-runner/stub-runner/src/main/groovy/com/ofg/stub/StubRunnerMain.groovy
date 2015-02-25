@@ -43,11 +43,11 @@ class StubRunnerMain {
     @Option(name = "-ss", aliases = ['--stubsSuffix'], usage = "Suffix for the jar containing stubs (e.g. 'stubs' if the stub jar would have a 'stubs' classifier for stubs: foobar-stubs ). Defaults to 'stubs'")
     private String stubsSuffix = 'stubs'
 
-    @Option(name = "-minp", aliases = ['--minPort'], usage = "Minimal port value to be assigned to the Wiremock instance (e.g. 12345)", required = true)
-    private Integer minPortValue
+    @Option(name = "-minp", aliases = ['--minPort'], usage = "Minimal port value to be assigned to the Wiremock instance. Defaults to 10000")
+    private Integer minPortValue = 10000
 
-    @Option(name = "-maxp", aliases = ['--maxPort'], usage = "Maximum port value to be assigned to the Wiremock instance (e.g. 12345)", required = true)
-    private Integer maxPortValue
+    @Option(name = "-maxp", aliases = ['--maxPort'], usage = "Maximum port value to be assigned to the Wiremock instance. Defaults to 15000")
+    private Integer maxPortValue = 15000
 
     @Option(name = "-s", aliases = ['--skipLocalRepo'], usage = "Switch to check whether local repository check should be skipped and dependencies should be grabbed directly from the net. Defaults to 'false'")
     private Boolean skipLocalRepo

@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = "1.2.1.RELEASE"
+        springBootVersion = "1.2.2.RELEASE"
     }
     repositories {
         mavenLocal()
@@ -74,7 +74,7 @@ allprojects {
                         details.useTarget("org.codehaus.groovy:groovy-all:${details.requested.version}")
                     }
                     if (details.requested.group == 'org.springframework.boot') { details.useVersion springBootVersion }
-                    if (details.requested.group == 'org.springframework') { details.useVersion "4.1.4.RELEASE" }
+                    if (details.requested.group == 'org.springframework') { details.useVersion "4.1.5.RELEASE" }
                     if (details.requested.group == 'org.aspectj') { details.useVersion "1.8.4" }
                 }
             }

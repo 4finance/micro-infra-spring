@@ -102,7 +102,7 @@ configure(srcSubprojects) {
 
     dependencyManagement {
         dependencies {
-            "org.codehaus.groovy:groovy-all" "2.4.0"
+            "org.codehaus.groovy:groovy-all" "2.3.9"
             "com.google.guava:guava" "18.0"
             "commons-io:commons-io" "2.4"
 
@@ -118,7 +118,7 @@ configure(srcSubprojects) {
             "cglib:cglib-nodep" "3.1"
             "org.objenesis:objenesis" "1.2"
 
-            dependencySet(group:'org.spockframework', version: '1.0-groovy-2.0-SNAPSHOT') {
+            dependencySet(group:'org.spockframework', version: '1.0-groovy-2.3-SNAPSHOT') {
                 entry "spock-core"
                 entry "spock-spring"
             }

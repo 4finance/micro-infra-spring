@@ -28,8 +28,7 @@ class StubRunnerFactory {
         this(stubRunnerOptions, collaborators, CuratorFrameworkFactory.newClient(stubRunnerOptions.zookeeperConnectString, RETRY_POLICY), new StubDownloader())
     }
 
-    @PackageScope
-    StubRunnerFactory(StubRunnerOptions stubRunnerOptions, Collaborators collaborators,
+    protected StubRunnerFactory(StubRunnerOptions stubRunnerOptions, Collaborators collaborators,
                       CuratorFramework client, StubDownloader stubDownloader) {
         this.stubRunnerOptions = stubRunnerOptions
         this.client = client

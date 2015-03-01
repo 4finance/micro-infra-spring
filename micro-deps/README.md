@@ -30,11 +30,15 @@ microservice.port=if not configured then 'port' system property or 'server.port'
 # service resolver URL
 service.resolver.url=localhost:2181
 
-# number of connection retries
-service.resolver.connection.retry.times=5
+# initial amount of milliseconds to wait between retries
+service.resolver.connection.retry.baseSleepMs=50
 
-# wait time in milliseconds between consecutive connection retries
-service.resolver.connection.retry.wait=1000
+# max number of retries
+service.resolver.connection.retry.maxRetries=20
+
+# max amount of milliseconds to wait between retries
+service.resolver.connection.retry.maxSleepMs=500
+
 ```
 
 Take a look at [stub-runner-spring project](https://github.com/4finance/micro-infra-spring/wiki/Stub-runner) for more information on our [Consumer Driven Contracts](http://martinfowler.com/articles/consumerDrivenContracts.html) implementation. Below you can find the properties that you can set in that regard together with default values:

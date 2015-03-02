@@ -1,5 +1,6 @@
 package com.ofg.stub.server
 import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang.math.RandomUtils
@@ -48,7 +49,8 @@ class AvailablePortScanner {
     }
 
     static class NoPortAvailableException extends RuntimeException {
-        protected NoPortAvailableException(int loweBound, int upperBound) {
+        @PackageScope
+        NoPortAvailableException(int loweBound, int upperBound) {
             super("Could not find available port in range $loweBound:$upperBound")
         }
     }

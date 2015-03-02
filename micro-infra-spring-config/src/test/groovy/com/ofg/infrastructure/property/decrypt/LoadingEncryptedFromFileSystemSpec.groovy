@@ -25,7 +25,7 @@ class LoadingEncryptedFromFileSystemSpec extends AbstractIntegrationSpec {
     private MyEncBean myEncBean
 
     def setupSpec() {
-        System.setProperty("encrypt.key", "eKey")
+        setEncryptKey()
         System.setProperty('microservice.config.file', 'classpath:microservice-enc.json')
         context = new SpringApplicationBuilder(BasicEncApp)
                 .web(false)

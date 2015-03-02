@@ -7,6 +7,8 @@ import groovy.transform.TupleConstructor
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.security.crypto.encrypt.TextEncryptor
 
+import static com.ofg.infrastructure.property.AbstractIntegrationSpec.CLOUD_ENCRYPT_KEY
+import static com.ofg.infrastructure.property.AppCoordinates.APP_ENV
 import static com.ofg.infrastructure.property.FileSystemLocator.CIPHER_PREFIX
 
 /**
@@ -24,9 +26,8 @@ class EncryptorTestUtil {
     }
 
     private static String decryptAndReturn(EncryptionInputData inputData) {
-        System.setProperty("encrypt.key", inputData.encryptKey)
-        System.setProperty("APP_ENV", "prod")
-        System.setProperty("countryCode", "pl")
+        System.setProperty(CLOUD_ENCRYPT_KEY, inputData.encryptKey)
+        System.setProperty(APP_ENV, "prod")
 
         def context = new SpringApplicationBuilder(DecryptingPropertyTestApp).web(false).showBanner(false).run()
         def encryptor = context.getBean(TextEncryptor)

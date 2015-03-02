@@ -34,7 +34,6 @@ class FileSystemPollerSpec extends AbstractIntegrationSpec {
     private PollingConditions conditions = new PollingConditions()
 
     def setupSpec() {
-        System.setProperty("encrypt.key", "eKey")
         context = new SpringApplicationBuilder(RefreshingApp)
                 .web(false)
                 .showBanner(false)

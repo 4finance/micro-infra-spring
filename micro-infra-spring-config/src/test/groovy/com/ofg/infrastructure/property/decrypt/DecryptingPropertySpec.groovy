@@ -24,7 +24,7 @@ class DecryptingPropertySpec extends AbstractIntegrationSpec {
     private ConfigurableApplicationContext context
 
     def setupSpec() {
-        System.setProperty("encrypt.key", "eKey")   //To simulate setting environment variable
+        setEncryptKey()
         context = new SpringApplicationBuilder(DecryptingPropertyTestApp, TestConfigurationWithPropertySource, ConfigurationPropertiesSettings)
                 .web(false)
                 .showBanner(false)

@@ -8,7 +8,7 @@ class DecryptingPropertyExtendedSpec extends AbstractIntegrationSpec {
 
     def "should fail when wrong encryption key is provided and there are encrypted passwords"() {
         given:
-            System.setProperty("encrypt.key", "wrongKey")
+            setEncryptKey("wrongKey")
         when:
             def context = defaultTestSpringApplicationBuilder()
                     .properties("propertyKey:{cipher}bb3336c80dffc7a6d13faea47cf1920cf391a03319249d8a6e38c289d1de7232")

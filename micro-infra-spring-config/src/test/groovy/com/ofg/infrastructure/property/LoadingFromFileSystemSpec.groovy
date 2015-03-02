@@ -20,7 +20,6 @@ class LoadingFromFileSystemSpec extends AbstractIntegrationSpec {
     private MyBean myBean
 
     def setupSpec() {
-        System.setProperty("encrypt.key", "eKey")
         context = new SpringApplicationBuilder(BasicApp)
                 .web(false)
                 .showBanner(false)

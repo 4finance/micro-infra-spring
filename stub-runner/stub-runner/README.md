@@ -61,7 +61,7 @@ that will point to the place where the Zookeper instance can be found
 
 ##### Running on an environment without a Zookeeper
 
-When you want to register your stubs against an already existing Zookeeper instance it's enough to provide a switch
+When you want to register your stubs against embedded Zookeeper instance it's enough to provide a switch
 
 ```
 -z 1234

@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.property;
 
+import com.google.common.base.Optional;
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.Resource;
@@ -15,8 +16,6 @@ public class AppCoordinates {
 
     public static final String CONFIG_FOLDER = "CONFIG_FOLDER";
     public static final String APP_ENV = "APP_ENV";
-
-    private static final String COMMON_DIR = "common";
 
     private final String environment;
     private final String applicationName;
@@ -42,54 +41,38 @@ public class AppCoordinates {
     }
 
     public ConfigLocations getConfigLocations(File rootFolder) {
-        return new ConfigLocations(
-                getCommonConfigFolder(rootFolder),
-                getEnvConfigFolder(rootFolder),
-                getCommonCountryConfigFolder(rootFolder),
-                getCountryConfigFolder(rootFolder)
-        );
-    }
-
-    private File getCommonConfigFolder(File rootFolder) {
-        File folder = new File(rootFolder, COMMON_DIR);
-        return addNameComponentsWithoutTheLastPartToFolder(folder);
-    }
-
-    private File getCommonCountryConfigFolder(File rootFolder) {
-        return new File(getCommonConfigFolder(rootFolder), countryCode);
-    }
-
-    private File getEnvConfigFolder(File rootFolder) {
-        File folder = new File(rootFolder, environment);
-        return addNameComponentsWithoutTheLastPartToFolder(folder);
-    }
-
-    private File getCountryConfigFolder(File rootFolder) {
-        return new File(getEnvConfigFolder(rootFolder), countryCode);
+        return new ConfigLocations(rootFolder, getMicroservicePathPrefix(),
+                environment, countryCode);
     }
 
     /**
-     * It adds name components to folder but is skips last part of the name.
-     * For app name /com/ofg/micro-app, it adds only /com/ofg to a folder name.
-     *
-     * @param folder
-     * @return folder with added name components
+     * It works as follows:
+     * microservice path        result
+     * /com/ofg/micro-app    -> /com/ofg
+     * /com/ofg/pl/micro-app -> /com/ofg (if countryCode == pl)
      */
-    private File addNameComponentsWithoutTheLastPartToFolder(File folder) {
+    private String getMicroservicePathPrefix() {
         final String[] components = nameComponents();
-        // Skip last part of name
-        for (int i = 0; i < components.length - 1; i++) {
-            folder = new File(folder, components[i]);
+        StringBuilder pathSb = new StringBuilder();
+        // Skip last 2 parts of name
+        for (int i = 0; i < components.length - 2; i++) {
+            pathSb.append(components[i]);
+            pathSb.append(File.separatorChar);
         }
-        return useParentIfLastChildIsCountry(folder);
+        pathSb.append(getPenultimateComponentIfNotCountryCode(components).or(""));
+        return pathSb.toString();
     }
 
-    private File useParentIfLastChildIsCountry(File folder) {
-        if (folder.getName().equals(countryCode)) {
-            return folder.getParentFile();
-        } else {
-            return folder;
+    private Optional<String> getPenultimateComponentIfNotCountryCode(String[] components) {
+        String penultimateComponent = null;
+        int possibleCountryIndex = components.length - 2;
+        if (possibleCountryIndex >= 0) {
+            String possibleCountryCode = components[possibleCountryIndex];
+            if (!possibleCountryCode.equals(countryCode)) {
+                penultimateComponent = possibleCountryCode;
+            }
         }
+        return Optional.fromNullable(penultimateComponent);
     }
 
     private static String findEnvironment() {
@@ -116,6 +99,8 @@ public class AppCoordinates {
         final ConfigLocations configLocations = getConfigLocations(rootConfigFolder);
 
         return Arrays.asList(
+                configLocations.globalPropertiesFile(),
+                configLocations.globalYamlFile(),
                 configLocations.commonPropertiesFile(coreName),
                 configLocations.commonYamlFile(coreName),
                 configLocations.envPropertiesFile(coreName),

@@ -8,76 +8,75 @@ import java.util.List;
 
 class ConfigLocations {
 
-    /**
-     * Shared properties across environments.
-     */
-    private final File commonDir;
+    private static final String BASE_FILENAME_FOR_GLOBAL_CONFIG = "global";
+    private static final String COMMON_DIR_NAME = "common";
 
-    /**
-     * Country specific shared properties across environments.
-     */
-    private final File commonCountryDir;
+    private File rootFolder;
+    private String microservicePathPrefix;
+    private String environment;
+    private String countryCode;
 
-    /**
-     * Properties environment specific.
-     */
-    private final File envDir;
-
-    /**
-     * Properties country specific in given environment.
-     */
-    private final File envCountryDir;
-
-    ConfigLocations(File commonDir, File envDir, File commonCountryDir, File envCountryDir) {
-        this.commonDir = commonDir;
-        this.envDir = envDir;
-        this.commonCountryDir = commonCountryDir;
-        this.envCountryDir = envCountryDir;
+    ConfigLocations(File rootFolder, String microservicePathPrefix, String environment, String countryCode) {
+        this.rootFolder = rootFolder;
+        this.microservicePathPrefix = microservicePathPrefix;
+        this.environment = environment;
+        this.countryCode = countryCode;
     }
 
     List<File> getAllDirs() {
-        return Arrays.asList(commonDir, envDir, commonCountryDir, envCountryDir);
+        return Arrays.asList(
+                getGlobalConfigFolder(),
+                getCommonConfigFolder(),
+                getEnvConfigFolder(),
+                getCommonCountryConfigFolder(),
+                getCountryConfigFolder()
+        );
     }
 
     File commonPropertiesFile(String name) {
-        return propertiesFile(commonDir, name);
+        return propertiesFile(getCommonConfigFolder(), name);
+    }
+
+    File globalPropertiesFile() {
+        return propertiesFile(getGlobalConfigFolder(), BASE_FILENAME_FOR_GLOBAL_CONFIG);
+    }
+
+    File globalYamlFile() {
+        return yamlFile(getGlobalConfigFolder(), BASE_FILENAME_FOR_GLOBAL_CONFIG);
     }
 
     File commonYamlFile(String name) {
-        return yamlFile(commonDir, name);
+        return yamlFile(getCommonConfigFolder(), name);
     }
 
     File envPropertiesFile(String name) {
-        return propertiesFile(envDir, name);
+        return propertiesFile(getEnvConfigFolder(), name);
     }
 
     File envYamlFile(String name) {
-        return yamlFile(envDir, name);
+        return yamlFile(getEnvConfigFolder(), name);
     }
 
     File commonCountryPropertiesFile(String name) {
-        return propertiesFile(commonCountryDir, name);
+        return propertiesFile(getCommonCountryConfigFolder(), name);
     }
 
     File commonCountryYamlFile(String name) {
-        return yamlFile(commonCountryDir, name);
+        return yamlFile(getCommonCountryConfigFolder(), name);
     }
 
     File envCountryPropertiesFile(String name) {
-        return propertiesFile(envCountryDir, name);
+        return propertiesFile(getCountryConfigFolder(), name);
     }
 
     File envCountryYamlFile(String name) {
-        return yamlFile(envCountryDir, name);
+        return yamlFile(getCountryConfigFolder(), name);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("commonDir", commonDir)
-                .add("envDir", envDir)
-                .add("commonCountryDir", commonCountryDir)
-                .add("envCountryDir", envCountryDir)
+                .add("dirs", getAllDirs())
                 .toString();
     }
 
@@ -87,5 +86,44 @@ class ConfigLocations {
 
     private File yamlFile(File parent, String name) {
         return new File(parent, name + ".yaml");
+    }
+
+    /**
+     * Shared properties across all microservices.
+     */
+    private File getGlobalConfigFolder() {
+        return new File(rootFolder, COMMON_DIR_NAME);
+    }
+
+    /**
+     * Shared properties across environments.
+     */
+    private File getCommonConfigFolder() {
+        return new File(getGlobalConfigFolder(), microservicePathPrefix);
+    }
+
+    /**
+     * Country specific shared properties across environments.
+     */
+    private File getCommonCountryConfigFolder() {
+        return new File(getCommonConfigFolder(), countryCode);
+    }
+
+    /**
+     * Properties environment specific.
+     */
+    private File getEnvConfigFolder() {
+        return new File(getEnvFolder(), microservicePathPrefix);
+    }
+
+    /**
+     * Properties country specific in given environment.
+     */
+    private File getCountryConfigFolder() {
+        return new File(getEnvConfigFolder(), countryCode);
+    }
+
+    private File getEnvFolder() {
+        return new File(rootFolder, environment);
     }
 }

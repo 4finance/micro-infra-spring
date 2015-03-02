@@ -1,7 +1,7 @@
 env:
   yaml:
     key: env yaml value
-common:
+global:
   default:
     yaml:
       key: overridden env yaml value

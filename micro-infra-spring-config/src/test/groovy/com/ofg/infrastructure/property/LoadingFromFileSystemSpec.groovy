@@ -23,6 +23,11 @@ class LoadingFromFileSystemSpec extends AbstractIntegrationSpec {
         myBean = context.getBean(MyBean)
     }
 
+    def 'should read property from global .properties file'() {
+        expect:
+            myBean.globalPropKey == 'global prop value'
+    }
+
     def 'should read property from common .properties file'() {
         expect:
             myBean.commonPropKey == 'common prop value'
@@ -41,6 +46,11 @@ class LoadingFromFileSystemSpec extends AbstractIntegrationSpec {
     def 'should read property from country-specific .properties file'() {
         expect:
             myBean.countryPropKey == 'country prop value'
+    }
+
+    def 'should read property from global .yaml file'() {
+        expect:
+            myBean.globalYamlKey == 'global yaml value'
     }
 
     def 'should read property from common .yaml file'() {
@@ -65,16 +75,17 @@ class LoadingFromFileSystemSpec extends AbstractIntegrationSpec {
 
     def 'should override property from country-specific .properties file'() {
         expect:
-            myBean.commonDefaultPropKey == 'overridden country-specific prop value'
+            myBean.globalDefaultPropKey == 'overridden country-specific prop value'
     }
 
     def 'should override property from country-specific .yaml file'() {
         expect:
-            myBean.commonDefaultYamlKey == 'overridden country-specific yaml value'
+            myBean.globalDefaultYamlKey == 'overridden country-specific yaml value'
     }
 
     def '.yaml has priority over .properties'() {
         expect:
+            myBean.customGlobalKey == 'custom global yaml value'
             myBean.customCommonKey == 'custom common yaml value'
             myBean.customEnvKey == 'custom env yaml value'
             myBean.customCommonCountryKey == 'custom common country yaml value'
@@ -95,6 +106,9 @@ class BasicApp {
 
 class MyBean {
 
+    @Value('${global.prop.key}')
+    String globalPropKey
+
     @Value('${common.prop.key}')
     String commonPropKey
 
@@ -106,6 +120,9 @@ class MyBean {
 
     @Value('${country.prop.key}')
     String countryPropKey
+
+    @Value('${global.yaml.key}')
+    String globalYamlKey
 
     @Value('${common.yaml.key}')
     String commonYamlKey
@@ -119,11 +136,14 @@ class MyBean {
     @Value('${country.yaml.key}')
     String countryYamlKey
 
-    @Value('${common.default.prop.key}')
-    String commonDefaultPropKey
+    @Value('${global.default.prop.key}')
+    String globalDefaultPropKey
 
-    @Value('${common.default.yaml.key}')
-    String commonDefaultYamlKey
+    @Value('${global.default.yaml.key}')
+    String globalDefaultYamlKey
+
+    @Value('${custom.global.key}')
+    String customGlobalKey
 
     @Value('${custom.common.key}')
     String customCommonKey

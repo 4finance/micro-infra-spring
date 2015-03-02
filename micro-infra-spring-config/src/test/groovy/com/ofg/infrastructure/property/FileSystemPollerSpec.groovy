@@ -51,6 +51,8 @@ class FileSystemPollerSpec extends AbstractIntegrationSpec {
 
         where:
             configFile << [
+                    poller.getConfigLocations().globalPropertiesFile(),
+                    poller.getConfigLocations().globalYamlFile(),
                     poller.getConfigLocations().commonPropertiesFile(MICROSERVICE_NAME),
                     poller.getConfigLocations().commonYamlFile(MICROSERVICE_NAME),
                     poller.getConfigLocations().envPropertiesFile(MICROSERVICE_NAME),

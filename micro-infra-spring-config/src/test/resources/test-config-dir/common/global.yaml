@@ -1,0 +1,9 @@
+global:
+  yaml:
+    key: global yaml value
+  default:
+    yaml:
+      key: global default yaml value
+custom:
+  global:
+    key: custom global yaml value

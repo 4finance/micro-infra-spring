@@ -16,7 +16,9 @@ class AppCoordinatesSpec extends Specification {
 
         where:
             env        | country | name                                   || paths
-            'prod'     | 'pl'    | 'foo'                                  || ['/common/foo.properties',
+           'prod'      | 'pl'    | 'foo'                                  || ['/common/global.properties',
+                                                                              '/common/global.yaml',
+                                                                              '/common/foo.properties',
                                                                               '/common/foo.yaml',
                                                                               '/prod/foo.properties',
                                                                               '/prod/foo.yaml',
@@ -24,7 +26,9 @@ class AppCoordinatesSpec extends Specification {
                                                                               '/common/pl/foo-pl.yaml',
                                                                               '/prod/pl/foo-pl.properties',
                                                                               '/prod/pl/foo-pl.yaml']
-            'prod'     | 'pl'    | '/a/b/c'                               || ['/common/a/b/c.properties',
+            'prod'     | 'pl'    | '/a/b/c'                               || ['/common/global.properties',
+                                                                              '/common/global.yaml',
+                                                                              '/common/a/b/c.properties',
                                                                               '/common/a/b/c.yaml',
                                                                               '/prod/a/b/c.properties',
                                                                               '/prod/a/b/c.yaml',
@@ -32,7 +36,9 @@ class AppCoordinatesSpec extends Specification {
                                                                               '/common/a/b/pl/c-pl.yaml',
                                                                               '/prod/a/b/pl/c-pl.properties',
                                                                               '/prod/a/b/pl/c-pl.yaml']
-            'dev'      | 'es'    | '/com/ofg/fraud-es'                    || ['/common/com/ofg/fraud.properties',
+            'dev'      | 'es'    | '/com/ofg/fraud-es'                    || ['/common/global.properties',
+                                                                              '/common/global.yaml',
+                                                                              '/common/com/ofg/fraud.properties',
                                                                               '/common/com/ofg/fraud.yaml',
                                                                               '/dev/com/ofg/fraud.properties',
                                                                               '/dev/com/ofg/fraud.yaml',
@@ -40,7 +46,9 @@ class AppCoordinatesSpec extends Specification {
                                                                               '/common/com/ofg/es/fraud-es.yaml',
                                                                               '/dev/com/ofg/es/fraud-es.properties',
                                                                               '/dev/com/ofg/es/fraud-es.yaml']
-            'dev'      | 'pl'    | '/com/ofg/pl/fraud-pl'                 || ['/common/com/ofg/fraud.properties',
+            'dev'      | 'pl'    | '/com/ofg/pl/fraud-pl'                 || ['/common/global.properties',
+                                                                              '/common/global.yaml',
+                                                                              '/common/com/ofg/fraud.properties',
                                                                               '/common/com/ofg/fraud.yaml',
                                                                               '/dev/com/ofg/fraud.properties',
                                                                               '/dev/com/ofg/fraud.yaml',
@@ -48,7 +56,9 @@ class AppCoordinatesSpec extends Specification {
                                                                               '/common/com/ofg/pl/fraud-pl.yaml',
                                                                               '/dev/com/ofg/pl/fraud-pl.properties',
                                                                               '/dev/com/ofg/pl/fraud-pl.yaml']
-            'dev'      | 'pl'    | '/com/ofg/pl/fraud'                    || ['/common/com/ofg/fraud.properties',
+            'dev'      | 'pl'    | '/com/ofg/pl/fraud'                    || ['/common/global.properties',
+                                                                              '/common/global.yaml',
+                                                                              '/common/com/ofg/fraud.properties',
                                                                               '/common/com/ofg/fraud.yaml',
                                                                               '/dev/com/ofg/fraud.properties',
                                                                               '/dev/com/ofg/fraud.yaml',
@@ -56,7 +66,9 @@ class AppCoordinatesSpec extends Specification {
                                                                               '/common/com/ofg/pl/fraud-pl.yaml',
                                                                               '/dev/com/ofg/pl/fraud-pl.properties',
                                                                               '/dev/com/ofg/pl/fraud-pl.yaml']
-            'stage-01' | 'ro'    | 'com/ofg/loans/ro/backoffice-vivus-ro' || ['/common/com/ofg/loans/backoffice-vivus.properties',
+            'stage-01' | 'ro'    | 'com/ofg/loans/ro/backoffice-vivus-ro' || ['/common/global.properties',
+                                                                              '/common/global.yaml',
+                                                                              '/common/com/ofg/loans/backoffice-vivus.properties',
                                                                               '/common/com/ofg/loans/backoffice-vivus.yaml',
                                                                               '/stage-01/com/ofg/loans/backoffice-vivus.properties',
                                                                               '/stage-01/com/ofg/loans/backoffice-vivus.yaml',

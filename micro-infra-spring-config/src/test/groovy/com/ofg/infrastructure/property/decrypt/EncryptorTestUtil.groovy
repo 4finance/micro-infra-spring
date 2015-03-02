@@ -29,7 +29,10 @@ class EncryptorTestUtil {
         System.setProperty(CLOUD_ENCRYPT_KEY, inputData.encryptKey)
         System.setProperty(APP_ENV, "prod")
 
-        def context = new SpringApplicationBuilder(DecryptingPropertyTestApp).web(false).showBanner(false).run()
+        def context = new SpringApplicationBuilder(DecryptingPropertyTestApp)
+                .web(false)
+                .showBanner(false)
+                .run()
         def encryptor = context.getBean(TextEncryptor)
 
         def encrypted = encryptor.encrypt(inputData.textToEncrypt)

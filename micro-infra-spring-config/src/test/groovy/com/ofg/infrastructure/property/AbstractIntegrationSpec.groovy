@@ -1,6 +1,8 @@
 package com.ofg.infrastructure.property
 
 import com.ofg.infrastructure.spock.ClassLevelRestoreSystemProperties
+import org.springframework.boot.builder.SpringApplicationBuilder
+import org.springframework.context.ConfigurableApplicationContext
 import spock.lang.Specification
 import spock.util.environment.RestoreSystemProperties
 
@@ -31,5 +33,15 @@ abstract class AbstractIntegrationSpec extends Specification {
 
     protected void setEncryptKey(String encryptKey = 'eKey') {
         System.setProperty(CLOUD_ENCRYPT_KEY, encryptKey)
+    }
+
+    protected ConfigurableApplicationContext contextWithSources(Object... sources) {
+        return applicationBuilderWithSources(sources).run()
+    }
+
+    protected SpringApplicationBuilder applicationBuilderWithSources(Object... sources) {
+        return new SpringApplicationBuilder(sources)
+                .web(false)
+                .showBanner(false)
     }
 }

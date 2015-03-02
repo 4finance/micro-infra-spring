@@ -1,7 +1,6 @@
 package com.ofg.infrastructure.property.decrypt
 
 import com.ofg.infrastructure.property.AbstractIntegrationSpec
-import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ConfigurableApplicationContext
@@ -25,9 +24,8 @@ class DecryptingPropertySpec extends AbstractIntegrationSpec {
 
     def setupSpec() {
         setEncryptKey()
-        context = new SpringApplicationBuilder(DecryptingPropertyTestApp, TestConfigurationWithPropertySource, ConfigurationPropertiesSettings)
-                .web(false)
-                .showBanner(false)
+        context = applicationBuilderWithSources(
+                DecryptingPropertyTestApp, TestConfigurationWithPropertySource, ConfigurationPropertiesSettings)
                 .properties("enc.prop:{cipher}f43b8323cd82a74aafa1fba5efdce529274b58f68145903e6cc7e460e07e0e20")
                 .run("--spring.config.name=decryptingPropertyTest")
     }

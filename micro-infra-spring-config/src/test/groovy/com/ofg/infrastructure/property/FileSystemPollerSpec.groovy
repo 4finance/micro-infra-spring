@@ -1,7 +1,6 @@
 package com.ofg.infrastructure.property
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.cloud.autoconfigure.ConfigClientAutoConfiguration
 import org.springframework.cloud.context.config.annotation.RefreshScope
 import org.springframework.context.ConfigurableApplicationContext
@@ -34,10 +33,7 @@ class FileSystemPollerSpec extends AbstractIntegrationSpec {
     private PollingConditions conditions = new PollingConditions()
 
     def setupSpec() {
-        context = new SpringApplicationBuilder(RefreshingApp)
-                .web(false)
-                .showBanner(false)
-                .run()
+        context = contextWithSources(RefreshingApp)
         counter = context.getBean(InitCounter)
         poller = context.getBean(FileSystemPoller)
     }

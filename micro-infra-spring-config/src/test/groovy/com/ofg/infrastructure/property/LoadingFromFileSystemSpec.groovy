@@ -2,7 +2,6 @@ package com.ofg.infrastructure.property
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.cloud.autoconfigure.ConfigClientAutoConfiguration
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Bean
@@ -20,10 +19,7 @@ class LoadingFromFileSystemSpec extends AbstractIntegrationSpec {
     private MyBean myBean
 
     def setupSpec() {
-        context = new SpringApplicationBuilder(BasicApp)
-                .web(false)
-                .showBanner(false)
-                .run()
+        context = contextWithSources(BasicApp)
         myBean = context.getBean(MyBean)
     }
 

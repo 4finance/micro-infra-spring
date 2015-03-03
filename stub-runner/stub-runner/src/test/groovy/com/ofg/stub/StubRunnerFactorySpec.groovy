@@ -23,7 +23,7 @@ class StubRunnerFactorySpec extends Specification {
             2 * downloader.downloadAndUnpackStubJar(_, _, _, _) >> folder.root
             stubRunnerOptions.stubRepositoryRoot = folder.root.absolutePath
         when:
-            List<StubRunner> stubRunners = factory.createStubsFromServiceConfiguration()
+            List<StubRunner> stubRunners = factory.createStubsFromServiceConfiguration().findAll { it.present }.collect { it.get() }
         then:
             stubRunners.size() == 2
     }
@@ -36,7 +36,7 @@ class StubRunnerFactorySpec extends Specification {
             1 * downloader.downloadAndUnpackStubJar(_, _, _, _) >> folder.root
             stubRunnerOptions.stubRepositoryRoot = folder.root.absolutePath
         when:
-            List<StubRunner> stubRunners = factory.createStubsFromStubsModule()
+            List<StubRunner> stubRunners = factory.createStubsFromStubsModule().findAll { it.present }.collect { it.get() }
         then:
             stubRunners.size() == 2
 

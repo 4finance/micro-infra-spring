@@ -1,4 +1,5 @@
 package com.ofg.stub
+
 import com.ofg.stub.mapping.ProjectMetadata
 import com.ofg.stub.registry.StubRegistry
 import groovy.transform.CompileStatic
@@ -8,6 +9,7 @@ import org.apache.curator.RetryPolicy
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
 import org.apache.curator.retry.ExponentialBackoffRetry
+import com.google.common.base.Optional
 
 import static com.google.common.base.Preconditions.checkArgument
 import static org.apache.commons.lang.StringUtils.*
@@ -37,7 +39,7 @@ class StubRunnerFactory {
         this.stubDownloader = stubDownloader
     }
 
-    List<StubRunner> createStubsFromServiceConfiguration() {
+    List<Optional<StubRunner>> createStubsFromServiceConfiguration() {
         checkArgument(isNotEmpty(stubRunnerOptions.stubRepositoryRoot))
         client.start()
         return collaborators.collaboratorsPath.collect { String dependencyMappingsPath ->
@@ -45,7 +47,7 @@ class StubRunnerFactory {
             final File unzipedStubDir = stubDownloader.downloadAndUnpackStubJar(stubRunnerOptions.skipLocalRepo, stubRunnerOptions.stubRepositoryRoot,
                     module.groupId, "$module.artifactId${getStubDefinitionSuffix()}")
             final String context = collaborators.basePath
-            return createStubRunner(module.artifactId, unzipedStubDir, context, dependencyMappingsPath, stubRunnerOptions, client)
+            return createStubRunner(unzipedStubDir, module, context, dependencyMappingsPath)
         }
     }
 
@@ -53,7 +55,7 @@ class StubRunnerFactory {
         return stubRunnerOptions.stubDefinitionSuffix ? "-${stubRunnerOptions.stubDefinitionSuffix}" : ""
     }
 
-    List<StubRunner> createStubsFromStubsModule() {
+    List<Optional<StubRunner>> createStubsFromStubsModule() {
         checkArgument(isNotEmpty(stubRunnerOptions.stubRepositoryRoot))
         checkArgument(isNotEmpty(stubRunnerOptions.stubsGroup))
         checkArgument(isNotEmpty(stubRunnerOptions.stubsModule))
@@ -62,8 +64,15 @@ class StubRunnerFactory {
         final String context = collaborators.basePath
         return collaborators.collaboratorsPath.collect { String dependencyMappingsPath ->
             Module module = new Module(dependencyMappingsPath)
-            return createStubRunner(module.artifactId, unzippedStubsDir, context, dependencyMappingsPath as String, stubRunnerOptions, client)
+            return createStubRunner(unzippedStubsDir, module, context, dependencyMappingsPath)
         }
+    }
+
+    private Optional createStubRunner(File unzipedStubDir, Module module, String context, String dependencyMappingsPath) {
+        if (!unzipedStubDir) {
+            return Optional.absent()
+        }
+        return Optional.of(createStubRunner(module.artifactId, unzipedStubDir, context, dependencyMappingsPath, stubRunnerOptions, client))
     }
 
     private StubRunner createStubRunner(String alias, File unzippedStubsDir, String context, String dependencyMappingsPath, StubRunnerOptions stubRunnerOptions, CuratorFramework client) {

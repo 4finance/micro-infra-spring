@@ -1,8 +1,8 @@
 description = 'Microservice Spring infrastructure for properties management'
 
 ext {
-    springCloudVersion = "1.0.0.RC1"
-    springSecurityRsaVersion = "1.0.0.M1"
+    springCloudVersion = "1.0.0.RELEASE"
+    springSecurityRsaVersion = "1.0.0.RELEASE"
 }
 
 dependencies {
@@ -15,7 +15,6 @@ dependencies {
         exclude group: 'ch.qos.logback', module: 'logback-classic'
     }
     compile "org.springframework.security:spring-security-rsa:$springSecurityRsaVersion"
-    compile "org.eclipse.jgit:org.eclipse.jgit:2.3.1.201302201838-r"
     compile "org.codehaus.groovy:groovy-all"
     compile "org.aspectj:aspectjrt"
     compile "commons-io:commons-io"
@@ -32,8 +31,4 @@ test {
     if (disableDecryptionTestsPropertyValue != null) {
         systemProperty("disableDecryptionTests", disableDecryptionTestsPropertyValue)
     }
-}
-
-repositories {
-    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" } //Spock
 }

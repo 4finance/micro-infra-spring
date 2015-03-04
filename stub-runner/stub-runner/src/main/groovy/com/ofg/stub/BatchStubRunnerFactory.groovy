@@ -28,10 +28,7 @@ class BatchStubRunnerFactory {
         } else {
             stubRunners = stubRunnerFactory.createStubsFromServiceConfiguration()
         }
-        return new BatchStubRunner(getOnlyPresentValues(stubRunners))
+        return new BatchStubRunner(Optional.presentInstances(stubRunners))
     }
 
-    private List<StubRunner> getOnlyPresentValues(List<Optional<StubRunner>> stubRunners) {
-        return stubRunners.findAll { it.present }.collect { it.get() }
-    }
 }

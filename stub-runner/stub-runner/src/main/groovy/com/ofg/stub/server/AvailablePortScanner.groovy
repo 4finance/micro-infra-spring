@@ -31,8 +31,8 @@ class AvailablePortScanner {
     public <T> T tryToExecuteWithFreePort(Closure<T> closure) {
         for (i in (1..maxRetryCount)) {
             try {
-                int portToBind = maxPortNumber - minPortNumber
-                int portToScan = RandomUtils.nextInt(portToBind) + minPortNumber
+                int numberOfPortsToBind = maxPortNumber - minPortNumber
+                int portToScan = RandomUtils.nextInt(numberOfPortsToBind) + minPortNumber
                 checkIfPortIsAvailable(portToScan)
                 return executeLogicForAvailablePort(portToScan, closure)
             } catch (BindException exception) {
@@ -66,7 +66,7 @@ class AvailablePortScanner {
     static class InvalidPortRange extends RuntimeException {
         @PackageScope
         InvalidPortRange(int lowerBound, int upperBound) {
-            super("Invalid bounds exceptions, min port [$lowerBound] is greater than max port [$upperBound]")
+            super("Invalid bounds exceptions, min port [$lowerBound] is greater or equal to max port [$upperBound]")
         }
     }
 }

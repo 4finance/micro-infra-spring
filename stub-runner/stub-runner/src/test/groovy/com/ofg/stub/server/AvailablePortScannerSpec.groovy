@@ -37,11 +37,11 @@ class AvailablePortScannerSpec extends Specification {
             new AvailablePortScanner(minPort, maxPort, MAX_RETRY_COUNT_FOR_NEGATIVE_SCENARIOS)
         then:
             def ex = thrown(AvailablePortScanner.InvalidPortRange)
-            ex.message == "Invalid bounds exceptions, min port [$minPort] is greater than max port [$maxPort]"
+            ex.message == "Invalid bounds exceptions, min port [$minPort] is greater or equal to max port [$maxPort]"
         where:
             minPort  | maxPort
             MIN_PORT | MIN_PORT
-            MAX_PORT | MAX_PORT
+            MAX_PORT | MIN_PORT
 
     }
 

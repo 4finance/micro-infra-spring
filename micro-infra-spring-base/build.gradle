@@ -3,7 +3,7 @@ description = 'Microservice base infrastructure registered in Spring'
 ext {
     metricsVersion = '3.1.0'
     jacksonMapper = '1.9.13'
-    hystrixVersion = '1.4.0-RC6'
+    hystrixVersion = '1.4.0-rc.9'
 }
 
 sourceSets.main.java.srcDirs = []
@@ -34,7 +34,7 @@ dependencies {
     testCompile 'org.hamcrest:hamcrest-library:1.3'
     testCompile 'org.hibernate:hibernate-validator:5.1.3.Final'
     testCompile 'com.jayway.jsonpath:json-path-assert:1.2.0'
-    testCompile 'com.github.stefanbirkner:system-rules:1.8.0'
+    testCompile 'com.github.stefanbirkner:system-rules:1.9.0'
     testCompile project(':micro-infra-spring-test')
     testCompile 'org.codehaus.gpars:gpars:1.2.1'
 }

@@ -24,6 +24,8 @@ import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.PA
  *     <li>{@code stubrunner.stubs.module} default value {@code stub-definitions} - artifactId of your stub mappings</li>
  *     <li>{@code stubrunner.skip-local-repo} default value {@code false} - avoids local repository in the dependency resolution & always pulls from the remote</li>
  *     <li>{@code stubrunner.use-microservice-definitions} default value {@code false} - use per microservice stub resolution rather than one jar for all microservices</li>
+ *     <li>{@code stubrunner.wait-for-service} default value {@code false} - wait for connection from the service to local Zookeeper</li>
+ *     <li>{@code stubrunner.wait-timeout} default value {@code 1} - sets wait-for-service timeout</li>
  * </ul>
  *
  * What happens under the hood is that
@@ -58,6 +60,8 @@ class StubRunnerConfiguration {
      * @param stubsSuffix suffix for the jar containing stubs
      * @param skipLocalRepo avoids local repository in dependency resolution
      * @param useMicroserviceDefinitions use per microservice stub resolution rather than one jar for all microservices
+     * @param waitForService wait for connection from service
+     * @param waitTimeout wait timeout in seconds
      * @param testingServer test instance of Zookeeper
      * @param serviceConfigurationResolver object that wraps the microservice configuration
      */
@@ -70,10 +74,12 @@ class StubRunnerConfiguration {
                                 @Value('${stubrunner.stubs.suffix:stubs}') String stubsSuffx,
                                 @Value('${stubrunner.skip-local-repo:false}') boolean skipLocalRepo,
                                 @Value('${stubrunner.use-microservice-definitions:false}') boolean useMicroserviceDefinitions,
+                                @Value('${stubrunner.wait-for-service:false}') boolean waitForService,
+                                @Value('${stubrunner.wait-timeout:1}') Integer waitTimeout,
                                 TestingServer testingServer,
                                 ServiceConfigurationResolver serviceConfigurationResolver) {
         StubRunnerOptions stubRunnerOptions = new StubRunnerOptions(minPortValue, maxPortValue, stubRepositoryRoot, stubsGroup, stubsModule, skipLocalRepo,
-                useMicroserviceDefinitions, testingServer.connectString, testingServer.port, stubsSuffx)
+                useMicroserviceDefinitions, testingServer.connectString, testingServer.port, stubsSuffx, waitForService, waitTimeout)
         List<String> dependenciesPath = serviceConfigurationResolver.dependencies.collect { String alias, Map dependencyConfig ->
             return dependencyConfig[PATH]
         }

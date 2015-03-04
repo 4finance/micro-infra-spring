@@ -14,13 +14,13 @@ java -jar stub-runner.jar [options...]
  -c (--context) VAL                 : Context for which the project should be
                                       run (e.g. 'pl', 'lt')
  -maxp (--maxPort) N                : Maximum port value to be assigned to the
-                                      Wiremock instance (e.g. 12345)
+                                      Wiremock instance. Defaults to 15000
  -md (--useMicroserviceDefinitions) : Switch to define whether you want to use
                                       the new approach with microservice
                                       definitions. Defaults to 'true'. To use
                                       old version switch to 'false'
  -minp (--minPort) N                : Minimal port value to be assigned to the
-                                      Wiremock instance (e.g. 12345)
+                                      Wiremock instance. Defaults to 10000
  -n (--serviceName) VAL             : Name of the service under which it is
                                       registered in Zookeeper. (e.g.
                                       'com/service/name')
@@ -37,13 +37,18 @@ java -jar stub-runner.jar [options...]
  -sm (--stubsModule) VAL            : @Deprecated - Name of the module where
                                       you store your stub definitions (e.g.
                                       stub-definitions)
- -ss (--stubsSuffix) VAL            : Suffix for the jar containing stubs (e.g.
-                                      'stubs' if the stub jar would have a
-                                      'stubs' classifier for stubs: foobar-stubs
-                                      ). Defaults to 'stubs'
  -sr (--stubRepositoryRoot) VAL     : Location of a Jar containing server where
                                       you keep your stubs (e.g. http://nexus.4fi
                                       nance.net/content/repositories/Pipeline)
+ -ss (--stubsSuffix) VAL            : Suffix for the jar containing stubs (e.g.
+                                      'stubs' if the stub jar would have a
+                                      'stubs' classifier for stubs:
+                                      foobar-stubs ). Defaults to 'stubs'
+ -wsc (--waitForServiceConnect)     : Switch to wait for service registration
+                                      in Zookeeper (default timeout is 60
+                                      seconds - configurable using -wt)
+ -wt (--waitTimeout) N              : Amount of second to wait for service
+                                      registration
  -z (--zookeeperPort) N             : Port of the zookeeper instance (e.g. 2181)
  -zl (--zookeeperLocation) VAL      : Location of local Zookeeper you want to
                                       connect to (e.g. localhost:23456)
@@ -69,6 +74,16 @@ When you want to register your stubs against embedded Zookeeper instance it's en
 
 that will start a testing Zookeeper instance on port 1234
 
+
+##### Configuring wait time for registering services
+
+There is a option to wait given amount of time waiting for service to be registered using an application parameter called:
+
+```
+-wsc 
+```
+
+after switching it on stub-runner will wait default 30 second for service registration
 
 ### Stub runner configuration
 

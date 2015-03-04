@@ -59,9 +59,18 @@ class StubRunnerOptions {
      * stub definition suffix
      */
     String stubDefinitionSuffix
+    /**
+     * Waits with resolution of collaborators 
+     */
+    boolean waitForServiceConnect
+
+    /**
+     * Globally used timeout in seconds for getting stubs
+     */
+    Integer waitTimeout
 
     StubRunnerOptions(Integer minPortValue, Integer maxPortValue, String stubRepositoryRoot, String stubsGroup,
-                      String stubsModule, boolean skipLocalRepo, boolean useMicroserviceDefinitions, String zookeeperConnectString, Integer zookeeperPort, String stubDefinitionSuffix) {
+                      String stubsModule, boolean skipLocalRepo, boolean useMicroserviceDefinitions, String zookeeperConnectString, Integer zookeeperPort, String stubDefinitionSuffix, boolean waitForServiceConnect, Integer waitTimeout) {
         this.minPortValue = minPortValue
         this.maxPortValue = maxPortValue
         this.stubRepositoryRoot = stubRepositoryRoot
@@ -72,6 +81,8 @@ class StubRunnerOptions {
         this.zookeeperConnectString = zookeeperConnectString
         this.zookeeperPort = zookeeperPort
         this.stubDefinitionSuffix = stubDefinitionSuffix
+        this.waitForServiceConnect = waitForServiceConnect
+        this.waitTimeout = waitTimeout
     }
 
     StubRunnerOptions() {

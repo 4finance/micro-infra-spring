@@ -9,8 +9,8 @@ import org.kohsuke.args4j.CmdLineException
 import org.kohsuke.args4j.CmdLineParser
 import org.kohsuke.args4j.Option
 
-import static org.apache.commons.lang.StringUtils.isNotBlank
-import static org.kohsuke.args4j.OptionHandlerFilter.ALL
+import static org.apache.commons.lang.StringUtils.*
+import static org.kohsuke.args4j.OptionHandlerFilter.*
 
 /**
  * Class having the main method to be executed in the fatJar
@@ -61,6 +61,12 @@ class StubRunnerMain {
     @Option(name = "-n", aliases = ['--serviceName'], usage = "Name of the service under which it is registered in Zookeeper. (e.g. 'com/service/name')", forbids = ['-r'])
     private String serviceName
 
+    @Option(name = "-wsc", aliases = ["--waitForServiceConnect"], usage = "Switch to wait for service registration in Zookeeper (default timeout is 60 seconds - configurable using -wt)")
+    private Boolean waitForServiceConnect = false
+
+    @Option(name = "-wt", aliases = ["--waitTimeout"], usage = "Amount of second to wait for service registration")
+    private Integer waitTimeout = 30
+
     private final Arguments arguments
     private final StubRegistry stubRegistry
     private final StubRepository stubRepository
@@ -72,7 +78,7 @@ class StubRunnerMain {
             parser.parseArgument(args)
             this.arguments = new Arguments(new StubRunnerOptions(minPortValue, maxPortValue, stubRepositoryRoot,
                     stubsGroup, stubsModule, skipLocalRepo, useMicroserviceDefinitions, zookeeperLocation,
-                    testingZookeeperPort, stubsSuffix),
+                    testingZookeeperPort, stubsSuffix, waitForServiceConnect, waitTimeout),
                     context, repositoryPath, serviceName)
             this.zookeeperServer = resolveZookeeperServer()
             this.zookeeperServer.start()
@@ -88,6 +94,7 @@ class StubRunnerMain {
         if (isNotBlank(arguments.stubRunnerOptions.zookeeperConnectString)) {
             return new ZookeeperServer(arguments.stubRunnerOptions.zookeeperConnectString)
         } else if (arguments.stubRunnerOptions.zookeeperPort) {
+            arguments.stubRunnerOptions.zookeeperConnectString = "localhost: ${arguments.stubRunnerOptions.zookeeperPort}"
             return new ZookeeperServer(arguments.stubRunnerOptions.zookeeperPort)
         }
         throw new IllegalArgumentException('You have to provide either Zookeeper port or a path to a local Zookeeper')
@@ -103,13 +110,20 @@ class StubRunnerMain {
 
     static void main(String[] args) {
         new StubRunnerMain(args).execute()
+
     }
 
     private void execute() {
-        log.debug("Launching StubRunner with args: $arguments")
-        Collaborators collaborators = CollaboratorsPathResolver.resolveFromZookeeper(arguments.serviceName, arguments.context, zookeeperServer)
-        BatchStubRunner stubRunner = new BatchStubRunnerFactory(arguments.stubRunnerOptions, collaborators).buildBatchStubRunner()
-        stubRunner.runStubs()
+        try {
+            log.debug("Launching StubRunner with args: $arguments")
+            Collaborators collaborators = new CollaboratorsPathResolver().resolveFromZookeeper(arguments.serviceName, arguments.context, zookeeperServer, arguments.stubRunnerOptions)
+            BatchStubRunner stubRunner = new BatchStubRunnerFactory(arguments.stubRunnerOptions, collaborators).buildBatchStubRunner()
+            stubRunner.runStubs()
+        } catch (Exception e) {
+            log.info("Closing zookeeper because of exception")
+            zookeeperServer?.shutdown()
+            throw e
+        }
     }
 
 }

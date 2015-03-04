@@ -1,5 +1,6 @@
 package com.ofg.stub
 
+import com.google.common.base.Optional
 import groovy.transform.CompileStatic
 
 /**
@@ -20,13 +21,14 @@ class BatchStubRunnerFactory {
     }
 
     BatchStubRunner buildBatchStubRunner() {
-        List<StubRunner> stubRunners
+        List<Optional<StubRunner>> stubRunners
         StubRunnerFactory stubRunnerFactory = new StubRunnerFactory(stubRunnerOptions, dependencies)
         if (!stubRunnerOptions.useMicroserviceDefinitions) {
             stubRunners = stubRunnerFactory.createStubsFromStubsModule()
         } else {
             stubRunners = stubRunnerFactory.createStubsFromServiceConfiguration()
         }
-        return new BatchStubRunner(stubRunners)
+        return new BatchStubRunner(Optional.presentInstances(stubRunners))
     }
+
 }

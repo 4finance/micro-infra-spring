@@ -11,21 +11,23 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class BatchStubRunner implements StubRunning {
 
-    private final List<StubRunner> stubRunners
+    private final Iterable<StubRunner> stubRunners
 
-    BatchStubRunner(List<StubRunner> stubRunners) {
+    BatchStubRunner(Iterable<StubRunner> stubRunners) {
         this.stubRunners = stubRunners
     }
 
     @Override
     void runStubs() {
-        stubRunners*.runStubs()
+        stubRunners.each {
+            it.runStubs()
+        }
     }
 
     @Override
     Optional<URL> findStubUrlByRelativePath(String relativePath) {
-        return stubRunners.findResult(Optional.absent()) {
-            def optionalUrl = it.findStubUrlByRelativePath(relativePath)
+        return stubRunners.findResult(Optional.absent()) { StubRunner stubRunner ->
+            def optionalUrl = stubRunner.findStubUrlByRelativePath(relativePath)
             if(optionalUrl.present) {
                 return optionalUrl
             }
@@ -34,6 +36,8 @@ class BatchStubRunner implements StubRunning {
 
     @Override
     void close() throws IOException {
-        stubRunners*.close()
+        stubRunners.each {
+            it.close()
+        }
     }
 }

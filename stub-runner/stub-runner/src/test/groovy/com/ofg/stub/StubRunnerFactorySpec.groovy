@@ -1,5 +1,6 @@
 package com.ofg.stub
 
+import com.google.common.base.Optional
 import org.apache.curator.framework.CuratorFramework
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
@@ -23,7 +24,7 @@ class StubRunnerFactorySpec extends Specification {
             2 * downloader.downloadAndUnpackStubJar(_, _, _, _) >> folder.root
             stubRunnerOptions.stubRepositoryRoot = folder.root.absolutePath
         when:
-            List<StubRunner> stubRunners = factory.createStubsFromServiceConfiguration()
+            List<StubRunner> stubRunners = collectOnlyPresentValues(factory.createStubsFromServiceConfiguration())
         then:
             stubRunners.size() == 2
     }
@@ -36,10 +37,24 @@ class StubRunnerFactorySpec extends Specification {
             1 * downloader.downloadAndUnpackStubJar(_, _, _, _) >> folder.root
             stubRunnerOptions.stubRepositoryRoot = folder.root.absolutePath
         when:
-            List<StubRunner> stubRunners = factory.createStubsFromStubsModule()
+            List<StubRunner> stubRunners = collectOnlyPresentValues(factory.createStubsFromStubsModule())
         then:
             stubRunners.size() == 2
+    }
 
+    def "should not create a stub runner if we couldn't download a stub"() {
+        given:
+            stubRunnerOptions.stubsModule = "123"
+            stubRunnerOptions.stubsGroup = "123"
+            stubRunnerOptions.stubRepositoryRoot = folder.root.absolutePath
+            downloader.downloadAndUnpackStubJar(_, _, _, _) >> null
+        when:
+            List<StubRunner> stubRunners = collectOnlyPresentValues(factory.createStubsFromStubsModule())
+        then:
+            stubRunners.empty
+    }
 
+    private List<StubRunner> collectOnlyPresentValues(List<Optional<StubRunner>> stubRunners) {
+        return stubRunners.findAll { it.present }.collect { it.get() }
     }
 }

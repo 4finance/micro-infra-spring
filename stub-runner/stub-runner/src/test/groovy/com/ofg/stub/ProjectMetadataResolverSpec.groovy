@@ -33,7 +33,7 @@ class ProjectMetadataResolverSpec extends Specification {
         and:
             wireMockServer.givenThat(get(urlEqualTo('/collaborators')).willReturn(aResponse().withBody('{"com/ofg/ping":{}, "com/ofg/pong":{}}')))
         when:
-            Collaborators collaborators = CollaboratorsPathResolver.resolveFromZookeeper(TEST_SERVICE_PATH, 'pl', zookeeperServer)
+            Collaborators collaborators = CollaboratorsPathResolver.resolveFromZookeeper(TEST_SERVICE_PATH, 'pl', zookeeperServer, new StubRunnerOptions())
         then:
             collaborators.basePath == 'pl'
         and:

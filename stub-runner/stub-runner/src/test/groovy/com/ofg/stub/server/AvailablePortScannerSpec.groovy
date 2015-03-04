@@ -1,8 +1,6 @@
 package com.ofg.stub.server
-
 import org.apache.curator.test.TestingServer
 import spock.lang.Specification
-import spock.lang.Unroll
 
 class AvailablePortScannerSpec extends Specification {
 
@@ -34,18 +32,26 @@ class AvailablePortScannerSpec extends Specification {
             server2.close()
     }
 
-    @Unroll("should throw exception for improper range [#minPort:#maxPort]")
     def 'should throw exception when improper range has been provided'() {
-        given:
-            AvailablePortScanner portScanner = new AvailablePortScanner(minPort, maxPort, MAX_RETRY_COUNT_FOR_NEGATIVE_SCENARIOS)
         when:
-            portScanner.tryToExecuteWithFreePort {}
+            new AvailablePortScanner(minPort, maxPort, MAX_RETRY_COUNT_FOR_NEGATIVE_SCENARIOS)
         then:
-            def ex = thrown(AvailablePortScanner.NoPortAvailableException)
-            ex.message == "Could not find available port in range $minPort:$maxPort"
+            def ex = thrown(AvailablePortScanner.InvalidPortRange)
+            ex.message == "Invalid bounds exceptions, min port [$minPort] is greater than max port [$maxPort]"
         where:
             minPort  | maxPort
-            MAX_PORT | MIN_PORT
             MIN_PORT | MIN_PORT
+            MAX_PORT | MAX_PORT
+
+    }
+
+    def 'should throw exception when there is no available port'() {
+        given:
+            AvailablePortScanner portScanner = new AvailablePortScanner(MIN_PORT, MAX_PORT, MAX_RETRY_COUNT_FOR_NEGATIVE_SCENARIOS)
+        when:
+            portScanner.tryToExecuteWithFreePort { throw new BindException('Bind exception from closure')}
+        then:
+            def ex = thrown(AvailablePortScanner.NoPortAvailableException)
+            ex.message == "Could not find available port in range $MIN_PORT:$MAX_PORT"
     }
 }

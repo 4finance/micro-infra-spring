@@ -36,7 +36,8 @@ public class FileSystemLocator implements PropertySourceLocator {
         final List<File> propertiesPath = getConfigFiles();
         logConfigurationFiles(propertiesPath);
         springEnv.setSearchLocations(toSearchLocations(propertiesPath));
-        final org.springframework.cloud.config.Environment loadedEnvs = springEnv.findOne(appCoordinates.getApplicationName(), "prod", null);
+        final org.springframework.cloud.config.environment.Environment loadedEnvs =
+                springEnv.findOne(appCoordinates.getApplicationName(), "prod", null);
         return toPropertySource(loadedEnvs);
     }
 
@@ -59,9 +60,9 @@ public class FileSystemLocator implements PropertySourceLocator {
         return files;
     }
 
-    private PropertySource<?> toPropertySource(org.springframework.cloud.config.Environment loadedEnvs) {
+    private PropertySource<?> toPropertySource(org.springframework.cloud.config.environment.Environment loadedEnvs) {
         CompositePropertySource composite = new CompositePropertySource(FileSystemLocator.class.getSimpleName());
-        for (org.springframework.cloud.config.PropertySource source : loadedEnvs.getPropertySources()) {
+        for (org.springframework.cloud.config.environment.PropertySource source : loadedEnvs.getPropertySources()) {
             @SuppressWarnings("unchecked")
             Map<String, Object> map = decrypt((Map<String, Object>) source.getSource());
             composite.addPropertySource(new MapPropertySource(source.getName(), map));

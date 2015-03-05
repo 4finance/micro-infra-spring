@@ -1,9 +1,9 @@
 package com.ofg.infrastructure.web.swagger
 
 import com.mangofactory.swagger.configuration.SpringSwaggerConfig
+import com.mangofactory.swagger.models.dto.ApiInfo
 import com.mangofactory.swagger.plugin.EnableSwagger
 import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin
-import com.wordnik.swagger.model.ApiInfo
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean

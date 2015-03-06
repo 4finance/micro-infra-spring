@@ -9,9 +9,10 @@ class MetricPathProviderSpec extends Specification {
     private static final ENV = 'test'
     private static final COUNTRY = 'pl'
     private static final SERVICE_NAME = 'bluecash-adapter'
-    private static final METRIC_PATH_PREFIX = "${ROOT_NAME}.${ENV}.${COUNTRY}.${SERVICE_NAME}"
+    private static final NODE = 'apl-001'
+    private static final METRIC_PATH_PREFIX = "${ROOT_NAME}.${ENV}.${COUNTRY}.${SERVICE_NAME}.${NODE}"
 
-    MetricPathProvider metricPathProvider = new MetricPathProvider(ROOT_NAME, ENV, COUNTRY, SERVICE_NAME)
+    MetricPathProvider metricPathProvider = new MetricPathProvider(ROOT_NAME, ENV, COUNTRY, SERVICE_NAME, NODE)
     
     @Unroll
     def 'should verify that name [#name] has path prepended [#alreadyPrepended]'() {
@@ -21,7 +22,6 @@ class MetricPathProviderSpec extends Specification {
             metricName                          || alreadyPrepended
             'some_metric'                       || false
             "${METRIC_PATH_PREFIX}.some_metric" || true
-
     }
     
     @Unroll
@@ -33,5 +33,4 @@ class MetricPathProviderSpec extends Specification {
             'some_metric'                       || "${METRIC_PATH_PREFIX}.some_metric"
             "${METRIC_PATH_PREFIX}.some_metric" || "${METRIC_PATH_PREFIX}.some_metric"
     }
-
 }

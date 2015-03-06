@@ -89,8 +89,9 @@ class MetricsConfiguration {
     MetricPathProvider metricPathProvider(@Value('${metrics.path.root:apps}') String rootName,
                                           @Value('${metrics.path.environment:test}') String environment,
                                           @Value('${metrics.path.country:pl}') String country,
-                                          @Value('${metrics.path.app:service-name}') String appName) {
-        return new MetricPathProvider(rootName, environment, country, appName)
+                                          @Value('${metrics.path.app:service-name}') String appName,
+                                          @Value('${metrics.path.node:#{T(com.ofg.infrastructure.metrics.config.MetricsConfiguration).resolveLocalHostName()}}') String node) {
+        return new MetricPathProvider(rootName, environment, country, appName, node)
     }
 
     @Bean
@@ -110,5 +111,9 @@ class MetricsConfiguration {
         HystrixPlugins.reset()
         HystrixPlugins.instance.registerMetricsPublisher(publisher)
         return publisher
+    }
+
+    static String resolveLocalHostName() {
+        return InetAddress.localHost.hostName
     }
 }

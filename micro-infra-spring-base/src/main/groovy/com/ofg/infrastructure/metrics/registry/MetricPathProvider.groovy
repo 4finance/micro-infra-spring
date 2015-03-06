@@ -9,13 +9,13 @@ import groovy.transform.CompileStatic
  * We have a following template for metrics:
  *
  * <pre>
- *     (root-name).(environment).(country).(application-name).(metric-name)
+ *     (root-name).(environment).(country).(application-name).(node).(metric-name)
  * </pre>
  *
  * for example:
  *
  * <pre>
- *     apps.test.pl.bluecash-adapter.transfer.request.balance.count
+ *     apps.test.pl.bluecash-adapter.apl-001.transfer.request.balance.count
  * </pre>
  *
  */
@@ -23,8 +23,8 @@ import groovy.transform.CompileStatic
 class MetricPathProvider {
     private final String metricPathPrefix
 
-    MetricPathProvider(String rootName, String environment, String country, String appName) {
-        metricPathPrefix = Joiner.on('.').join(rootName, environment, country, appName)
+    MetricPathProvider(String rootName, String environment, String country, String appName, String node) {
+        metricPathPrefix = Joiner.on('.').join(rootName, environment, country, appName, node)
     }
 
     String getMetricPath(String metricName) {

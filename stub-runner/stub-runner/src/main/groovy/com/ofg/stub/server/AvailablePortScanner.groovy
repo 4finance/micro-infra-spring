@@ -16,18 +16,26 @@ class AvailablePortScanner {
     private final int maxRetryCount
 
     AvailablePortScanner(int minPortNumber, int maxPortNumber, int maxRetryCount = MAX_RETRY_COUNT) {
+        checkPortRanges(minPortNumber, maxPortNumber)
         this.minPortNumber = minPortNumber
         this.maxPortNumber = maxPortNumber
         this.maxRetryCount = maxRetryCount
     }
 
+    private void checkPortRanges(int minPortNumber, int maxPortNumber) {
+        if (minPortNumber >= maxPortNumber) {
+            throw new InvalidPortRange(minPortNumber, maxPortNumber)
+        }
+    }
+
     public <T> T tryToExecuteWithFreePort(Closure<T> closure) {
         for (i in (1..maxRetryCount)) {
             try {
-                int portToScan = RandomUtils.nextInt(maxPortNumber - minPortNumber) + minPortNumber
+                int numberOfPortsToBind = maxPortNumber - minPortNumber
+                int portToScan = RandomUtils.nextInt(numberOfPortsToBind) + minPortNumber
                 checkIfPortIsAvailable(portToScan)
                 return executeLogicForAvailablePort(portToScan, closure)
-            } catch (Exception exception) {
+            } catch (BindException exception) {
                 log.debug("Failed to execute closure (try: $i/$maxRetryCount)", exception)
             }
         }
@@ -50,8 +58,15 @@ class AvailablePortScanner {
 
     static class NoPortAvailableException extends RuntimeException {
         @PackageScope
-        NoPortAvailableException(int loweBound, int upperBound) {
-            super("Could not find available port in range $loweBound:$upperBound")
+        NoPortAvailableException(int lowerBound, int upperBound) {
+            super("Could not find available port in range $lowerBound:$upperBound")
+        }
+    }
+
+    static class InvalidPortRange extends RuntimeException {
+        @PackageScope
+        InvalidPortRange(int lowerBound, int upperBound) {
+            super("Invalid bounds exceptions, min port [$lowerBound] is greater or equal to max port [$upperBound]")
         }
     }
 }

@@ -9,7 +9,7 @@ buildscript {
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
         classpath 'com.ofg:uptodate-gradle-plugin:+'
-        classpath "com.ofg:micro-common-release:0.1.14"
+        classpath "com.ofg:micro-common-release:0.1.17"
         classpath "io.spring.gradle:dependency-management-plugin:0.2.1.RELEASE"
         if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
         if (project.hasProperty("compatibility")) { classpath "be.insaneprogramming.gradle:animalsniffer-gradle-plugin:+" }

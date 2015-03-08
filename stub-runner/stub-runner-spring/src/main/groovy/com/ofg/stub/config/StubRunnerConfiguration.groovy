@@ -72,7 +72,7 @@ class StubRunnerConfiguration {
                                 @Deprecated @Value('${stubrunner.stubs.group:com.ofg}') String stubsGroup,
                                 @Deprecated @Value('${stubrunner.stubs.module:stub-definitions}') String stubsModule,
                                 @Value('${stubrunner.stubs.suffix:stubs}') String stubsSuffx,
-                                @Value('${stubrunner.skip-local-repo:false}') boolean skipLocalRepo,
+                                @Value('${stubrunner.skip-local-repo:true}') boolean skipLocalRepo,
                                 @Value('${stubrunner.use-microservice-definitions:false}') boolean useMicroserviceDefinitions,
                                 @Value('${stubrunner.wait-for-service:false}') boolean waitForService,
                                 @Value('${stubrunner.wait-timeout:1}') Integer waitTimeout,

@@ -1,14 +1,10 @@
 package com.ofg.stub
-
 import com.ofg.stub.util.ZipCategory
 import groovy.util.logging.Slf4j
 
 import static groovy.grape.Grape.addResolver
 import static groovy.grape.Grape.resolve
-import static groovy.io.FileType.FILES
 import static java.nio.file.Files.createTempDirectory
-
-
 /**
  * Downloads stubs from an external repository and unpacks them locally
  */
@@ -18,6 +14,8 @@ class StubDownloader {
     private static final String LATEST_MODULE = '*'
     private static final String REPOSITORY_NAME = 'dependency-repository'
     private static final String STUB_RUNNER_TEMP_DIR_PREFIX = 'stub-runner'
+    private static final String GRAPE_CONFIG = 'grape.config'
+    private static final String MICRO_INFRA_GRAPE_CONFIG = "micro.infra.grape.config"
 
     /**
      * Downloads stubs from an external repository and unpacks them locally.
@@ -53,11 +51,33 @@ class StubDownloader {
 
     private URI findGrabbedStubJars(boolean skipLocalRepo, String stubRepositoryRoot, String stubsGroup, String stubsModule) {
         Map depToGrab = [group: stubsGroup, module: stubsModule, version: LATEST_MODULE, transitive: false]
-        return buildResolver(skipLocalRepo).resolveDependency(stubRepositoryRoot, depToGrab)
+        String microInfraGrapePath = System.getProperty(MICRO_INFRA_GRAPE_CONFIG, getDefaultMicroInfraGrapeConfigPath())
+        initializeMicroInfraGrapeIfAbsent(microInfraGrapePath)
+        String oldGrapeConfig = System.getProperty(GRAPE_CONFIG)
+        try {
+            System.setProperty(GRAPE_CONFIG, microInfraGrapePath)
+            log.info("Setting default grapes path to [$microInfraGrapePath]")
+            return buildResolver(skipLocalRepo).resolveDependency(stubRepositoryRoot, depToGrab)
+        } finally {
+            System.setProperty(GRAPE_CONFIG, oldGrapeConfig)
+        }
     }
 
     private DependencyResolver buildResolver(boolean skipLocalRepo) {
-        skipLocalRepo ? new RemoteDependencyResolver() : new LocalFirstDependencyResolver()
+        return skipLocalRepo ? new RemoteDependencyResolver() : new LocalFirstDependencyResolver()
+    }
+
+    private void initializeMicroInfraGrapeIfAbsent(String microInfraGrapePath) {
+        File microInfraGrape = new File(microInfraGrapePath)
+        if (!microInfraGrape.exists()) {
+            microInfraGrape.parentFile.mkdirs()
+            microInfraGrape.createNewFile()
+            microInfraGrape.text = StubDownloader.class.getResource('/microInfraGrapeConfig.xml').text
+        }
+    }
+
+    private String getDefaultMicroInfraGrapeConfigPath() {
+        return "${System.getProperty('user.home')}/.micro-infra-spring/microInfraGrapeConfig.xml"
     }
 
     /**
@@ -79,25 +99,11 @@ class StubDownloader {
         private URI doResolveRemoteDependency(String stubRepositoryRoot, Map depToGrab) {
             addResolver(name: REPOSITORY_NAME, root: stubRepositoryRoot)
             log.info("Resolving dependency ${depToGrab} location in remote repository...")
-            URI resolvedUri = resolveDependencyLocation(depToGrab)
-            ensureThatLatestVersionWillBePicked(resolvedUri)
             return resolveDependencyLocation(depToGrab)
         }
 
         private void failureHandler(String stubRepository, String reason, Exception cause) {
             log.error("Unable to resolve dependency in stub repository [$stubRepository]. Reason: [$reason]", cause)
-        }
-
-        private void ensureThatLatestVersionWillBePicked(URI resolvedUri) {
-            getStubRepositoryGrapeRoot(resolvedUri).eachFileRecurse(FILES, {
-                if (it.name.endsWith('.xml')) {
-                    log.info("removing ${it}"); it.delete()
-                }
-            })
-        }
-
-        private File getStubRepositoryGrapeRoot(URI resolvedUri) {
-            return new File(resolvedUri).parentFile.parentFile
         }
 
     }

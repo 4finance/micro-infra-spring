@@ -36,6 +36,8 @@ ext {
     maxPortValue = getPropertyByEither('maxp', 'maxPort')
     skipLocalRepo = getPropertyByEither('s', 'skipLocalRepo')
     useMicroserviceDefinitions = getPropertyByEither('md', 'useMicroserviceDefinitions')
+    waitForServiceConnect = getPropertyByEither('wsc', 'waitForServiceConnect')
+    waitTimeout = getPropertyByEither('wt', 'waitTimeout')
     context = getPropertyByEither('c', 'context')
     serviceName = getPropertyByEither('n', 'serviceName')
     arguments = project.hasProperty('args') ? project.property('args') : []
@@ -75,6 +77,8 @@ List parseArguments() {
     appendToListIfNotNull(maxPortValue, '-maxp', arguments)
     appendToListIfNotNull(skipLocalRepo, '-s', arguments)
     appendToListIfNotNull(useMicroserviceDefinitions, '-md', arguments)
+    appendToListIfNotNull(waitForServiceConnect, '-wsc', arguments)
+    appendToListIfNotNull(waitTimeout, '-wt', arguments)
     appendToListIfNotNull(context, '-c', arguments)
     appendToListIfNotNull(serviceName, '-n', arguments)
     return arguments

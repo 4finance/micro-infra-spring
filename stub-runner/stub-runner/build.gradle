@@ -60,7 +60,9 @@ run {
         argumentList = parseArguments()
     }
     args = argumentList
-    println "Running task with args $args"
+    if (args) {
+        println "Running task with args $args"
+    }
 }
 
 List parseArguments() {

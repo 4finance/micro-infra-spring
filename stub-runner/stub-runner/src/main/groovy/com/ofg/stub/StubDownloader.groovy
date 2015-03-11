@@ -59,7 +59,7 @@ class StubDownloader {
             log.info("Setting default grapes path to [$microInfraGrapePath]")
             return buildResolver(skipLocalRepo).resolveDependency(stubRepositoryRoot, depToGrab)
         } finally {
-            System.setProperty(GRAPE_CONFIG, oldGrapeConfig)
+            restoreOldGrapeConfigIfApplicable(oldGrapeConfig)
         }
     }
 
@@ -73,6 +73,12 @@ class StubDownloader {
             microInfraGrape.parentFile.mkdirs()
             microInfraGrape.createNewFile()
             microInfraGrape.text = StubDownloader.class.getResource('/microInfraGrapeConfig.xml').text
+        }
+    }
+
+    private void restoreOldGrapeConfigIfApplicable(String oldGrapeConfig) {
+        if (oldGrapeConfig) {
+            System.setProperty(GRAPE_CONFIG, oldGrapeConfig)
         }
     }
 

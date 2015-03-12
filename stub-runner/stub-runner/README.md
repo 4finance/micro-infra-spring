@@ -28,10 +28,10 @@ java -jar stub-runner.jar [options...]
                                       containing the 'repository' folder with
                                       'project' and 'mapping' subfolders (e.g.
                                       '/home/4finance/stubs/')
- -s (--skipLocalRepo)               : Switch to check whether local repository
-                                      check should be skipped and dependencies
+ -s (--skipLocalRepo)               : @Deprecated - Switch to check whether local
+                                      repository check should be skipped and dependencies
                                       should be grabbed directly from the net.
-                                      Defaults to 'false'
+                                      Defaults to 'true'
  -sg (--stubsGroup) VAL             : @Deprecated - Name of the group where you
                                       store your stub definitions (e.g. com.ofg)
  -sm (--stubsModule) VAL            : @Deprecated - Name of the module where
@@ -44,6 +44,8 @@ java -jar stub-runner.jar [options...]
                                       'stubs' if the stub jar would have a
                                       'stubs' classifier for stubs:
                                       foobar-stubs ). Defaults to 'stubs'
+ -wo (--workOffline)                : Switch to work offline. Defaults to
+                                      'false'
  -wsc (--waitForServiceConnect)     : Switch to wait for service registration
                                       in Zookeeper (default timeout is 60
                                       seconds - configurable using -wt)

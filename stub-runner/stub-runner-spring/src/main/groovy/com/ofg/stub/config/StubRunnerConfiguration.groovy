@@ -58,7 +58,8 @@ class StubRunnerConfiguration {
      * @param @Deprecated stubsGroup group name of the dependency containing stub mappings
      * @param @Deprecated stubsModule module name of the dependency containing stub mappings
      * @param stubsSuffix suffix for the jar containing stubs
-     * @param skipLocalRepo avoids local repository in dependency resolution
+     * @param workOffline forces offline work
+     * @param @Deprecated skipLocalRepo avoids local repository in dependency resolution
      * @param useMicroserviceDefinitions use per microservice stub resolution rather than one jar for all microservices
      * @param waitForService wait for connection from service
      * @param waitTimeout wait timeout in seconds
@@ -72,19 +73,25 @@ class StubRunnerConfiguration {
                                 @Deprecated @Value('${stubrunner.stubs.group:com.ofg}') String stubsGroup,
                                 @Deprecated @Value('${stubrunner.stubs.module:stub-definitions}') String stubsModule,
                                 @Value('${stubrunner.stubs.suffix:stubs}') String stubsSuffx,
-                                @Value('${stubrunner.skip-local-repo:true}') boolean skipLocalRepo,
+                                @Value('${stubrunner.work-offline:false}') boolean workOffline,
+                                @Deprecated @Value('${stubrunner.skip-local-repo:true}') boolean skipLocalRepo,
                                 @Value('${stubrunner.use-microservice-definitions:false}') boolean useMicroserviceDefinitions,
                                 @Value('${stubrunner.wait-for-service:false}') boolean waitForService,
                                 @Value('${stubrunner.wait-timeout:1}') Integer waitTimeout,
                                 TestingServer testingServer,
                                 ServiceConfigurationResolver serviceConfigurationResolver) {
-        StubRunnerOptions stubRunnerOptions = new StubRunnerOptions(minPortValue, maxPortValue, stubRepositoryRoot, stubsGroup, stubsModule, skipLocalRepo,
+        boolean shouldWorkOnline = isPropertySetToWorkOnline(workOffline, skipLocalRepo)
+        StubRunnerOptions stubRunnerOptions = new StubRunnerOptions(minPortValue, maxPortValue, stubRepositoryRoot, stubsGroup, stubsModule, shouldWorkOnline,
                 useMicroserviceDefinitions, testingServer.connectString, testingServer.port, stubsSuffx, waitForService, waitTimeout)
         List<String> dependenciesPath = serviceConfigurationResolver.dependencies.collect { String alias, Map dependencyConfig ->
             return dependencyConfig[PATH]
         }
         Collaborators dependencies = new Collaborators(serviceConfigurationResolver.basePath, dependenciesPath)
         return new BatchStubRunnerFactory(stubRunnerOptions, dependencies).buildBatchStubRunner()
+    }
+
+    private boolean isPropertySetToWorkOnline(boolean workOffline, boolean skipLocalRepo) {
+        return workOffline ? false : skipLocalRepo
     }
 
 

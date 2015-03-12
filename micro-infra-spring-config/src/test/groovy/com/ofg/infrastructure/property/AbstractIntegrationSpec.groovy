@@ -20,15 +20,13 @@ abstract class AbstractIntegrationSpec extends Specification {
     private static final String CLOUD_SERVER_ENABLED = 'spring.cloud.config.server.enabled'
 
     def setupSpec() {
-        System.setProperty(CONFIG_FOLDER, findConfigDirInTestResources())
+        System.setProperty(CONFIG_FOLDER, getConfigFolder())
         System.setProperty(APP_ENV, 'prod')
         System.setProperty(CLOUD_SERVER_ENABLED, 'false')
     }
 
-    protected String findConfigDirInTestResources() {
-        URL resourceInSrcTestRoot = getClass().getResource('/logback-test.groovy')
-        String srcTestResources = new File(resourceInSrcTestRoot.file).parent
-        return new File(srcTestResources, 'test-config-dir').absolutePath
+    protected String getConfigFolder() {
+        return getClass().getResource('/test-config-dir').file
     }
 
     protected void setEncryptKey(String encryptKey = 'eKey') {

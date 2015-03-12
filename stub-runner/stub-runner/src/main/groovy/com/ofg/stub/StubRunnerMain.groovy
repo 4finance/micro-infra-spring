@@ -49,8 +49,12 @@ class StubRunnerMain {
     @Option(name = "-maxp", aliases = ['--maxPort'], usage = "Maximum port value to be assigned to the Wiremock instance. Defaults to 15000")
     private Integer maxPortValue = 15000
 
-    @Option(name = "-s", aliases = ['--skipLocalRepo'], usage = "Switch to check whether local repository check should be skipped and dependencies should be grabbed directly from the net. Defaults to 'false'")
-    private Boolean skipLocalRepo
+    @Deprecated
+    @Option(name = "-s", aliases = ['--skipLocalRepo'], usage = "@Deprecated - Switch to check whether local repository check should be skipped and dependencies should be grabbed directly from the net. Defaults to 'true'", forbids = ['wo'])
+    private Boolean skipLocalRepo = Boolean.TRUE
+
+    @Option(name = "-wo", aliases = ['--workOffline'], usage = "Switch to work offline. Defaults to 'false'", forbids = ['s'])
+    private Boolean workOffline = Boolean.FALSE
 
     @Option(name = "-md", aliases = ['--useMicroserviceDefinitions'], usage = "Switch to define whether you want to use the new approach with microservice definitions. Defaults to 'true'. To use old version switch to 'false'")
     private Boolean useMicroserviceDefinitions = true
@@ -77,7 +81,7 @@ class StubRunnerMain {
         try {
             parser.parseArgument(args)
             this.arguments = new Arguments(new StubRunnerOptions(minPortValue, maxPortValue, stubRepositoryRoot,
-                    stubsGroup, stubsModule, skipLocalRepo, useMicroserviceDefinitions, zookeeperLocation,
+                    stubsGroup, stubsModule, isPropertySetToWorkOnline(workOffline, skipLocalRepo), useMicroserviceDefinitions, zookeeperLocation,
                     testingZookeeperPort, stubsSuffix, waitForServiceConnect, waitTimeout),
                     context, repositoryPath, serviceName)
             this.zookeeperServer = resolveZookeeperServer()
@@ -88,6 +92,10 @@ class StubRunnerMain {
             printErrorMessage(e, parser)
             throw e
         }
+    }
+
+    private boolean isPropertySetToWorkOnline(boolean workOffline, boolean skipLocalRepo) {
+        return workOffline ? false : skipLocalRepo
     }
 
     private ZookeeperServer resolveZookeeperServer() {
@@ -110,7 +118,6 @@ class StubRunnerMain {
 
     static void main(String[] args) {
         new StubRunnerMain(args).execute()
-
     }
 
     private void execute() {

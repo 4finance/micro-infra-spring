@@ -94,5 +94,4 @@ class StubRunnerConfiguration {
         return workOffline ? false : skipLocalRepo
     }
 
-
 }

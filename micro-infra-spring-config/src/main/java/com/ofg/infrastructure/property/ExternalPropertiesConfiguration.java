@@ -11,8 +11,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 
-import java.io.File;
-
 @Configuration
 @Profile("!test")
 public class ExternalPropertiesConfiguration implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
@@ -26,7 +24,7 @@ public class ExternalPropertiesConfiguration implements ApplicationContextInitia
     @Bean
     public FileSystemLocator fileSystemLocator() {
         return new FileSystemLocator(
-                findPropertiesFolder(),
+                PropertiesFolderFinder.find(),
                 appCoordinates(),
                 textEncryptor == null ? new FailsafeTextEncryptor() : textEncryptor);
     }
@@ -34,12 +32,6 @@ public class ExternalPropertiesConfiguration implements ApplicationContextInitia
     @Bean
     public AppCoordinates appCoordinates() {
         return AppCoordinates.defaults(microserviceConfig);
-    }
-
-    private File findPropertiesFolder() {
-        final File defaultConfigDirectory = new File(System.getProperty("user.home"), "config");
-        final String configFolder = PropertyUtils.getProperty(AppCoordinates.CONFIG_FOLDER, defaultConfigDirectory.getAbsolutePath());
-        return new File(configFolder);
     }
 
     @Override

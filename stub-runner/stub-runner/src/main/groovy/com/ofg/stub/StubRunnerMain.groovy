@@ -102,7 +102,7 @@ class StubRunnerMain {
         if (isNotBlank(arguments.stubRunnerOptions.zookeeperConnectString)) {
             return new ZookeeperServer(arguments.stubRunnerOptions.zookeeperConnectString)
         } else if (arguments.stubRunnerOptions.zookeeperPort) {
-            arguments.stubRunnerOptions.zookeeperConnectString = "localhost: ${arguments.stubRunnerOptions.zookeeperPort}"
+            arguments.stubRunnerOptions.zookeeperConnectString = "localhost:${arguments.stubRunnerOptions.zookeeperPort}"
             return new ZookeeperServer(arguments.stubRunnerOptions.zookeeperPort)
         }
         throw new IllegalArgumentException('You have to provide either Zookeeper port or a path to a local Zookeeper')

@@ -5,13 +5,8 @@ import com.netflix.hystrix.HystrixCommand
 import com.netflix.hystrix.HystrixCommandGroupKey
 import com.netflix.hystrix.HystrixCommandKey
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor
-import com.ofg.infrastructure.discovery.ServiceAlias
-import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
-import com.ofg.infrastructure.discovery.ServicePath
-import com.ofg.infrastructure.discovery.ServiceResolver
-import com.ofg.infrastructure.discovery.ServiceUnavailableException
+import com.ofg.infrastructure.discovery.*
 import org.springframework.http.HttpEntity
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestOperations
@@ -19,14 +14,11 @@ import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
 
+import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 
-import static org.springframework.http.HttpMethod.DELETE
-import static org.springframework.http.HttpMethod.GET
-import static org.springframework.http.HttpMethod.HEAD
-import static org.springframework.http.HttpMethod.POST
-import static org.springframework.http.HttpMethod.PUT
+import static org.springframework.http.HttpMethod.*
 
 class ServiceRestClientSpec extends Specification {
 
@@ -308,6 +300,37 @@ class ServiceRestClientSpec extends Specification {
 
         then:
             response.body == fallbackText
+    }
+
+    def 'should use hystrix fallback as callable when provided instead of throwing unwrapped exception'() {
+        given:
+            HystrixCommand.Setter circuitBreaker = HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("Group"))
+                    .andCommandKey(HystrixCommandKey.Factory.asKey("Command"))
+            final String fallbackText = 'fallback'
+            Callable<ResponseEntity<String>> fallback = new Callable<ResponseEntity<String>>() {
+                @Override
+                ResponseEntity<String> call() throws Exception {
+                    return ResponseEntity.ok(fallbackText)
+                }
+            }
+
+
+        and:
+            restOperations.exchange(_, GET, _ as HttpEntity, _ as Class) >> {
+                throw new RestClientException("Simulated A")
+            }
+        when:
+            ResponseEntity<String> result = serviceRestClient
+                    .forExternalService()
+                    .get()
+                    .withCircuitBreaker(circuitBreaker, fallback)
+                    .onUrl(SOME_SERVICE_URL)
+                    .aResponseEntity().ofType(String)
+
+        then:
+            notThrown(RestClientException)
+            result.body == fallbackText
+
     }
 
     def 'should not wrap HTTP call inside Hystrix command if not requested'() {

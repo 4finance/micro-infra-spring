@@ -6,6 +6,8 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.request.Parametrize
 import org.apache.commons.lang.StringUtils
 import org.springframework.http.HttpEntity
 
+import java.util.concurrent.Callable
+
 trait MethodParamsApplier<M, EM, PM> implements HttpMethod<M, PM>, HttpEntitySending<EM>, ParametrizedUrlHavingWith<M> {
 
     M onUrl(URI url) {
@@ -75,6 +77,12 @@ trait MethodParamsApplier<M, EM, PM> implements HttpMethod<M, PM>, HttpEntitySen
     @Override
     HttpMethod<M, PM> withCircuitBreaker(HystrixCommand.Setter setter, Closure hystrixFallback) {
         params.hystrixFallback = hystrixFallback
+        return withCircuitBreaker(setter)
+    }
+
+    @Override
+    HttpMethod<M, PM> withCircuitBreaker(HystrixCommand.Setter setter, Callable hystrixFallback) {
+        params.hystrixFallback = { hystrixFallback.call() }
         return withCircuitBreaker(setter)
     }
 }

@@ -2,6 +2,8 @@ package com.ofg.infrastructure.web.resttemplate.fluent.common.request
 
 import com.netflix.hystrix.HystrixCommand
 
+import java.util.concurrent.Callable
+
 /**
  * Starting point of the fluent interface.
  * 
@@ -61,6 +63,23 @@ interface HttpMethod<U, T> {
     HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter)
 
     /**
+     * Adds Hystrix circuit breaker with fallback around every REST call. Deprecated since we don't want
+     * people using Java code to instantiate Closures
+     *
+     * Example:
+     * <code>
+     * .withCircuitBreaker(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("Group"))
+     *      .andCommandKey(HystrixCommandKey.Factory.asKey("Command")), {return new ResponseEntity<String>("service unavailable", HttpStatus.METHOD_FAILURE)})
+     * </code>
+     *
+     * @param setter
+     *      Fluent interface for HystrixCommand constructor arguments
+     * @param hystrixFallback
+     *      @see HystrixCommand#getFallback()
+     */
+    @Deprecated HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter, Closure hystrixFallback)
+
+    /**
      * Adds Hystrix circuit breaker with fallback around every REST call.
      *
      * Example:
@@ -74,5 +93,5 @@ interface HttpMethod<U, T> {
      * @param hystrixFallback
      *      @see HystrixCommand#getFallback()
      */
-    HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter, Closure hystrixFallback)
+    HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter, Callable hystrixFallback)
 }

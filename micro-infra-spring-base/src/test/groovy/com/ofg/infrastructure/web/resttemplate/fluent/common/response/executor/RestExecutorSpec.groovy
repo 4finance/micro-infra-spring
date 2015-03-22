@@ -25,7 +25,7 @@ class RestExecutorSpec extends Specification {
             RestExecutor executor = new RestExecutor(
                     new RestTemplate(), SyncRetryExecutor.INSTANCE)
         when:
-            executor.exchange(HttpMethod.GET, [host: 'http://localhost:7777', url: '/api'.toURI()], Object)
+            executor.exchange(HttpMethod.GET, [host: { 'http://localhost:7777' }, url: '/api'.toURI()], Object)
 
         then:
             ResourceAccessException e = thrown(ResourceAccessException)

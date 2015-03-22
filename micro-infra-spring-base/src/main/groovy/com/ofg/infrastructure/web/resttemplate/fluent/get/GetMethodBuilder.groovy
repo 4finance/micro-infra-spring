@@ -26,7 +26,7 @@ import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.rec
 class GetMethodBuilder implements GetMethod, UrlParameterizableGetMethod, ResponseReceivingGetMethod, HeadersHaving,
         MethodParamsApplier<ResponseReceivingGetMethod, ResponseReceivingGetMethod, UrlParameterizableGetMethod> {
 
-    public static final String EMPTY_HOST = ''
+    public static final Closure<String> EMPTY_HOST = { '' }
 
     private final Map params = [:]
     private final RestOperations restOperations
@@ -38,7 +38,7 @@ class GetMethodBuilder implements GetMethod, UrlParameterizableGetMethod, Respon
         this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE)
     }
 
-    GetMethodBuilder(String host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
+    GetMethodBuilder(Closure<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
         this.restOperations = restOperations
         params.host = host
         withHeaders = new BodyContainingWithHeaders(this, params, predefinedHeaders)

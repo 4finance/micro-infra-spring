@@ -25,7 +25,7 @@ import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.rec
 class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, ResponseReceivingHeadMethod, HeadersHaving,
         MethodParamsApplier<ResponseReceivingHeadMethod, ResponseReceivingHeadMethod, UrlParameterizableHeadMethod> {
 
-    public static final String EMPTY_HOST = ''
+    public static final Closure<String> EMPTY_HOST = { '' }
 
     private final Map params = [:]
     private final RestOperations restOperations
@@ -33,7 +33,7 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
     @Delegate
     private final BodylessWithHeaders<ResponseReceivingHeadMethod> withHeaders
 
-    HeadMethodBuilder(String host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
+    HeadMethodBuilder(Closure<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
         this.restOperations = restOperations
         params.host = host
         withHeaders = new BodylessWithHeaders<ResponseReceivingHeadMethod>(this, params, predefinedHeaders)

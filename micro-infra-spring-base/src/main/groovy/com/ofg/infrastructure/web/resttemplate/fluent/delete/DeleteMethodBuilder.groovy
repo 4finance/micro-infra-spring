@@ -24,14 +24,14 @@ import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.rec
 class DeleteMethodBuilder implements DeleteMethod, UrlParameterizableDeleteMethod, ResponseReceivingDeleteMethod, HeadersHaving,
         MethodParamsApplier<ResponseReceivingDeleteMethod, ResponseReceivingDeleteMethod, UrlParameterizableDeleteMethod> {
 
-    public static final String EMPTY_HOST = ''
+    public static final Closure<String> EMPTY_HOST = { '' }
 
     private final Map params = [:]
     private final RestOperations restOperations
     private final RetryExecutor retryExecutor
     @Delegate private final BodylessWithHeaders<ResponseReceivingDeleteMethod> withHeaders
 
-    DeleteMethodBuilder(String host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
+    DeleteMethodBuilder(Closure<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
         this.restOperations = restOperations
         params.host = host
         withHeaders =  new BodylessWithHeaders<ResponseReceivingDeleteMethod>(this, params, predefinedHeaders)

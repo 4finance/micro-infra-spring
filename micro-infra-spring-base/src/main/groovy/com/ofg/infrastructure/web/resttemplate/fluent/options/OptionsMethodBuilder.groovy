@@ -28,7 +28,7 @@ class OptionsMethodBuilder implements
         ResponseReceivingOptionsMethod, HeadersHaving, AllowHeaderReceiving,
         MethodParamsApplier<ResponseReceivingOptionsMethod, ResponseReceivingOptionsMethod, UrlParameterizableOptionsMethod> {
 
-    public static final String EMPTY_HOST = ''
+    public static final Closure<String> EMPTY_HOST = { '' }
 
     private final Map params = [:]
     private final RestOperations restOperations
@@ -36,7 +36,7 @@ class OptionsMethodBuilder implements
     @Delegate private final AllowContainingWithHeaders withHeaders
     @Delegate private final OptionsAllowHeaderExecutor allowHeaderExecutor
 
-    OptionsMethodBuilder(String host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
+    OptionsMethodBuilder(Closure<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
         this.restOperations = restOperations
         params.host = host
         withHeaders = new AllowContainingWithHeaders(this, params, predefinedHeaders)

@@ -1,17 +1,11 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
-
 import com.google.common.util.concurrent.ListenableFuture
 import com.netflix.hystrix.HystrixCommand
 import com.netflix.hystrix.HystrixCommandGroupKey
 import com.netflix.hystrix.HystrixCommandKey
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor
-import com.ofg.infrastructure.discovery.ServiceAlias
-import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
-import com.ofg.infrastructure.discovery.ServicePath
-import com.ofg.infrastructure.discovery.ServiceResolver
-import com.ofg.infrastructure.discovery.ServiceUnavailableException
+import com.ofg.infrastructure.discovery.*
 import org.springframework.http.HttpEntity
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestOperations
@@ -22,11 +16,7 @@ import spock.lang.Specification
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 
-import static org.springframework.http.HttpMethod.DELETE
-import static org.springframework.http.HttpMethod.GET
-import static org.springframework.http.HttpMethod.HEAD
-import static org.springframework.http.HttpMethod.POST
-import static org.springframework.http.HttpMethod.PUT
+import static org.springframework.http.HttpMethod.*
 
 class ServiceRestClientSpec extends Specification {
 
@@ -258,27 +248,56 @@ class ServiceRestClientSpec extends Specification {
             thrown(RestClientException)
     }
 
-    def 'should use hystrix fallback when provided instead of throwing unwrapped exception'() {
+    def 'should use hystrix fallback with response entity when provided instead of throwing unwrapped exception'() {
         given:
             HystrixCommand.Setter circuitBreaker = HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("Group"))
                     .andCommandKey(HystrixCommandKey.Factory.asKey("Command"))
-            Closure<ResponseEntity<String>> fallbackClosure = Mock()
+            String fallbackText = 'some text'
+            Integer fallbackStatus = 201
+            Closure<ResponseEntity<String>> fallbackClosure =  {
+                ResponseEntity.status(fallbackStatus).body(fallbackText)
+            }
 
         and:
             restOperations.exchange(_, GET, _ as HttpEntity, _ as Class) >> {
                 throw new RestClientException("Simulated A")
             }
         when:
-            serviceRestClient
+            ResponseEntity<String> response = serviceRestClient
                     .forExternalService()
                     .get()
                     .withCircuitBreaker(circuitBreaker, fallbackClosure)
                     .onUrl(SOME_SERVICE_URL)
-                    .ignoringResponse()
+                    .andExecuteFor()
+                    .aResponseEntity().ofType(String)
+        then:
+            response.body == fallbackText
+            response.statusCode.value() == fallbackStatus
+    }
+
+    def 'should use hystrix fallback with passed body when provided instead of throwing unwrapped exception'() {
+        given:
+            HystrixCommand.Setter circuitBreaker = HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("Group"))
+                    .andCommandKey(HystrixCommandKey.Factory.asKey("Command"))
+            String fallbackText = 'some text'
+            Closure<String> fallbackClosure =  {
+                fallbackText
+            }
+        and:
+            restOperations.exchange(_, GET, _ as HttpEntity, _ as Class) >> {
+                throw new RestClientException("Simulated A")
+            }
+        when:
+            ResponseEntity<String> response = serviceRestClient
+                    .forExternalService()
+                    .get()
+                    .withCircuitBreaker(circuitBreaker, fallbackClosure)
+                    .onUrl(SOME_SERVICE_URL)
+                    .andExecuteFor()
+                    .aResponseEntity().ofType(String)
 
         then:
-            notThrown(RestClientException)
-            1 * fallbackClosure.call()
+            response.body == fallbackText
     }
 
     def 'should not wrap HTTP call inside Hystrix command if not requested'() {

@@ -2,6 +2,8 @@ package com.ofg.infrastructure.web.resttemplate.fluent.common.request
 
 import com.netflix.hystrix.HystrixCommand
 
+import java.util.concurrent.Callable
+
 /**
  * Starting point of the fluent interface.
  * 
@@ -63,6 +65,12 @@ interface HttpMethod<U, T> {
     /**
      * Adds Hystrix circuit breaker with fallback around every REST call.
      *
+     * Deprecated since we don't want people using Java code to instantiate Groovy Closures.
+     * Please use the Callable version.
+     *
+     * The value returned by the closure will be wrapped in {@link org.springframework.http.ResponseEntity}.
+     * You can also provide directly the {@link org.springframework.http.ResponseEntity} and it will get returned.
+     *
      * Example:
      * <code>
      * .withCircuitBreaker(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("Group"))
@@ -74,5 +82,25 @@ interface HttpMethod<U, T> {
      * @param hystrixFallback
      *      @see HystrixCommand#getFallback()
      */
+    @Deprecated
     HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter, Closure hystrixFallback)
+
+    /**
+     * Adds Hystrix circuit breaker with fallback around every REST call.
+     *
+     * The value returned by the closure will be wrapped in {@link org.springframework.http.ResponseEntity}.
+     * You can also provide directly the {@link org.springframework.http.ResponseEntity} and it will get returned.
+     *
+     * Example:
+     * <code>
+     * .withCircuitBreaker(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("Group"))
+     *      .andCommandKey(HystrixCommandKey.Factory.asKey("Command")), {return new ResponseEntity<String>("service unavailable", HttpStatus.METHOD_FAILURE)})
+     * </code>
+     *
+     * @param setter
+     *      Fluent interface for HystrixCommand constructor arguments
+     * @param hystrixFallback
+     *      @see HystrixCommand#getFallback()
+     */
+    HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter, Callable hystrixFallback)
 }

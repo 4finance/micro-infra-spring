@@ -30,11 +30,11 @@ class PutMethodBuilder extends LocationFindingExecutor implements
         UrlParameterizablePutMethod, HeadersSetting,
         MethodParamsApplier<RequestHavingPutMethod, ResponseReceivingPutMethod, UrlParameterizablePutMethod> {
 
-    public static final String EMPTY_HOST = ''
+    public static final Closure<String> EMPTY_HOST = { '' }
     
     @Delegate private final BodyContainingWithHeaders withHeaders
 
-    PutMethodBuilder(String host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
+    PutMethodBuilder(Closure<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
         super(restOperations, retryExecutor)
         params.host = host
         withHeaders = new BodyContainingWithHeaders(this, params, predefinedHeaders)

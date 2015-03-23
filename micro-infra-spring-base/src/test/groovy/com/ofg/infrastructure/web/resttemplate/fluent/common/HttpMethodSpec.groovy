@@ -6,13 +6,14 @@ import spock.lang.Specification
 
 class HttpMethodSpec extends Specification {
 
-    protected static final String SERVICE_URL = 'https://ofg.com.omg:9090'
+    protected static final String EVALUATED_SERVICE_URL = 'https://ofg.com.omg:9090'
+    protected static final Closure<String> SERVICE_URL = { EVALUATED_SERVICE_URL }
     protected static final String URL_TEMPLATE = '/api/objects/{objectId}'
-    protected static final String FULL_URL = SERVICE_URL + URL_TEMPLATE
+    protected static final String FULL_URL = EVALUATED_SERVICE_URL + URL_TEMPLATE
     protected static final String PATH = 'api/objects/42'
     protected static final String PATH_WITH_SLASH = "/$PATH"
-    protected static final String FULL_SERVICE_URL = "$SERVICE_URL/$PATH"
 
+    protected static final String FULL_SERVICE_URL = "$EVALUATED_SERVICE_URL/$PATH"
     protected static final Long OBJECT_ID = 42L;
 
     RestOperations restOperations = Mock()

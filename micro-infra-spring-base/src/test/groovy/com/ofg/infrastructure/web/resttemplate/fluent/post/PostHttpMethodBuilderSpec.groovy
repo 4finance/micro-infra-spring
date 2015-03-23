@@ -125,7 +125,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
                                                     .body(REQUEST_BODY)
                                                     .forLocation()
         then:
-            1 * restOperations.exchange(new URI(FULL_SERVICE_URL), 
+            1 * restOperations.exchange(new URI(FULL_SERVICE_URL),
                                       POST, 
                                       { HttpEntity httpEntity -> httpEntity.body == REQUEST_BODY } as HttpEntity, 
                                       RESPONSE_TYPE) >> responseEntityWith(expectedLocation)

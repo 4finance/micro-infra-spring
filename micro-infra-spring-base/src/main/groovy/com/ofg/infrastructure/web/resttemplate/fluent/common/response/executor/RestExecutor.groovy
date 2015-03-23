@@ -72,7 +72,7 @@ final class RestExecutor<T> {
     private ListenableFuture<ResponseEntity<T>> urlTemplateExchange(HttpMethod httpMethod, Map params, Class<T> responseType) {
         return withRetry(params.hystrix as HystrixCommand.Setter, params.hystrixFallback as Closure<ResponseEntity<T>>) {
             restOperations.exchange(
-                    appendPathToHost(params.host as String, params.urlTemplate as String),
+                    appendPathToHost(getHost(params), params.urlTemplate as String),
                     httpMethod,
                     getHttpEntityFrom(params),
                     responseType,
@@ -80,10 +80,15 @@ final class RestExecutor<T> {
         }
     }
 
+    private String getHost(Map params) {
+        Closure<String> lazyHostUrlClosure = params.host as Closure<String>
+        return lazyHostUrlClosure.call()
+    }
+
     private ListenableFuture<ResponseEntity<T>> urlExchange(HttpMethod httpMethod, Map params, Class<T> responseType) {
         return withRetry(params.hystrix as HystrixCommand.Setter, params.hystrixFallback as Closure<ResponseEntity<T>>) {
             return restOperations.exchange(
-                    new URI(appendPathToHost(params.host as String, params.url as URI)),
+                    new URI(appendPathToHost(getHost(params), params.url as URI)),
                     httpMethod,
                     getHttpEntityFrom(params),
                     responseType)

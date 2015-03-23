@@ -95,12 +95,21 @@ class ServiceRestClient {
      * @param serviceName - name of collaborating service from microservice configuration file
      * @return builder for the specified HttpMethod
      */
-    public HttpMethodBuilder forService(String serviceName) {
+    HttpMethodBuilder forService(String serviceName) {
         final Map serviceSettings = configurationResolver.dependencies[serviceName] as Map
         final PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(serviceSettings)
-        final ServicePath path = serviceResolver.resolveAlias(new ServiceAlias(serviceName))
-        final URI uri = serviceResolver.fetchUri(path)
-        return new HttpMethodBuilder(uri.toString(), restOperations, predefinedHeaders)
+        return new HttpMethodBuilder(getServiceUri(serviceName), restOperations, predefinedHeaders)
+    }
+
+    /**
+     * Lazy evaluation of the service's URI
+     */
+    private Closure<String> getServiceUri(String serviceName) {
+        return {
+            final ServicePath path = serviceResolver.resolveAlias(new ServiceAlias(serviceName))
+            final URI uri = serviceResolver.fetchUri(path)
+            return uri.toString()
+        }
     }
 
     /**
@@ -108,7 +117,7 @@ class ServiceRestClient {
      * 
      * @return builder for the specified HttpMethod
      */
-    public HttpMethodBuilder forExternalService() {
+    HttpMethodBuilder forExternalService() {
         return new HttpMethodBuilder(restOperations)
     }
 }

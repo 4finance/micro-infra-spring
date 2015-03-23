@@ -5,7 +5,11 @@ import com.netflix.hystrix.HystrixCommand
 import com.netflix.hystrix.HystrixCommandGroupKey
 import com.netflix.hystrix.HystrixCommandKey
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor
-import com.ofg.infrastructure.discovery.*
+import com.ofg.infrastructure.discovery.ServiceAlias
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
+import com.ofg.infrastructure.discovery.ServicePath
+import com.ofg.infrastructure.discovery.ServiceResolver
+import com.ofg.infrastructure.discovery.ServiceUnavailableException
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestClientException
@@ -18,7 +22,11 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 
-import static org.springframework.http.HttpMethod.*
+import static org.springframework.http.HttpMethod.DELETE
+import static org.springframework.http.HttpMethod.GET
+import static org.springframework.http.HttpMethod.HEAD
+import static org.springframework.http.HttpMethod.POST
+import static org.springframework.http.HttpMethod.PUT
 
 class ServiceRestClientSpec extends Specification {
 
@@ -313,8 +321,6 @@ class ServiceRestClientSpec extends Specification {
                     return ResponseEntity.ok(fallbackText)
                 }
             }
-
-
         and:
             restOperations.exchange(_, GET, _ as HttpEntity, _ as Class) >> {
                 throw new RestClientException("Simulated A")
@@ -326,11 +332,9 @@ class ServiceRestClientSpec extends Specification {
                     .withCircuitBreaker(circuitBreaker, fallback)
                     .onUrl(SOME_SERVICE_URL)
                     .aResponseEntity().ofType(String)
-
         then:
             notThrown(RestClientException)
             result.body == fallbackText
-
     }
 
     def 'should not wrap HTTP call inside Hystrix command if not requested'() {

@@ -63,8 +63,13 @@ interface HttpMethod<U, T> {
     HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter)
 
     /**
-     * Adds Hystrix circuit breaker with fallback around every REST call. Deprecated since we don't want
-     * people using Java code to instantiate Closures
+     * Adds Hystrix circuit breaker with fallback around every REST call.
+     *
+     * Deprecated since we don't want people using Java code to instantiate Groovy Closures.
+     * Please use the Callable version.
+     *
+     * The value returned by the closure will be wrapped in {@link org.springframework.http.ResponseEntity}.
+     * You can also provide directly the {@link org.springframework.http.ResponseEntity} and it will get returned.
      *
      * Example:
      * <code>
@@ -77,10 +82,14 @@ interface HttpMethod<U, T> {
      * @param hystrixFallback
      *      @see HystrixCommand#getFallback()
      */
-    @Deprecated HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter, Closure hystrixFallback)
+    @Deprecated
+    HttpMethod<U, T> withCircuitBreaker(HystrixCommand.Setter setter, Closure hystrixFallback)
 
     /**
      * Adds Hystrix circuit breaker with fallback around every REST call.
+     *
+     * The value returned by the closure will be wrapped in {@link org.springframework.http.ResponseEntity}.
+     * You can also provide directly the {@link org.springframework.http.ResponseEntity} and it will get returned.
      *
      * Example:
      * <code>

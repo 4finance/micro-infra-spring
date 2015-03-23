@@ -24,6 +24,9 @@ import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.exe
 
 /**
  * Utility class that extracts {@link HttpEntity} from the provided map of passed parameters
+ *
+ * Note that since in this class we are using multiple dispatch please do not annotate this class
+ * with @CompileStatic
  */
 @TypeChecked
 final class RestExecutor<T> {

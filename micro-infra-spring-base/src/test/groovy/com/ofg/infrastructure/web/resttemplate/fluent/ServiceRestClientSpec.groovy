@@ -1,11 +1,17 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
+
 import com.google.common.util.concurrent.ListenableFuture
 import com.netflix.hystrix.HystrixCommand
 import com.netflix.hystrix.HystrixCommandGroupKey
 import com.netflix.hystrix.HystrixCommandKey
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor
-import com.ofg.infrastructure.discovery.*
+import com.ofg.infrastructure.discovery.ServiceAlias
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
+import com.ofg.infrastructure.discovery.ServicePath
+import com.ofg.infrastructure.discovery.ServiceResolver
+import com.ofg.infrastructure.discovery.ServiceUnavailableException
 import org.springframework.http.HttpEntity
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestOperations
@@ -16,7 +22,11 @@ import spock.lang.Specification
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 
-import static org.springframework.http.HttpMethod.*
+import static org.springframework.http.HttpMethod.DELETE
+import static org.springframework.http.HttpMethod.GET
+import static org.springframework.http.HttpMethod.HEAD
+import static org.springframework.http.HttpMethod.POST
+import static org.springframework.http.HttpMethod.PUT
 
 class ServiceRestClientSpec extends Specification {
 

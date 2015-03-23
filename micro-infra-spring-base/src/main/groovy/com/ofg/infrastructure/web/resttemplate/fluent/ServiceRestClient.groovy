@@ -95,7 +95,7 @@ class ServiceRestClient {
      * @param serviceName - name of collaborating service from microservice configuration file
      * @return builder for the specified HttpMethod
      */
-    public HttpMethodBuilder forService(String serviceName) {
+    HttpMethodBuilder forService(String serviceName) {
         final Map serviceSettings = configurationResolver.dependencies[serviceName] as Map
         final PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(serviceSettings)
         return new HttpMethodBuilder(getServiceUri(serviceName), restOperations, predefinedHeaders)
@@ -117,7 +117,7 @@ class ServiceRestClient {
      * 
      * @return builder for the specified HttpMethod
      */
-    public HttpMethodBuilder forExternalService() {
+    HttpMethodBuilder forExternalService() {
         return new HttpMethodBuilder(restOperations)
     }
 }

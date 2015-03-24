@@ -127,7 +127,7 @@ class StubRunnerMain {
             BatchStubRunner stubRunner = new BatchStubRunnerFactory(arguments.stubRunnerOptions, collaborators).buildBatchStubRunner()
             stubRunner.runStubs()
         } catch (Exception e) {
-            log.info("Closing zookeeper because of exception")
+            log.error("Closing zookeeper because of exception", e)
             zookeeperServer?.shutdown()
             throw e
         }

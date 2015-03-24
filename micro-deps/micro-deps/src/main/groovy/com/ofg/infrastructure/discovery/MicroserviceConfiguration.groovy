@@ -7,8 +7,8 @@ import groovy.transform.Immutable
 @CompileStatic
 @Immutable
 class MicroserviceConfiguration {
-    String microserviceName
-
+    ServicePath servicePath
+    List<Dependency> dependencies = []
 
     @Immutable
     static class Dependency {

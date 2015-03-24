@@ -2,6 +2,7 @@ package com.ofg.infrastructure.discovery
 
 import com.ofg.infrastructure.discovery.util.LoadBalancerType
 import groovy.json.JsonSlurper
+import org.apache.commons.lang.StringUtils
 
 import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.*
 
@@ -9,10 +10,11 @@ class ServiceConfigurationResolver {
 
     final String basePath
     private final Object parsedConfiguration
+    private final MicroserviceConfiguration microserviceConfiguration
     private static final Map EMPTY_MAP = [:]
 
     ServiceConfigurationResolver(String configuration) throws InvalidMicroserviceConfigurationException {
-        (basePath, parsedConfiguration) = parseConfig(configuration)
+        (basePath, parsedConfiguration, microserviceConfiguration) = parseConfig(configuration)
     }
 
     private static List parseConfig(String config) {
@@ -25,7 +27,18 @@ class ServiceConfigurationResolver {
         validateDependencyEntries(serviceMetadata)
         setDefaultsForMissingOptionalElements(serviceMetadata)
         serviceMetadata.dependencies = convertDependenciesToMapWithNameAsKey(serviceMetadata.dependencies)
-        return [basePath, serviceMetadata]
+        ServicePath servicePath = new ServicePath(serviceMetadata.this as String)
+        List<MicroserviceConfiguration.Dependency> dependencies = serviceMetadata.dependencies.collect {
+            String alias = it.key
+            String path = it.value.path ?: it.value
+            boolean required = it.value?.required ?: false
+            LoadBalancerType loadBalancerType = getLoadBalancerType(serviceMetadata.dependencies, new ServicePath(path))
+            String contentTypeTemplate = it.value?.contentTypeTemplate ?: StringUtils.EMPTY
+            String version = it.value?.version ?: StringUtils.EMPTY
+            new MicroserviceConfiguration.Dependency(new ServiceAlias(alias), new ServicePath(path), required, loadBalancerType, contentTypeTemplate, version)
+        }
+        MicroserviceConfiguration microserviceConfiguration = new MicroserviceConfiguration(servicePath, dependencies)
+        return [basePath, serviceMetadata, microserviceConfiguration]
     }
 
     private static void checkThatJsonHasOneRootElement(Map json) {
@@ -79,24 +92,28 @@ class ServiceConfigurationResolver {
     }
 
     String getMicroserviceName() {
-        return parsedConfiguration.this
+        return microserviceConfiguration.servicePath.path
     }
 
     Map getDependencies() {
-        return parsedConfiguration.dependencies
+        return microserviceConfiguration.dependencies
     }
 
     LoadBalancerType getLoadBalancerTypeOf(ServicePath dependencyPath) {
-        Map dependencyConfig = getDependencyConfigByPath(dependencyPath.path)
+        return getLoadBalancerType(parsedConfiguration.dependencies, dependencyPath)
+    }
+
+    private static LoadBalancerType getLoadBalancerType(Map dependencies, ServicePath dependencyPath) {
+        Map dependencyConfig = getDependencyConfigByPath(dependencies, dependencyPath.path)
         String strategyName = dependencyConfig['load-balancer']
         return LoadBalancerType.fromName(nonNullStrategyName(strategyName))
     }
 
-    private String nonNullStrategyName(String strategyName) {
+    private static String nonNullStrategyName(String strategyName) {
         strategyName ? strategyName.toUpperCase() : ''
     }
 
-    private Map getDependencyConfigByPath(String dependencyPath) {
-        parsedConfiguration.dependencies.findResult(EMPTY_MAP) { if (it.value['path'] == dependencyPath) return it.value }
+    private static Map getDependencyConfigByPath(Map dependencies, String dependencyPath) {
+        dependencies.findResult(EMPTY_MAP) { if (it.value['path'] == dependencyPath) return it.value }
     }
 }

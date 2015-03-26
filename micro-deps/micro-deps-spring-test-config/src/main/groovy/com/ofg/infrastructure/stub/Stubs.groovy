@@ -18,7 +18,7 @@ class Stubs {
     }
 
     Stub of(String collaboratorName) {
-        return mocks.get(collaboratorName)
+        return mocks[collaboratorName]
     }
 
     void resetAll() {

@@ -3,8 +3,14 @@ package com.ofg.infrastructure.discovery
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import static com.ofg.infrastructure.discovery.MicroserviceConfigurationUtil.CONFIGURATION_WITH_PATH_ELEM
+import static com.ofg.infrastructure.discovery.MicroserviceConfigurationUtil.FLAT_CONFIGURATION
+import static com.ofg.infrastructure.discovery.MicroserviceConfigurationUtil.INVALID_DEPENDENCIES_ELEMENT
+import static com.ofg.infrastructure.discovery.MicroserviceConfigurationUtil.LOAD_BALANCING_DEPENDENCIES
+import static com.ofg.infrastructure.discovery.MicroserviceConfigurationUtil.MISSING_THIS_ELEMENT
+import static com.ofg.infrastructure.discovery.MicroserviceConfigurationUtil.MULTIPLE_ROOT_ELEMENTS
+import static com.ofg.infrastructure.discovery.MicroserviceConfigurationUtil.ONLY_REQUIRED_ELEMENTS
 import static com.ofg.infrastructure.discovery.util.LoadBalancerType.*
-import static com.ofg.infrastructure.discovery.MicroserviceConfiguration.*
 
 class ServiceConfigurationResolverSpec extends Specification {
 
@@ -14,8 +20,8 @@ class ServiceConfigurationResolverSpec extends Specification {
         then:
             resolver.basePath == 'pl'
             resolver.microserviceName == 'com/ofg/service'
-            resolver.dependencies == ['ping':['path':'com/ofg/ping'],
-                                      'pong':['path':'com/ofg/pong']]
+            resolver.dependencies == DependencyCreator.fromMap(['ping':['path':'com/ofg/ping'],
+                                      'pong':['path':'com/ofg/pong']])
     }
 
     def 'should parse flat configuration'() {
@@ -24,8 +30,8 @@ class ServiceConfigurationResolverSpec extends Specification {
         then:
             resolver.basePath == 'pl'
             resolver.microserviceName == 'com/ofg/service'
-            resolver.dependencies == ['ping':['path':'com/ofg/ping'],
-                                      'pong':['path':'com/ofg/pong']]
+            resolver.dependencies ==  DependencyCreator.fromMap( ['ping':['path':'com/ofg/ping'],
+                                      'pong':['path':'com/ofg/pong']] )
     }
 
     def 'should fail on missing "this" element'() {
@@ -53,7 +59,7 @@ class ServiceConfigurationResolverSpec extends Specification {
         when:
             def resolver = new ServiceConfigurationResolver(ONLY_REQUIRED_ELEMENTS)
         then:
-            resolver.dependencies == [:]
+            resolver.dependencies.empty
     }
 
     @Unroll

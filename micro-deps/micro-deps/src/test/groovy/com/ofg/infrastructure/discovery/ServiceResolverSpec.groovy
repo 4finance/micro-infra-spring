@@ -6,7 +6,7 @@ import com.ofg.infrastructure.discovery.watcher.presence.DefaultDependencyPresen
 import com.ofg.infrastructure.discovery.watcher.presence.checker.NoInstancesRunningException
 
 import static org.codehaus.groovy.runtime.StackTraceUtils.extractRootCause
-import static com.ofg.infrastructure.discovery.MicroserviceConfiguration.REQUIRED_DEPENDENCY
+import static MicroserviceConfigurationUtil.REQUIRED_DEPENDENCY
 
 class ServiceResolverSpec extends SpecWithZookeper {
 

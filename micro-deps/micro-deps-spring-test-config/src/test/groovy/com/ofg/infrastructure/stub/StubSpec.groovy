@@ -1,14 +1,12 @@
 package com.ofg.infrastructure.stub
 
-import com.github.tomakehurst.wiremock.client.MappingBuilder
-import com.github.tomakehurst.wiremock.client.RequestPatternBuilder
-import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
-import com.github.tomakehurst.wiremock.client.UrlMatchingStrategy
-import com.github.tomakehurst.wiremock.client.VerificationException
-import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.*
 import com.github.tomakehurst.wiremock.http.RequestMethod
 import com.google.common.base.Optional
+import com.ofg.infrastructure.discovery.MicroserviceConfiguration
+import com.ofg.infrastructure.discovery.ServiceAlias
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
+import com.ofg.infrastructure.discovery.ServicePath
 import com.ofg.infrastructure.discovery.web.HttpMockServer
 import com.ofg.stub.StubRunning
 import groovyx.net.http.HTTPBuilder
@@ -16,8 +14,8 @@ import spock.lang.AutoCleanup
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static com.ofg.infrastructure.base.dsl.WireMockHttpRequestMapper.wireMockGet
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import static com.ofg.infrastructure.base.dsl.WireMockHttpRequestMapper.wireMockGet
 
 class StubSpec extends Specification {
 
@@ -127,14 +125,12 @@ class StubSpec extends Specification {
 
     private void configurationResolverWithPingPongDependencies() {
         configurationResolver = Mock(ServiceConfigurationResolver)
-        configurationResolver.dependencies >> [
-                (PING): [
-                        'path': (UNKNOWN_PING_PATH)
-                ],
-                (PONG): [
-                        'path': (KNOWN_PONG_PATH)
-                ]
-        ]
+        MicroserviceConfiguration.Dependency ping = new MicroserviceConfiguration.Dependency(new ServiceAlias(PING), new ServicePath(UNKNOWN_PING_PATH))
+        MicroserviceConfiguration.Dependency pong = new MicroserviceConfiguration.Dependency(new ServiceAlias(PONG), new ServicePath(KNOWN_PONG_PATH))
+        configurationResolver.getDependencyForName(PING) >> ping
+        configurationResolver.getDependencyForName(PONG) >> pong
+        configurationResolver.dependencies >> [ping, pong]
+
     }
 
     private void stubRunningWithPredefinedPongPath() {

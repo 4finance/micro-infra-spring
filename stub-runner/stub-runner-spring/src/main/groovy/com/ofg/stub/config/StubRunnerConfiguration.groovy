@@ -1,16 +1,14 @@
 package com.ofg.stub.config
-
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.stub.*
 import groovy.grape.Grape
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.apache.curator.test.TestingServer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
-
-import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.PATH
 /**
  * Configuration that initializes a {@link BatchStubRunner} that runs {@link StubRunner} instance for each microservice's collaborator.
  *
@@ -45,6 +43,7 @@ import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.PA
 @Configuration
 @Import(ServiceDiscoveryTestingServerConfiguration)
 @Slf4j
+@CompileStatic
 class StubRunnerConfiguration {
 
     /**
@@ -83,9 +82,7 @@ class StubRunnerConfiguration {
         boolean shouldWorkOnline = isPropertySetToWorkOnline(workOffline, skipLocalRepo)
         StubRunnerOptions stubRunnerOptions = new StubRunnerOptions(minPortValue, maxPortValue, stubRepositoryRoot, stubsGroup, stubsModule, shouldWorkOnline,
                 useMicroserviceDefinitions, testingServer.connectString, testingServer.port, stubsSuffx, waitForService, waitTimeout)
-        List<String> dependenciesPath = serviceConfigurationResolver.dependencies.collect { String alias, Map dependencyConfig ->
-            return dependencyConfig[PATH]
-        }
+        List<String> dependenciesPath = serviceConfigurationResolver.dependencies.collect { it.servicePath.path }
         Collaborators dependencies = new Collaborators(serviceConfigurationResolver.basePath, dependenciesPath)
         return new BatchStubRunnerFactory(stubRunnerOptions, dependencies).buildBatchStubRunner()
     }

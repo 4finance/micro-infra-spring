@@ -4,13 +4,14 @@ import com.ofg.infrastructure.discovery.util.LoadBalancerType
 import groovy.json.JsonSlurper
 import org.apache.commons.lang.StringUtils
 
-import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.*
+import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.PATH
+import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.REQUIRED
 
 class ServiceConfigurationResolver {
 
     final String basePath
     private final Object parsedConfiguration
-    private final MicroserviceConfiguration microserviceConfiguration
+    final MicroserviceConfiguration microserviceConfiguration
     private static final Map EMPTY_MAP = [:]
 
     ServiceConfigurationResolver(String configuration) throws InvalidMicroserviceConfigurationException {
@@ -35,7 +36,10 @@ class ServiceConfigurationResolver {
             LoadBalancerType loadBalancerType = getLoadBalancerType(serviceMetadata.dependencies, new ServicePath(path))
             String contentTypeTemplate = it.value?.contentTypeTemplate ?: StringUtils.EMPTY
             String version = it.value?.version ?: StringUtils.EMPTY
-            new MicroserviceConfiguration.Dependency(new ServiceAlias(alias), new ServicePath(path), required, loadBalancerType, contentTypeTemplate, version)
+            Map<String, String> headers = it.value?.headers?.entrySet()?.collectEntries {
+                [(it.key): it.value]
+            } ?: [:]
+            new MicroserviceConfiguration.Dependency(new ServiceAlias(alias), new ServicePath(path), required, loadBalancerType, contentTypeTemplate, version, headers)
         }
         MicroserviceConfiguration microserviceConfiguration = new MicroserviceConfiguration(servicePath, dependencies)
         return [basePath, serviceMetadata, microserviceConfiguration]
@@ -95,8 +99,12 @@ class ServiceConfigurationResolver {
         return microserviceConfiguration.servicePath.path
     }
 
-    Map getDependencies() {
+    List<MicroserviceConfiguration.Dependency> getDependencies() {
         return microserviceConfiguration.dependencies
+    }
+
+    MicroserviceConfiguration.Dependency getDependencyForName(String serviceName) {
+        return microserviceConfiguration.dependencies.find { it.serviceAlias.name == serviceName }
     }
 
     LoadBalancerType getLoadBalancerTypeOf(ServicePath dependencyPath) {

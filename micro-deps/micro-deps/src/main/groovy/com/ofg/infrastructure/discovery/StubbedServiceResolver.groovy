@@ -27,7 +27,7 @@ class StubbedServiceResolver implements ServiceResolver {
 
     void stubDependenciesFrom(ServiceConfigurationResolver serviceConfigurationResolver) {
         serviceConfigurationResolver.dependencies.each {
-            String dependencyName = it.value['path'] as String
+            String dependencyName = it.servicePath.path
             stubDependency(new ServicePath(dependencyName), 'http://$wiremockUrl:$wiremockPort/$dependencyName'.toURI())
         }
     }

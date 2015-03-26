@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.discovery
 
-class MicroserviceConfiguration {
+class MicroserviceConfigurationUtil {
 
     public static final String LOAD_BALANCING_DEPENDENCIES = """
                             {

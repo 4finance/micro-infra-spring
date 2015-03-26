@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
 
+import com.ofg.infrastructure.discovery.MicroserviceConfiguration.Dependency
 import com.ofg.infrastructure.discovery.ServiceAlias
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServicePath
@@ -96,8 +97,8 @@ class ServiceRestClient {
      * @return builder for the specified HttpMethod
      */
     HttpMethodBuilder forService(String serviceName) {
-        final Map serviceSettings = configurationResolver.dependencies[serviceName] as Map
-        final PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(serviceSettings)
+        final Dependency dependency = configurationResolver.getDependencyForName(serviceName)
+        final PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(dependency)
         return new HttpMethodBuilder(getServiceUri(serviceName), restOperations, predefinedHeaders)
     }
 

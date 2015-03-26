@@ -1,7 +1,6 @@
 package com.ofg.infrastructure.correlationid
 
 import groovyx.gpars.GParsPool
-import spock.lang.Ignore
 import spock.lang.Specification
 
 import java.util.concurrent.Callable
@@ -9,7 +8,6 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 import static java.util.concurrent.TimeUnit.SECONDS
-
 
 class CorrelationIdUpdaterSpec extends Specification {
 
@@ -43,7 +41,7 @@ class CorrelationIdUpdaterSpec extends Specification {
         expect:
             GParsPool.withPool(1) {
                 ["1"].eachParallel {
-                    CorrelationIdHolder.get() == null
+                    assert CorrelationIdHolder.get() == null
                 }
             }
     }
@@ -54,7 +52,7 @@ class CorrelationIdUpdaterSpec extends Specification {
         expect:
             GParsPool.withPool(1) {
                 ["1"].eachParallel CorrelationIdUpdater.wrapClosureWithId {
-                    CorrelationIdHolder.get() == 'A'
+                    assert CorrelationIdHolder.get() == 'A'
                 }
             }
     }
@@ -72,7 +70,7 @@ class CorrelationIdUpdaterSpec extends Specification {
                 ["1"].eachParallel CorrelationIdUpdater.wrapClosureWithId {}
                 //then
                 ["1"].eachParallel {
-                    CorrelationIdHolder.get() == 'B'
+                    assert CorrelationIdHolder.get() == 'B'
                 }
             }
     }
@@ -81,7 +79,7 @@ class CorrelationIdUpdaterSpec extends Specification {
         expect:
             GParsPool.withPool {
                 ["1"].eachParallel CorrelationIdUpdater.wrapClosureWithId {
-                    it == "1"
+                    assert it == "1"
                 }
             }
     }
@@ -89,16 +87,15 @@ class CorrelationIdUpdaterSpec extends Specification {
     def "should propagate single named parameter into nested closure"() {
         expect:
             ["1"].each CorrelationIdUpdater.wrapClosureWithId { String elem ->
-                elem == "1"
+                assert elem == "1"
             }
     }
 
-    @Ignore
     def "should propagate multiple parameters into nested closure"() {
         expect:
             ["e1"].eachWithIndex CorrelationIdUpdater.wrapClosureWithId { String entry, int i ->
-                entry == "e1"
-                i == 0
+                assert entry == "e1"
+                assert i == 0
             }
     }
 

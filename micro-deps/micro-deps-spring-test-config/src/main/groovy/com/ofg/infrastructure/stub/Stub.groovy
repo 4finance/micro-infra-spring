@@ -4,8 +4,10 @@ import com.github.tomakehurst.wiremock.client.RequestPatternBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.stubbing.ListStubMappingsResult
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import groovy.transform.CompileStatic
 import groovyjarjarantlr.collections.List
 
+@CompileStatic
 class Stub {
 
     private WireMock delegate;

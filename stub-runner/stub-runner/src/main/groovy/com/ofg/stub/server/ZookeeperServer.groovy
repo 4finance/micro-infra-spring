@@ -1,5 +1,6 @@
 package com.ofg.stub.server
 
+import groovy.transform.CompileStatic
 import org.apache.commons.lang.StringUtils
 import org.apache.curator.RetryPolicy
 import org.apache.curator.framework.CuratorFramework
@@ -7,6 +8,7 @@ import org.apache.curator.framework.CuratorFrameworkFactory
 import org.apache.curator.retry.ExponentialBackoffRetry
 import org.apache.curator.test.TestingServer
 
+@CompileStatic
 class ZookeeperServer {
 
     private static final RetryPolicy RETRY_POLICY = new ExponentialBackoffRetry(50, 20, 500)

@@ -4,7 +4,10 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.ofg.stub.server.ZookeeperServer
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
+import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j
 import groovyx.net.http.HTTPBuilder
 import org.apache.curator.framework.CuratorFramework
@@ -20,6 +23,7 @@ import java.util.concurrent.*
  */
 @Slf4j
 @PackageScope
+@CompileStatic
 class CollaboratorsPathResolver {
 
     private static final String COLLABORATORS_ENDPOINT = '/collaborators'
@@ -132,6 +136,8 @@ class CollaboratorsPathResolver {
         }
     }
 
+    @CompileDynamic
+    @TypeChecked
     static ListenableFuture<Map<String, Map<String, String>>> getCollaborators(String uriSpec, Integer timeout) {
         final HTTPBuilder httpRequest = new HTTPBuilder(uriSpec)
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -148,5 +154,4 @@ class CollaboratorsPathResolver {
             }
         })
     }
-
 }

@@ -7,10 +7,10 @@ import com.ofg.stub.mapping.StubRepository
 import com.ofg.stub.registry.StubRegistry
 import com.ofg.stub.server.AvailablePortScanner
 import com.ofg.stub.server.StubServer
-import groovy.transform.TypeChecked
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
-@TypeChecked
+@CompileStatic
 @Slf4j
 class StubRunnerExecutor {
 

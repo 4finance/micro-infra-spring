@@ -38,7 +38,7 @@ class StubRunnerExecutor {
      *
      * @param dependencyPath path taken from microservice configuration from dependency settings
      *
-     * @return {@link URL} to stubbed dependency wrapped if found otherwise {@link Optional.absent()}
+     * @return {@link URL} to stubbed dependency wrapped if found otherwise {@link Optional#absent()}
      */
     Optional<URL> getStubUrlByRelativePath(String dependencyPath) {
         return Optional.fromNullable(stubServers.find {

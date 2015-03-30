@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.correlationid
 
 import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 import groovy.util.logging.Slf4j
 import org.slf4j.MDC
 import org.springframework.util.StringUtils
@@ -50,7 +51,7 @@ class CorrelationIdUpdater {
 
     /**
      * Wraps given {@link Closure} with another {@link Closure} propagating correlation ID inside nested
-     * block and passing one input parameter.
+     * block and passing input parameters.
      *
      * <p/>
      * Useful in a situation when a block is implicit called in a separate thread, for example with GPars.
@@ -65,19 +66,18 @@ class CorrelationIdUpdater {
      * }
      * </code></pre>
      *
-     * <b>Note</b>: Passing only one input parameter currently is supported.
-     *
      * @param block code block to execute in a thread with a correlation ID taken from the original thread
      * @return wrapping block as Closure
      * @since 0.8.4
      */
+    @CompileStatic(TypeCheckingMode.SKIP)
     static <T> Closure<T> wrapClosureWithId(Closure<T> block) {
         final String temporaryCorrelationId = CorrelationIdHolder.get()
-        return { Object arg ->
+        return { Object[] args ->
             final String oldCorrelationId = CorrelationIdHolder.get()
             try {
                 updateCorrelationId(temporaryCorrelationId)
-                return block(arg)
+                return block(*args)
             } finally {
                 updateCorrelationId(oldCorrelationId)
             }
@@ -89,7 +89,7 @@ class CorrelationIdUpdater {
      * Callable/Closure.
      *
      * <p/>
-     * Useful in a situation when a Callable should be execute in a separate thread, for example in aspects.
+     * Useful in a situation when a Callable should be executed in a separate thread, for example in aspects.
      *
      * <pre><code>
      * &#64;Around('...')

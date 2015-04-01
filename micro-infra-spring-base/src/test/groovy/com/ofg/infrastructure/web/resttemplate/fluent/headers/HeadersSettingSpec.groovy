@@ -1,5 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.headers
 
+import com.ofg.infrastructure.discovery.MicroserviceConfiguration
+import com.ofg.infrastructure.discovery.util.DependencyCreator
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
@@ -15,8 +17,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON
 class HeadersSettingSpec extends HttpMethodSpec {
 
     public static final String TEMPLATE_URL = 'http://some.url/api/objects/{objectId}'
-    private static final Map ADDITIONAL_HEADERS_CONFIG = ['headers': ['header1': 'value1', 'header2': 'value2']]
-    private static final Map CONTENT_TYPE_HEADER_CONFIG = ['contentTypeTemplate': 'application/vnd.external-service.$version+json', 'version': 'v1']
+    private static final MicroserviceConfiguration.Dependency ADDITIONAL_HEADERS_CONFIG = DependencyCreator.fromMap('asd': ['headers': ['header1': 'value1', 'header2': 'value2']]).first()
+    private static final MicroserviceConfiguration.Dependency CONTENT_TYPE_HEADER_CONFIG = DependencyCreator.fromMap('asd' : ['contentTypeTemplate': 'application/vnd.external-service.$version+json', 'version': 'v1']).first()
     private static final String EXPECTED_CONTENT_TYPE = 'application/vnd.external-service.v1+json'
 
     def "should fill out headers for get method"() {

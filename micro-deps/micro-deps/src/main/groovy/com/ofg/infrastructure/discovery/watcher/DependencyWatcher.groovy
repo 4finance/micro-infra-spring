@@ -1,5 +1,7 @@
 package com.ofg.infrastructure.discovery.watcher
 
+import com.ofg.infrastructure.discovery.MicroserviceConfiguration
+import com.ofg.infrastructure.discovery.MicroserviceConfiguration.Dependency
 import com.ofg.infrastructure.discovery.watcher.presence.DependencyPresenceOnStartupVerifier
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -9,22 +11,23 @@ import org.apache.curator.x.discovery.ServiceDiscovery
 @CompileStatic
 class DependencyWatcher {
 
-    private final Map<String, Map<String, String>> dependencies
+    private final List<MicroserviceConfiguration.Dependency> dependencies
     private final ServiceDiscovery serviceDiscovery
     private final Map<String, ServiceCache> dependencyRegistry = [:]
     private final List<DependencyWatcherListener> listeners = []
     private final DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier
 
-    DependencyWatcher(Map<String, Map<String, String>> dependencies, ServiceDiscovery serviceDiscovery, DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier) {
+    DependencyWatcher(List<MicroserviceConfiguration.Dependency> dependencies, ServiceDiscovery serviceDiscovery, DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier) {
         this.dependencies = dependencies
         this.serviceDiscovery = serviceDiscovery
         this.dependencyPresenceOnStartupVerifier = dependencyPresenceOnStartupVerifier
     }
 
     @PackageScope void registerDependencies() {
-        dependencies.each { String dependencyName, Map<String, String> dependencyDefinition ->
-            String path = dependencyDefinition['path']
-            boolean required = dependencyDefinition['required']
+        dependencies.each { Dependency dependency ->
+            String dependencyName = dependency.serviceAlias.name
+            String path = dependency.servicePath.path
+            boolean required = dependency.required
             ServiceCache serviceCache = serviceDiscovery.serviceCacheBuilder().name(path).build()
             serviceCache.start()
             dependencyPresenceOnStartupVerifier.verifyDependencyPresence(dependencyName, serviceCache, required)

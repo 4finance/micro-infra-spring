@@ -42,13 +42,13 @@ class Stubs {
     }
 
     private URL findCollaboratorStubUrl(String collaboratorName) {
-        String collaboratorPath = configurationResolver.dependencies[collaboratorName]['path']
+        String collaboratorPath = configurationResolver.getDependencyForName(collaboratorName)?.servicePath?.path
         def optionalStubUrl = stubRunning.findStubUrlByRelativePath(collaboratorPath)
         return optionalStubUrl.or( { throw new MissingStubException(collaboratorName) } as Supplier )
     }
 
     private boolean isUnknown(String collaboratorName) {
-        !configurationResolver.dependencies.containsKey(collaboratorName)
+        return !configurationResolver.dependencies.find { it.serviceAlias.name == collaboratorName }
     }
 
 }

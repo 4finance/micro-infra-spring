@@ -41,10 +41,10 @@ class ZookeeperServiceResolver implements ServiceResolver {
 
     @Override
     ServicePath resolveAlias(ServiceAlias alias) {
-        Object dependencyConfig = serviceConfigurationResolver.dependencies[alias.name]
+        MicroserviceConfiguration.Dependency dependencyConfig = serviceConfigurationResolver.dependencies.find { it.serviceAlias == alias }
         if(!dependencyConfig)
-            throw new NoSuchElementException("${alias.name} is not our dependency, available: ${serviceConfigurationResolver.dependencies.keySet()}")
-        return getPathFromDependencyConfig(dependencyConfig)
+            throw new NoSuchElementException("${alias.name} is not our dependency, available: ${serviceConfigurationResolver.dependencies}")
+        return dependencyConfig.servicePath
     }
 
     @Override
@@ -84,13 +84,8 @@ class ZookeeperServiceResolver implements ServiceResolver {
     Set<ServicePath> fetchMyDependencies() {
         serviceConfigurationResolver
                 .dependencies
-                .values()
-                .collect { getPathFromDependencyConfig(it) }
+                .collect { it.servicePath }
                 .toSet()
-    }
-
-    private static ServicePath getPathFromDependencyConfig(dependencyConfig) {
-        return new ServicePath(dependencyConfig['path'] as String)
     }
 
     @Override
@@ -113,8 +108,7 @@ class ZookeeperServiceResolver implements ServiceResolver {
     Set<String> fetchCollaboratorsNames() {
         return serviceConfigurationResolver
                 .dependencies
-                .keySet()
-                .collect{it.toString()}
+                .collect{it.serviceAlias.name}
                 .toSet()
     }
 

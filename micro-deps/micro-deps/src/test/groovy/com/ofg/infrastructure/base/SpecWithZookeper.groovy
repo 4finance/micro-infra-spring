@@ -11,7 +11,7 @@ import org.apache.curator.x.discovery.ServiceInstance
 import org.apache.curator.x.discovery.UriSpec
 import spock.lang.Specification
 
-import static com.ofg.infrastructure.discovery.MicroserviceConfiguration.CONFIGURATION_WITH_PATH_ELEM
+import static com.ofg.infrastructure.discovery.MicroserviceConfigurationUtil.CONFIGURATION_WITH_PATH_ELEM
 
 class SpecWithZookeper extends Specification {
 

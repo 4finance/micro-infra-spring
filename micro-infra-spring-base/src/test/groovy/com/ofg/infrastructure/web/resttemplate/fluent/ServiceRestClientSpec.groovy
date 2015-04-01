@@ -5,11 +5,9 @@ import com.netflix.hystrix.HystrixCommand
 import com.netflix.hystrix.HystrixCommandGroupKey
 import com.netflix.hystrix.HystrixCommandKey
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor
-import com.ofg.infrastructure.discovery.ServiceAlias
-import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
-import com.ofg.infrastructure.discovery.ServicePath
-import com.ofg.infrastructure.discovery.ServiceResolver
-import com.ofg.infrastructure.discovery.ServiceUnavailableException
+import com.ofg.infrastructure.discovery.*
+import com.ofg.infrastructure.discovery.util.DependencyCreator
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestClientException
@@ -22,11 +20,7 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 
-import static org.springframework.http.HttpMethod.DELETE
-import static org.springframework.http.HttpMethod.GET
-import static org.springframework.http.HttpMethod.HEAD
-import static org.springframework.http.HttpMethod.POST
-import static org.springframework.http.HttpMethod.PUT
+import static org.springframework.http.HttpMethod.*
 
 class ServiceRestClientSpec extends Specification {
 
@@ -41,9 +35,9 @@ class ServiceRestClientSpec extends Specification {
     ServiceRestClient serviceRestClient = new ServiceRestClient(restOperations, serviceResolver, configurationResolver)
 
     def setup() {
-        configurationResolver.getDependencies() >> ['cola': ['contentTypeTemplate': 'application/vnd.cola.$version+json',
+        configurationResolver.getDependencyForName(_) >> DependencyCreator.fromMap(['cola': ['contentTypeTemplate': 'application/vnd.cola.$version+json',
                                                              'version'            : 'v1',
-                                                             'headers'            : ['header1': 'value1', 'header2': 'value2']]]
+                                                             'headers'            : ['header1': 'value1', 'header2': 'value2']]]).first()
     }
 
     def 'should send a request to provided URL with appending host when calling service'() {
@@ -84,9 +78,9 @@ class ServiceRestClientSpec extends Specification {
         when:
             serviceRestClient.forService(COLA_COLLABORATOR_NAME).get().onUrl(path).ignoringResponse()
         then:
-            1 * configurationResolver.getDependencies() >> ['cola': ['contentTypeTemplate': 'application/vnd.cola.$version+json',
-                                                                     'headers'            : ['header1': 'value1', 'header2': 'value2']]]
-            thrown(MissingPropertyException)
+            1 * configurationResolver.getDependencyForName(_) >> DependencyCreator.fromMap(['cola': ['contentTypeTemplate': 'application/vnd.cola.$version+json',
+                                                                     'headers'            : ['header1': 'value1', 'header2': 'value2']]]).first()
+            thrown(PredefinedHttpHeaders.ContentTypeTemplateWithoutVersionException)
     }
 
     def 'should send a request to provided URL with predefined headers set when calling service'() {

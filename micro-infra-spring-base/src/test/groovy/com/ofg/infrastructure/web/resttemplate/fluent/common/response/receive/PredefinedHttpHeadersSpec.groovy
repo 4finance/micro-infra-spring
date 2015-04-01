@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive
-
+import com.ofg.infrastructure.discovery.MicroserviceConfiguration
+import com.ofg.infrastructure.discovery.util.LoadBalancerType
 import org.springframework.http.HttpHeaders
 import spock.lang.Specification
 
@@ -7,7 +8,8 @@ class PredefinedHttpHeadersSpec extends Specification {
 
     def 'should set Content-Type header if template is defined'() {
         given:
-            Map serviceConfig = ['version': 'v1', 'contentTypeTemplate': 'application/vnd.some-service.$version+json']
+            MicroserviceConfiguration.Dependency serviceConfig = new MicroserviceConfiguration.Dependency(null,
+                    null, false, LoadBalancerType.ROUND_ROBIN, 'application/vnd.some-service.$version+json', 'v1', [:])
             PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(serviceConfig)
             HttpHeaders httpHeaders = new HttpHeaders()
         when:
@@ -18,7 +20,7 @@ class PredefinedHttpHeadersSpec extends Specification {
 
     def 'should not set Content-Type header if there is no template defined'() {
         given:
-            PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders([:])
+            PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(null)
             HttpHeaders httpHeaders = new HttpHeaders()
         when:
             predefinedHeaders.copyTo(httpHeaders)
@@ -29,7 +31,8 @@ class PredefinedHttpHeadersSpec extends Specification {
 
     def 'should copy existing predefined headers to HTTP headers'() {
         given:
-            Map serviceConfig = ['headers': ['header1':'value1', 'header2':'value2']]
+            MicroserviceConfiguration.Dependency serviceConfig = new MicroserviceConfiguration.Dependency(null,
+                null, false, LoadBalancerType.ROUND_ROBIN, '', '', ['header1':'value1', 'header2':'value2'])
             PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(serviceConfig)
             HttpHeaders httpHeaders = new HttpHeaders()
         when:

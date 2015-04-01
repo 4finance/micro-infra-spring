@@ -50,7 +50,7 @@ import static java.util.concurrent.TimeUnit.MINUTES
 class MetricsConfiguration {
 
     @Bean(initMethod = "start", destroyMethod = "stop")
-    @Profile([BasicProfiles.PRODUCTION, BasicProfiles.DEVELOPMENT, BasicProfiles.TEST])
+    @Profile([BasicProfiles.PRODUCTION, BasicProfiles.DEVELOPMENT])
     JmxPublisher jmxPublisher(MetricRegistry metricRegistry) {
         return new JmxPublisher(metricRegistry, MINUTES, MILLISECONDS)
     }

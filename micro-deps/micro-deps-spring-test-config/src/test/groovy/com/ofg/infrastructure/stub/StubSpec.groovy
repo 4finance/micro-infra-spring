@@ -1,6 +1,11 @@
 package com.ofg.infrastructure.stub
 
-import com.github.tomakehurst.wiremock.client.*
+import com.github.tomakehurst.wiremock.client.MappingBuilder
+import com.github.tomakehurst.wiremock.client.RequestPatternBuilder
+import com.github.tomakehurst.wiremock.client.UrlMatchingStrategy
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
+import com.github.tomakehurst.wiremock.client.VerificationException
 import com.github.tomakehurst.wiremock.http.RequestMethod
 import com.google.common.base.Optional
 import com.ofg.infrastructure.discovery.MicroserviceConfiguration

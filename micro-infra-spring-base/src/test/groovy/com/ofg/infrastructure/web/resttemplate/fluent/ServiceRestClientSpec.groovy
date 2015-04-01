@@ -6,7 +6,7 @@ import com.netflix.hystrix.HystrixCommandGroupKey
 import com.netflix.hystrix.HystrixCommandKey
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor
 import com.ofg.infrastructure.discovery.*
-import com.ofg.infrastructure.web.resttemplate.fluent.DependencyCreator
+import com.ofg.infrastructure.discovery.util.DependencyCreator
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity

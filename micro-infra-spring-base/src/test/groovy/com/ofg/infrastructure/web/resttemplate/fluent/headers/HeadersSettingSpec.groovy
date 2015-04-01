@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.headers
 
 import com.ofg.infrastructure.discovery.MicroserviceConfiguration
-import com.ofg.infrastructure.web.resttemplate.fluent.DependencyCreator
+import com.ofg.infrastructure.discovery.util.DependencyCreator
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders

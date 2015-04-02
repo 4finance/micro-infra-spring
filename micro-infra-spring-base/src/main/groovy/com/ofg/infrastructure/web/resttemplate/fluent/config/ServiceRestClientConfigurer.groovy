@@ -10,7 +10,7 @@ import org.springframework.http.converter.HttpMessageConverter
  *
  * <p>See {@link com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClientConfiguration ServiceRestClientConfiguration}.
  *
- * @since 0.8.15
+ * @since 0.8.17
  */
 interface ServiceRestClientConfigurer {
 

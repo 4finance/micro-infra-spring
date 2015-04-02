@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
+
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
 import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
@@ -17,16 +18,17 @@ import org.springframework.test.context.ContextConfiguration
 @ContextConfiguration(classes = CustomConfig, loader = SpringApplicationContextLoader)
 class ServiceRestClientCustomizationSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
-    static final MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter()
+    static
+    final MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter()
 
     @Autowired
     ApplicationContext applicationContext
 
     def "should allow to provide custom MessageConverter via ServiceRestClientConfigurer"() {
         given:
-        RestTemplate restTemplate = applicationContext.getBean(RestTemplate)
+            RestTemplate restTemplate = applicationContext.getBean(RestTemplate)
         expect:
-        restTemplate.getMessageConverters().contains(jackson2HttpMessageConverter)
+            restTemplate.getMessageConverters().contains(jackson2HttpMessageConverter)
     }
 
     @Configuration

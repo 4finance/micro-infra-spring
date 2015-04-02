@@ -1,5 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.config
+
 import org.springframework.http.converter.HttpMessageConverter
+
 /**
  * Interface to be implemented by Spring beans willing to provide their own configuration for
  * {@link com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClientConfiguration ServiceRestClientConfiguration}.
@@ -14,15 +16,7 @@ import org.springframework.http.converter.HttpMessageConverter
  */
 interface ServiceRestClientConfigurer {
 
-    /**
-     * Configures underlaying message converters
-     * @param converters
-     */
     void configureMessageConverters(List<HttpMessageConverter<?>> converters);
 
-    /**
-     *
-     * @param configurer
-     */
     void configureRestClientParams(RestClientConfigurer configurer);
 }

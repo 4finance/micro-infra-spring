@@ -1,13 +1,17 @@
 package com.ofg.infrastructure.web.resttemplate.custom
 
+import com.google.common.base.Charsets
+import com.google.common.io.ByteStreams
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.springframework.http.ResponseEntity
 import org.springframework.http.client.BufferingClientHttpRequestFactory
+import org.springframework.http.client.ClientHttpResponse
 import org.springframework.http.client.SimpleClientHttpRequestFactory
 import org.springframework.web.client.ResponseExtractor
 
 import java.lang.reflect.Type
+
 /**
  * Default implementation of RestTemplate {@see RestTemplate} with custom
  * <ul>

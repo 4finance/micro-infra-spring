@@ -64,8 +64,8 @@ allprojects {
                 force 'org.jboss.logging:jboss-logging:3.1.4.GA'
 
                 eachDependency { DependencyResolveDetails details ->
-                    if (details.requested.group == 'org.slf4j') { details.useVersion '1.7.10' }
-                    if (details.requested.group == 'com.fasterxml.jackson.core') { details.useVersion "2.5.0" }
+                    if (details.requested.group == 'org.slf4j') { details.useVersion '1.7.12' }
+                    if (details.requested.group == 'com.fasterxml.jackson.core') { details.useVersion "2.5.2" }
 
                     // To prevent an accidental usage of groovy-all.jar and groovy.jar in different versions
                     // all modularized Groovy jars are replaced with groovy-all.jar by default.
@@ -105,7 +105,7 @@ configure(srcSubprojects) {
             "com.google.guava:guava" "18.0"
             "commons-io:commons-io" "2.4"
 
-            dependencySet(group:"org.apache.curator", version: "2.7.0") {
+            dependencySet(group:"org.apache.curator", version: "2.7.1") {
                 entry "curator-x-discovery"
                 entry "curator-test"
             }

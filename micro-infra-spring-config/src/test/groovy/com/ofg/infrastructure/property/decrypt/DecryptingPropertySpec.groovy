@@ -13,9 +13,9 @@ import spock.lang.IgnoreIf
 import spock.lang.Issue
 import spock.lang.Shared
 
-import static com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthTestFixture.shouldDecryptionTestsBeExecuted
+import static com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthUtil.isStrongEncryptionSupported
 
-@IgnoreIf({ !shouldDecryptionTestsBeExecuted() })
+@IgnoreIf({ !isStrongEncryptionSupported() })
 class DecryptingPropertySpec extends AbstractIntegrationSpec {
 
     @Shared

@@ -12,9 +12,9 @@ import spock.lang.AutoCleanup
 import spock.lang.IgnoreIf
 import spock.lang.Shared
 
-import static com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthTestFixture.shouldDecryptionTestsBeExecuted
+import static com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthUtil.strongEncryptionSupported
 
-@IgnoreIf({ !shouldDecryptionTestsBeExecuted() })
+@IgnoreIf({ !isStrongEncryptionSupported() })
 class LoadingEncryptedFromFileSystemSpec extends AbstractIntegrationSpec {
 
     @Shared

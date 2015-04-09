@@ -1,5 +1,7 @@
 package com.ofg.infrastructure.property;
 
+import com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthUtil;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContextInitializer;
@@ -11,9 +13,14 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 
+import static java.lang.invoke.MethodHandles.lookup;
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Configuration
 @Profile("!test")
 public class ExternalPropertiesConfiguration implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
+
+    private static final Logger log = getLogger(lookup().lookupClass());
 
     @Autowired(required = false)
     private TextEncryptor textEncryptor;
@@ -36,6 +43,7 @@ public class ExternalPropertiesConfiguration implements ApplicationContextInitia
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
+        JceUnlimitedStrengthUtil.printWarningIfStrongEncryptionIsNotSupported();
     }
 
     @Override

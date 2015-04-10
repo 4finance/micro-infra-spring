@@ -4,7 +4,7 @@ before_install:
   - "echo $JAVA_OPTS"
   - "export JAVA_OPTS='-Xmx768m -XX:MaxPermSize=384m'"
   - "echo $GRADLE_OPTS"
-  - "export GRADLE_OPTS='-Dorg.gradle.daemon=true'"
+  - "export GRADLE_OPTS='-Dorg.gradle.parallel=false'"
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
 

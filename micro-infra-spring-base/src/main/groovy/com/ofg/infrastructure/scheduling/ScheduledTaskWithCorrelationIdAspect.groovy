@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.scheduling
 
-import com.ofg.infrastructure.correlationid.CorrelationIdUpdater
+import com.ofg.infrastructure.correlationid.CorrelationIdUpdaterUtil
 import com.ofg.infrastructure.correlationid.UuidGenerator
 import groovy.transform.CompileStatic
 import org.aspectj.lang.ProceedingJoinPoint
@@ -24,7 +24,7 @@ class ScheduledTaskWithCorrelationIdAspect {
     @Around('execution (@org.springframework.scheduling.annotation.Scheduled  * *.*(..))')
     Object setNewCorrelationIdOnThread(ProceedingJoinPoint pjp) throws Throwable {
         String correlationId = uuidGenerator.create()
-        return CorrelationIdUpdater.withId(correlationId) {
+        return CorrelationIdUpdaterUtil.withId(correlationId) {
             return pjp.proceed()
         }
     }

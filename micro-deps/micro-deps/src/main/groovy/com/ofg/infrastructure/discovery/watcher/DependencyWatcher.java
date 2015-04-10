@@ -12,6 +12,13 @@ import java.util.List;
 import java.util.Map;
 
 public class DependencyWatcher {
+
+    private final List<MicroserviceConfiguration.Dependency> dependencies;
+    private final ServiceDiscovery serviceDiscovery;
+    private final Map<String, ServiceCache> dependencyRegistry = new HashMap<String, ServiceCache>();
+    private final List<DependencyWatcherListener> listeners = new ArrayList<DependencyWatcherListener>();
+    private final DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier;
+
     public DependencyWatcher(List<MicroserviceConfiguration.Dependency> dependencies, ServiceDiscovery serviceDiscovery, DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier) {
         this.dependencies = dependencies;
         this.serviceDiscovery = serviceDiscovery;
@@ -48,9 +55,4 @@ public class DependencyWatcher {
         listeners.remove(listener);
     }
 
-    private final List<MicroserviceConfiguration.Dependency> dependencies;
-    private final ServiceDiscovery serviceDiscovery;
-    private final Map<String, ServiceCache> dependencyRegistry = new HashMap<String, ServiceCache>();
-    private final List<DependencyWatcherListener> listeners = new ArrayList<DependencyWatcherListener>();
-    private final DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier;
 }

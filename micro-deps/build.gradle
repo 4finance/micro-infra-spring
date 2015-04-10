@@ -9,6 +9,9 @@ subprojects {
 project(':micro-deps:micro-deps') {
     description = 'Microservice dependency manager'
 
+    sourceSets.main.java.srcDirs = []
+    sourceSets.main.groovy.srcDirs += ["src/main/java", "src/main/groovy"]
+
     dependencies {
         compile "org.codehaus.groovy:groovy-all"
         compile "org.apache.curator:curator-x-discovery"
@@ -23,6 +26,9 @@ project(':micro-deps:micro-deps') {
 
 project(':micro-deps:micro-deps-spring-config') {
     description = 'Microservice dependency manager - default Spring configuration'
+
+    sourceSets.main.java.srcDirs = []
+    sourceSets.main.groovy.srcDirs += ["src/main/java", "src/main/groovy"]
 
     dependencies {
         compile project(':micro-deps:micro-deps')

@@ -5,6 +5,9 @@ ext {
     springSecurityRsaVersion = "1.0.0.RELEASE"
 }
 
+sourceSets.main.java.srcDirs = []
+sourceSets.main.groovy.srcDirs += ["src/main/java", "src/main/groovy"]
+
 dependencies {
     compile project(':micro-deps:micro-deps')
 

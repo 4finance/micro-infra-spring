@@ -5,6 +5,7 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
+import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.MethodParamsApplier
@@ -15,6 +16,8 @@ import groovy.transform.TypeChecked
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
+
+import java.util.concurrent.Callable
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
 import static org.springframework.http.HttpMethod.OPTIONS
@@ -28,15 +31,13 @@ class OptionsMethodBuilder implements
         ResponseReceivingOptionsMethod, HeadersHaving, AllowHeaderReceiving,
         MethodParamsApplier<ResponseReceivingOptionsMethod, ResponseReceivingOptionsMethod, UrlParameterizableOptionsMethod> {
 
-    public static final Closure<String> EMPTY_HOST = { '' }
-
     private final Map params = [:]
     private final RestOperations restOperations
     private final RetryExecutor retryExecutor
     @Delegate private final AllowContainingWithHeaders withHeaders
     @Delegate private final OptionsAllowHeaderExecutor allowHeaderExecutor
 
-    OptionsMethodBuilder(Closure<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
+    OptionsMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
         this.restOperations = restOperations
         params.host = host
         withHeaders = new AllowContainingWithHeaders(this, params, predefinedHeaders)
@@ -45,7 +46,7 @@ class OptionsMethodBuilder implements
     }
 
     OptionsMethodBuilder(RestOperations restOperations) {
-        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE)
+        this(HttpMethodBuilder.EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE)
     }
 
     @Override

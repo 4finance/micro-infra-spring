@@ -16,6 +16,8 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
+import java.util.concurrent.Callable
+
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
 
 /**
@@ -25,7 +27,12 @@ import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.rec
 class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, ResponseReceivingHeadMethod, HeadersHaving,
         MethodParamsApplier<ResponseReceivingHeadMethod, ResponseReceivingHeadMethod, UrlParameterizableHeadMethod> {
 
-    public static final Closure<String> EMPTY_HOST = { '' }
+    public static final Callable<String> EMPTY_HOST = new Callable<String>() {
+        @Override
+        String call() throws Exception {
+            return ""
+        }
+    }
 
     private final Map params = [:]
     private final RestOperations restOperations
@@ -33,7 +40,7 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
     @Delegate
     private final BodylessWithHeaders<ResponseReceivingHeadMethod> withHeaders
 
-    HeadMethodBuilder(Closure<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
+    HeadMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
         this.restOperations = restOperations
         params.host = host
         withHeaders = new BodylessWithHeaders<ResponseReceivingHeadMethod>(this, params, predefinedHeaders)

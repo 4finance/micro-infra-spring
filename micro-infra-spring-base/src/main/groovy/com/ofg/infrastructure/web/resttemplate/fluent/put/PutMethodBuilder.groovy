@@ -5,6 +5,7 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
+import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.LocationFindingExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodyContainingWithHeaders
@@ -18,6 +19,9 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
+import java.util.concurrent.Callable
+
+import static com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder.EMPTY_HOST
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
 import static org.springframework.http.HttpMethod.PUT
 
@@ -30,11 +34,9 @@ class PutMethodBuilder extends LocationFindingExecutor implements
         UrlParameterizablePutMethod, HeadersSetting,
         MethodParamsApplier<RequestHavingPutMethod, ResponseReceivingPutMethod, UrlParameterizablePutMethod> {
 
-    public static final Closure<String> EMPTY_HOST = { '' }
-    
     @Delegate private final BodyContainingWithHeaders withHeaders
 
-    PutMethodBuilder(Closure<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
+    PutMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
         super(restOperations, retryExecutor)
         params.host = host
         withHeaders = new BodyContainingWithHeaders(this, params, predefinedHeaders)

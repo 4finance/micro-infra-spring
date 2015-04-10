@@ -10,12 +10,16 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.Bo
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.MethodParamsApplier
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
+import com.ofg.infrastructure.web.resttemplate.fluent.head.HeadMethodBuilder
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
+import java.util.concurrent.Callable
+
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
+import static com.ofg.infrastructure.web.resttemplate.fluent.head.HeadMethodBuilder.EMPTY_HOST
 
 /**
  * Implementation of the {@link org.springframework.http.HttpMethod#DELETE method} fluent API
@@ -24,14 +28,12 @@ import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.rec
 class DeleteMethodBuilder implements DeleteMethod, UrlParameterizableDeleteMethod, ResponseReceivingDeleteMethod, HeadersHaving,
         MethodParamsApplier<ResponseReceivingDeleteMethod, ResponseReceivingDeleteMethod, UrlParameterizableDeleteMethod> {
 
-    public static final Closure<String> EMPTY_HOST = { '' }
-
     private final Map params = [:]
     private final RestOperations restOperations
     private final RetryExecutor retryExecutor
     @Delegate private final BodylessWithHeaders<ResponseReceivingDeleteMethod> withHeaders
 
-    DeleteMethodBuilder(Closure<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
+    DeleteMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
         this.restOperations = restOperations
         params.host = host
         withHeaders =  new BodylessWithHeaders<ResponseReceivingDeleteMethod>(this, params, predefinedHeaders)

@@ -6,7 +6,7 @@ import groovy.transform.CompileStatic
 import org.springframework.http.HttpHeaders
 
 @CompileStatic
-class PredefinedHttpHeaders {
+public class PredefinedHttpHeaders {
 
     public static final PredefinedHttpHeaders NO_PREDEFINED_HEADERS = new PredefinedHttpHeaders(null)
 
@@ -21,7 +21,7 @@ class PredefinedHttpHeaders {
     void copyTo(HttpHeaders httpHeaders) {
         if (serviceConfig?.contentTypeTemplate) {
             String contentTypeTemplate = serviceConfig.contentTypeTemplate
-            if (!serviceConfig.version) {
+            if (serviceConfig.getVersion().isEmpty()) {
                 throw new ContentTypeTemplateWithoutVersionException()
             }
             String contentTypeHeader = engine.createTemplate(contentTypeTemplate).make([version: serviceConfig.version])

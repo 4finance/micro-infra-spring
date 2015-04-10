@@ -1,9 +1,9 @@
 description = 'Microservice base infrastructure registered in Spring'
 
 ext {
-    metricsVersion = '3.1.0'
+    metricsVersion = '3.1.1'
     jacksonMapper = '1.9.13'
-    hystrixVersion = '1.4.0-rc.9'
+    hystrixVersion = '1.4.4'
 }
 
 sourceSets.main.java.srcDirs = []

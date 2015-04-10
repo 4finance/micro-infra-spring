@@ -1,6 +1,5 @@
 package com.ofg.infrastructure.environment;
 
-import groovy.transform.CompileStatic;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.codehaus.groovy.runtime.StringGroovyMethods;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;

@@ -13,7 +13,10 @@ import org.springframework.context.annotation.Import;
  * </ul>
  *
  * @see SwaggerConfiguration
+ *
+ * @deprecated since 0.8.18, use SwaggerConfiguration directly
  */
+@Deprecated
 @Configuration
 @Import(SwaggerConfiguration.class)
 public class SwaggerDocumentationConfiguration {

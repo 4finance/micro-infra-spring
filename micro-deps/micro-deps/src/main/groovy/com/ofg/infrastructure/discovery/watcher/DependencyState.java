@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.discovery.watcher;
 
-enum DependencyState {
+public enum DependencyState {
     CONNECTED,
     DISCONNECTED
 }

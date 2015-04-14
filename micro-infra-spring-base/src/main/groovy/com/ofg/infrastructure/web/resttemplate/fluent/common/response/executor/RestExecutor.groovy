@@ -17,6 +17,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
 
+import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeoutException
 
@@ -73,7 +74,7 @@ final class RestExecutor<T> {
     }
 
     private ListenableFuture<ResponseEntity<T>> urlTemplateExchange(HttpMethod httpMethod, Map params, Class<T> responseType) {
-        return withRetry(params.hystrix as HystrixCommand.Setter, params.hystrixFallback as Closure<T>) {
+        return withRetry(params.hystrix as HystrixCommand.Setter, params.hystrixFallback as Callable<T>) {
             restOperations.exchange(
                     appendPathToHost(getHost(params), params.urlTemplate as String),
                     httpMethod,
@@ -84,12 +85,12 @@ final class RestExecutor<T> {
     }
 
     private String getHost(Map params) {
-        Closure<String> lazyHostUrlClosure = params.host as Closure<String>
+        Callable<String> lazyHostUrlClosure = params.host as Callable<String>
         return lazyHostUrlClosure.call()
     }
 
     private ListenableFuture<ResponseEntity<T>> urlExchange(HttpMethod httpMethod, Map params, Class<T> responseType) {
-        return withRetry(params.hystrix as HystrixCommand.Setter, params.hystrixFallback as Closure<T>) {
+        return withRetry(params.hystrix as HystrixCommand.Setter, params.hystrixFallback as Callable<T>) {
             return restOperations.exchange(
                     new URI(appendPathToHost(getHost(params), params.url as URI)),
                     httpMethod,
@@ -98,7 +99,7 @@ final class RestExecutor<T> {
         }
     }
 
-    private ListenableFuture<ResponseEntity<T>> withRetry(HystrixCommand.Setter hystrix, Closure<T> hystrixFallback, Closure<ResponseEntity<T>> httpInvocation) {
+    private ListenableFuture<ResponseEntity<T>> withRetry(HystrixCommand.Setter hystrix, Callable<T> hystrixFallback, Callable<ResponseEntity<T>> httpInvocation) {
         String correlationId = CorrelationIdHolder.get()
         return retryExecutor.getWithRetry {
             return CorrelationIdUpdater.withId(correlationId) {
@@ -107,7 +108,7 @@ final class RestExecutor<T> {
         }
     }
 
-    private ResponseEntity<T> callHttp(HystrixCommand.Setter hystrix, Closure<T> hystrixFallback, Closure<ResponseEntity<T>> httpInvocation) {
+    private ResponseEntity<T> callHttp(HystrixCommand.Setter hystrix, Callable<T> hystrixFallback, Callable<ResponseEntity<T>> httpInvocation) {
         if(hystrix) {
             return runInsideHystrixCommand(hystrix, hystrixFallback, httpInvocation)
         } else {
@@ -115,7 +116,7 @@ final class RestExecutor<T> {
         }
     }
 
-    private ResponseEntity<T> runInsideHystrixCommand(HystrixCommand.Setter hystrix, Closure<T> hystrixFallback, Closure<ResponseEntity<T>> httpInvocation) {
+    private ResponseEntity<T> runInsideHystrixCommand(HystrixCommand.Setter hystrix, Callable<T> hystrixFallback, Callable<ResponseEntity<T>> httpInvocation) {
         try {
             if (hystrixFallback) {
                 return new CorrelatedCommand<ResponseEntity<T>>(hystrix) {

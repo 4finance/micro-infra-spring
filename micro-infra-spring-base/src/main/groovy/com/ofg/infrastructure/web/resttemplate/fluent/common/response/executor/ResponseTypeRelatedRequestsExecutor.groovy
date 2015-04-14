@@ -4,8 +4,11 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpMethod
+import org.springframework.http.HttpMethod as SpringHttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
+
+import static org.springframework.http.HttpMethod.DELETE
 
 /**
  * Abstraction over {@link RestOperations} that for a {@link ResponseTypeRelatedRequestsExecutor#getHttpMethod()} 

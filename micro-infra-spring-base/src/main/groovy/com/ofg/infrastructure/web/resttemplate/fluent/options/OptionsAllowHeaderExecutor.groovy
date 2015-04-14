@@ -32,7 +32,7 @@ class OptionsAllowHeaderExecutor implements AllowHeaderReceiving {
     }
 
     @Override
-    ListenableFuture<HttpMethod> allowAsync() {
+    ListenableFuture<Set<HttpMethod>> allowAsync() {
         ListenableFuture<ResponseEntity> future = restExecutor.exchangeAsync(OPTIONS, params, Object)
         return Futures.transform(future, {ResponseEntity entity -> extractAllow(entity)} as Function)
     }

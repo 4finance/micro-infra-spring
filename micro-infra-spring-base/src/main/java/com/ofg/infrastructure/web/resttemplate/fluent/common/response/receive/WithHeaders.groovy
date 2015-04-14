@@ -20,7 +20,7 @@ class WithHeaders<T> implements HeadersSetting<T>, HeadersHaving<T> {
     private static final String CONTENT_TYPE_HEADER_NAME = 'Content-Type'
     
     private final HttpHeaders httpHeaders = new HttpHeaders()
-    private final Map params
+    private final Map params = [:]
     private final T parent
 
     WithHeaders(T parent, Map<String, String> params, PredefinedHttpHeaders predefinedHeaders) {
@@ -57,7 +57,7 @@ class WithHeaders<T> implements HeadersSetting<T>, HeadersHaving<T> {
     }
 
     @Override
-    HeadersSetting<ResponseReceiving> contentType(String contentType) {
+    HeadersSetting<T> contentType(String contentType) {
         httpHeaders.add(CONTENT_TYPE_HEADER_NAME, contentType)
         updateHeaderParams()
         return this
@@ -138,7 +138,7 @@ class WithHeaders<T> implements HeadersSetting<T>, HeadersHaving<T> {
     }
 
     @Override
-    HeadersSetting<ResponseReceiving> withHeaders() {
+    HeadersSetting<T> withHeaders() {
         return this
     }
 }

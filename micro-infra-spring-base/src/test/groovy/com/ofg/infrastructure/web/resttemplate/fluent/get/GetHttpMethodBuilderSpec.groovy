@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.get
 
+import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
 
@@ -89,20 +90,6 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
             1 * restOperations.exchange(FULL_URL, GET, _ as HttpEntity, BigDecimal, OBJECT_ID)
     }
 
-    def "should extract variables from GString and apply them as parameters"() {
-        given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations)
-        when:
-            httpMethodBuilder
-                .get()
-                    .onUrl("http://example.com/$OBJECT_ID")
-                    .andExecuteFor()
-                        .anObject()
-                        .ofType(BigDecimal)
-        then:
-            1 * restOperations.exchange("http://example.com/{p0}", GET, _ as HttpEntity, BigDecimal, OBJECT_ID)
-    }
-
     def "should treat url as path when sending request to a service to a path containing a slash"() {
         given:
             httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
@@ -145,6 +132,22 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
                     GET,
                     _ as HttpEntity,
                     Object)
+    }
+
+    def 'should replace first variable with hardcoded host to avoid issues while parsing URI starting with placeholder'() {
+        given:
+        String address = 'http://localhost:8080'
+        int id = 42
+        and:
+        GetMethodBuilder get = new GetMethodBuilder(new RestTemplate())
+        when:
+        ResponseReceivingGetMethod response = get
+                .onUrlFromTemplate('{address}/order/{id}')
+                .withVariables(address, id)
+        then:
+        Map params = response.get(Object).params
+        params.urlTemplate == "http://localhost:8080/order/{id}"
+        params.urlVariablesArray == [id]
     }
 
 }

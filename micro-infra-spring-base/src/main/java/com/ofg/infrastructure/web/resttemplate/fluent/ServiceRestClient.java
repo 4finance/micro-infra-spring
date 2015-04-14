@@ -74,7 +74,7 @@ import java.util.concurrent.Callable;
  * to last method you will get <code>ListenableFuture</code> instance. This way you can easily run multiple requests
  * concurrently, combine them, etc.
  * @see <a href="https://github.com/4finance/micro-deps">micro-deps project</a>
- * @see <a href="https://github.com/nurkiewicz/async-retry">async-retry</a>
+ * @see <a href="">async-retry</a>
  */
 @CompileStatic
 public class ServiceRestClient {

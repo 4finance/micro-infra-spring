@@ -3,18 +3,25 @@ package com.ofg.infrastructure.web.resttemplate.fluent.options
 import com.google.common.base.Function
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
+import com.netflix.hystrix.HystrixCommand
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
+import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.MethodParamsApplier
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving
+import com.ofg.infrastructure.web.resttemplate.fluent.get.ResponseReceivingGetMethod
+import com.ofg.infrastructure.web.resttemplate.fluent.get.UrlParameterizableGetMethod
 import groovy.transform.TypeChecked
+import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
+
+import java.util.concurrent.Callable
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
 import static org.springframework.http.HttpMethod.OPTIONS
@@ -25,18 +32,15 @@ import static org.springframework.http.HttpMethod.OPTIONS
 @TypeChecked
 class OptionsMethodBuilder implements
         OptionsMethod, UrlParameterizableOptionsMethod,
-        ResponseReceivingOptionsMethod, HeadersHaving, AllowHeaderReceiving,
-        MethodParamsApplier<ResponseReceivingOptionsMethod, ResponseReceivingOptionsMethod, UrlParameterizableOptionsMethod> {
-
-    public static final Closure<String> EMPTY_HOST = { '' }
+        ResponseReceivingOptionsMethod, AllowHeaderReceiving {
 
     private final Map params = [:]
     private final RestOperations restOperations
     private final RetryExecutor retryExecutor
-    @Delegate private final AllowContainingWithHeaders withHeaders
-    @Delegate private final OptionsAllowHeaderExecutor allowHeaderExecutor
+    private final AllowContainingWithHeaders withHeaders
+    private final OptionsAllowHeaderExecutor allowHeaderExecutor
 
-    OptionsMethodBuilder(Closure<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
+    OptionsMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
         this.restOperations = restOperations
         params.host = host
         withHeaders = new AllowContainingWithHeaders(this, params, predefinedHeaders)
@@ -45,12 +49,53 @@ class OptionsMethodBuilder implements
     }
 
     OptionsMethodBuilder(RestOperations restOperations) {
-        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE)
+        this(HttpMethodBuilder.EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE)
+    }
+
+    @Override
+    ResponseReceivingOptionsMethod onUrl(URI url) {
+        params.url = url
+        return this
+    }
+    
+    @Override
+    ResponseReceivingOptionsMethod onUrl(String url) {
+        params.url = new URI(url)
+        return this
+    }
+
+    @Override
+    ResponseReceivingOptionsMethod httpEntity(HttpEntity httpEntity) {
+        params.httpEntity = httpEntity
+        return this
+    }
+
+    @Override
+    UrlParameterizableOptionsMethod onUrlFromTemplate(String urlTemplate) {
+        params.urlTemplate = urlTemplate
+        return this
+    }
+
+    @Override
+    ResponseReceivingOptionsMethod withVariables(Object... urlVariables) {
+        params.urlVariablesArray = urlVariables
+        return this
+    }
+
+    @Override
+    ResponseReceivingOptionsMethod withVariables(Map<String, ?> urlVariables) {
+        params.urlVariablesMap = urlVariables
+        return this
     }
 
     @Override
     Set<HttpMethod> allow() {
         return allowHeaderExecutor.allow()
+    }
+
+    @Override
+    ListenableFuture<Set<HttpMethod>> allowAsync() {
+        return allowHeaderExecutor.allowAsync()
     }
 
     @Override
@@ -96,6 +141,27 @@ class OptionsMethodBuilder implements
     @Override
     ListenableFuture<Void> ignoringResponseAsync() {
         ListenableFuture<ResponseEntity<Object>> future = aResponseEntity().ofTypeAsync(Object)
-        return Futures.transform(future, {null} as Function<ResponseEntity<Object>, Void>)
+        return Futures.transform(future, {null} as Function<ResponseEntity, Void>)
+    }
+
+    com.ofg.infrastructure.web.resttemplate.fluent.common.request.HttpMethod<ResponseReceivingOptionsMethod, UrlParameterizableOptionsMethod> withCircuitBreaker(HystrixCommand.Setter setter) {
+        params.hystrix = setter
+        return this
+    }
+
+    @Override
+    com.ofg.infrastructure.web.resttemplate.fluent.common.request.HttpMethod<ResponseReceivingOptionsMethod, UrlParameterizableOptionsMethod> withCircuitBreaker(HystrixCommand.Setter setter, Callable hystrixFallback) {
+        params.hystrixFallback = hystrixFallback
+        return withCircuitBreaker(setter)
+    }
+
+    @Override
+    ResponseReceivingOptionsMethod andExecuteFor() {
+        return withHeaders.andExecuteFor()
+    }
+
+    @Override
+    HeadersSetting<ResponseReceivingOptionsMethod> withHeaders() {
+        return withHeaders.withHeaders()
     }
 }

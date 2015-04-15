@@ -7,8 +7,8 @@ import groovy.transform.CompileStatic
  * so that the compiler resolves types properly
  */
 @CompileStatic
-class BodyContainingWithHeaders extends WithHeaders<ResponseReceiving> {
-    BodyContainingWithHeaders(ResponseReceiving parent, Map<String, String> params, PredefinedHttpHeaders predefinedHeaders) {
+class BodyContainingWithHeaders<T> extends WithHeaders<T> {
+    BodyContainingWithHeaders(T parent, Map<String, String> params, PredefinedHttpHeaders predefinedHeaders) {
         super(parent, params, predefinedHeaders)
     }
 }

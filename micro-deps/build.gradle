@@ -35,9 +35,9 @@ project(':micro-deps:micro-deps-spring-config') {
         compile(project(':stub-runner:stub-runner-spring')) {
             exclude group: "org.slf4j", module: "log4j-over-slf4j"
         }
-        compile 'org.codehaus.groovy:groovy-all'
         compile "org.springframework:spring-context"
 
+        testCompile 'org.codehaus.groovy:groovy-all'
         testCompile "org.spockframework:spock-core"
         testCompile "org.spockframework:spock-spring"
         testCompile "org.springframework:spring-test"

@@ -35,7 +35,7 @@ end
 
 case ARGV[0]
     when '-e'
-        puts '{cipher}' + encrypt(ARGV[1], ARGV[2])
+        puts '"{cipher}' + encrypt(ARGV[1], ARGV[2]) + '"'
     when '-d'
         puts decrypt(ARGV[1], ARGV[2])
     when '-f'

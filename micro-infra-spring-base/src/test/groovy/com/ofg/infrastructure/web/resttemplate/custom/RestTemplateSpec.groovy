@@ -42,7 +42,7 @@ class RestTemplateSpec extends Specification {
         then:
             def ex = thrown(ResponseException)
             ex.httpStatus == NOT_FOUND
-            ex.body == null
+            ex.body == ""
     }
 
     def 'should include 404 body'() {

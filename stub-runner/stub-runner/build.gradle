@@ -6,7 +6,7 @@ dependencies {
     compile project(':micro-deps:micro-deps')
     compile 'org.apache.ivy:ivy:2.4.0'
     compile 'org.codehaus.groovy:groovy-all'
-    compile ('com.github.tomakehurst:wiremock') {
+    compile('com.github.tomakehurst:wiremock') {
         exclude group: 'org.mortbay.jetty', module: 'servlet-api'
     }
     compile "org.apache.curator:curator-x-discovery"
@@ -55,8 +55,8 @@ Object getPropertyByEither(String paramName1, String paramName2, Object defaultV
 run {
     main = 'com.ofg.stub.StubRunnerMain'
     List argumentList
-    if(arguments) {
-        argumentList = (arguments.split(' ') as List).findAll {it != null}
+    if (arguments) {
+        argumentList = (arguments.split(' ') as List).findAll { it != null }
     } else {
         argumentList = parseArguments()
     }
@@ -89,15 +89,15 @@ List parseArguments() {
 }
 
 Object appendToListIfNotNull(String argument, String prefix, List list) {
-    if(argument != null) {
+    if (argument != null) {
         list << "$prefix"
-        if(!argument.isAllWhitespace()) {
+        if (!argument.isAllWhitespace()) {
             list << argument
         }
     }
 }
 
-if (rootProject.hasProperty("withFatJars")) {
+if (rootProject.hasProperty("withFatJars") || rootProject.hasProperty("withFatJarsNexus")) {
 
     apply plugin: 'spring-boot'
 
@@ -105,13 +105,38 @@ if (rootProject.hasProperty("withFatJars")) {
         applicationDefaultJvmArgs = project.gradle.startParameter.systemPropertiesArgs.entrySet().collect {
             "-D${it.key}=${it.value}"
         }
+        project.tasks.findAll { it.name.startsWith('publish') || it.name == 'bintrayUpload' }*.dependsOn(bootJars)
     }
 
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                artifact fatJar {
-                    classifier "fatJar"
+    if (rootProject.hasProperty("withFatJarsNexus")) {
+        publishing {
+            publications {
+                //It should be a separate `fatJarNexus(MavenPublication)` to publish two artifacts simultaneously, but there is Gradle limitation:
+                //UnsupportedOperationException: Publishing is not yet able to resolve a dependency on a project with multiple different publications
+                mavenJava(MavenPublication) {
+                    artifactId "${project.name}-fatjar" //separate artifact to not conflict with a normal jar deployed to jcenter
+
+                    artifact fatJar
+                }
+            }
+            repositories {
+                maven {
+                    name "fatJars"
+                    url getProperty('mavenRepoUrl')
+                    credentials {
+                        username getProperty('mavenUser')
+                        password getProperty('mavenPassword')
+                    }
+                }
+            }
+        }
+    } else {
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    artifact fatJar {
+                        classifier "fatJar"
+                    }
                 }
             }
         }
@@ -138,15 +163,9 @@ if (rootProject.hasProperty("withFatJars")) {
         withJarTask = fatJar
     }
 
-    task bootJars(dependsOn: build)
-
-    bootJars {
-        dependsOn = [sourcesJar, javadocJar, fatJarBoot]
-    }
+    task bootJars(dependsOn: [build, sourcesJar, javadocJar, fatJarBoot])
 
     artifacts {
         archives fatJar
     }
-
-    project.tasks.findAll { it.name.startsWith('publish') || it.name == 'bintrayUpload' }*.dependsOn(bootJars)
 }

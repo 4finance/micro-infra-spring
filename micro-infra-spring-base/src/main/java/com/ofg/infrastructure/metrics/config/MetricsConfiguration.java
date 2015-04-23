@@ -12,7 +12,6 @@ import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
 import com.netflix.hystrix.contrib.codahalemetricspublisher.HystrixCodaHaleMetricsPublisher;
 import com.netflix.hystrix.strategy.HystrixPlugins;
-import com.ofg.config.BasicProfiles;
 import com.ofg.infrastructure.metrics.publishing.GraphitePublisher;
 import com.ofg.infrastructure.metrics.publishing.JmxPublisher;
 import com.ofg.infrastructure.metrics.publishing.PublishingInterval;
@@ -30,6 +29,8 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
+import static com.ofg.config.BasicProfiles.DEVELOPMENT;
+import static com.ofg.config.BasicProfiles.PRODUCTION;
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -54,13 +55,13 @@ public class MetricsConfiguration {
     private static final Logger log = getLogger(lookup().lookupClass());
 
     @Bean(initMethod = "start", destroyMethod = "stop")
-    @Profile(value = {BasicProfiles.PRODUCTION, BasicProfiles.DEVELOPMENT})
+    @Profile({PRODUCTION, DEVELOPMENT})
     public JmxPublisher jmxPublisher(MetricRegistry metricRegistry) {
         return new JmxPublisher(metricRegistry, MINUTES, MILLISECONDS);
     }
 
     @Bean(destroyMethod = "close")
-    @Profile(BasicProfiles.PRODUCTION)
+    @Profile(PRODUCTION)
     @Conditional(IsGraphitePublishingEnabled.class)
     public GraphiteSender graphite(@Value("${graphite.host:graphite.4finance.net}") String hostname, @Value("${graphite.port:2003}") int port, @Value("${graphite.format:TCP}") GraphiteFormat format) {
         final InetSocketAddress address = new InetSocketAddress(hostname, port);
@@ -78,7 +79,7 @@ public class MetricsConfiguration {
     }
 
     @Bean(initMethod = "start", destroyMethod = "stop")
-    @Profile(BasicProfiles.PRODUCTION)
+    @Profile(PRODUCTION)
     @Conditional(IsGraphitePublishingEnabled.class)
     public GraphitePublisher graphitePublisher(GraphiteSender graphite,
                                                MetricRegistry metricRegistry,

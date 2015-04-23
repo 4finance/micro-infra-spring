@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.web.resttemplate.fluent;
 
+import com.nurkiewicz.asyncretry.AsyncRetryExecutor;
 import com.nurkiewicz.asyncretry.RetryExecutor;
 import com.nurkiewicz.asyncretry.SyncRetryExecutor;
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders;

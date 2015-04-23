@@ -2,7 +2,6 @@ package com.ofg.infrastructure.web.resttemplate.fluent;
 
 import com.ofg.infrastructure.discovery.*;
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders;
-import groovy.lang.Closure;
 import groovy.transform.CompileStatic;
 import org.springframework.web.client.RestOperations;
 
@@ -10,9 +9,8 @@ import java.net.URI;
 import java.util.concurrent.Callable;
 
 /**
- * Abstraction over {@link org.springframework.web.client.RestOperations} that provides a fluent API
- * for accessing HTTP resources. It's bound with {@link ServiceResolver} that allows to easily access
- * the microservice collaborators.
+ * Abstraction over {@link RestOperations} that provides a fluent API for accessing HTTP resources.
+ * It's bound with {@link ServiceResolver} that allows to easily access the microservice collaborators.
  * <p/>
  * You can call a collaborator 'users' defined in microservice descriptor for example named 'microservice.json' as follows
  * <p/>
@@ -73,8 +71,7 @@ import java.util.concurrent.Callable;
  * If you are using retry mechanism, another features is enabled - asynchronous invocation. By appending <code>Async</code>
  * to last method you will get <code>ListenableFuture</code> instance. This way you can easily run multiple requests
  * concurrently, combine them, etc.
- * @see <a href="https://github.com/4finance/micro-deps">micro-deps project</a>
- * @see <a href="">async-retry</a>
+ * @see <a href="https://github.com/nurkiewicz/async-retry">async-retry</a>
  */
 @CompileStatic
 public class ServiceRestClient {

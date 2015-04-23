@@ -18,10 +18,10 @@ public interface MetricsPublishing {
     /**
      * Starts metrics publishing
      */
-    public abstract void start();
+    void start();
 
     /**
      * Stops metrics publishing
      */
-    public abstract void stop();
+    void stop();
 }

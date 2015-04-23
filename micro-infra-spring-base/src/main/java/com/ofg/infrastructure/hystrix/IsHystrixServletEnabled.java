@@ -7,7 +7,7 @@ import com.ofg.infrastructure.config.PropertyAbsentOrEnabledCondition;
  */
 class IsHystrixServletEnabled extends PropertyAbsentOrEnabledCondition {
 
-    public static final String HYSTRIX_SERVLET_ENABLED = "com.ofg.infra.microservice.hystrix.servlet";
+    private static final String HYSTRIX_SERVLET_ENABLED = "com.ofg.infra.microservice.hystrix.servlet";
 
     public IsHystrixServletEnabled() {
         super(HYSTRIX_SERVLET_ENABLED);

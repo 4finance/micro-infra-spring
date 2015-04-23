@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 /**
  * Enables support for a servlet emitting Hystrix data
  *
- * @see com.ofg.infrastructure.hystrix.HystrixServletConfiguration
+ * @see HystrixServletConfiguration
  *
  */
 @Target(ElementType.TYPE)

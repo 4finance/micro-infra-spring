@@ -20,7 +20,7 @@ public interface HeadersSetting<T> extends Executable<T> {
      * @param acceptableMediaTypes
      * @return itself
      */
-    public abstract HeadersSetting<T> accept(List<MediaType> acceptableMediaTypes);
+    HeadersSetting<T> accept(List<MediaType> acceptableMediaTypes);
 
     /**
      * List of acceptable {@link org.springframework.http.MediaType} to be set in the {@link HttpHeaders#ACCEPT} header
@@ -28,7 +28,7 @@ public interface HeadersSetting<T> extends Executable<T> {
      * @param acceptableMediaTypes
      * @return itself
      */
-    public abstract HeadersSetting<T> accept(MediaType... acceptableMediaTypes);
+    HeadersSetting<T> accept(MediaType... acceptableMediaTypes);
 
     /**
      * Sets value for the {@link HttpHeaders#CACHE_CONTROL} header
@@ -36,7 +36,7 @@ public interface HeadersSetting<T> extends Executable<T> {
      * @param cacheControl
      * @return itself
      */
-    public abstract HeadersSetting<T> cacheControl(String cacheControl);
+    HeadersSetting<T> cacheControl(String cacheControl);
 
     /**
      * Sets {@link org.springframework.http.MediaType} for the {@link HttpHeaders#CONTENT_TYPE} header
@@ -44,7 +44,7 @@ public interface HeadersSetting<T> extends Executable<T> {
      * @param mediaType
      * @return itself
      */
-    public abstract HeadersSetting<T> contentType(MediaType mediaType);
+    HeadersSetting<T> contentType(MediaType mediaType);
 
     /**
      * Sets value for the {@link HttpHeaders#CONTENT_TYPE} header
@@ -52,21 +52,21 @@ public interface HeadersSetting<T> extends Executable<T> {
      * @param contentType
      * @return itself
      */
-    public abstract HeadersSetting<T> contentType(String contentType);
+    HeadersSetting<T> contentType(String contentType);
 
     /**
      * Sets {@link org.springframework.http.MediaType#APPLICATION_JSON_VALUE} for the {@link HttpHeaders#CONTENT_TYPE} header
      *
      * @return itself
      */
-    public abstract HeadersSetting<T> contentTypeJson();
+    HeadersSetting<T> contentTypeJson();
 
     /**
      * Sets {@link org.springframework.http.MediaType#APPLICATION_XML_VALUE} for the {@link HttpHeaders#CONTENT_TYPE} header
      *
      * @return itself
      */
-    public abstract HeadersSetting<T> contentTypeXml();
+    HeadersSetting<T> contentTypeXml();
 
     /**
      * Sets value for the {@link HttpHeaders#EXPIRES} header
@@ -74,7 +74,7 @@ public interface HeadersSetting<T> extends Executable<T> {
      * @param expires
      * @return itself
      */
-    public abstract HeadersSetting<T> expires(long expires);
+     HeadersSetting<T> expires(long expires);
 
     /**
      * Sets value for the {@link HttpHeaders#LAST_MODIFIED} header
@@ -82,7 +82,7 @@ public interface HeadersSetting<T> extends Executable<T> {
      * @param lastModified
      * @return itself
      */
-    public abstract HeadersSetting<T> lastModified(long lastModified);
+    HeadersSetting<T> lastModified(long lastModified);
 
     /**
      * Sets value for the {@link HttpHeaders#LOCATION} header
@@ -90,7 +90,7 @@ public interface HeadersSetting<T> extends Executable<T> {
      * @param location
      * @return itself
      */
-    public abstract HeadersSetting<T> location(URI location);
+    HeadersSetting<T> location(URI location);
 
     /**
      * Sets value for a header with name
@@ -99,7 +99,7 @@ public interface HeadersSetting<T> extends Executable<T> {
      * @param headerValue
      * @return itself
      */
-    public abstract HeadersSetting<T> header(String headerName, String headerValue);
+    HeadersSetting<T> header(String headerName, String headerValue);
 
     /**
      * Sets value for headers from a map (key - header name, value - header value)
@@ -107,7 +107,7 @@ public interface HeadersSetting<T> extends Executable<T> {
      * @param values
      * @return itself
      */
-    public abstract HeadersSetting<T> headers(Map<String, String> values);
+    HeadersSetting<T> headers(Map<String, String> values);
 
     /**
      * Sets value for headers from {@link HttpHeaders}
@@ -115,15 +115,15 @@ public interface HeadersSetting<T> extends Executable<T> {
      * @param httpHeaders
      * @return itself
      */
-    public abstract HeadersSetting<T> headers(HttpHeaders httpHeaders);
+    HeadersSetting<T> headers(HttpHeaders httpHeaders);
 
     /**
      * Sets value for the {@link org.springframework.http.HttpHeaders#AUTHORIZATION} header
      */
-    public abstract HeadersSetting<T> authentication(String authorization);
+    HeadersSetting<T> authentication(String authorization);
 
     /**
      * Sets basic authentication value for the {@link org.springframework.http.HttpHeaders#AUTHORIZATION} header
      */
-    public abstract HeadersSetting<T> basicAuthentication(String username, String password);
+    HeadersSetting<T> basicAuthentication(String username, String password);
 }

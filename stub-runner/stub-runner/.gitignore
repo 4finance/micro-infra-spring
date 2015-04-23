@@ -1,6 +1,0 @@
-*.iml
-.idea/
-.gradle/
-build/
-out/
-commitHash.txt

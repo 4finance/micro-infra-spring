@@ -11,6 +11,6 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.Re
  * @see LocationReceiving
  * @see HttpEntitySending
  */
-interface ResponseReceivingPutMethod extends ResponseReceiving, LocationReceiving, HttpEntitySending<ResponseReceivingPutMethod> {
+interface ResponseReceivingPutMethod extends ResponseReceiving<ResponseReceivingPutMethod>, LocationReceiving, HttpEntitySending<ResponseReceivingPutMethod> {
     
 }

@@ -9,6 +9,6 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.Re
  * @see ResponseReceiving
  * @see LocationReceiving
  */
-interface ResponseReceivingPostMethod extends ResponseReceiving, LocationReceiving {
+interface ResponseReceivingPostMethod extends ResponseReceiving<ResponseReceivingPostMethod>, LocationReceiving {
     
 }

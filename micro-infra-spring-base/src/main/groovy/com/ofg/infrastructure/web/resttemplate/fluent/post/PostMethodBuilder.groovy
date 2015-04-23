@@ -6,7 +6,6 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodyContainingWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving

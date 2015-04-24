@@ -1,8 +1,6 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.post
-
 import com.netflix.hystrix.HystrixCommand
 import com.nurkiewicz.asyncretry.RetryExecutor
-import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.request.HttpMethod
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.LocationFindingExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodyContainingWithHeaders
@@ -15,7 +13,7 @@ import org.springframework.web.client.RestOperations
 
 import java.util.concurrent.Callable
 
-abstract class DataUpdateMethodBuilder<R, S, T> extends LocationFindingExecutor implements HeadersSetting<R>, HttpMethod<R, S> {
+abstract class DataUpdateMethodBuilder<R, S, T> extends LocationFindingExecutor implements HeadersSetting<T>, HttpMethod<R, S> {
 
     private final BodyContainingWithHeaders withHeaders
 
@@ -65,7 +63,7 @@ abstract class DataUpdateMethodBuilder<R, S, T> extends LocationFindingExecutor 
         return withHeaders.location(location)
     }
 
-    R andExecuteFor() {
+    T andExecuteFor() {
         return withHeaders.andExecuteFor()
     }
 

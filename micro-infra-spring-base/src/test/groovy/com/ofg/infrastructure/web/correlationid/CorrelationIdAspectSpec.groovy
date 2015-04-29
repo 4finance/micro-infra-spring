@@ -12,6 +12,7 @@ import org.junit.contrib.java.lang.system.ProvideSystemProperty
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.test.context.ContextConfiguration
@@ -66,38 +67,40 @@ class CorrelationIdAspectSpec extends MicroserviceMvcWiremockSpec {
 
     @CompileStatic
     @Configuration
+    @Import(AspectTestingController)
     @EnableAsync
     static class CorrelationIdAspectSpecConfiguration {
+    }
 
-        @RestController
-        @TypeChecked
-        @PackageScope
-        static class AspectTestingController {
+    @RestController
+    @TypeChecked
+    @PackageScope
+    static class AspectTestingController {
 
-            @Autowired private ServiceRestClient serviceRestClient
-            @Autowired private HttpMockServer httpMockServer
+        @Autowired private ServiceRestClient serviceRestClient
+        @Autowired private HttpMockServer httpMockServer
 
-            @RequestMapping(value = "/syncPing", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
-            String syncPing() {
+        @RequestMapping(value = "/syncPing", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
+        String syncPing() {
+            callWiremockAndReturnOk()
+        }
+
+        @RequestMapping(value = "/asyncPing", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
+        Callable<String> asyncPing() {
+            return {
                 callWiremockAndReturnOk()
             }
+        }
 
-            @RequestMapping(value = "/asyncPing", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
-            Callable<String> asyncPing() {
-                return {
-                    callWiremockAndReturnOk()
-                }
-            }
-
-            private String callWiremockAndReturnOk() {
-                serviceRestClient.forExternalService()
-                        .get()
-                        .onUrl(new URI("http://localhost:${httpMockServer.port()}"))
-                        .andExecuteFor()
-                        .aResponseEntity()
-                        .ofType(String)
-                return "OK"
-            }
+        private String callWiremockAndReturnOk() {
+            serviceRestClient.forExternalService()
+                    .get()
+                    .onUrl(new URI("http://localhost:${httpMockServer.port()}"))
+                    .andExecuteFor()
+                    .aResponseEntity()
+                    .ofType(String)
+            return "OK"
         }
     }
+
 }

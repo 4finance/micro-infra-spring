@@ -104,7 +104,7 @@ configure(srcSubprojects) {
 
     dependencyManagement {
         dependencies {
-            "org.codehaus.groovy:groovy-all" "2.4.1"
+            "org.codehaus.groovy:groovy-all" "2.4.3"
             "com.google.guava:guava" "18.0"
             "commons-io:commons-io" "2.4"
 

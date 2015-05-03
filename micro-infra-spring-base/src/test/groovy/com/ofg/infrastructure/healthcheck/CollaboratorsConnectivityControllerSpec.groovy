@@ -23,7 +23,7 @@ class CollaboratorsConnectivityControllerSpec extends Specification {
     def serviceResolverMock = Mock(ServiceResolver)
     def pingClientMock = Mock(PingClient)
 
-    def controller = new CollaboratorsConnectivityController(serviceResolverMock, pingClientMock)
+    def controller = new CollaboratorsConnectivityController(new CollaboratorsStatusResolver(serviceResolverMock, pingClientMock))
 
     def 'should return empty list of collaborators'() {
         given:

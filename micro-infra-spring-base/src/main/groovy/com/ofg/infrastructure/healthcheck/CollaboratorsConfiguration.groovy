@@ -6,7 +6,6 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import org.springframework.core.io.Resource
 
 /**
@@ -17,22 +16,16 @@ import org.springframework.core.io.Resource
  */
 @CompileStatic
 @Configuration
-@Import(CollaboratorsConfiguration)
-class HealthCheckConfiguration {
+class CollaboratorsConfiguration {
 
     @Bean
-    PingController pingController() {
-        return new PingController()
+    CollaboratorsStatusResolver collaboratorsStatusResolver(ServiceResolver serviceResolver, PingClient pingClient) {
+        return new CollaboratorsStatusResolver(serviceResolver, pingClient)
     }
 
     @Bean
-    CollaboratorsConnectivityController collaboratorsConnectivityController(CollaboratorsStatusResolver collaboratorsStatusResolver) {
-        return new CollaboratorsConnectivityController(collaboratorsStatusResolver)
-    }
-
-    @Bean
-    MicroserviceConfigurationController microserviceConfigurationController(@Value('${microservice.config.file:classpath:microservice.json}') Resource microserviceConfig) {
-        return new MicroserviceConfigurationController(microserviceConfig)
+    PingClient pingClient(ServiceRestClient serviceRestClient) {
+        return new PingClient(serviceRestClient)
     }
 
 }

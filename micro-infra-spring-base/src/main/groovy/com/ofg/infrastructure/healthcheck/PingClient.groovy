@@ -30,7 +30,7 @@ class PingClient {
     private <T> GuavaOptional<T> restCall(URL url, String path, Class<T> type) {
         try {
             String fullUrl = "$url/$path"
-            GuavaOptional<T> result = GuavaOptional.of(
+            GuavaOptional<T> result = GuavaOptional.fromNullable(
                     serviceRestClient.forExternalService()
                             .get()
                             .onUrl(fullUrl)

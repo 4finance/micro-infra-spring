@@ -3,11 +3,10 @@ package com.ofg.infrastructure.discovery;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
+import com.ofg.infrastructure.discovery.util.CollectionUtils;
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,7 +48,7 @@ public class StubbedServiceResolver implements ServiceResolver {
 
     @Override
     public Set<URI> fetchAllUris(ServicePath service) {
-        return toSet(stubbedDeps.values());
+        return CollectionUtils.toSet(stubbedDeps.values());
     }
 
     @Override
@@ -93,19 +92,13 @@ public class StubbedServiceResolver implements ServiceResolver {
 
     @Override
     public Set<String> fetchCollaboratorsNames() {
-        return toSet(Collections2.transform(fetchMyDependencies(), new Function<ServicePath, String>() {
+        return CollectionUtils.toSet(Collections2.transform(fetchMyDependencies(), new Function<ServicePath, String>() {
             @Override
             public String apply(ServicePath input) {
                 return input.toString();
             }
 
         }));
-    }
-
-    private static <T> Set<T> toSet(Collection<T> collection) {
-        Set<T> answer = new HashSet<T>(collection.size());
-        answer.addAll(collection);
-        return answer;
     }
 
     @Override

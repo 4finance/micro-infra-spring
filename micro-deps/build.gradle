@@ -17,6 +17,7 @@ project(':micro-deps:micro-deps') {
         compile "org.apache.curator:curator-x-discovery"
         compile "org.apache.curator:curator-test"
         compile 'com.google.guava:guava'
+        compile 'commons-io:commons-io:2.4'
         compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
 
         testCompile "org.spockframework:spock-core"

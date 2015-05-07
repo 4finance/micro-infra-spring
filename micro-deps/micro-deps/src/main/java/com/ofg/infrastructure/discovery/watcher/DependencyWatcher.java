@@ -36,7 +36,6 @@ public class DependencyWatcher {
             dependencyRegistry.put(dependencyName, serviceCache);
             serviceCache.addListener(new DependencyStateChangeListenerRegistry(listeners, dependencyName, serviceCache));
         }
-
     }
 
     public void unregisterDependencies() throws IOException {
@@ -44,7 +43,6 @@ public class DependencyWatcher {
         for (ServiceCache cache : dependencyRegistry.values()) {
             cache.close();
         }
-
     }
 
     public void registerDependencyStateChangeListener(DependencyWatcherListener listener) {

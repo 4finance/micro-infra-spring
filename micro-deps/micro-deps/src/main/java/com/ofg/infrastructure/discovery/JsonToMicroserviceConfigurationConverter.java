@@ -25,13 +25,13 @@ class JsonToMicroserviceConfigurationConverter {
             @Override
             public MicroserviceConfiguration.Dependency apply(Map.Entry<String, JSONObject> input) {
                 String alias = input.getKey();
-                String path = input.getValue().getString("path");
-                boolean required = getPropertyOrDefault(input.getValue(), "required", Boolean.FALSE);
-                String loadBalancerName = getPropertyOrDefault(input.getValue(), "load-balancer", "");
+                String path = input.getValue().getString(ServiceConfigurationProperties.PATH);
+                boolean required = getPropertyOrDefault(input.getValue(), ServiceConfigurationProperties.REQUIRED, Boolean.FALSE);
+                String loadBalancerName = getPropertyOrDefault(input.getValue(), ServiceConfigurationProperties.LOAD_BALANCER, "");
                 LoadBalancerType loadBalancerType = LoadBalancerType.fromName(loadBalancerName);
-                String contentTypeTemplate = getPropertyOrDefault(input.getValue(), "contentTypeTemplate", StringUtils.EMPTY);
-                String version = getPropertyOrDefault(input.getValue(), "version", StringUtils.EMPTY);
-                JSONObject headers = (JSONObject) input.getValue().get("headers");
+                String contentTypeTemplate = getPropertyOrDefault(input.getValue(), ServiceConfigurationProperties.CONTENT_TYPE_TEMPLATE, StringUtils.EMPTY);
+                String version = getPropertyOrDefault(input.getValue(), ServiceConfigurationProperties.VERSION, StringUtils.EMPTY);
+                JSONObject headers = (JSONObject) input.getValue().get(ServiceConfigurationProperties.HEADERS);
                 Map<String, String> headersAsMap = Maps.newHashMap();
                 if (headers != null) {
                     for (Object entry : headers.entrySet()) {
@@ -42,11 +42,6 @@ class JsonToMicroserviceConfigurationConverter {
                 return new MicroserviceConfiguration.Dependency(new ServiceAlias(alias), new ServicePath(path), required, loadBalancerType, contentTypeTemplate, version, headersAsMap);
             }
         }));
-    }
-
-    private void validateConfiguration(JSONObject metaData) {
-        convertFlatDependenciesToMapFormat(metaData);
-        setDefaultsForMissingOptionalElements(metaData);
     }
 
     private static <T> T getPropertyOrDefault(JSONObject jsonObject, String propertyName, T defaultValue) {
@@ -67,16 +62,16 @@ class JsonToMicroserviceConfigurationConverter {
     }
 
     private static JSONObject getDependenciesAsJsonObject(JSONObject serviceMetadata) {
-        Object dependencies = serviceMetadata.get("dependencies");
+        Object dependencies = serviceMetadata.get(ServiceConfigurationProperties.DEPENDENCIES);
         JSONObject dependenciesAsJson = (JSONObject) dependencies;
         return dependenciesAsJson;
     }
 
 
     static void setDefaultsForMissingOptionalElements(JSONObject serviceMetadata) {
-        Object dependencies = serviceMetadata.get("dependencies");
+        Object dependencies = serviceMetadata.get(ServiceConfigurationProperties.DEPENDENCIES);
         if (dependencies == null) {
-            serviceMetadata.put("dependencies", new JSONObject());
+            serviceMetadata.put(ServiceConfigurationProperties.DEPENDENCIES, new JSONObject());
         }
 
     }

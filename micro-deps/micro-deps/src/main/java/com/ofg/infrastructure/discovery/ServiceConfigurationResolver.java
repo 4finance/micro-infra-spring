@@ -43,7 +43,7 @@ public class ServiceConfigurationResolver {
     }
 
     private ServicePath retrieveThisElement(JSONObject metaData) {
-        return new ServicePath(metaData.getString("this"));
+        return new ServicePath(metaData.getString(ServiceConfigurationProperties.THIS));
     }
 
     private JSONObject getJsonAsJsonObjectForBasePath(JSONObject parsedJson, String basePath) {
@@ -67,7 +67,7 @@ public class ServiceConfigurationResolver {
     }
 
     private static JSONObject getDependenciesAsJsonObject(JSONObject serviceMetadata) {
-        Object dependencies = serviceMetadata.get("dependencies");
+        Object dependencies = serviceMetadata.get(ServiceConfigurationProperties.DEPENDENCIES);
         JSONObject dependenciesAsJson = (JSONObject) dependencies;
         return dependenciesAsJson;
     }

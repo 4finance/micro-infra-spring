@@ -19,6 +19,5 @@ public abstract class DependencyPresenceOnStartupVerifier {
         } else {
             optionalDependencyChecker.checkPresence(dependencyName, serviceCache.getInstances());
         }
-
     }
 }

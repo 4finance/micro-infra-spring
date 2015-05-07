@@ -30,11 +30,11 @@ class ServiceConfigurationValidator {
     }
 
     void checkThatServiceMetadataContainsValidElements(JSONObject serviceMetadata) {
-        Object thisValue = serviceMetadata.get("this");
+        Object thisValue = serviceMetadata.get(ServiceConfigurationProperties.THIS);
         if (!(thisValue != null && (thisValue instanceof String))) {
             throw new InvalidMicroserviceConfigurationException("invalid or missing \"this\" element");
         }
-        Object dependencies = serviceMetadata.get("dependencies");
+        Object dependencies = serviceMetadata.get(ServiceConfigurationProperties.DEPENDENCIES);
         if (dependencies != null && (dependencies instanceof JSONObject)) {
             JSONObject dependenciesAsJson = (JSONObject) dependencies;
             for (Object dependency : dependenciesAsJson.values()) {
@@ -49,7 +49,7 @@ class ServiceConfigurationValidator {
     }
 
     JSONObject getDependenciesAsJsonObject(JSONObject serviceMetadata) {
-        Object dependencies = serviceMetadata.get("dependencies");
+        Object dependencies = serviceMetadata.get(ServiceConfigurationProperties.DEPENDENCIES);
         JSONObject dependenciesAsJson = (JSONObject) dependencies;
         return dependenciesAsJson;
     }

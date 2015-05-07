@@ -1,5 +1,7 @@
 package com.ofg.infrastructure.discovery;
 
+import com.google.common.base.Predicate;
+import com.ofg.infrastructure.discovery.util.CollectionUtils;
 import com.ofg.infrastructure.discovery.util.LoadBalancerType;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -30,14 +32,13 @@ public class MicroserviceConfiguration {
         return findDependencyWithName(serviceName);
     }
 
-    private Dependency findDependencyWithName(String serviceName) {
-        for (Iterator<Dependency> iter = dependencies.iterator(); iter.hasNext(); ) {
-            Dependency item = iter.next();
-            if (item.getServiceAlias().getName().equals(serviceName)) {
-                return item;
+    private Dependency findDependencyWithName(final String serviceName) {
+        return CollectionUtils.find(dependencies, new Predicate<Dependency>() {
+            @Override
+            public boolean apply(Dependency input) {
+                return input.getServiceAlias().getName().equals(serviceName);
             }
-        }
-        return null;
+        });
     }
 
     public ServicePath getServicePath() {

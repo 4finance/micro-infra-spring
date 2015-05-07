@@ -148,7 +148,7 @@ public class MicroDepsService {
         curatorFramework.close();
     }
 
-    public final ServiceResolver getServiceResolver() {
+    public ServiceResolver getServiceResolver() {
         return serviceResolver;
     }
 }

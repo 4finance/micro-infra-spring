@@ -15,6 +15,7 @@ import static com.ofg.infrastructure.discovery.watcher.DependencyState.DISCONNEC
 public class DependencyStateChangeListenerRegistry implements ServiceCacheListener {
 
     private static final Logger log = LoggerFactory.getLogger(DependencyStateChangeListenerRegistry.class);
+
     private final List<DependencyWatcherListener> listeners;
     private final String dependencyName;
     private final ServiceCache serviceCache;

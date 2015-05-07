@@ -5,6 +5,7 @@ package com.ofg.infrastructure.discovery.watcher;
  * in the service discovery system.
  */
 public interface DependencyWatcherListener {
+
     /**
      * Method executed upon state change of a dependency
      *

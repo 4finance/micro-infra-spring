@@ -33,7 +33,6 @@ public class StubbedServiceResolver implements ServiceResolver {
             String dependencyName = it.getServicePath().getPath();
             stubDependency(new ServicePath(dependencyName), URI.create("http://$wiremockUrl:$wiremockPort/$dependencyName"));
         }
-
     }
 
     @Override
@@ -58,7 +57,6 @@ public class StubbedServiceResolver implements ServiceResolver {
         } else {
             throw new ServiceUnavailableException(service.getPath());
         }
-
     }
 
     @Override

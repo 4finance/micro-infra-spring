@@ -158,6 +158,17 @@ configure(srcSubprojects) {
     //Dependencies in all subprojects - http://solidsoft.wordpress.com/2014/11/13/gradle-tricks-display-dependencies-for-all-subprojects-in-multi-project-build/
     task allDeps(type: DependencyReportTask) {}
     task allInsight(type: DependencyInsightReportTask) {}
+
+    configurations {
+        jansi.extendsFrom(runtime)
+    }
+    groovydoc {
+        def title = "IPDS ${version}"
+        groovyClasspath = project.configurations.jansi
+    }
+    dependencies {
+        jansi 'org.fusesource.jansi:jansi:1.11'
+    }
 }
 
 if (project.hasProperty("coverage")) {

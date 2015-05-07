@@ -35,6 +35,7 @@ class StubDownloader {
             log.warn("Failed to download stubs for group [$stubsGroup] and module [$stubsModule] from repository [$stubRepositoryRoot]")
             return null
         }
+        log.info("Downloading stub ${stubJarUri} from external repository")
         File unzippedStubsDir = unpackStubJarToATemporaryFolder(stubJarUri)
         return unzippedStubsDir
     }

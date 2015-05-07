@@ -23,7 +23,7 @@ public class MicroserviceConfiguration {
 
     public MicroserviceConfiguration(ServicePath servicePath) {
         this.servicePath = servicePath;
-        this.dependencies = new ArrayList<Dependency>();
+        this.dependencies = new ArrayList<>();
     }
 
     public Dependency getDependencyForName(String serviceName) {
@@ -57,6 +57,7 @@ public class MicroserviceConfiguration {
         private final String contentTypeTemplate;
         private final String version;
         private final Map<String, String> headers;
+
         public Dependency(ServiceAlias serviceAlias, ServicePath servicePath, boolean required, LoadBalancerType loadBalancerType, String contentTypeTemplate, String version, Map<String, String> headers) {
             this.serviceAlias = serviceAlias;
             this.servicePath = servicePath;
@@ -74,7 +75,7 @@ public class MicroserviceConfiguration {
             this.loadBalancerType = LoadBalancerType.ROUND_ROBIN;
             this.contentTypeTemplate = StringUtils.EMPTY;
             this.version = StringUtils.EMPTY;
-            this.headers = new HashMap<String, String>();
+            this.headers = new HashMap<>();
         }
 
         @Override

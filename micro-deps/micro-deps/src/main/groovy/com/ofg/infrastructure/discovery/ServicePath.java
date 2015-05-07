@@ -1,9 +1,5 @@
 package com.ofg.infrastructure.discovery;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
 /**
  * Path to dependency as registered in service resolver, like ZooKeeper
  */
@@ -20,16 +16,22 @@ public class ServicePath {
 
     @Override
     public String toString() {
-        return ReflectionToStringBuilder.toString(this);
+        return path;
     }
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return path.hashCode();
     }
 
     @Override
     public boolean equals(Object o) {
-        return EqualsBuilder.reflectionEquals(this, o);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ServicePath that = (ServicePath) o;
+
+        return !(path != null ? !path.equals(that.path) : that.path != null);
+
     }
 }

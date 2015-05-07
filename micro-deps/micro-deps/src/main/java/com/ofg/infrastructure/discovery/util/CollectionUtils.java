@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 public class CollectionUtils {
+
     public static <T> T find(Collection<T> collection, Predicate<T> whatToFind) {
         for (Iterator<T> iter = collection.iterator(); iter.hasNext(); ) {
             T item = iter.next();

@@ -11,7 +11,6 @@ import com.ofg.infrastructure.discovery.util.LoadBalancerType;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -177,11 +176,11 @@ public class ServiceConfigurationResolver {
         return dependency == null ? LoadBalancerType.ROUND_ROBIN : dependency.getLoadBalancerType();
     }
 
-    public final String getBasePath() {
+    public String getBasePath() {
         return basePath;
     }
 
-    public final MicroserviceConfiguration getMicroserviceConfiguration() {
+    public MicroserviceConfiguration getMicroserviceConfiguration() {
         return microserviceConfiguration;
     }
 }

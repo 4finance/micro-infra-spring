@@ -30,12 +30,12 @@ class StubDownloader {
      */
     File downloadAndUnpackStubJar(boolean skipLocalRepo, String stubRepositoryRoot, String stubsGroup, String
             stubsModule) {
+        log.info("Downloading stub ${stubJarUri} from external repository")
         URI stubJarUri = findGrabbedStubJars(skipLocalRepo, stubRepositoryRoot, stubsGroup, stubsModule)
         if (!stubJarUri) {
             log.warn("Failed to download stubs for group [$stubsGroup] and module [$stubsModule] from repository [$stubRepositoryRoot]")
             return null
         }
-        log.info("Downloading stub ${stubJarUri} from external repository")
         File unzippedStubsDir = unpackStubJarToATemporaryFolder(stubJarUri)
         return unzippedStubsDir
     }

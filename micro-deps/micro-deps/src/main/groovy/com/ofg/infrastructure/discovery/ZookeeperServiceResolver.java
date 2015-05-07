@@ -8,13 +8,11 @@ import com.google.common.collect.Collections2;
 import com.ofg.infrastructure.discovery.util.CollectionUtils;
 import com.ofg.infrastructure.discovery.util.LoadBalancerType;
 import com.ofg.infrastructure.discovery.util.ProviderStrategyFactory;
-import groovy.transform.CompileStatic;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.x.discovery.ProviderStrategy;
 import org.apache.curator.x.discovery.ServiceDiscovery;
 import org.apache.curator.x.discovery.ServiceInstance;
 import org.apache.curator.x.discovery.ServiceProvider;
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
 import java.io.IOException;
 import java.net.URI;
@@ -28,7 +26,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-@CompileStatic
 public class ZookeeperServiceResolver implements ServiceResolver {
     private final ServiceConfigurationResolver serviceConfigurationResolver;
     private final ServiceDiscovery serviceDiscovery;
@@ -68,7 +65,7 @@ public class ZookeeperServiceResolver implements ServiceResolver {
             }
 
         });
-        if (!DefaultGroovyMethods.asBoolean(dependencyConfig))
+        if (dependencyConfig == null)
             throw new NoSuchElementException(alias.getName() + " is not our dependency, available: " + String.valueOf(serviceConfigurationResolver.getDependencies()));
         return dependencyConfig.getServicePath();
     }
@@ -109,7 +106,7 @@ public class ZookeeperServiceResolver implements ServiceResolver {
     @Override
     public URI fetchUri(ServicePath service) {
         URI serviceAddress = resolveServiceAddress(service);
-        if (DefaultGroovyMethods.asBoolean(serviceAddress)) {
+        if (serviceAddress != null) {
             return serviceAddress;
         } else {
             throw new ServiceUnavailableException(service.getPath());

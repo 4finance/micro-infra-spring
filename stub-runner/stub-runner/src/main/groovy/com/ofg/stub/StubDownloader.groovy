@@ -30,6 +30,7 @@ class StubDownloader {
      */
     File downloadAndUnpackStubJar(boolean skipLocalRepo, String stubRepositoryRoot, String stubsGroup, String
             stubsModule) {
+        log.warn("Downloading stubs for group [$stubsGroup] and module [$stubsModule] from repository [$stubRepositoryRoot]")
         URI stubJarUri = findGrabbedStubJars(skipLocalRepo, stubRepositoryRoot, stubsGroup, stubsModule)
         if (!stubJarUri) {
             log.warn("Failed to download stubs for group [$stubsGroup] and module [$stubsModule] from repository [$stubRepositoryRoot]")

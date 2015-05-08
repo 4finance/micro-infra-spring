@@ -9,16 +9,14 @@ subprojects {
 project(':micro-deps:micro-deps') {
     description = 'Microservice dependency manager'
 
-    sourceSets.main.java.srcDirs = []
-    sourceSets.main.groovy.srcDirs += ["src/main/java", "src/main/groovy"]
-
     dependencies {
-        compile "org.codehaus.groovy:groovy-all"
         compile "org.apache.curator:curator-x-discovery"
         compile "org.apache.curator:curator-test"
         compile 'com.google.guava:guava'
+        compile 'commons-io:commons-io:2.4'
         compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
 
+        testCompile "org.codehaus.groovy:groovy-all"
         testCompile "org.spockframework:spock-core"
         testCompile 'com.jayway.awaitility:awaitility-groovy'
     }

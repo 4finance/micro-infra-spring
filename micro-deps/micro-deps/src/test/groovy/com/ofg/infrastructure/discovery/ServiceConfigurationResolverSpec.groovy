@@ -1,17 +1,11 @@
 package com.ofg.infrastructure.discovery
-
+import com.ofg.infrastructure.discovery.util.DependencyCreator
 import com.ofg.infrastructure.discovery.util.LoadBalancerType
+import org.apache.commons.collections.CollectionUtils
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static com.ofg.infrastructure.discovery.MicroserviceConfigurationUtil.CONFIGURATION_WITH_PATH_ELEM
-import static com.ofg.infrastructure.discovery.MicroserviceConfigurationUtil.FLAT_CONFIGURATION
-import static com.ofg.infrastructure.discovery.MicroserviceConfigurationUtil.INVALID_DEPENDENCIES_ELEMENT
-import static com.ofg.infrastructure.discovery.MicroserviceConfigurationUtil.LOAD_BALANCING_DEPENDENCIES
-import static com.ofg.infrastructure.discovery.MicroserviceConfigurationUtil.MISSING_THIS_ELEMENT
-import static com.ofg.infrastructure.discovery.MicroserviceConfigurationUtil.MULTIPLE_ROOT_ELEMENTS
-import static com.ofg.infrastructure.discovery.MicroserviceConfigurationUtil.ONLY_REQUIRED_ELEMENTS
-import com.ofg.infrastructure.discovery.util.DependencyCreator
+import static com.ofg.infrastructure.discovery.MicroserviceConfigurationUtil.*
 
 class ServiceConfigurationResolverSpec extends Specification {
 
@@ -21,8 +15,8 @@ class ServiceConfigurationResolverSpec extends Specification {
         then:
             resolver.basePath == 'pl'
             resolver.microserviceName == 'com/ofg/service'
-            resolver.dependencies == DependencyCreator.fromMap(['ping':['path':'com/ofg/ping'],
-                                      'pong':['path':'com/ofg/pong']])
+            CollectionUtils.isEqualCollection(resolver.dependencies, DependencyCreator.fromMap(['ping':['path':'com/ofg/ping'],
+                                                                                            'pong':['path':'com/ofg/pong']]))
     }
 
     def 'should parse flat configuration'() {
@@ -31,8 +25,8 @@ class ServiceConfigurationResolverSpec extends Specification {
         then:
             resolver.basePath == 'pl'
             resolver.microserviceName == 'com/ofg/service'
-            resolver.dependencies ==  DependencyCreator.fromMap( ['ping':['path':'com/ofg/ping'],
-                                      'pong':['path':'com/ofg/pong']] )
+            CollectionUtils.isEqualCollection(resolver.dependencies, DependencyCreator.fromMap( ['ping':['path':'com/ofg/ping'],
+                                      'pong':['path':'com/ofg/pong']] ))
     }
 
     def 'should fail on missing "this" element'() {

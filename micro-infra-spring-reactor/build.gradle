@@ -5,6 +5,7 @@ dependencies {
     compile "org.projectreactor:reactor-core:1.1.6.RELEASE"
     compile "org.projectreactor:reactor-spring:1.0.1.RELEASE"
 
+    testCompile "org.codehaus.groovy:groovy-all"
     testCompile("org.spockframework:spock-core") {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }

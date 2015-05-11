@@ -12,9 +12,9 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @Configuration
 @EnableAspectJAutoProxy
 public class CorrelationIdOnCamelRouteConfiguration {
+
     @Bean
     public CorrelationIdOnCamelRouteAspect correlationIdOnCamelRouteAspect(UuidGenerator uuidGenerator) {
         return new CorrelationIdOnCamelRouteAspect(uuidGenerator);
     }
-
 }

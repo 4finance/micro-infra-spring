@@ -18,19 +18,21 @@ import java.lang.invoke.MethodHandles;
  */
 @Aspect
 public class CorrelationIdOnCamelRouteAspect {
-    private static final String ANY = "*";
 
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+    private static final String ANY = "*";
 
     private final Processor correlationIdInterceptor;
 
     public CorrelationIdOnCamelRouteAspect(UuidGenerator uuidGenerator) {
         correlationIdInterceptor = new CorrelationIdInterceptor(uuidGenerator);
     }
+
     @Around(value = "execution(* org.apache.camel.builder.RouteBuilder.addRoutesToCamelContext(..))")
     public Object aroundAddRoutesNoArgs(ProceedingJoinPoint joinPoint) throws Throwable {
         final RouteBuilder targetRouteBuilder = (RouteBuilder) joinPoint.getTarget();
-        log.debug("Setting correlationId interception on " + targetRouteBuilder.getClass().getName());
+        log.debug(String.format("Setting correlationId interception on [%s]", targetRouteBuilder.getClass().getName()));
         targetRouteBuilder.interceptFrom().process(correlationIdInterceptor);
         targetRouteBuilder.interceptSendToEndpoint(ANY).process(correlationIdInterceptor);
         return joinPoint.proceed();

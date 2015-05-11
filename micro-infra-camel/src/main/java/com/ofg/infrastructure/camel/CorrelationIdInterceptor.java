@@ -44,14 +44,13 @@ public class CorrelationIdInterceptor implements Processor {
             log.debug("No correlationId has been set in request inbound message. Creating new one.");
             correlationIdHeader = uuidGenerator.create();
         }
-
         return correlationIdHeader;
     }
 
     private void setCorrelationIdHeaderIfMissing(Exchange exchange, String correlationIdHeader) {
         Message inboundMessage = exchange.getIn();
         if (!inboundMessage.getHeaders().containsKey(CORRELATION_ID_HEADER)) {
-            log.debug("Setting correlationId [" + correlationIdHeader + "] in header of inbound message");
+            log.debug(String.format("Setting correlationId [%s] in header of inbound message", correlationIdHeader));
             inboundMessage.setHeader(CORRELATION_ID_HEADER, correlationIdHeader);
         }
 

@@ -50,7 +50,7 @@ public class CorrelationIdInterceptor implements Processor {
     private void setCorrelationIdHeaderIfMissing(Exchange exchange, String correlationIdHeader) {
         Message inboundMessage = exchange.getIn();
         if (!inboundMessage.getHeaders().containsKey(CORRELATION_ID_HEADER)) {
-            log.debug(String.format("Setting correlationId [%s] in header of inbound message", correlationIdHeader));
+            log.debug("Setting correlationId [{}] in header of inbound message", correlationIdHeader);
             inboundMessage.setHeader(CORRELATION_ID_HEADER, correlationIdHeader);
         }
 

@@ -32,7 +32,7 @@ public class CorrelationIdOnCamelRouteAspect {
     @Around(value = "execution(* org.apache.camel.builder.RouteBuilder.addRoutesToCamelContext(..))")
     public Object aroundAddRoutesNoArgs(ProceedingJoinPoint joinPoint) throws Throwable {
         final RouteBuilder targetRouteBuilder = (RouteBuilder) joinPoint.getTarget();
-        log.debug(String.format("Setting correlationId interception on [%s]", targetRouteBuilder.getClass().getName()));
+        log.debug("Setting correlationId interception on [{}]", targetRouteBuilder.getClass().getName());
         targetRouteBuilder.interceptFrom().process(correlationIdInterceptor);
         targetRouteBuilder.interceptSendToEndpoint(ANY).process(correlationIdInterceptor);
         return joinPoint.proceed();

@@ -19,7 +19,7 @@ class CorrelationIdUpdaterSpec extends Specification {
         given:
             CorrelationIdUpdater.updateCorrelationId('A')
         when:
-            String idInClosure = CorrelationIdUpdater.withId('B') {
+            String idInClosure = CorrelationIdUpdaterUtil.withId('B') {
                 return CorrelationIdHolder.get()
             }
         then:
@@ -30,7 +30,7 @@ class CorrelationIdUpdaterSpec extends Specification {
         given:
             CorrelationIdUpdater.updateCorrelationId('A')
         when:
-            CorrelationIdUpdater.withId('B') {}
+            CorrelationIdUpdaterUtil.withId('B') {}
         then:
             CorrelationIdHolder.get() == 'A'
     }
@@ -51,7 +51,7 @@ class CorrelationIdUpdaterSpec extends Specification {
             CorrelationIdUpdater.updateCorrelationId('A')
         expect:
             GParsPool.withPool(1) {
-                ["1"].eachParallel CorrelationIdUpdater.wrapClosureWithId {
+                ["1"].eachParallel CorrelationIdUpdaterUtil.wrapClosureWithId {
                     assert CorrelationIdHolder.get() == 'A'
                 }
             }
@@ -67,7 +67,7 @@ class CorrelationIdUpdaterSpec extends Specification {
                     CorrelationIdHolder.set('B')
                 }
                 //when
-                ["1"].eachParallel CorrelationIdUpdater.wrapClosureWithId {}
+                ["1"].eachParallel CorrelationIdUpdaterUtil.wrapClosureWithId {}
                 //then
                 ["1"].eachParallel {
                     assert CorrelationIdHolder.get() == 'B'
@@ -78,7 +78,7 @@ class CorrelationIdUpdaterSpec extends Specification {
     def "should propagate single parameter into nested closure"() {
         expect:
             GParsPool.withPool {
-                ["1"].eachParallel CorrelationIdUpdater.wrapClosureWithId {
+                ["1"].eachParallel CorrelationIdUpdaterUtil.wrapClosureWithId {
                     assert it == "1"
                 }
             }
@@ -86,14 +86,14 @@ class CorrelationIdUpdaterSpec extends Specification {
 
     def "should propagate single named parameter into nested closure"() {
         expect:
-            ["1"].each CorrelationIdUpdater.wrapClosureWithId { String elem ->
+            ["1"].each CorrelationIdUpdaterUtil.wrapClosureWithId { String elem ->
                 assert elem == "1"
             }
     }
 
     def "should propagate multiple parameters into nested closure"() {
         expect:
-            ["e1"].eachWithIndex CorrelationIdUpdater.wrapClosureWithId { String entry, int i ->
+            ["e1"].eachWithIndex CorrelationIdUpdaterUtil.wrapClosureWithId { String entry, int i ->
                 assert entry == "e1"
                 assert i == 0
             }
@@ -105,7 +105,7 @@ class CorrelationIdUpdaterSpec extends Specification {
             CorrelationIdUpdater.updateCorrelationId('A')
             Callable<String> callable = new CorrelationIdTestCallable()
         when:
-            Callable<String> wrappedCallable = CorrelationIdUpdater.wrapCallableWithId(callable)
+            Callable<String> wrappedCallable = CorrelationIdUpdaterUtil.wrapCallableWithId(callable)
             String nestedCorrelationId = threadPool.submit(wrappedCallable).get(1, SECONDS)
         then:
             nestedCorrelationId == 'A'
@@ -121,7 +121,7 @@ class CorrelationIdUpdaterSpec extends Specification {
         and:
             threadPool.submit({ CorrelationIdHolder.set('B') }).get(1, SECONDS)
         when:
-            threadPool.submit(CorrelationIdUpdater.wrapCallableWithId(callable)).get(1, SECONDS)
+            threadPool.submit(CorrelationIdUpdaterUtil.wrapCallableWithId(callable)).get(1, SECONDS)
         then:
             def restoredCorrelationId = threadPool.submit({ CorrelationIdHolder.get() } as Callable).get(1, SECONDS)
             restoredCorrelationId == 'B'

@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.reactor.aspect
 
-import com.ofg.infrastructure.correlationid.CorrelationIdUpdater
+import com.ofg.infrastructure.correlationid.CorrelationIdUpdaterUtil
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.aspectj.lang.ProceedingJoinPoint
@@ -57,7 +57,7 @@ import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATI
  *     }
  * </pre>
  *
- * @see CorrelationIdUpdater
+ * @see CorrelationIdUpdaterUtil
  */
 @CompileStatic
 @Aspect
@@ -81,7 +81,7 @@ class ReactorAspect {
         }
         Event event = eventArgument as Event
         String correlationId = event.headers.get(CORRELATION_ID_HEADER) as String
-        return CorrelationIdUpdater.withId(correlationId) {
+        return CorrelationIdUpdaterUtil.withId(correlationId) {
             log.debug("Set correlationId retrieved from event header to [$correlationId]")
             return pjp.proceed()
         }

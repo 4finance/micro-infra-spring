@@ -8,7 +8,7 @@ import com.netflix.hystrix.exception.HystrixRuntimeException
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder
-import com.ofg.infrastructure.correlationid.CorrelationIdUpdater
+import com.ofg.infrastructure.correlationid.CorrelationIdUpdaterUtil
 import com.ofg.infrastructure.hystrix.CorrelatedCommand
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
@@ -43,11 +43,11 @@ final class RestExecutor<T> {
         try {
             return exchangeInternal(params, httpMethod, responseType).get()
         } catch (ExecutionException e) {
-            propagate(e.cause)
+            throw propagate(e.cause)
         }
     }
 
-    private void propagate(Throwable throwable) {
+    private Throwable propagate(Throwable throwable) {
         if (throwable instanceof TimeoutException) {
             throw new UncheckedTimeoutException(throwable)
         }
@@ -102,7 +102,7 @@ final class RestExecutor<T> {
     private ListenableFuture<ResponseEntity<T>> withRetry(HystrixCommand.Setter hystrix, Callable<T> hystrixFallback, Callable<ResponseEntity<T>> httpInvocation) {
         String correlationId = CorrelationIdHolder.get()
         return retryExecutor.getWithRetry {
-            return CorrelationIdUpdater.withId(correlationId) {
+            return CorrelationIdUpdaterUtil.withId(correlationId) {
                 return callHttp(hystrix, hystrixFallback, httpInvocation)
             }
         }

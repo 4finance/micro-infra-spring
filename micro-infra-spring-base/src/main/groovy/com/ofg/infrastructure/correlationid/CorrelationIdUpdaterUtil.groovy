@@ -4,32 +4,18 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 import groovy.util.logging.Slf4j
 import org.slf4j.MDC
-import org.springframework.util.StringUtils
 
 import java.util.concurrent.Callable
 
-import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
-
 /**
- * Class that takes care of updating all necessary components with new value
+ * Groovy utility methods for updating all necessary components with new value
  * of correlation id.
- * It sets correlationId on {@link ThreadLocal} in {@link CorrelationIdHolder}
- * and in {@link MDC}.
  *
- * @see CorrelationIdHolder
- * @see MDC
+ * @see CorrelationIdUpdater
  */
 @Slf4j
 @CompileStatic
-class CorrelationIdUpdater {
-
-    static void updateCorrelationId(String correlationId) {
-        if (StringUtils.hasText(correlationId)) {
-            log.debug("Updating correlationId with value: [$correlationId]")
-            CorrelationIdHolder.set(correlationId)
-            MDC.put(CORRELATION_ID_HEADER, correlationId)
-        }
-    }
+class CorrelationIdUpdaterUtil {
 
     /**
      * Temporarily updates correlation ID inside block of code.
@@ -42,10 +28,10 @@ class CorrelationIdUpdater {
     static <T> T withId(String temporaryCorrelationId, Closure<T> block) {
         final String oldCorrelationId = CorrelationIdHolder.get()
         try {
-            updateCorrelationId(temporaryCorrelationId)
+            CorrelationIdUpdater.updateCorrelationId(temporaryCorrelationId)
             return block()
         } finally {
-            updateCorrelationId(oldCorrelationId)
+            CorrelationIdUpdater.updateCorrelationId(oldCorrelationId)
         }
     }
 
@@ -76,10 +62,10 @@ class CorrelationIdUpdater {
         return { Object[] args ->
             final String oldCorrelationId = CorrelationIdHolder.get()
             try {
-                updateCorrelationId(temporaryCorrelationId)
+                CorrelationIdUpdater.updateCorrelationId(temporaryCorrelationId)
                 return block(*args)
             } finally {
-                updateCorrelationId(oldCorrelationId)
+                CorrelationIdUpdater.updateCorrelationId(oldCorrelationId)
             }
         }
     }
@@ -114,10 +100,10 @@ class CorrelationIdUpdater {
             Object call() throws Exception {
                 final String oldCorrelationId = CorrelationIdHolder.get()
                 try {
-                    updateCorrelationId(temporaryCorrelationId)
+                    CorrelationIdUpdater.updateCorrelationId(temporaryCorrelationId)
                     return block.call()
                 } finally {
-                    updateCorrelationId(oldCorrelationId)
+                    CorrelationIdUpdater.updateCorrelationId(oldCorrelationId)
                 }
             }
         }

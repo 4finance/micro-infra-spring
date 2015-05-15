@@ -87,6 +87,7 @@ public class ServiceDiscoveryInfrastructureConfiguration {
     }
 
     @Bean(initMethod = "start", destroyMethod = "close")
+    @SuppressWarnings("unchecked")
     public ServiceDiscovery serviceDiscovery(CuratorFramework curatorFramework,
                                              ServiceInstance serviceInstance,
                                              ServiceConfigurationResolver serviceConfigurationResolver) {

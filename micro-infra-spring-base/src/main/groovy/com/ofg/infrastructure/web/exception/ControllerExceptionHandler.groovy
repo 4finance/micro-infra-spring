@@ -46,8 +46,8 @@ class ControllerExceptionHandler {
     }
 
     private List<BadParameterError> getListOfBindErrors(BadParametersException exception) {
-        List<BadParameterError> bindErrorList = []
-        exception.errors.each { ObjectError error ->
+        List<BadParameterError> bindErrorList = new ArrayList<>()
+        for (ObjectError error : exception.errors) {
             bindErrorList.add(getBindError(error))
         }
         return bindErrorList

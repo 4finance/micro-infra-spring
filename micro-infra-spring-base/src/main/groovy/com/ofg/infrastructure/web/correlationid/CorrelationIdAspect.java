@@ -49,6 +49,7 @@ import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATI
 @Aspect
 public class CorrelationIdAspect {
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     private static final int HTTP_ENTITY_PARAM_INDEX = 2;
 
     @Pointcut("@target(org.springframework.web.bind.annotation.RestController)")

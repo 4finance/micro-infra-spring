@@ -8,6 +8,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 
 import static org.springframework.http.HttpMethod.DELETE
+import static org.springframework.http.HttpMethod.GET
 import static org.springframework.http.HttpStatus.OK
 
 class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
@@ -126,6 +127,19 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
                     DELETE,
                     _ as HttpEntity,
                     Object)
+    }
+
+    def "should add parameters to query string when sending request to a service"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+        when:
+            httpMethodBuilder
+                    .delete()
+                    .onUrl(PATH)
+                    .withQueryParameters(['parameterOne': 'valueOne', 'parameterTwo': null])
+                    .ignoringResponse()
+        then:
+            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?parameterOne=valueOne&parameterTwo="), DELETE, new HttpEntity<Object>(null), Object)
     }
 
     private boolean hasNoContentTypeHeaderSet(HttpEntity it) {

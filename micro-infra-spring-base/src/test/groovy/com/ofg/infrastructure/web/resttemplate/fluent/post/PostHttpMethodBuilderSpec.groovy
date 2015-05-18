@@ -7,6 +7,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 
+import static org.springframework.http.HttpMethod.HEAD
 import static org.springframework.http.HttpMethod.POST
 import static org.springframework.http.HttpStatus.OK
 
@@ -282,6 +283,20 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
                     .ignoringResponse()
         then:
             1 * restOperations.exchange(new URI(FULL_SERVICE_URL), POST, _ as HttpEntity, _ as Class)
+    }
+
+    def "should add parameters to query string when sending request to a service"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+        when:
+            httpMethodBuilder
+                    .post()
+                    .onUrl(PATH)
+                    .withQueryParameters(['parameterOne': 'valueOne', 'parameterTwo': null])
+                    .andExecuteFor()
+                    .ignoringResponse()
+        then:
+            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?parameterOne=valueOne&parameterTwo="), POST, new HttpEntity(null), Object)
     }
 
     private ResponseEntity responseEntityWith(URI expectedLocation) {

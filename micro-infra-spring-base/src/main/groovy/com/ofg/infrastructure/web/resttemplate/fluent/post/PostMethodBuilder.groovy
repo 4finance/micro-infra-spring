@@ -5,6 +5,7 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
+import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
@@ -40,6 +41,12 @@ class PostMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPostMethod,
     @Override
     protected HttpMethod getHttpMethod() {
         return POST
+    }
+
+    @Override
+    ResponseReceivingPostMethod withQueryParameters(Map<String, Object> queryParametersMap) {
+        params.url = UrlUtils.addQueryParametersToUri((URI) params.url, queryParametersMap)
+        return this
     }
 
     @Override

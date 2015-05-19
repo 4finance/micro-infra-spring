@@ -1,24 +1,14 @@
 package com.ofg.infrastructure.discovery;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.ofg.infrastructure.discovery.util.CollectionUtils;
 import com.ofg.infrastructure.discovery.util.LoadBalancerType;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 import org.apache.commons.lang.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.PATH;
 
 public class ServiceConfigurationResolver {
 
@@ -61,9 +51,9 @@ public class ServiceConfigurationResolver {
 
     private void validateConfiguration(JSONObject metaData) {
         serviceConfigurationValidator.checkThatServiceMetadataContainsValidElements(metaData);
-        jsonToMicroserviceConfigurationConverter.convertFlatDependenciesToMapFormat(metaData);
+        JsonToMicroserviceConfigurationConverter.convertFlatDependenciesToMapFormat(metaData);
         serviceConfigurationValidator.validateDependencyEntries(metaData);
-        jsonToMicroserviceConfigurationConverter.setDefaultsForMissingOptionalElements(metaData);
+        JsonToMicroserviceConfigurationConverter.setDefaultsForMissingOptionalElements(metaData);
     }
 
     private static JSONObject getDependenciesAsJsonObject(JSONObject serviceMetadata) {

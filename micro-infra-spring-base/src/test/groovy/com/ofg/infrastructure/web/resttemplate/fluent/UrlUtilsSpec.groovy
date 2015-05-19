@@ -6,35 +6,28 @@ import spock.lang.Unroll
 
 class UrlUtilsSpec extends Specification {
 
-    def "should add parameter to query string" () {
+    def "should add parameter to query string"() {
         given:
-            Map<String, String> parameters = new HashMap<>();
-            parameters.put("firstParam", "firstParamValue")
-            parameters.put("secondParam", "secondParamValue")
+            Map parameters = [firstParam: "firstParamValue", secondParam: "secondParamValue"]
         when:
-            
             URI result = UrlUtils.addQueryParametersToUri(new URI(""), parameters)
         then:
             result.toString() == "?firstParam=firstParamValue&secondParam=secondParamValue"
     }
 
-    def "should not add 'null' string to null parameter in query string" () {
+    def "should not add 'null' string to null parameter in query string"() {
         given:
-            Map<String, String> parameters = new HashMap<>();
-            parameters.put("firstParam", null)
-            parameters.put("secondParam", "")
+            Map parameters = [firstParam: null, secondParam: ""]
         when:
-            
             URI result = UrlUtils.addQueryParametersToUri(new URI(""), parameters)
         then:
             result.toString() == "?firstParam=&secondParam="
     }
 
     @Unroll("should not add '#paramName' as parameter name")
-    def "should not add null or empty parameter name to query string" () {
+    def "should not add null or empty parameter name to query string"() {
         given:
-            Map<String, String> parameters = new HashMap<>();
-            parameters.put(paramName, "valueOne")
+            Map parameters = [(paramName): "valueOne"]
         when:
             UrlUtils.addQueryParametersToUri(new URI(""), parameters)
         then:
@@ -44,19 +37,17 @@ class UrlUtilsSpec extends Specification {
             paramName << ["", null]
     }
 
-    def "should deal with good, bad, null and empty parameters in query string" () {
+    @Unroll
+    def "should deal with '#paramName' as parameters names in query string"() {
         given:
-            Map<String, String> parameters = new HashMap<>();
-            parameters.put("firstParameter", "valueOne")
-            parameters.put(paramName, "valueTwo")
-            parameters.put("secondParameter", null)
+            Map parameters = [firstParameter: "valueOne", (paramName): "valueTwo", secondParameter: null]
         when:
-            URI rasult = UrlUtils.addQueryParametersToUri(new URI(""), parameters)         
+            URI result = UrlUtils.addQueryParametersToUri(new URI(""), parameters)
         then:
             thrown(IllegalArgumentException)
-            !rasult.toString().contains("secondParameter")
+            result == null
         where:
             paramName << ["", null]
     }
-    
+
 }

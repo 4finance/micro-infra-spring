@@ -8,9 +8,9 @@ import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.AbstractMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
+import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodylessWithHeaders
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import groovy.transform.TypeChecked
@@ -43,6 +43,12 @@ class DeleteMethodBuilder extends AbstractMethodBuilder implements DeleteMethod,
 
     DeleteMethodBuilder(RestOperations restOperations) {
         this(HttpMethodBuilder.EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE)
+    }
+
+    @Override
+    ResponseReceivingDeleteMethod withQueryParameters(Map<String, Object> queryParametersMap) {
+        params.url = UrlUtils.addQueryParametersToUri((URI) params.url, queryParametersMap)
+        return this
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 
 import static org.springframework.http.HttpMethod.DELETE
+import static org.springframework.http.HttpMethod.HEAD
 import static org.springframework.http.HttpMethod.OPTIONS
 import static org.springframework.http.HttpStatus.OK
 
@@ -158,6 +159,20 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
                     OPTIONS,
                     _ as HttpEntity,
                     Object)
+    }
+
+    def "should add parameters to query string when sending request to a service"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+        when:
+            httpMethodBuilder
+                    .options()
+                    .onUrl(PATH)
+                    .withQueryParameters(['parameterOne': 'valueOne', 'parameterTwo': null])
+                    .andExecuteFor()
+                    .ignoringResponse()
+        then:
+            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?parameterOne=valueOne&parameterTwo="), OPTIONS, new HttpEntity(null), Object)
     }
 
 }

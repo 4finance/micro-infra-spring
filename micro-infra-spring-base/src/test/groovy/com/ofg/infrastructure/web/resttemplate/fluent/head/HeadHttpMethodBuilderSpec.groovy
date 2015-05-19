@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.*
+import static org.springframework.http.HttpMethod.GET
 import static org.springframework.http.HttpMethod.HEAD
 import static org.springframework.http.HttpStatus.OK
 
@@ -147,6 +148,20 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
                     HEAD,
                     _ as HttpEntity,
                     Object)
+    }
+
+    def "should add parameters to query string when sending request to a service"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+        when:
+            httpMethodBuilder
+                    .head()
+                    .onUrl(PATH)
+                    .withQueryParameters(['parameterOne': 'valueOne', 'parameterTwo': null])
+                    .andExecuteFor()
+                    .ignoringResponse()
+        then:
+            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?parameterOne=valueOne&parameterTwo="), HEAD, new HttpEntity(null), Object)
     }
 
 }

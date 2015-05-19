@@ -149,5 +149,20 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
         params.urlTemplate == "http://localhost:8080/order/{id}"
         params.urlVariablesArray == [id]
     }
+    
+    def "should add parameters to query string when sending request to a service"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+        when:
+            httpMethodBuilder
+                    .get()
+                    .onUrl(PATH)
+                    .withQueryParameters(['parameterOne': 'valueOne', 'parameterTwo': null])
+                    .andExecuteFor()
+                    .anObject()
+                    .ofType(BigDecimal)
+        then:
+            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?parameterOne=valueOne&parameterTwo="), GET, _ as HttpEntity, BigDecimal)
+    }
 
 }

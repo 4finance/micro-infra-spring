@@ -6,6 +6,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
+import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import com.ofg.infrastructure.web.resttemplate.fluent.post.DataUpdateMethodBuilder
@@ -31,6 +32,12 @@ class PutMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPutMethod, U
         super(predefinedHeaders, restOperations, retryExecutor)
         params.host = host
 
+    }
+
+    @Override
+    ResponseReceivingPutMethod withQueryParameters(Map<String, Object> queryParametersMap) {
+        params.url = UrlUtils.addQueryParametersToUri((URI) params.url, queryParametersMap)
+        return this
     }
 
     PutMethodBuilder(RestOperations restOperations) {
@@ -66,7 +73,7 @@ class PutMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPutMethod, U
             @Override
             public <T> ListenableFuture<T> ofTypeAsync(Class<T> responseType) {
                 ListenableFuture<ResponseEntity> future = put(responseType).exchangeAsync()
-                return Futures.transform(future, {ResponseEntity response -> response?.body} as Function)
+                return Futures.transform(future, { ResponseEntity response -> response?.body } as Function)
             }
         }
     }
@@ -97,6 +104,6 @@ class PutMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPutMethod, U
 
     ListenableFuture<Void> ignoringResponseAsync() {
         ListenableFuture<ResponseEntity<Object>> future = aResponseEntity().ofTypeAsync(Object)
-        return Futures.transform(future, {null} as Function<ResponseEntity<Object>, Void>)
+        return Futures.transform(future, { null } as Function<ResponseEntity<Object>, Void>)
     }
 }

@@ -7,14 +7,12 @@ import com.netflix.hystrix.HystrixCommand
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
+import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving
-import com.ofg.infrastructure.web.resttemplate.fluent.get.ResponseReceivingGetMethod
-import com.ofg.infrastructure.web.resttemplate.fluent.get.UrlParameterizableGetMethod
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
@@ -61,6 +59,12 @@ class OptionsMethodBuilder implements
     @Override
     ResponseReceivingOptionsMethod onUrl(String url) {
         params.url = new URI(url)
+        return this
+    }
+
+    @Override
+    ResponseReceivingOptionsMethod withQueryParameters(Map<String, Object> queryParametersMap) {
+        params.url = UrlUtils.addQueryParametersToUri((URI) params.url, queryParametersMap)
         return this
     }
 

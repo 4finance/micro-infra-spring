@@ -7,4 +7,6 @@ import org.springframework.http.HttpEntity
  */
 interface HttpEntitySending<T> {
     T httpEntity(HttpEntity httpEntity)
+
+    T withQueryParameters(Map<String, Object> queryParametersMap)
 }

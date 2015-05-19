@@ -6,9 +6,9 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.netflix.hystrix.HystrixCommand
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
+import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodylessWithHeaders
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
 import groovy.transform.TypeChecked
@@ -54,6 +54,12 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
     @Override
     ResponseReceivingHeadMethod onUrl(String url) {
         params.url = new URI(url)
+        return this
+    }
+
+    @Override
+    ResponseReceivingHeadMethod withQueryParameters(Map<String, Object> queryParametersMap) {
+        params.url = UrlUtils.addQueryParametersToUri((URI) params.url, queryParametersMap)
         return this
     }
 

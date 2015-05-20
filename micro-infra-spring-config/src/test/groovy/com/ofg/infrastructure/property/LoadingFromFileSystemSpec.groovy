@@ -91,6 +91,11 @@ class LoadingFromFileSystemSpec extends AbstractIntegrationSpec {
             myBean.customCommonCountryKey == 'custom common country yaml value'
             myBean.customCountryKey == 'custom country yaml value'
     }
+
+    def 'should read unquoted URLs'() {
+        expect:
+            myBean.globalUrl == 'http://example.com'
+    }
 }
 
 @Configuration
@@ -156,4 +161,7 @@ class MyBean {
 
     @Value('${custom.country.key}')
     String customCountryKey
+
+    @Value('${global.url}')
+    String globalUrl
 }

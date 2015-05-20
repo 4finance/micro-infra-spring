@@ -4,6 +4,7 @@ global:
   default:
     yaml:
       key: global default yaml value
+  url: http://example.com
 custom:
   global:
     key: custom global yaml value

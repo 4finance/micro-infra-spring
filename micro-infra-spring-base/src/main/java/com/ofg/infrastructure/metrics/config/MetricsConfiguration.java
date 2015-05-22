@@ -35,6 +35,7 @@ import static java.lang.invoke.MethodHandles.lookup;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.util.StringUtils.isEmpty;
 
 /**
  * Configuration that registers metric related Spring beans.
@@ -53,6 +54,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class MetricsConfiguration {
 
     private static final Logger log = getLogger(lookup().lookupClass());
+
+    @Value("{metrics.jvm.path.base:jvm}")
+    private String jvmMetricsPathBase;
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     @Profile({PRODUCTION, DEVELOPMENT})
@@ -100,11 +104,11 @@ public class MetricsConfiguration {
     @Bean
     public MetricRegistry metricRegistry(MetricPathProvider metricPathProvider) {
         MetricRegistry metricRegistry = new PathPrependingMetricRegistry(metricPathProvider);
-        metricRegistry.register(MetricRegistry.name("jvm", "gc"), new GarbageCollectorMetricSet());
-        metricRegistry.register(MetricRegistry.name("jvm", "memory"), new MemoryUsageGaugeSet());
-        metricRegistry.register(MetricRegistry.name("jvm", "thread-states"), new ThreadStatesGaugeSet());
-        metricRegistry.register(MetricRegistry.name("jvm", "fd"), new FileDescriptorRatioGauge());
-        metricRegistry.register(MetricRegistry.name("jvm", "classloading"), new ClassLoadingGaugeSet());
+        metricRegistry.register(jvmMetricName("gc"), new GarbageCollectorMetricSet());
+        metricRegistry.register(jvmMetricName("memory"), new MemoryUsageGaugeSet());
+        metricRegistry.register(jvmMetricName("thread-states"), new ThreadStatesGaugeSet());
+        metricRegistry.register(jvmMetricName("fd"), new FileDescriptorRatioGauge());
+        metricRegistry.register(jvmMetricName("classloading"), new ClassLoadingGaugeSet());
         return metricRegistry;
     }
 
@@ -118,5 +122,9 @@ public class MetricsConfiguration {
 
     public static String resolveLocalHostName() throws UnknownHostException {
         return InetAddress.getLocalHost().getHostName();
+    }
+
+    private String jvmMetricName(String metric) {
+        return isEmpty(jvmMetricsPathBase) ? metric : jvmMetricsPathBase + '.' + metric;
     }
 }

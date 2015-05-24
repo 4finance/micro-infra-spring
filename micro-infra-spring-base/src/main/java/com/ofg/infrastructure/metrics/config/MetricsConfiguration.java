@@ -55,7 +55,7 @@ public class MetricsConfiguration {
 
     private static final Logger log = getLogger(lookup().lookupClass());
 
-    @Value("{metrics.jvm.path.base:jvm}")
+    @Value("${metrics.jvm.path.base:jvm}")
     private String jvmMetricsPathBase;
 
     @Bean(initMethod = "start", destroyMethod = "stop")
@@ -69,7 +69,7 @@ public class MetricsConfiguration {
     @Conditional(IsGraphitePublishingEnabled.class)
     public GraphiteSender graphite(@Value("${graphite.host:graphite.4finance.net}") String hostname, @Value("${graphite.port:2003}") int port, @Value("${graphite.format:TCP}") GraphiteFormat format) {
         final InetSocketAddress address = new InetSocketAddress(hostname, port);
-        log.info("Connecting to Graphite " + String.valueOf(address) + " using " + String.valueOf(format) + " format");
+        log.info("Configuring {} sender for Graphite server: {}", format, address);
         switch (format) {
             case UDP:
                 return new GraphiteUDP(address);

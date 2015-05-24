@@ -102,14 +102,20 @@ public class MetricsConfiguration {
     }
 
     @Bean
-    public MetricRegistry metricRegistry(MetricPathProvider metricPathProvider) {
+    public MetricRegistry metricRegistry(MetricPathProvider metricPathProvider, @Value("${metrics.jvm.enabled:true}") boolean registerJvmMetrics) {
         MetricRegistry metricRegistry = new PathPrependingMetricRegistry(metricPathProvider);
+        if (registerJvmMetrics) {
+            registerJvmMetrics(metricRegistry);
+        }
+        return metricRegistry;
+    }
+
+    private void registerJvmMetrics(MetricRegistry metricRegistry) {
         metricRegistry.register(jvmMetricName("gc"), new GarbageCollectorMetricSet());
         metricRegistry.register(jvmMetricName("memory"), new MemoryUsageGaugeSet());
         metricRegistry.register(jvmMetricName("thread-states"), new ThreadStatesGaugeSet());
         metricRegistry.register(jvmMetricName("fd"), new FileDescriptorRatioGauge());
         metricRegistry.register(jvmMetricName("classloading"), new ClassLoadingGaugeSet());
-        return metricRegistry;
     }
 
     @Bean

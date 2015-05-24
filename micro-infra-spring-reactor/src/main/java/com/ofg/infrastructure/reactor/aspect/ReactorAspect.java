@@ -83,17 +83,16 @@ public class ReactorAspect {
 
     @Around("anySelectorAnnotatedMethod()")
     public Object wrapWithCorrelationId(final ProceedingJoinPoint pjp) throws Throwable {
-        Object eventArgument = findEventArgument(pjp.getArgs());
-        if (eventArgument == null) {
+        Event event = findEventArgument(pjp.getArgs());
+        if (event == null) {
             return pjp.proceed();
         }
 
-        Event event = (Event) eventArgument;
         final String correlationId = event.getHeaders().get(CORRELATION_ID_HEADER);
         return CorrelationIdUpdater.withId(correlationId, new Callable() {
             @Override
             public Object call() throws Exception {
-                log.debug("Set correlationId retrieved from event header to [" + correlationId + "]");
+                log.debug("Setting correlationId retrieved from event header to [{}]", correlationId);
                 try {
                     return pjp.proceed();
                 } catch (Throwable throwable) {
@@ -106,10 +105,10 @@ public class ReactorAspect {
         });
     }
 
-    private Object findEventArgument(Object[] args) {
+    private Event findEventArgument(Object[] args) {
         for (Object object : args) {
             if (object instanceof Event) {
-                return object;
+                return (Event) object;
             }
         }
         return null;

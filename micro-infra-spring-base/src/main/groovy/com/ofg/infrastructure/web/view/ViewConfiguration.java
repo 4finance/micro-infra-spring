@@ -1,12 +1,11 @@
 package com.ofg.infrastructure.web.view;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import groovy.transform.CompileStatic;
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.groovy.runtime.StringGroovyMethods;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -42,7 +41,7 @@ public class ViewConfiguration extends WebMvcConfigurationSupport {
     private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setPrettyPrint(prettyPrintingBasedOnProfile());
-        converter.getObjectMapper().setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        converter.getObjectMapper().setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
         configureJsonJacksonFeatures(converter);
         return converter;
     }
@@ -65,20 +64,16 @@ public class ViewConfiguration extends WebMvcConfigurationSupport {
                 String featureName = it.trim();
                 converter.getObjectMapper().configure(JsonParser.Feature.valueOf(featureName), featuresState);
             }
-
         }
-
     }
 
     private void configureGeneratorFeatures(String jsonFeaturesConfigProperty, MappingJackson2HttpMessageConverter converter, boolean featuresState) {
         String jsonJacksonFeatures = environment.getProperty(jsonFeaturesConfigProperty, String.class, "").trim();
-        if (StringGroovyMethods.asBoolean(jsonJacksonFeatures)) {
+        if (StringUtils.isNotBlank(jsonJacksonFeatures)) {
             for (String it : jsonJacksonFeatures.split(",")) {
                 String featureName = it.trim();
                 converter.getObjectMapper().configure(JsonGenerator.Feature.valueOf(featureName), featuresState);
             }
-
         }
-
     }
 }

@@ -5,7 +5,6 @@ import com.google.common.base.Optional;
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder;
 import com.ofg.infrastructure.correlationid.UuidGenerator;
 import groovy.transform.CompileStatic;
-import org.codehaus.groovy.runtime.StringGroovyMethods;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -41,8 +40,8 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
     private final UuidGenerator uuidGenerator;
 
     public CorrelationIdFilter() {
-        this.uuidGenerator = new UuidGenerator();
-        this.skipCorrId = Optional.absent();
+        uuidGenerator = new UuidGenerator();
+        skipCorrId = Optional.absent();
     }
 
     public CorrelationIdFilter(UuidGenerator uuidGenerator, Pattern skipCorrId) {
@@ -62,7 +61,7 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
 
     private void setupCorrelationId(HttpServletRequest request, HttpServletResponse response) {
         String correlationIdFromRequest = getCorrelationIdFrom(request);
-        String correlationId = (hasText(correlationIdFromRequest)) ? correlationIdFromRequest : getCorrelationIdFrom(response);
+        String correlationId = hasText(correlationIdFromRequest) ? correlationIdFromRequest : getCorrelationIdFrom(response);
         if (!hasText(correlationId) && shouldGenerateCorrId(request)) {
             correlationId = createNewCorrIdIfEmpty();
         }
@@ -92,7 +91,7 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
         String correlationId = tryToGetCorrelationId(correlationIdGetter);
         if (hasText(correlationId)) {
             MDC.put(CORRELATION_ID_HEADER, correlationId);
-            log.debug("Found correlationId in " + whereWasFound + ": " + correlationId);
+            log.debug("Found correlationId in {}: {}", whereWasFound, correlationId);
         }
         return correlationId;
     }
@@ -109,13 +108,12 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
     private String createNewCorrIdIfEmpty() {
         String currentCorrId = uuidGenerator.create();
         MDC.put(CORRELATION_ID_HEADER, currentCorrId);
-        log.debug("Generating new correlationId: " + currentCorrId);
+        log.debug("Generating new correlationId: {}", currentCorrId);
         return currentCorrId;
     }
 
     protected boolean shouldGenerateCorrId(HttpServletRequest request) {
-        final String i = request.getRequestURI();
-        final String uri = StringGroovyMethods.asBoolean(i) ? i : "";
+        final String uri = request.getRequestURI();
         boolean skip = skipCorrId.transform(new Function<Pattern, Boolean>() {
             public Boolean apply(Pattern skipPattern) {
                 return skipPattern.matcher(uri).matches();

@@ -11,7 +11,6 @@ import groovy.util.logging.Slf4j
 
 import static org.apache.commons.lang.StringUtils.isNotBlank
 
-
 /**
  * Core class that executes the StubRunner functionality
  */
@@ -19,8 +18,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank
 @CompileStatic
 class StubRunner implements StubRunning {
 
-    private static final ThreadLocal<StubRunnerExecutor> stubRunnerContainer = new ThreadLocal<>()
-
+    private StubRunnerExecutor localStubRunner
     private final Arguments arguments
     private final StubRegistry stubRegistry
     private final StubRepository stubRepository
@@ -47,15 +45,14 @@ class StubRunner implements StubRunning {
         zookeeperServer.start()
         AvailablePortScanner portScanner = new AvailablePortScanner(arguments.stubRunnerOptions.minPortValue, arguments.stubRunnerOptions.maxPortValue)
         Collection<ProjectMetadata> projects = arguments.projects
-        StubRunnerExecutor localStubRunner = new StubRunnerExecutor(portScanner, stubRegistry)
-        stubRunnerContainer.set(localStubRunner)
+        localStubRunner = new StubRunnerExecutor(portScanner, stubRegistry)
         registerShutdownHook()
         localStubRunner.runStubs(stubRepository, projects)
     }
 
     @Override
     Optional<URL> findStubUrlByRelativePath(String relativePath) {
-        return stubRunnerContainer.get().getStubUrlByRelativePath(relativePath)
+        return localStubRunner.getStubUrlByRelativePath(relativePath)
     }
 
     private void registerShutdownHook() {
@@ -66,6 +63,6 @@ class StubRunner implements StubRunning {
     @Override
     void close() throws IOException {
         zookeeperServer.shutdown()
-        stubRunnerContainer.get()?.shutdown()
+        localStubRunner?.shutdown()
     }
 }

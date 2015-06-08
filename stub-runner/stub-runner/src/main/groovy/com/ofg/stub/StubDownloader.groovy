@@ -43,7 +43,7 @@ class StubDownloader {
     private File unpackStubJarToATemporaryFolder(URI stubJarUri) {
         File tmpDirWhereStubsWillBeUnzipped = createTempDirectory(STUB_RUNNER_TEMP_DIR_PREFIX).toFile()
         tmpDirWhereStubsWillBeUnzipped.deleteOnExit()
-        log.debug("Unpacking stub from JAR [URI: ${stubJarUri}]")
+        log.info("Unpacking stub from JAR [URI: ${stubJarUri}]")
         use(ZipCategory) {
             new File(stubJarUri).unzipTo(tmpDirWhereStubsWillBeUnzipped)
         }
@@ -110,7 +110,7 @@ class StubDownloader {
         }
 
         private void failureHandler(String stubRepository, String reason, Exception cause) {
-            log.error("Unable to resolve dependency in stub repository [$stubRepository]. Reason: [$reason]", cause)
+            log.warn("Unable to resolve dependency in stub repository [$stubRepository]. Reason: [$reason]", cause)
         }
 
     }

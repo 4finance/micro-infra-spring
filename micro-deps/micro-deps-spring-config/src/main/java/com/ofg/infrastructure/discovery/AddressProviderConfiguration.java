@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.util.SocketUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -25,20 +24,10 @@ public class AddressProviderConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(lookup().lookupClass());
 
-    static final int RANDOM_FREE_PORT = -1;
-    static final int DEFAULT_SERVER_PORT = RANDOM_FREE_PORT;
+    static final Integer DEFAULT_SERVER_PORT = 8080;
+    @Autowired private Environment environment;
 
-    @Autowired
-    private Environment environment;
-
-    @Bean
-    public MicroserviceAddressProvider microserviceAddressProvider(
-            @Value("${microservice.host:#{T(com.ofg.infrastructure.discovery.AddressProviderConfiguration).resolveMicroserviceLocalhost()}}") String microserviceHost,
-            @Value("${microservice.port:#{T(com.ofg.infrastructure.discovery.AddressProviderConfiguration).resolveMicroservicePort(@environment)}}") int microservicePort) {
-        if (microservicePort == RANDOM_FREE_PORT) {
-            microservicePort = SocketUtils.findAvailableTcpPort();
-            log.info("Microservice available port: {}", microservicePort);
-        }
+    @Bean MicroserviceAddressProvider microserviceAddressProvider(@Value("${microservice.host:#{T(com.ofg.infrastructure.discovery.AddressProviderConfiguration).resolveMicroserviceLocalhost()}}") String microserviceHost, @Value("${microservice.port:#{T(com.ofg.infrastructure.discovery.AddressProviderConfiguration).resolveMicroservicePort(@environment)}}") int microservicePort) {
         return new MicroserviceAddressProvider(microserviceHost, microservicePort);
     }
 

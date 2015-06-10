@@ -33,13 +33,13 @@ class ServiceResolverConfigurationSpec extends Specification {
             System.setProperty('port', previousProp ?: '')
     }
     
-    def "should resolve microservice port to random value greater than 1024 when there is no system prop nor environment prop"() {
+    def "should resolve microservice port to default value when there is no system prop nor environment prop"() {
         given:
             String previousProp = System.setProperty('port', '')
         when:
             ApplicationContext applicationContext = new AnnotationConfigApplicationContext(PropertySourceConfiguration, AddressProviderConfiguration)
         then:
-            applicationContext.getBean(MicroserviceAddressProvider).port > 1024
+            applicationContext.getBean(MicroserviceAddressProvider).port == 8080
         cleanup:
             System.setProperty('port', previousProp ?: '')
     }    

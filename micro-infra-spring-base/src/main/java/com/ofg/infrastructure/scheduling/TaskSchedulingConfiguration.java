@@ -7,17 +7,15 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * Registers beans related to task scheduling.
- *
- * @see ScheduledTaskWithCorrelationIdAspect
+ * Registers {@link ScheduledTaskWithCorrelationIdAspect}
  */
 @Configuration
 @EnableScheduling
 @EnableAspectJAutoProxy
 public class TaskSchedulingConfiguration {
+
     @Bean
     public ScheduledTaskWithCorrelationIdAspect scheduledTaskPointcut(UuidGenerator uuidGenerator) {
         return new ScheduledTaskWithCorrelationIdAspect(uuidGenerator);
     }
-
 }

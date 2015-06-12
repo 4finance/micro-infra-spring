@@ -9,17 +9,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.lang.invoke.MethodHandles;
 import java.util.concurrent.Callable;
 
 /**
- * Aspect that sets correlationId for running threads executing methods annotated with {@link Scheduled} annotation.
- * For every execution of scheduled method a new, i.e. unique one, value of correlationId will be set.
+ * Aspect that sets correlationId for executions of methods annotated with {@link Scheduled} annotation.
  */
 @Aspect
 public class ScheduledTaskWithCorrelationIdAspect {
 
-    private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger log = LoggerFactory.getLogger(ScheduledTaskWithCorrelationIdAspect.class);
 
     private final UuidGenerator uuidGenerator;
 
@@ -36,7 +34,7 @@ public class ScheduledTaskWithCorrelationIdAspect {
                 try {
                     return pjp.proceed();
                 } catch (Throwable throwable) {
-                    log.error("Didn't manage to proceed with the pointcut", throwable);
+                    log.error("Failed to proceed with the next advice or target method invocation", throwable);
                     throw new RuntimeException(throwable);
                 }
             }

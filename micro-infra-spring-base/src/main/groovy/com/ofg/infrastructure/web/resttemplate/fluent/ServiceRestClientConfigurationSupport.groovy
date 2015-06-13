@@ -9,6 +9,7 @@ import com.ofg.infrastructure.web.resttemplate.MetricsAspect
 import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import com.ofg.infrastructure.web.resttemplate.fluent.config.RestClientConfigurer
 import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.http.client.BufferingClientHttpRequestFactory
@@ -26,17 +27,30 @@ import java.util.concurrent.ThreadFactory
  *
  * @since 0.8.17
  */
+@Slf4j
 @CompileStatic
 class ServiceRestClientConfigurationSupport {
 
+    private static final int DEFAULT_RETRY_THREADS = 10
+
     @Value('${rest.client.connectionTimeout:-1}')
     int connectionTimeoutMillis
+
     @Value('${rest.client.readTimeout:-1}')
     int readTimeoutMillis
+
     @Value('${rest.client.maxLogResponseChars:4096}')
     int maxLogResponseChars
-    @Value('${retry.threads:10}')
-    int retryPoolThreads
+
+    /**
+     * @deprecated use {@code rest.client.retry.threads} instead
+     */
+    @Deprecated
+    @Value('${retry.threads:}')
+    Integer deprecatedRetryPoolThreads
+
+    @Value('${rest.client.retry.threads:}')
+    Integer retryPoolThreads
 
     private RestClientConfigurer configurer
 
@@ -84,7 +98,19 @@ class ServiceRestClientConfigurationSupport {
     }
 
     private ScheduledExecutorService retryExecutorService() {
-        return Executors.newScheduledThreadPool(retryPoolThreads, retryThreadFactory())
+        return Executors.newScheduledThreadPool(retryPoolSize(), retryThreadFactory())
+    }
+
+    private int retryPoolSize() {
+        int poolSize = DEFAULT_RETRY_THREADS
+        if (deprecatedRetryPoolThreads != null) {
+            log.warn('retry.threads is deprecated, use rest.client.retry.threads instead')
+            poolSize = deprecatedRetryPoolThreads
+        }
+        if (retryPoolThreads != null) {
+            poolSize = retryPoolThreads
+        }
+        return poolSize
     }
 
     private ThreadFactory retryThreadFactory() {

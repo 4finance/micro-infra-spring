@@ -35,27 +35,6 @@ class CorrelationIdUpdater {
      * Temporarily updates correlation ID inside block of code.
      * Makes sure previous ID is restored after block's execution
      *
-     * Deprecated - please use {@link CorrelationIdUpdater#withId(java.lang.String, java.util.concurrent.Callable)}
-     *
-     * @param temporaryCorrelationId
-     * @param block Closure to be executed with new ID
-     * @return
-     */
-    @Deprecated
-    static <T> T withId(String temporaryCorrelationId, Closure<T> block) {
-        final String oldCorrelationId = CorrelationIdHolder.get()
-        try {
-            updateCorrelationId(temporaryCorrelationId)
-            return block()
-        } finally {
-            updateCorrelationId(oldCorrelationId)
-        }
-    }
-
-    /**
-     * Temporarily updates correlation ID inside block of code.
-     * Makes sure previous ID is restored after block's execution
-     *
      * @param temporaryCorrelationId
      * @param block Closure to be executed with new ID
      * @return

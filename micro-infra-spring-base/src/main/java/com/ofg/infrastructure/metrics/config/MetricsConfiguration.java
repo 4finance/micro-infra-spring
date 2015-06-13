@@ -12,11 +12,11 @@ import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
 import com.netflix.hystrix.contrib.codahalemetricspublisher.HystrixCodaHaleMetricsPublisher;
 import com.netflix.hystrix.strategy.HystrixPlugins;
+import com.ofg.infrastructure.metrics.publishing.EnvironmentAwareMetricsBasePath;
 import com.ofg.infrastructure.metrics.publishing.GraphitePublisher;
 import com.ofg.infrastructure.metrics.publishing.JmxPublisher;
+import com.ofg.infrastructure.metrics.publishing.MetricsBasePath;
 import com.ofg.infrastructure.metrics.publishing.PublishingInterval;
-import com.ofg.infrastructure.metrics.registry.MetricPathProvider;
-import com.ofg.infrastructure.metrics.registry.PathPrependingMetricRegistry;
 import groovy.util.logging.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,8 +46,8 @@ import static org.springframework.util.StringUtils.isEmpty;
  * @see JmxPublisher
  * @see Graphite
  * @see GraphitePublisher
- * @see MetricPathProvider
  * @see MetricRegistry
+ * @see EnvironmentAwareMetricsBasePath
  */
 @Configuration
 @Slf4j
@@ -82,28 +82,30 @@ public class MetricsConfiguration {
         }
     }
 
+    @Bean
+    @Profile(PRODUCTION)
+    public MetricsBasePath metricsBasePath(@Value("${metrics.path.root:apps}") String rootName,
+                                           @Value("${metrics.path.environment:test}") String environment,
+                                           @Value("${metrics.path.country:pl}") String country,
+                                           @Value("${metrics.path.app:service-name}") String appName,
+                                           @Value("${metrics.path.node:#{T(com.ofg.infrastructure.metrics.config.MetricsConfiguration).resolveLocalHostName()}}") String node) {
+        return new EnvironmentAwareMetricsBasePath(rootName, environment, country, appName, node);
+    }
+
     @Bean(initMethod = "start", destroyMethod = "stop")
     @Profile(PRODUCTION)
     @Conditional(IsGraphitePublishingEnabled.class)
     public GraphitePublisher graphitePublisher(GraphiteSender graphite,
                                                MetricRegistry metricRegistry,
-                                               @Value("${graphite.publishing.interval:15000}") long publishingIntervalInMs) {
+                                               @Value("${graphite.publishing.interval:15000}") long publishingIntervalInMs,
+                                               MetricsBasePath metricsBasePath) {
         PublishingInterval publishingInterval = new PublishingInterval(publishingIntervalInMs, MILLISECONDS);
-        return new GraphitePublisher(graphite, publishingInterval, metricRegistry, MINUTES, MILLISECONDS);
+        return new GraphitePublisher(graphite, publishingInterval, metricRegistry, MINUTES, MILLISECONDS, metricsBasePath);
     }
 
     @Bean
-    public MetricPathProvider metricPathProvider(@Value("${metrics.path.root:apps}") String rootName,
-                                                 @Value("${metrics.path.environment:test}") String environment,
-                                                 @Value("${metrics.path.country:pl}") String country,
-                                                 @Value("${metrics.path.app:service-name}") String appName,
-                                                 @Value("${metrics.path.node:#{T(com.ofg.infrastructure.metrics.config.MetricsConfiguration).resolveLocalHostName()}}") String node) {
-        return new MetricPathProvider(rootName, environment, country, appName, node);
-    }
-
-    @Bean
-    public MetricRegistry metricRegistry(MetricPathProvider metricPathProvider, @Value("${metrics.jvm.enabled:true}") boolean registerJvmMetrics) {
-        MetricRegistry metricRegistry = new PathPrependingMetricRegistry(metricPathProvider);
+    public MetricRegistry metricRegistry(@Value("${metrics.jvm.enabled:true}") boolean registerJvmMetrics) {
+        MetricRegistry metricRegistry = new MetricRegistry();
         if (registerJvmMetrics) {
             registerJvmMetrics(metricRegistry);
         }

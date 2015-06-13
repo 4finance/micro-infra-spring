@@ -31,6 +31,11 @@ public class GraphitePublisher implements MetricsPublishing {
     }
 
     public GraphitePublisher(GraphiteSender graphite, PublishingInterval publishingInterval, MetricRegistry metricRegistry,
+                             TimeUnit reportedRatesTimeUnit, TimeUnit reportedDurationsTimeUnit, MetricsBasePath metricsBasePath) {
+        this(graphite, publishingInterval, metricRegistry, reportedRatesTimeUnit, reportedDurationsTimeUnit, MetricFilter.ALL, metricsBasePath.getPath());
+    }
+
+    public GraphitePublisher(GraphiteSender graphite, PublishingInterval publishingInterval, MetricRegistry metricRegistry,
                              TimeUnit reportedRatesTimeUnit, TimeUnit reportedDurationsTimeUnit, MetricFilter metricFilter, String metricsPrefix) {
         graphiteReporter = GraphiteReporter
                 .forRegistry(metricRegistry)
@@ -51,5 +56,4 @@ public class GraphitePublisher implements MetricsPublishing {
     public void stop() {
         graphiteReporter.stop();
     }
-
 }

@@ -13,10 +13,10 @@ import java.util.Set;
  */
 public interface ServiceResolver extends AutoCloseable {
     /**
-     * Translates from {@link com.ofg.infrastructure.discovery.ServiceAlias} to {@link com.ofg.infrastructure.discovery.ServicePath}.
+     * Translates from {@link ServiceAlias} to {@link ServicePath}.
      * For convenience fully qualified hierarchical service names are aliased in microservice.json. This method allows
      * translating from alias to full, globally unique name.
-     * NB: This method will only work for dependencies declared in <code>microservice.json</code> since aliases
+     * NB: This method will only work for dependencies declared in {@code microservice.json} since aliases
      * are declared only there, locally.
      *
      * @param alias Symbolic name of one of our collaborators, as found in microservice.json
@@ -33,13 +33,13 @@ public interface ServiceResolver extends AutoCloseable {
     Optional<URI> getUri(ServicePath service);
 
     /**
-     * Same as {@link com.ofg.infrastructure.discovery.ServiceResolver#getUri(ServicePath)} but fails if no instance is available.
+     * Same as {@link ServiceResolver#getUri(ServicePath)} but fails if no instance is available.
      *
      * @param service - path to microservice
      * @return address of the microservice
-     * @throws com.ofg.infrastructure.discovery.ServiceUnavailableException - if microservice is unavailable
+     * @throws ServiceUnavailableException - if microservice is unavailable
      */
-    URI fetchUri(ServicePath service) throws ServiceUnavailableException;
+    URI fetchUri(ServicePath service);
 
     /**
      * Returns all existing instances of arbitrary running service.
@@ -50,7 +50,7 @@ public interface ServiceResolver extends AutoCloseable {
 
     /**
      * Returns names of microservices this service depends on.
-     * Use e.g. {@link com.ofg.infrastructure.discovery.ServiceResolver#fetchAllUris(ServicePath)} to fetch physical addresses
+     * Use e.g. {@link ServiceResolver#fetchAllUris(ServicePath)} to fetch physical addresses
      * of each and every microservice (path).
      *
      * @return map from name (alias) to path in registry
@@ -60,7 +60,7 @@ public interface ServiceResolver extends AutoCloseable {
     /**
      * Returns symbolic names (paths) of all services existing in service registry.
      *
-     * @see {@link com.ofg.infrastructure.discovery.ServiceResolver#fetchMyDependencies()} to get only our dependencies, not all in system.
+     * @see {@link ServiceResolver#fetchMyDependencies()} to get only your dependencies, not all in system.
      */
     Set<ServicePath> fetchAllDependencies();
 
@@ -79,11 +79,11 @@ public interface ServiceResolver extends AutoCloseable {
      *
      * @param service - alias from microservice configuration {@see ServiceConfigurationResolver}
      * @return address of the microservice
-     * @throws com.ofg.infrastructure.discovery.ServiceUnavailableException - if microservice is unavailable
+     * @throws ServiceUnavailableException - if microservice is unavailable
      * @deprecated Use {@link #fetchUri(ServicePath)}
      */
     @Deprecated
-    String fetchUrl(String service) throws ServiceUnavailableException;
+    String fetchUrl(String service);
 
     /**
      * Returns names of microservices this service depends on

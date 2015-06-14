@@ -5,7 +5,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
- * Alias to service as used e.g. in <code>ServiceRestClient</code>
+ * Alias to service as used e.g. in {@code ServiceRestClient}
  * You can translate from alias to path using {@link ServiceResolver#resolveAlias(ServiceAlias)}.
  */
 public class ServiceAlias {

@@ -68,8 +68,8 @@ import java.util.concurrent.Callable;
  * .ignoringResponseAsync()
  * </pre>
  * <p/>
- * If you are using retry mechanism, another features is enabled - asynchronous invocation. By appending <code>Async</code>
- * to last method you will get <code>ListenableFuture</code> instance. This way you can easily run multiple requests
+ * If you are using retry mechanism, another features is enabled - asynchronous invocation. By appending {@code Async}
+ * to last method you will get {@code ListenableFuture} instance. This way you can easily run multiple requests
  * concurrently, combine them, etc.
  * @see <a href="https://github.com/nurkiewicz/async-retry">async-retry</a>
  */

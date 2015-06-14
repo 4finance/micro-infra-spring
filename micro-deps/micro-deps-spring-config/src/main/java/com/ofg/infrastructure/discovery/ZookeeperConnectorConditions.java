@@ -16,8 +16,8 @@ import static com.ofg.config.BasicProfiles.PRODUCTION;
  * When {@link BasicProfiles#PRODUCTION} profile is active, standalone connector will be created.
  * When {@link BasicProfiles#DEVELOPMENT} or {@link BasicProfiles#TEST} is active, in-memory connector will be created.
  * <p/>
- * <p>Behavior can be overridden via system property <code>zookeeper.standalone.enabled</code>. When this property is present,
- * a production connector will be created despite the active Spring profile.
+ * <p>Behavior can be overridden via system property {@code zookeeper.standalone.enabled}. When this property is present,
+ * a standalone connector will be created despite the active Spring profile.
  */
 public class ZookeeperConnectorConditions {
     public static class StandaloneZookeeperCondition implements Condition {

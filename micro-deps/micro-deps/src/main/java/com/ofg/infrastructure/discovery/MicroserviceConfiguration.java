@@ -1,18 +1,19 @@
 package com.ofg.infrastructure.discovery;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.ofg.infrastructure.discovery.util.CollectionUtils;
 import com.ofg.infrastructure.discovery.util.LoadBalancerType;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import static com.ofg.infrastructure.discovery.util.LoadBalancerType.ROUND_ROBIN;
 
 public class MicroserviceConfiguration {
     private final ServicePath servicePath;
@@ -20,12 +21,11 @@ public class MicroserviceConfiguration {
 
     public MicroserviceConfiguration(ServicePath servicePath, List<Dependency> dependencies) {
         this.servicePath = servicePath;
-        this.dependencies = dependencies;
+        this.dependencies = ImmutableList.copyOf(dependencies);
     }
 
     public MicroserviceConfiguration(ServicePath servicePath) {
-        this.servicePath = servicePath;
-        this.dependencies = new ArrayList<>();
+        this(servicePath, Collections.<Dependency>emptyList());
     }
 
     public Dependency getDependencyForName(String serviceName) {
@@ -66,17 +66,11 @@ public class MicroserviceConfiguration {
             this.loadBalancerType = loadBalancerType;
             this.contentTypeTemplate = contentTypeTemplate;
             this.version = version;
-            this.headers = headers;
+            this.headers = ImmutableMap.copyOf(headers);
         }
 
         public Dependency(ServiceAlias serviceAlias, ServicePath servicePath) {
-            this.serviceAlias = serviceAlias;
-            this.servicePath = servicePath;
-            this.required = false;
-            this.loadBalancerType = LoadBalancerType.ROUND_ROBIN;
-            this.contentTypeTemplate = StringUtils.EMPTY;
-            this.version = StringUtils.EMPTY;
-            this.headers = new HashMap<>();
+            this(serviceAlias, servicePath, false, ROUND_ROBIN, "", "", Collections.<String, String>emptyMap());
         }
 
         @Override
@@ -102,10 +96,6 @@ public class MicroserviceConfiguration {
             return servicePath;
         }
 
-        public boolean getRequired() {
-            return required;
-        }
-
         public boolean isRequired() {
             return required;
         }
@@ -125,8 +115,8 @@ public class MicroserviceConfiguration {
         public Map<String, String> getHeaders() {
             return headers;
         }
-
     }
+
     @Override
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);

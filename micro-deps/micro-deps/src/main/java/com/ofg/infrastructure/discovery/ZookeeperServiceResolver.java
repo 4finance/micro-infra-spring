@@ -53,7 +53,6 @@ public class ZookeeperServiceResolver implements ServiceResolver {
                 Throwables.propagate(e);
             }
         }
-
     }
 
     @Override
@@ -63,10 +62,10 @@ public class ZookeeperServiceResolver implements ServiceResolver {
             public boolean apply(MicroserviceConfiguration.Dependency input) {
                 return input.getServiceAlias().equals(alias);
             }
-
         });
-        if (dependencyConfig == null)
+        if (dependencyConfig == null) {
             throw new NoSuchElementException(alias.getName() + " is not our dependency, available: " + String.valueOf(serviceConfigurationResolver.getDependencies()));
+        }
         return dependencyConfig.getServicePath();
     }
 
@@ -88,7 +87,6 @@ public class ZookeeperServiceResolver implements ServiceResolver {
             public URI apply(ServiceInstance input) {
                 return URI.create(input.buildUriSpec());
             }
-
         });
         return CollectionUtils.toSet(uris);
     }
@@ -111,7 +109,6 @@ public class ZookeeperServiceResolver implements ServiceResolver {
         } else {
             throw new ServiceUnavailableException(service.getPath());
         }
-
     }
 
     @Override
@@ -121,7 +118,6 @@ public class ZookeeperServiceResolver implements ServiceResolver {
             public ServicePath apply(MicroserviceConfiguration.Dependency input) {
                 return input.getServicePath();
             }
-
         }));
     }
 
@@ -137,24 +133,12 @@ public class ZookeeperServiceResolver implements ServiceResolver {
             public String apply(URI input) {
                 return input.toString();
             }
-
         });
     }
 
     @Override
     public String fetchUrl(String service) throws ServiceUnavailableException {
         return fetchUri(toPath(service)).toString();
-    }
-
-    @Override
-    public Set<String> fetchCollaboratorsNames() {
-        return CollectionUtils.toSet(Collections2.transform(serviceConfigurationResolver.getDependencies(), new Function<MicroserviceConfiguration.Dependency, String>() {
-            @Override
-            public String apply(MicroserviceConfiguration.Dependency input) {
-                return input.getServiceAlias().getName();
-            }
-
-        }));
     }
 
     private ServicePath toPath(String service) {
@@ -189,7 +173,6 @@ public class ZookeeperServiceResolver implements ServiceResolver {
             //ignored, not a service
             return false;
         }
-
     }
 
     private String stripBasePath(String path) {
@@ -221,7 +204,6 @@ public class ZookeeperServiceResolver implements ServiceResolver {
                     Throwables.propagate(e);
                 }
             }
-
         }
         return serviceProvider;
     }

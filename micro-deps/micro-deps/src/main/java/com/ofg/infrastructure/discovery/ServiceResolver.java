@@ -86,15 +86,6 @@ public interface ServiceResolver extends AutoCloseable {
     String fetchUrl(String service);
 
     /**
-     * Returns names of microservices this service depends on
-     *
-     * @return names of microservices
-     * @deprecated Use {@link #fetchMyDependencies()}
-     */
-    @Deprecated
-    Set<String> fetchCollaboratorsNames();
-
-    /**
      * Start service resolver (e.g. start all service providers)
      */
     void start();

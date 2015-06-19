@@ -236,17 +236,4 @@ class MicroDepsServiceSpec extends Specification {
         then:
             url == 'http://micro-a:8876/api'
     }
-
-    def 'should return all URLs of my collaborators'() {
-        given:
-            new MicroDepsService(server.connectString, "api", "micro-a", 8876, MICRO_A).start()
-            MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B).start()
-
-        when:
-            Set<String> names = service.serviceResolver.fetchCollaboratorsNames()
-
-        then:
-            names == ['microA'].toSet()
-    }
-
 }

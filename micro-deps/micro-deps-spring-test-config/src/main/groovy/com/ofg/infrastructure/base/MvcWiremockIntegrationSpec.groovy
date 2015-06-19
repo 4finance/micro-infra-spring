@@ -34,8 +34,20 @@ abstract class MvcWiremockIntegrationSpec extends MvcIntegrationSpec {
     protected WireMock wireMock
     
     void setup() {
-        wireMock = new WireMock('localhost', httpMockServer.port())
+        wireMock = new WireMock(wireMockHost, wireMockPort)
         wireMock.resetToDefaultMappings()
+    }
+
+    protected String getWireMockUrl() {
+        return "http://$wireMockHost:$wireMockPort"
+    }
+
+    protected String getWireMockHost() {
+        return 'localhost'
+    }
+
+    protected int getWireMockPort() {
+        return httpMockServer.port()
     }
 
     protected void stubInteraction(MappingBuilder mapping, ResponseDefinitionBuilder response) {

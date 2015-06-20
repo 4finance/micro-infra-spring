@@ -65,7 +65,7 @@ class StubDownloader {
     }
 
     private DependencyResolver buildResolver(boolean skipLocalRepo) {
-        return skipLocalRepo ? new RemoteDependencyResolver() : new LocalFirstDependencyResolver()
+        return skipLocalRepo ? new RemoteDependencyResolver() : new LocalOnlyDependencyResolver()
     }
 
     private void initializeMicroInfraGrapeIfAbsent(String microInfraGrapePath) {
@@ -122,9 +122,7 @@ class StubDownloader {
      * @see RemoteDependencyResolver
      */
     @Slf4j
-    private class LocalFirstDependencyResolver extends DependencyResolver {
-
-        private DependencyResolver delegate = new RemoteDependencyResolver()
+    private class LocalOnlyDependencyResolver extends DependencyResolver {
 
         URI resolveDependency(String stubRepositoryRoot, Map depToGrab) {
             try {
@@ -133,7 +131,7 @@ class StubDownloader {
             } catch (Exception e) { //Grape throws ordinary RuntimeException
                 log.warn("Unable to find dependency $depToGrab in local repository, trying $stubRepositoryRoot")
                 log.debug("Unable to find dependency $depToGrab in local repository: ${e.getClass()}: ${e.message}")
-                return delegate.resolveDependency(stubRepositoryRoot, depToGrab)
+                return null
             }
         }
     }

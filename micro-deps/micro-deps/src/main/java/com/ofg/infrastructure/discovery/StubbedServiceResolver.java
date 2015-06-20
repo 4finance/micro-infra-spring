@@ -2,7 +2,6 @@ package com.ofg.infrastructure.discovery;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.collect.Collections2;
 import com.ofg.infrastructure.discovery.util.CollectionUtils;
 
 import java.net.URI;
@@ -86,17 +85,6 @@ public class StubbedServiceResolver implements ServiceResolver {
 
     private Optional<URI> getUriByName(String service) {
         return getUri(new ServicePath(service));
-    }
-
-    @Override
-    public Set<String> fetchCollaboratorsNames() {
-        return CollectionUtils.toSet(Collections2.transform(fetchMyDependencies(), new Function<ServicePath, String>() {
-            @Override
-            public String apply(ServicePath input) {
-                return input.toString();
-            }
-
-        }));
     }
 
     @Override

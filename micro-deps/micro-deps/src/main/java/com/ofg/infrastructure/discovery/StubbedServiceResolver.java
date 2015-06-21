@@ -1,6 +1,5 @@
 package com.ofg.infrastructure.discovery;
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.ofg.infrastructure.discovery.util.CollectionUtils;
 
@@ -69,22 +68,13 @@ public class StubbedServiceResolver implements ServiceResolver {
     }
 
     @Override
-    public Optional<String> getUrl(String service) {
-        return getUriByName(service).transform(new Function<URI, String>() {
-            @Override
-            public String apply(URI input) {
-                return input.toString();
-            }
-        });
+    public Optional<URI> getUri(ServiceAlias serviceAlias) {
+        return getUri(resolveAlias(serviceAlias));
     }
 
     @Override
-    public String fetchUrl(String service) throws ServiceUnavailableException {
-        return getUriByName(service).get().toString();
-    }
-
-    private Optional<URI> getUriByName(String service) {
-        return getUri(new ServicePath(service));
+    public URI fetchUri(ServiceAlias serviceAlias) {
+        return fetchUri(resolveAlias(serviceAlias));
     }
 
     @Override

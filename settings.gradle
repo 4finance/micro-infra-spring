@@ -14,3 +14,7 @@ include ':micro-deps:micro-deps-spring-config'
 include ':micro-deps:micro-deps-spring-test-config'
 
 rootProject.name = 'micro-infra-spring-root'
+
+//to prevent StackOverflow in Sonar
+project(":micro-deps").name = "micro-deps-root"
+project(":stub-runner").name = "stub-runner-root"

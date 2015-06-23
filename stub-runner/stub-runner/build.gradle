@@ -3,7 +3,7 @@ description = 'Runs stubs for service collaborators'
 apply plugin: 'application'
 
 dependencies {
-    compile project(':micro-deps:micro-deps')
+    compile project(':micro-deps-root:micro-deps')
     compile 'org.apache.ivy:ivy:2.4.0'
     compile 'org.codehaus.groovy:groovy-all'
     compile('com.github.tomakehurst:wiremock') {

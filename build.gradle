@@ -187,6 +187,12 @@ if (project.hasProperty("coverage")) {
     apply plugin: 'com.github.kt3k.coveralls'
     apply plugin: 'org.sonarqube'
 
+    sonarqube {
+        properties {
+            property "sonar.projectName", "micro-infra-spring"
+        }
+    }
+
     configure(srcSubprojects) {
         jacocoTestReport {
             reports {

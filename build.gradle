@@ -5,13 +5,17 @@ buildscript {
     repositories {
         mavenLocal()
         jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }  //for sonarqube plugin
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
         classpath 'com.ofg:uptodate-gradle-plugin:+'
         classpath "com.ofg:micro-common-release:0.1.18"
         classpath "io.spring.gradle:dependency-management-plugin:0.2.1.RELEASE"
-        if (project.hasProperty("coverage")) { classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+' }
+        if (project.hasProperty("coverage")) {
+            classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+'
+            classpath "org.sonarqube.gradle:gradle-sonarqube-plugin:1.0"
+        }
         if (project.hasProperty("compatibility")) { classpath "be.insaneprogramming.gradle:animalsniffer-gradle-plugin:+" }
     }
     dependencies {
@@ -33,7 +37,7 @@ allprojects {
     project.version = scmVersion.version
 }
 
-Set emptySubprojects = [project(':swagger'), project(':micro-deps'), project(':stub-runner')]
+Set emptySubprojects = [project(':swagger'), project(':micro-deps-root'), project(':stub-runner-root')]
 Set srcSubprojects = subprojects - emptySubprojects
 
 configure(srcSubprojects) {
@@ -180,6 +184,15 @@ if (project.hasProperty("coverage")) {
         }
     }
 
+    apply plugin: 'com.github.kt3k.coveralls'
+    apply plugin: 'org.sonarqube'
+
+    sonarqube {
+        properties {
+            property "sonar.projectName", "micro-infra-spring"
+        }
+    }
+
     configure(srcSubprojects) {
         jacocoTestReport {
             reports {
@@ -192,9 +205,13 @@ if (project.hasProperty("coverage")) {
                 excludes = ['*Configuration']
             }
         }
-    }
 
-    apply plugin: 'com.github.kt3k.coveralls'
+        sonarqube {
+            properties {
+                property "sonar.groovy.jacoco.reportPath", "$buildDir/jacoco/test.exec"     //TODO: Could be taken from JaCoCo extension directly
+            }
+        }
+    }
 
     coveralls {
         sourceDirs = files(srcSubprojects.sourceSets.main.allSource.srcDirs).files.absolutePath

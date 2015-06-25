@@ -6,7 +6,7 @@ subprojects {
     }
 }
 
-project(':micro-deps:micro-deps') {
+project(':micro-deps-root:micro-deps') {
     description = 'Microservice dependency manager'
 
     dependencies {
@@ -22,15 +22,15 @@ project(':micro-deps:micro-deps') {
     }
 }
 
-project(':micro-deps:micro-deps-spring-config') {
+project(':micro-deps-root:micro-deps-spring-config') {
     description = 'Microservice dependency manager - default Spring configuration'
 
     sourceSets.main.java.srcDirs = []
     sourceSets.main.groovy.srcDirs += ["src/main/java", "src/main/groovy"]
 
     dependencies {
-        compile project(':micro-deps:micro-deps')
-        compile(project(':stub-runner:stub-runner-spring')) {
+        compile project(':micro-deps-root:micro-deps')
+        compile(project(':stub-runner-root:stub-runner-spring')) {
             exclude group: "org.slf4j", module: "log4j-over-slf4j"
         }
         compile "org.springframework:spring-context"
@@ -45,14 +45,14 @@ project(':micro-deps:micro-deps-spring-config') {
     }
 }
 
-project(':micro-deps:micro-deps-spring-test-config') {
+project(':micro-deps-root:micro-deps-spring-test-config') {
     description = 'Microservice dependency manager - Spring test configuration'
 
     ext {
         spock07Version = "0.7-groovy-2.0"
     }
     dependencies {
-        compile project(':micro-deps:micro-deps-spring-config')
+        compile project(':micro-deps-root:micro-deps-spring-config')
         compile 'org.codehaus.groovy:groovy-all'
         compile 'cglib:cglib-nodep:3.1'
         compile 'org.objenesis:objenesis:2.1'

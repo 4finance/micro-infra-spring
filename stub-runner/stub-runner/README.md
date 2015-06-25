@@ -92,13 +92,13 @@ after switching it on stub-runner will wait default 30 second for service regist
 You can configure the stub runner by either passing the full arguments list with the `-Pargs` like this:
 
 ```
-./gradlew stub-runner:stub-runner:run -Pargs="-c pl -minp 10000 -maxp 10005 -n com/ofg/twitter-places-analyzer -sr http://dl.bintray.com/4finance/micro -zl localhost:2181 -s"
+./gradlew stub-runner-root:stub-runner:run -Pargs="-c pl -minp 10000 -maxp 10005 -n com/ofg/twitter-places-analyzer -sr http://dl.bintray.com/4finance/micro -zl localhost:2181 -s"
 ```
 
 or each parameter separately with a `-P` prefix and without the hyphen `-` in the name of the param
 
 ```
-./gradlew stub-runner:stub-runner:run -Pc=pl -Pminp=10000 -Pmaxp=10005 -Pn=com/ofg/twitter-places-analyzer -Psr=http://dl.bintray.com/4finance/micro -Pzl=localhost:2181 -Ps
+./gradlew stub-runner-root:stub-runner:run -Pc=pl -Pminp=10000 -Pmaxp=10005 -Pn=com/ofg/twitter-places-analyzer -Psr=http://dl.bintray.com/4finance/micro -Pzl=localhost:2181 -Ps
 ```
 
 ### Defining collaborators' stubs

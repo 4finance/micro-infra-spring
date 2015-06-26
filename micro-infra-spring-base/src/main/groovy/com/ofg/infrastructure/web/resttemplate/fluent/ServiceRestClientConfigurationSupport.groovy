@@ -124,8 +124,7 @@ class ServiceRestClientConfigurationSupport {
     @Bean
     @ConditionalOnExpression('${rest.client.metrics.enabled:true}')
     RestOperationsMetricsAspect restOperationsMetricsAspect(
-            MetricRegistry metricRegistry, URIMetricNamer uriMetricNamer
-    ) {
+            MetricRegistry metricRegistry, URIMetricNamer uriMetricNamer) {
         return new RestOperationsMetricsAspect(metricRegistry, uriMetricNamer)
     }
 

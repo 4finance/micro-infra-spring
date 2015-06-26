@@ -25,7 +25,7 @@ import java.util.concurrent.Callable
 import static com.github.tomakehurst.wiremock.client.WireMock.*
 
 @ContextConfiguration(classes = [ServiceRestClientConfiguration, Config], loader = SpringApplicationContextLoader)
-class MetricsAspectIntegrationSpec extends MvcWiremockIntegrationSpec {
+class RestOperationsMetricsAspectIntegrationSpec extends MvcWiremockIntegrationSpec {
 
     @Resource
     RestOperations restTemplate
@@ -137,7 +137,7 @@ class MetricsAspectIntegrationSpec extends MvcWiremockIntegrationSpec {
         MetricRegistry metricRegistry() {
             def lastMetricName = 'UNSET'
             return [
-                    timer              : { String metricName ->
+                    timer: { String metricName ->
                         lastMetricName = metricName
                         [time: { Callable c -> c.call() }] as Timer
                     },

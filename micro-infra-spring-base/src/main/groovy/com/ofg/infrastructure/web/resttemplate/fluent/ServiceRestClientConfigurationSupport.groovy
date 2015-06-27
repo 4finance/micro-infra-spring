@@ -129,7 +129,7 @@ class ServiceRestClientConfigurationSupport {
     }
 
     @Bean
-    @ConditionalOnMissingBean(URIMetricNamer)
+    @ConditionalOnMissingBean(URIMetricNamer.class)
     URIMetricNamer uriMetricNamer() {
         return new RegexMatchingPathElidingURIMetricNamer()
     }

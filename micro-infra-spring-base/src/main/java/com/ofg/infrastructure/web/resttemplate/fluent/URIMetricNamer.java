@@ -1,4 +1,6 @@
-package com.ofg.infrastructure.web.resttemplate.fluent
+package com.ofg.infrastructure.web.resttemplate.fluent;
+
+import java.net.URI;
 
 /**
  * A strategy for inventing (parts of) metric names for metrics relating to {@link java.net.URI}-s.
@@ -13,8 +15,6 @@ package com.ofg.infrastructure.web.resttemplate.fluent
  * Returned metric names may only consist of: latin alphanumerics, dots, and underscores.
  * The returned names must not start with a dot.
  */
-interface URIMetricNamer {
-
-    String metricNameFor(URI uri)
-
+public interface URIMetricNamer {
+    public abstract String metricNameFor(URI uri);
 }

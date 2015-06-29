@@ -127,22 +127,13 @@ public class ZookeeperServiceResolver implements ServiceResolver {
     }
 
     @Override
-    public Optional<String> getUrl(String service) {
-        return getUri(toPath(service)).transform(new Function<URI, String>() {
-            @Override
-            public String apply(URI input) {
-                return input.toString();
-            }
-        });
+    public Optional<URI> getUri(ServiceAlias serviceAlias) {
+        return getUri(resolveAlias(serviceAlias));
     }
 
     @Override
-    public String fetchUrl(String service) throws ServiceUnavailableException {
-        return fetchUri(toPath(service)).toString();
-    }
-
-    private ServicePath toPath(String service) {
-        return resolveAlias(new ServiceAlias(service));
+    public URI fetchUri(ServiceAlias serviceAlias) {
+        return fetchUri(resolveAlias(serviceAlias));
     }
 
     private Set<ServicePath> findLeavesOf(final String root) {

@@ -212,7 +212,7 @@ class MicroDepsServiceSpec extends Specification {
             e.message.contains(unavailableService)
     }
 
-    def 'should optionally return URL'() {
+    def 'should return service URI'() {
         given:
             new MicroDepsService(server.connectString, "api", "micro-a", 8876, MICRO_A).start()
             MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B).start()
@@ -225,15 +225,15 @@ class MicroDepsServiceSpec extends Specification {
             uri == 'http://micro-a:8876/api'.toURI()
     }
 
-    def 'should return URL'() {
+    def 'should return service URI when queried by alias'() {
         given:
             new MicroDepsService(server.connectString, "api", "micro-a", 8876, MICRO_A).start()
             MicroDepsService service = new MicroDepsService(server.connectString, "api", "micro-b", 8877, MICRO_B).start()
 
         when:
-            String url = service.serviceResolver.fetchUrl('microA')
+            URI uri = service.serviceResolver.fetchUri(new ServiceAlias('microA'))
 
         then:
-            url == 'http://micro-a:8876/api'
+            uri == 'http://micro-a:8876/api'.toURI()
     }
 }

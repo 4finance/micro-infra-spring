@@ -10,6 +10,8 @@ import java.util.Set;
  * a microservice.
  * <p/>
  * {@see ServiceConfigurationResolver}
+ * {@see ServiceAlias}
+ * {@see ServicePath}
  */
 public interface ServiceResolver extends AutoCloseable {
     /**
@@ -67,23 +69,19 @@ public interface ServiceResolver extends AutoCloseable {
     /**
      * Returns address of microservice
      *
-     * @param service - alias from microservice configuration {@see ServiceConfigurationResolver}
+     * @param serviceAlias - service alias as specified in microservice configuration
      * @return {@see com.google.common.base.Optional} that may contain the address of the microservice
-     * @deprecated Use {@link #getUri(ServicePath)}  instead
      */
-    @Deprecated
-    Optional<String> getUrl(String service);
+    Optional<URI> getUri(ServiceAlias serviceAlias);
 
     /**
      * Returns address of microservice
      *
-     * @param service - alias from microservice configuration {@see ServiceConfigurationResolver}
+     * @param serviceAlias - service alias as specified in microservice configuration
      * @return address of the microservice
      * @throws ServiceUnavailableException - if microservice is unavailable
-     * @deprecated Use {@link #fetchUri(ServicePath)}
      */
-    @Deprecated
-    String fetchUrl(String service);
+    URI fetchUri(ServiceAlias serviceAlias);
 
     /**
      * Start service resolver (e.g. start all service providers)

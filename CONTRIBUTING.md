@@ -1,5 +1,6 @@
 # Before submitting pull request
 
+* Ensure that you wrote as much code as possible in Java 7
 * Your branch should be named `issues/XYZ` (or `issues/XYZ-shortDesc`), where `XYZ` is an issue number on GitHub. When your pull request is not related to any issue, branch name is arbitrary
 * It is important to put meaningful description (in addition to issue number) in a pull request name
 * Run full build:

@@ -3,7 +3,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent
 import com.codahale.metrics.MetricRegistry
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
-import com.ofg.infrastructure.web.resttemplate.MetricsAspect
+import com.ofg.infrastructure.web.resttemplate.RestOperationsMetricsAspect
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,11 +18,11 @@ import org.springframework.test.context.ContextConfiguration
 class ServiceRestClientCustomizationByNameSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
     @Autowired
-    private MetricsAspect metricsAspect2
+    private RestOperationsMetricsAspect metricsAspect2
 
     def "should allow to autowire by name and more than one bean available"() {
         expect:
-            metricsAspect2 instanceof TestMetricsAspect2
+            metricsAspect2 instanceof TestRestOperationsMetricsAspect2
     }
 
     @Configuration
@@ -32,19 +32,19 @@ class ServiceRestClientCustomizationByNameSpec extends MvcCorrelationIdSettingIn
     @EnableAspectJAutoProxy(proxyTargetClass = true)
     static class CustomConfig {
         @Bean
-        MetricsAspect metricsAspect2(MetricRegistry metricRegistry) {
-            return new TestMetricsAspect2(metricRegistry)
+        RestOperationsMetricsAspect metricsAspect2(MetricRegistry metricRegistry, URIMetricNamer uriMetricNamer) {
+            return new TestRestOperationsMetricsAspect2(metricRegistry, uriMetricNamer)
         }
 
         @Bean
-        MetricsAspect metricsAspect3(MetricRegistry metricRegistry) {
-            return new TestMetricsAspect3(metricRegistry)
+        RestOperationsMetricsAspect metricsAspect3(MetricRegistry metricRegistry, URIMetricNamer uriMetricNamer) {
+            return new TestRestOperationsMetricsAspect3(metricRegistry, uriMetricNamer)
         }
     }
 
     @InheritConstructors
-    static class TestMetricsAspect2 extends MetricsAspect {}
+    static class TestRestOperationsMetricsAspect2 extends RestOperationsMetricsAspect {}
 
     @InheritConstructors
-    static class TestMetricsAspect3 extends MetricsAspect {}
+    static class TestRestOperationsMetricsAspect3 extends RestOperationsMetricsAspect {}
 }

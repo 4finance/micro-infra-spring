@@ -5,12 +5,14 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
-import com.ofg.infrastructure.web.resttemplate.MetricsAspect
+import com.ofg.infrastructure.web.resttemplate.RestOperationsMetricsAspect
 import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import com.ofg.infrastructure.web.resttemplate.fluent.config.RestClientConfigurer
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean
 import org.springframework.http.client.BufferingClientHttpRequestFactory
 import org.springframework.http.client.ClientHttpRequestFactory
@@ -120,8 +122,16 @@ class ServiceRestClientConfigurationSupport {
     }
 
     @Bean
-    MetricsAspect metricsAspect(MetricRegistry metricRegistry) {
-        return new MetricsAspect(metricRegistry)
+    @ConditionalOnExpression('${rest.client.metrics.enabled:true}')
+    RestOperationsMetricsAspect restOperationsMetricsAspect(
+            MetricRegistry metricRegistry, URIMetricNamer uriMetricNamer) {
+        return new RestOperationsMetricsAspect(metricRegistry, uriMetricNamer)
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(URIMetricNamer.class)
+    URIMetricNamer uriMetricNamer() {
+        return new RegexMatchingPathElidingURIMetricNamer()
     }
 
     protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {

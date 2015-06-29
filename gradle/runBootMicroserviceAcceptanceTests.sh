@@ -7,8 +7,7 @@ function dumpCurrentMicroInfraSpringVersionToFile {
 }
 
 function updateMicroInfraSpringVersionInConfigurationFile {
-
-    echo "microInfraSpringVersion="`cat ~/.microInfraSpringCurrentVersion.txt` >> gradle.properties
+    echo -e "\nmicroInfraSpringVersion="`cat ~/.microInfraSpringCurrentVersion.txt` >> gradle.properties
     cat gradle.properties
 }
 

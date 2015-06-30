@@ -209,6 +209,7 @@ if (project.hasProperty("coverage")) {
         sonarqube {
             properties {
                 property "sonar.groovy.jacoco.reportPath", "$buildDir/jacoco/test.exec"     //TODO: Could be taken from JaCoCo extension directly
+                property "sonar.exclusions", "**/src/main/resources/static/swagger/**"
             }
         }
     }

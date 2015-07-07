@@ -31,7 +31,7 @@ import static com.ofg.infrastructure.base.dsl.WireMockHttpRequestMapper.wireMock
 @ContextConfiguration(classes = [BaseConfiguration, ServiceDiscoveryStubbingApplicationConfiguration], loader = SpringApplicationContextLoader)
 class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
 
-    private static final String COLLABORATOR_NAME = 'foo-bar'
+    private static final ServiceAlias COLLABORATOR_ALIAS = new ServiceAlias('foo-bar')
     private static final String PATH = '/pl/foobar'
     private static final String CONTEXT_SPECIFIC_FOOBAR = 'foobar Poland'
 
@@ -50,7 +50,7 @@ class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
     def "should send a request to provided URL with appending host when calling service"() {
         when:
             ResponseEntity<String> result = serviceRestClient
-                    .forService(COLLABORATOR_NAME)
+                    .forService(COLLABORATOR_ALIAS)
                     .get()
                     .onUrl(PATH)
                     .andExecuteFor()
@@ -99,7 +99,7 @@ class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
             final Appender mockAppender = insertAppender(Mock(Appender.class))
         when:
             ResponseEntity<String> result = serviceRestClient
-                    .forService(COLLABORATOR_NAME)
+                    .forService(COLLABORATOR_ALIAS)
                     .get()
                     .onUrl(PATH)
                     .andExecuteFor()
@@ -130,8 +130,7 @@ class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
 
     def "should properly construct parameterized external URL"() {
         given:
-            ServicePath path = serviceResolver.resolveAlias(new ServiceAlias(COLLABORATOR_NAME))
-            URI uri = serviceResolver.getUri(path).get()
+            URI uri = serviceResolver.fetchUri(COLLABORATOR_ALIAS)
         when:
             String result = serviceRestClient
                     .forExternalService()
@@ -147,8 +146,7 @@ class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
 
     def "should properly construct external URL from template"() {
         given:
-            ServicePath path = serviceResolver.resolveAlias(new ServiceAlias(COLLABORATOR_NAME))
-            String uri = serviceResolver.getUri(path).get().toString()
+            String uri = serviceResolver.fetchUri(COLLABORATOR_ALIAS).toString()
         when:
             String result = serviceRestClient
                     .forExternalService()
@@ -164,7 +162,7 @@ class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
 
     def "should properly construct external URL from GString"() {
         given:
-            URI uri = uriOf(COLLABORATOR_NAME)
+            URI uri = serviceResolver.fetchUri(COLLABORATOR_ALIAS)
             String name = 'foobar'
         when:
             String result = serviceRestClient
@@ -177,10 +175,4 @@ class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
         then:
             result == CONTEXT_SPECIFIC_FOOBAR
     }
-
-    private URI uriOf(String collaboratorAlias) {
-        ServicePath path = serviceResolver.resolveAlias(new ServiceAlias(collaboratorAlias))
-        return serviceResolver.getUri(path).get()
-    }
-
 }

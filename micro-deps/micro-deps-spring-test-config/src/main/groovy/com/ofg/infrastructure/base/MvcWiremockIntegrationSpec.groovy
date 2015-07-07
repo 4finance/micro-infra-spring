@@ -3,6 +3,7 @@ package com.ofg.infrastructure.base
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
+import com.ofg.infrastructure.discovery.ServiceAlias
 import com.ofg.infrastructure.discovery.web.HttpMockServer
 import com.ofg.infrastructure.discovery.web.MockServerConfiguration
 import com.ofg.infrastructure.stub.Stub
@@ -54,8 +55,17 @@ abstract class MvcWiremockIntegrationSpec extends MvcIntegrationSpec {
         wireMock.register(mapping.willReturn(response))
     }
 
+    /**
+     *
+     * @deprecated since 0.9.1, use {@link #stubOf(ServiceAlias collaboratorAlias)} instead
+     */
+    @Deprecated
     protected Stub stubOf(String collaboratorName) {
-        return stubs.of(collaboratorName)
+        return stubOf(new ServiceAlias(collaboratorName))
+    }
+
+    protected Stub stubOf(ServiceAlias serviceAlias) {
+        return stubs.of(serviceAlias)
     }
 
     protected void cleanup() {

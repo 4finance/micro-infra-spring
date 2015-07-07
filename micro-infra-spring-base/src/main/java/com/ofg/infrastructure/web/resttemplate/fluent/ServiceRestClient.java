@@ -84,24 +84,36 @@ public class ServiceRestClient {
     /**
      * Returns fluent api to send requests to given collaborating service
      *
+     * @deprecated since 0.9.1, use {@link #forService(ServiceAlias serviceAlias)} instead
+     *
      * @param serviceName - name of collaborating service from microservice configuration file
      * @return builder for the specified HttpMethod
      */
+    @Deprecated
     public HttpMethodBuilder forService(String serviceName) {
-        final MicroserviceConfiguration.Dependency dependency = configurationResolver.getDependencyForName(serviceName);
+        return forService(new ServiceAlias(serviceName));
+    }
+
+    /**
+     * Returns fluent api to send requests to given collaborating service
+     *
+     * @param serviceAlias - collaborating service alias as defined in microservice configuration file
+     * @return builder for the specified HttpMethod
+     */
+    public HttpMethodBuilder forService(ServiceAlias serviceAlias) {
+        final MicroserviceConfiguration.Dependency dependency = configurationResolver.getDependency(serviceAlias);
         final PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(dependency);
-        return new HttpMethodBuilder(getServiceUri(serviceName), restOperations, predefinedHeaders);
+        return new HttpMethodBuilder(getServiceUri(serviceAlias), restOperations, predefinedHeaders);
     }
 
     /**
      * Lazy evaluation of the service's URI
      */
-    private Callable<String> getServiceUri(final String serviceName) {
+    private Callable<String> getServiceUri(final ServiceAlias serviceAlias) {
         return new Callable<String>() {
             @Override
             public String call() throws Exception {
-                final ServicePath path = serviceResolver.resolveAlias(new ServiceAlias(serviceName));
-                final URI uri = serviceResolver.fetchUri(path);
+                final URI uri = serviceResolver.fetchUri(serviceAlias);
                 return uri.toString();
             }
         };

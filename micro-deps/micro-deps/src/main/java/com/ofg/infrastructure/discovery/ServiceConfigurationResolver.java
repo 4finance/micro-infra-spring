@@ -62,21 +62,39 @@ public class ServiceConfigurationResolver {
         return dependenciesAsJson;
     }
 
+    /**
+     *
+     * @deprecated since 0.9.1, use {@link #getMicroservicePath()} instead
+     */
+    @Deprecated
     public String getMicroserviceName() {
         return microserviceConfiguration.getServicePath().getPath();
+    }
+
+    public ServicePath getMicroservicePath() {
+        return microserviceConfiguration.getServicePath();
     }
 
     public List<MicroserviceConfiguration.Dependency> getDependencies() {
         return microserviceConfiguration.getDependencies();
     }
 
-    public MicroserviceConfiguration.Dependency getDependencyForName(final String serviceName) {
+    public MicroserviceConfiguration.Dependency getDependency(final ServiceAlias serviceAlias) {
         return CollectionUtils.find(microserviceConfiguration.getDependencies(), new Predicate<MicroserviceConfiguration.Dependency>() {
             @Override
             public boolean apply(MicroserviceConfiguration.Dependency input) {
-                return input.getServiceAlias().getName().equals(serviceName);
+                return input.getServiceAlias().equals(serviceAlias);
             }
         });
+    }
+
+    /**
+     *
+     * @deprecated since 0.9.1, use {@link #getDependency(ServiceAlias serviceAlias)} instead
+     */
+    @Deprecated
+    public MicroserviceConfiguration.Dependency getDependencyForName(final String serviceName) {
+        return getDependency(new ServiceAlias(serviceName));
     }
 
     public LoadBalancerType getLoadBalancerTypeOf(final ServicePath dependencyPath) {

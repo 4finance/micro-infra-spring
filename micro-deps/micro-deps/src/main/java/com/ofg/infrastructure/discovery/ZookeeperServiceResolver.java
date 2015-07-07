@@ -4,8 +4,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Collections2;
-import com.ofg.infrastructure.discovery.util.CollectionUtils;
 import com.ofg.infrastructure.discovery.util.LoadBalancerType;
 import com.ofg.infrastructure.discovery.util.ProviderStrategyFactory;
 import org.apache.curator.framework.CuratorFramework;
@@ -17,7 +15,6 @@ import org.apache.curator.x.discovery.ServiceProvider;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -26,12 +23,32 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import static com.google.common.collect.Collections2.transform;
+import static com.ofg.infrastructure.discovery.util.CollectionUtils.find;
+import static com.ofg.infrastructure.discovery.util.CollectionUtils.flatten;
+import static com.ofg.infrastructure.discovery.util.CollectionUtils.toSet;
+import static java.util.Collections.singleton;
+
 public class ZookeeperServiceResolver implements ServiceResolver {
     private final ServiceConfigurationResolver serviceConfigurationResolver;
     private final ServiceDiscovery serviceDiscovery;
     private final ConcurrentMap<ServicePath, ServiceProvider> providersCache = new ConcurrentHashMap<ServicePath, ServiceProvider>();
     private final CuratorFramework curatorFramework;
     private final ProviderStrategyFactory providerStrategyFactory;
+
+    private static final Function<ServiceInstance, URI> SERVICE_INSTANCE_TO_URI_FUNCTION = new Function<ServiceInstance, URI>() {
+        @Override
+        public URI apply(ServiceInstance input) {
+            return URI.create(input.buildUriSpec());
+        }
+    };
+
+    private static final Function<MicroserviceConfiguration.Dependency, ServicePath> DEPENDENCY_TO_SERVICE_PATH_FUNCTION = new Function<MicroserviceConfiguration.Dependency, ServicePath>() {
+        @Override
+        public ServicePath apply(MicroserviceConfiguration.Dependency input) {
+            return input.getServicePath();
+        }
+    };
 
     public ZookeeperServiceResolver(ServiceConfigurationResolver serviceConfigurationResolver, ServiceDiscovery serviceDiscovery, CuratorFramework curatorFramework, ProviderStrategyFactory providerStrategyFactory) {
         this.serviceDiscovery = serviceDiscovery;
@@ -57,7 +74,7 @@ public class ZookeeperServiceResolver implements ServiceResolver {
 
     @Override
     public ServicePath resolveAlias(final ServiceAlias alias) {
-        MicroserviceConfiguration.Dependency dependencyConfig = CollectionUtils.find(serviceConfigurationResolver.getDependencies(), new Predicate<MicroserviceConfiguration.Dependency>() {
+        MicroserviceConfiguration.Dependency dependencyConfig = find(serviceConfigurationResolver.getDependencies(), new Predicate<MicroserviceConfiguration.Dependency>() {
             @Override
             public boolean apply(MicroserviceConfiguration.Dependency input) {
                 return input.getServiceAlias().equals(alias);
@@ -82,13 +99,7 @@ public class ZookeeperServiceResolver implements ServiceResolver {
         } catch (Exception e) {
             return new HashSet<URI>();
         }
-        Collection<URI> uris = Collections2.transform(allInstances, new Function<ServiceInstance, URI>() {
-            @Override
-            public URI apply(ServiceInstance input) {
-                return URI.create(input.buildUriSpec());
-            }
-        });
-        return CollectionUtils.toSet(uris);
+        return toSet(transform(allInstances, SERVICE_INSTANCE_TO_URI_FUNCTION));
     }
 
     private ServiceProvider startedServiceProvider(ServicePath servicePath) {
@@ -102,23 +113,18 @@ public class ZookeeperServiceResolver implements ServiceResolver {
     }
 
     @Override
-    public URI fetchUri(ServicePath service) {
-        URI serviceAddress = resolveServiceAddress(service);
+    public URI fetchUri(ServicePath servicePath) {
+        URI serviceAddress = resolveServiceAddress(servicePath);
         if (serviceAddress != null) {
             return serviceAddress;
         } else {
-            throw new ServiceUnavailableException(service.getPath());
+            throw new ServiceUnavailableException(servicePath);
         }
     }
 
     @Override
     public Set<ServicePath> fetchMyDependencies() {
-        return CollectionUtils.toSet(Collections2.transform(serviceConfigurationResolver.getDependencies(), new Function<MicroserviceConfiguration.Dependency, ServicePath>() {
-            @Override
-            public ServicePath apply(MicroserviceConfiguration.Dependency input) {
-                return input.getServicePath();
-            }
-        }));
+        return toSet(transform(serviceConfigurationResolver.getDependencies(), DEPENDENCY_TO_SERVICE_PATH_FUNCTION));
     }
 
     @Override
@@ -138,7 +144,7 @@ public class ZookeeperServiceResolver implements ServiceResolver {
 
     private Set<ServicePath> findLeavesOf(final String root) {
         if (isServiceName(root)) {
-            return CollectionUtils.toSet(Arrays.asList(new ServicePath(stripBasePath(root))));
+            return singleton(new ServicePath(stripBasePath(root)));
         }
 
         List<String> children = new ArrayList<String>();
@@ -147,7 +153,7 @@ public class ZookeeperServiceResolver implements ServiceResolver {
         } catch (Exception e) {
             Throwables.propagate(e);
         }
-        return CollectionUtils.toSet(CollectionUtils.flatten(Collections2.transform(children, new Function<String, Set<ServicePath>>() {
+        return toSet(flatten(transform(children, new Function<String, Set<ServicePath>>() {
             @Override
             public Set<ServicePath> apply(String input) {
                 return findLeavesOf(root + "/" + input);

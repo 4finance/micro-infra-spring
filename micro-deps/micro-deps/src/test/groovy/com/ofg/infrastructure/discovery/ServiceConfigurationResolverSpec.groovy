@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.discovery
+
 import com.ofg.infrastructure.discovery.util.DependencyCreator
 import com.ofg.infrastructure.discovery.util.LoadBalancerType
 import org.apache.commons.collections.CollectionUtils
@@ -14,7 +15,7 @@ class ServiceConfigurationResolverSpec extends Specification {
             def resolver = new ServiceConfigurationResolver(CONFIGURATION_WITH_PATH_ELEM)
         then:
             resolver.basePath == 'pl'
-            resolver.microserviceName == 'com/ofg/service'
+            resolver.microservicePath == new ServicePath('com/ofg/service')
             CollectionUtils.isEqualCollection(resolver.dependencies, DependencyCreator.fromMap(['ping':['path':'com/ofg/ping'],
                                                                                             'pong':['path':'com/ofg/pong']]))
     }
@@ -24,7 +25,7 @@ class ServiceConfigurationResolverSpec extends Specification {
             def resolver = new ServiceConfigurationResolver(FLAT_CONFIGURATION)
         then:
             resolver.basePath == 'pl'
-            resolver.microserviceName == 'com/ofg/service'
+            resolver.microservicePath == new ServicePath('com/ofg/service')
             CollectionUtils.isEqualCollection(resolver.dependencies, DependencyCreator.fromMap( ['ping':['path':'com/ofg/ping'],
                                       'pong':['path':'com/ofg/pong']] ))
     }

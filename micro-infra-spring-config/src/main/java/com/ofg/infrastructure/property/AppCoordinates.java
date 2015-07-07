@@ -18,7 +18,7 @@ public class AppCoordinates {
     public static final String APP_ENV = "APP_ENV";
 
     private final String environment;
-    private final String applicationName;
+    private final String path;
     private final String countryCode;
 
     public static AppCoordinates defaults(Resource microserviceConfigResource) {
@@ -26,17 +26,17 @@ public class AppCoordinates {
         try {
             final String configJson = IOUtils.toString(microserviceConfigResource.getURL());
             final ServiceConfigurationResolver configurationResolver = new ServiceConfigurationResolver(configJson);
-            final String appName = configurationResolver.getMicroserviceName();
+            final String path = configurationResolver.getMicroservicePath().getPath();
             final String countryName = configurationResolver.getBasePath();
-            return new AppCoordinates(findEnvironment(), appName, countryName);
+            return new AppCoordinates(findEnvironment(), path, countryName);
         } catch (IOException e) {
             throw new IllegalStateException("Can't read " + microserviceConfigResource, e);
         }
     }
 
-    AppCoordinates(String environment, String applicationName, String countryCode) {
+    AppCoordinates(String environment, String path, String countryCode) {
         this.environment = requireNonNull(environment);
-        this.applicationName = requireNonNull(applicationName);
+        this.path = requireNonNull(path);
         this.countryCode = requireNonNull(countryCode);
     }
 
@@ -84,8 +84,17 @@ public class AppCoordinates {
         return environment;
     }
 
+    /**
+     *
+     * @deprecated since 0.9.1, use {@link #getPath()} instead
+     */
+    @Deprecated
     public String getApplicationName() {
-        return applicationName;
+        return path;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public String getCountryCode() {
@@ -121,7 +130,7 @@ public class AppCoordinates {
     }
 
     private String[] nameComponents() {
-        return applicationName.split("/");
+        return path.split("/");
     }
 
     private String findBaseNameWithoutCountrySuffix(String baseName) {

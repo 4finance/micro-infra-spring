@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class StubbedServiceResolver implements ServiceResolver {
-    private final Map<ServicePath, URI> stubbedDeps = new HashMap<ServicePath, URI>();
+    private final Map<ServicePath, URI> stubbedDeps = new HashMap<>();
     private final Integer wiremockPort;
     private final String wiremockUrl;
 
@@ -49,11 +49,11 @@ public class StubbedServiceResolver implements ServiceResolver {
     }
 
     @Override
-    public URI fetchUri(ServicePath service) {
-        if (stubbedDeps.containsKey(service)) {
-            return stubbedDeps.get(service);
+    public URI fetchUri(ServicePath servicePath) {
+        if (stubbedDeps.containsKey(servicePath)) {
+            return stubbedDeps.get(servicePath);
         } else {
-            throw new ServiceUnavailableException(service.getPath());
+            throw new ServiceUnavailableException(servicePath);
         }
     }
 

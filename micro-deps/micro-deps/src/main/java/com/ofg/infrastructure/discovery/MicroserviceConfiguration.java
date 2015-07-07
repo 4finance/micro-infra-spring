@@ -3,7 +3,6 @@ package com.ofg.infrastructure.discovery;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.ofg.infrastructure.discovery.util.CollectionUtils;
 import com.ofg.infrastructure.discovery.util.LoadBalancerType;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -13,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static com.ofg.infrastructure.discovery.util.CollectionUtils.find;
 import static com.ofg.infrastructure.discovery.util.LoadBalancerType.ROUND_ROBIN;
 
 public class MicroserviceConfiguration {
@@ -28,15 +28,20 @@ public class MicroserviceConfiguration {
         this(servicePath, Collections.<Dependency>emptyList());
     }
 
+    /**
+     *
+     * @deprecated since 0.9.1, use {@link #getDependency(ServiceAlias serviceAlias)} instead
+     */
+    @Deprecated
     public Dependency getDependencyForName(String serviceName) {
-        return findDependencyWithName(serviceName);
+        return getDependency(new ServiceAlias(serviceName));
     }
 
-    private Dependency findDependencyWithName(final String serviceName) {
-        return CollectionUtils.find(dependencies, new Predicate<Dependency>() {
+    public Dependency getDependency(final ServiceAlias serviceAlias) {
+        return find(dependencies, new Predicate<Dependency>() {
             @Override
-            public boolean apply(Dependency input) {
-                return input.getServiceAlias().getName().equals(serviceName);
+            public boolean apply(Dependency dependency) {
+                return dependency.getServiceAlias().equals(serviceAlias);
             }
         });
     }

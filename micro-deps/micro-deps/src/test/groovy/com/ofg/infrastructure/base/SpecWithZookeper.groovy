@@ -35,7 +35,7 @@ class SpecWithZookeper extends Specification {
         serviceInstance = ServiceInstance.builder().uriSpec(new UriSpec("{scheme}://{address}:{port}/"))
                 .address('anyUrl')
                 .port(10)
-                .name(this.serviceConfigurationResolver.microserviceName)
+                .name(serviceConfigurationResolver.microservicePath.path)
                 .build()
         curatorFramework = CuratorFrameworkFactory.newClient(server.connectString, new ExponentialBackoffRetry(20, 20, 500))
         curatorFramework.start()

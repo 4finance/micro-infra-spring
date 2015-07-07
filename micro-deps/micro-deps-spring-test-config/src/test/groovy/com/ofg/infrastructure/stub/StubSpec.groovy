@@ -24,11 +24,11 @@ import static com.ofg.infrastructure.base.dsl.WireMockHttpRequestMapper.wireMock
 
 class StubSpec extends Specification {
 
-    static final String UNKOWN_COLLABORATOR = 'unknown collaborator'
-    static final String PING = 'ping collaborator'
-    static final String PONG = 'pong collaborator'
-    static final String UNKNOWN_PING_PATH = 'com/ofg/unknown/ping'
-    static final String KNOWN_PONG_PATH = 'com/ofg/pong'
+    static final ServiceAlias UNKOWN_COLLABORATOR = new ServiceAlias('unknown')
+    static final ServiceAlias PING = new ServiceAlias('ping')
+    static final ServiceAlias PONG = new ServiceAlias('pong')
+    static final ServicePath UNKNOWN_PING_PATH = new ServicePath('/com/ofg/unknown/ping')
+    static final ServicePath KNOWN_PONG_PATH = new ServicePath('/com/ofg/pong')
     static final String PONG_ENDPOINT = '/pong'
     static final int MOCK_PORT = 8993
 
@@ -104,43 +104,42 @@ class StubSpec extends Specification {
             5           | 4
     }
 
-    def 'should throw exception for unknown collaborator name'() {
+    def 'should throw exception for unknown collaborator alias'() {
         given:
             Stubs stub = new Stubs(configurationResolver, stubRunning)
         when:
             stub.of(UNKOWN_COLLABORATOR)
         then:
-            def ex = thrown(NoSuchElementException)
-            ex.message == "Unknown collaborator name: $UNKOWN_COLLABORATOR"
+            def ex = thrown(UnknownCollaboratorException)
+            ex.message == "Could not resolve service with alias: $UNKOWN_COLLABORATOR"
         cleanup:
             stub.shutdown()
     }
 
-    def 'should throw exception for missing stub URL of well-known collaborator name'() {
+    def 'should throw exception for missing stub URL of well-known collaborator alias'() {
         given:
             Stubs stub = new Stubs(configurationResolver, stubRunning)
         when:
             stub.of(PING)
         then:
             def ex = thrown(MissingStubException)
-            ex.message == "Missing stub for collaborator name: $PING"
+            ex.message == "Could not find stub with alias: $PING"
         cleanup:
             stub.shutdown()
     }
 
     private void configurationResolverWithPingPongDependencies() {
         configurationResolver = Mock(ServiceConfigurationResolver)
-        MicroserviceConfiguration.Dependency ping = new MicroserviceConfiguration.Dependency(new ServiceAlias(PING), new ServicePath(UNKNOWN_PING_PATH))
-        MicroserviceConfiguration.Dependency pong = new MicroserviceConfiguration.Dependency(new ServiceAlias(PONG), new ServicePath(KNOWN_PONG_PATH))
-        configurationResolver.getDependencyForName(PING) >> ping
-        configurationResolver.getDependencyForName(PONG) >> pong
+        MicroserviceConfiguration.Dependency ping = new MicroserviceConfiguration.Dependency(PING, UNKNOWN_PING_PATH)
+        MicroserviceConfiguration.Dependency pong = new MicroserviceConfiguration.Dependency(PONG, KNOWN_PONG_PATH)
+        configurationResolver.getDependency(PING) >> ping
+        configurationResolver.getDependency(PONG) >> pong
         configurationResolver.dependencies >> [ping, pong]
-
     }
 
     private void stubRunningWithPredefinedPongPath() {
         stubRunning = Mock(StubRunning)
-        stubRunning.findStubUrlByRelativePath(KNOWN_PONG_PATH) >> Optional.of(new URL("http://localhost:$MOCK_PORT"))
+        stubRunning.findStubUrlByRelativePath(KNOWN_PONG_PATH.path) >> Optional.of(new URL("http://localhost:$MOCK_PORT"))
         stubRunning.findStubUrlByRelativePath(_ as String) >> Optional.absent()
     }
 

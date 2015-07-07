@@ -82,7 +82,7 @@ public class ServiceDiscoveryInfrastructureConfiguration {
                 .uriSpec(new UriSpec("{scheme}://{address}:{port}"))
                 .address(addressProvider.getHost())
                 .port(addressProvider.getPort())
-                .name(serviceConfigurationResolver.getMicroserviceName())
+                .name(serviceConfigurationResolver.getMicroservicePath().getPath())
                 .build();
     }
 

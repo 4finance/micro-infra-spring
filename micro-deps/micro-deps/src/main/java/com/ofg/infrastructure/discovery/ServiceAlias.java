@@ -21,7 +21,7 @@ public class ServiceAlias {
 
     @Override
     public String toString() {
-        return ReflectionToStringBuilder.toString(this);
+        return name;
     }
 
     @Override

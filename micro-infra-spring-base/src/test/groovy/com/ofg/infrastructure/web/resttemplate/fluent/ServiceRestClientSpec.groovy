@@ -24,8 +24,11 @@ import static org.springframework.http.HttpMethod.*
 
 class ServiceRestClientSpec extends Specification {
 
-    public static final String COLA_COLLABORATOR_NAME = 'cola'
-    public static final String SOME_SERVICE_URL = 'http://localhost:1234'
+    private static final ServiceAlias COLLABORATOR_ALIAS = new ServiceAlias('cola')
+    private static final ServicePath COLLABORATOR_PATH = new ServicePath('/cola')
+    private static final URI SOME_SERVICE_URI = new URI('http://localhost:1234')
+    private static final String SOME_SERVICE_PATH = '/some/serviceUrl'
+
     RestOperations restOperations = Mock()
     ServiceResolver serviceResolver = Mock()
     ServiceConfigurationResolver configurationResolver = Mock()
@@ -35,35 +38,27 @@ class ServiceRestClientSpec extends Specification {
     ServiceRestClient serviceRestClient = new ServiceRestClient(restOperations, serviceResolver, configurationResolver)
 
     def setup() {
-        configurationResolver.getDependencyForName(_) >> DependencyCreator.fromMap(['cola': ['contentTypeTemplate': 'application/vnd.cola.$version+json',
+        configurationResolver.getDependency(_) >> DependencyCreator.fromMap(['cola': ['contentTypeTemplate': 'application/vnd.cola.$version+json',
                                                              'version'            : 'v1',
                                                              'headers'            : ['header1': 'value1', 'header2': 'value2']]]).first()
     }
 
     def 'should send a request to provided URL with appending host when calling service'() {
         given:
-            String path = 'some/serviceUrl'
-            URI expectedUri = new URI("${SOME_SERVICE_URL}/$path")
+            URI expectedUri = SOME_SERVICE_URI.resolve(SOME_SERVICE_PATH)
         and:
-            aliasReturnsUrl(COLA_COLLABORATOR_NAME, SOME_SERVICE_URL)
+            serviceResolver.fetchUri(COLLABORATOR_ALIAS) >> SOME_SERVICE_URI
         when:
-            serviceRestClient.forService(COLA_COLLABORATOR_NAME).get().onUrl(path).ignoringResponse()
+            serviceRestClient.forService(COLLABORATOR_ALIAS).get().onUrl(SOME_SERVICE_PATH).ignoringResponse()
         then:
             1 * restOperations.exchange(expectedUri, GET, _ as HttpEntity, _ as Class)
     }
 
-    def aliasReturnsUrl(String collaboratorName, String url) {
-        serviceResolver.resolveAlias(new ServiceAlias(collaboratorName)) >> new ServicePath(collaboratorName)
-        serviceResolver.fetchUri(new ServicePath(collaboratorName)) >> url.toURI()
-    }
-
     def 'should send a request to provided URL with Content-Type set when calling service'() {
         given:
-            String path = 'some/serviceUrl'
-        and:
-            aliasReturnsUrl(COLA_COLLABORATOR_NAME, SOME_SERVICE_URL)
+            serviceResolver.fetchUri(COLLABORATOR_ALIAS) >> SOME_SERVICE_URI
         when:
-            serviceRestClient.forService(COLA_COLLABORATOR_NAME).get().onUrl(path).ignoringResponse()
+            serviceRestClient.forService(COLLABORATOR_ALIAS).get().onUrl(SOME_SERVICE_PATH).ignoringResponse()
         then:
             1 * restOperations.exchange(_ as URI, GET, {
                 it.getHeaders().getContentType().toString() == 'application/vnd.cola.v1+json'
@@ -72,25 +67,20 @@ class ServiceRestClientSpec extends Specification {
 
     def 'should throw exception on creating Content-Type header when version property is required and is missing in dependency configuration'() {
         given:
-            String path = 'some/serviceUrl'
-        and:
-            aliasReturnsUrl(COLA_COLLABORATOR_NAME, SOME_SERVICE_URL)
+            serviceResolver.fetchUri(COLLABORATOR_ALIAS) >> SOME_SERVICE_URI
         when:
-            serviceRestClient.forService(COLA_COLLABORATOR_NAME).get().onUrl(path).ignoringResponse()
+            serviceRestClient.forService(COLLABORATOR_ALIAS).get().onUrl(SOME_SERVICE_PATH).ignoringResponse()
         then:
-            1 * configurationResolver.getDependencyForName(_) >> DependencyCreator.fromMap(['cola': ['contentTypeTemplate': 'application/vnd.cola.$version+json',
+            1 * configurationResolver.getDependency(_) >> DependencyCreator.fromMap(['cola': ['contentTypeTemplate': 'application/vnd.cola.$version+json',
                                                                      'headers'            : ['header1': 'value1', 'header2': 'value2']]]).first()
             thrown(PredefinedHttpHeaders.ContentTypeTemplateWithoutVersionException)
     }
 
     def 'should send a request to provided URL with predefined headers set when calling service'() {
         given:
-            String serviceUrl = SOME_SERVICE_URL
-            String path = 'some/serviceUrl'
-        and:
-            aliasReturnsUrl(COLA_COLLABORATOR_NAME, serviceUrl)
+            serviceResolver.fetchUri(COLLABORATOR_ALIAS) >> SOME_SERVICE_URI
         when:
-            serviceRestClient.forService(COLA_COLLABORATOR_NAME).get().onUrl(path).ignoringResponse()
+            serviceRestClient.forService(COLLABORATOR_ALIAS).get().onUrl(SOME_SERVICE_PATH).ignoringResponse()
         then:
             1 * restOperations.exchange(_ as URI, GET, {
                 it.getHeaders().get('header1') == ['value1'] as List &&
@@ -100,12 +90,11 @@ class ServiceRestClientSpec extends Specification {
 
     def 'should throw an exception when trying to access an unavailable service'() {
         given:
-            serviceResolver.resolveAlias(new ServiceAlias(COLA_COLLABORATOR_NAME)) >> new ServicePath(COLA_COLLABORATOR_NAME)
-            serviceResolver.fetchUri(new ServicePath(COLA_COLLABORATOR_NAME)) >> {
-                throw new ServiceUnavailableException(COLA_COLLABORATOR_NAME)
+            serviceResolver.fetchUri(COLLABORATOR_ALIAS) >> {
+                throw new ServiceUnavailableException(COLLABORATOR_PATH)
             }
         when:
-            serviceRestClient.forService(COLA_COLLABORATOR_NAME).get().onUrl('').ignoringResponse()
+            serviceRestClient.forService(COLLABORATOR_ALIAS).get().onUrl('').ignoringResponse()
         then:
             thrown(ServiceUnavailableException)
     }
@@ -128,7 +117,7 @@ class ServiceRestClientSpec extends Specification {
                     .forExternalService()
                     .retryUsing(executor.withMaxRetries(1).withNoDelay())
                     .get()
-                    .onUrl(SOME_SERVICE_URL)
+                    .onUrl(SOME_SERVICE_URI)
                     .ignoringResponse()
         then:
             2 * restOperations.exchange(_, GET, _, _ as Class) >>> [] >> {
@@ -144,7 +133,7 @@ class ServiceRestClientSpec extends Specification {
                     .forExternalService()
                     .retryUsing(executor.withMaxRetries(1).withNoDelay())
                     .post()
-                    .onUrl(SOME_SERVICE_URL)
+                    .onUrl(SOME_SERVICE_URI)
                     .body('')
                     .andExecuteFor()
                     .aResponseEntity().ofTypeAsync(String)
@@ -163,7 +152,7 @@ class ServiceRestClientSpec extends Specification {
                     .forExternalService()
                     .retryUsing(executor.withMaxRetries(0))
                     .delete()
-                    .onUrl(SOME_SERVICE_URL)
+                    .onUrl(SOME_SERVICE_URI)
                     .ignoringResponseAsync().get()
         then:
             1 * restOperations.exchange(_, DELETE, _ as HttpEntity, _ as Class) >> {
@@ -181,7 +170,7 @@ class ServiceRestClientSpec extends Specification {
                     .forExternalService()
                     .retryUsing(executor.withMaxRetries(1).withNoDelay())
                     .head()
-                    .onUrl(SOME_SERVICE_URL)
+                    .onUrl(SOME_SERVICE_URI)
                     .httpHeadersAsync().get()
         then:
             2 * restOperations.exchange(_, HEAD, _ as HttpEntity, _ as Class) >>> [] >> {
@@ -197,7 +186,7 @@ class ServiceRestClientSpec extends Specification {
                     .forExternalService()
                     .retryUsing(executor.withMaxRetries(2).withNoDelay())
                     .put()
-                    .onUrl(SOME_SERVICE_URL)
+                    .onUrl(SOME_SERVICE_URI)
                     .body('')
                     .ignoringResponseAsync()
                     .get()
@@ -222,7 +211,7 @@ class ServiceRestClientSpec extends Specification {
                     .forExternalService()
                     .put()
                     .withCircuitBreaker(circuitBreaker)
-                    .onUrl(SOME_SERVICE_URL)
+                    .onUrl(SOME_SERVICE_URI)
                     .body('')
                     .ignoringResponse()
         then:
@@ -245,7 +234,7 @@ class ServiceRestClientSpec extends Specification {
                     .forExternalService()
                     .get()
                     .withCircuitBreaker(circuitBreaker)
-                    .onUrl(SOME_SERVICE_URL)
+                    .onUrl(SOME_SERVICE_URI)
                     .ignoringResponse()
 
         then:
@@ -271,7 +260,7 @@ class ServiceRestClientSpec extends Specification {
                     .forExternalService()
                     .get()
                     .withCircuitBreaker(circuitBreaker, fallbackClosure)
-                    .onUrl(SOME_SERVICE_URL)
+                    .onUrl(SOME_SERVICE_URI)
                     .andExecuteFor()
                     .aResponseEntity().ofType(String)
         then:
@@ -296,7 +285,7 @@ class ServiceRestClientSpec extends Specification {
                     .forExternalService()
                     .get()
                     .withCircuitBreaker(circuitBreaker, fallbackClosure)
-                    .onUrl(SOME_SERVICE_URL)
+                    .onUrl(SOME_SERVICE_URI)
                     .andExecuteFor()
                     .aResponseEntity().ofType(String)
 
@@ -324,7 +313,7 @@ class ServiceRestClientSpec extends Specification {
                     .forExternalService()
                     .get()
                     .withCircuitBreaker(circuitBreaker, fallback)
-                    .onUrl(SOME_SERVICE_URL)
+                    .onUrl(SOME_SERVICE_URI)
                     .aResponseEntity().ofType(String)
         then:
             notThrown(RestClientException)
@@ -336,7 +325,7 @@ class ServiceRestClientSpec extends Specification {
             serviceRestClient
                     .forExternalService()
                     .put()
-                    .onUrl(SOME_SERVICE_URL)
+                    .onUrl(SOME_SERVICE_URI)
                     .body('')
                     .ignoringResponse()
         then:

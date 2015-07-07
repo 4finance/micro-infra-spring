@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.client.RequestPatternBuilder
 import com.github.tomakehurst.wiremock.client.UrlMatchingStrategy
 import com.github.tomakehurst.wiremock.http.RequestMethod
 import com.ofg.infrastructure.BaseConfiguration
+import com.ofg.infrastructure.discovery.ServiceAlias
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolverConfiguration
 import com.ofg.infrastructure.discovery.web.MockServerConfiguration
@@ -22,13 +23,14 @@ class CollaboratorStubIntegrationSpec extends MvcWiremockIntegrationSpec {
 
     @Autowired StubRunning stubRunning
     static final String STUB_NAME = 'correlator'
+    static final ServiceAlias STUB_ALIAS = new ServiceAlias(STUB_NAME)
     static final String STUB_PATH = "com/ofg/$STUB_NAME"
 
     def 'should verify interaction with stub'() {
         given:
             simulatedInteractionWithStub()
         expect:
-            stubOf(STUB_NAME).verifyThat(expectedRequest())
+            stubOf(STUB_ALIAS).verifyThat(expectedRequest())
     }
 
     private void simulatedInteractionWithStub() {
@@ -53,7 +55,6 @@ class CollaboratorStubIntegrationSpec extends MvcWiremockIntegrationSpec {
                 @Value('${microservice.config.file}') Resource microserviceConfig) {
             return new ServiceConfigurationResolver(microserviceConfig.inputStream.text)
         }
-
     }
 
 }

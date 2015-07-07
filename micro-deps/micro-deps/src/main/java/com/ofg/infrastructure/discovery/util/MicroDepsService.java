@@ -55,7 +55,12 @@ public class MicroDepsService {
         curatorFramework = CuratorFrameworkFactory.newClient(zookeeperUrl, retryPolicy);
         configurationResolver = new ServiceConfigurationResolver(microserviceConfig);
         try {
-            serviceInstance = ServiceInstance.builder().uriSpec(new UriSpec(uriSpec)).address(microserviceUrl).port(microservicePort).name(configurationResolver.getMicroserviceName()).build();
+            serviceInstance = ServiceInstance.builder()
+                    .uriSpec(new UriSpec(uriSpec))
+                    .address(microserviceUrl)
+                    .port(microservicePort)
+                    .name(configurationResolver.getMicroservicePath().getPath())
+                    .build();
         } catch (Exception e) {
             Throwables.propagate(e);
         }

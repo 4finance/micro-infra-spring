@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.property;
 
+import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.config.client.PropertySourceLocator;
@@ -75,9 +76,14 @@ public class FileSystemLocator implements PropertySourceLocator {
     }
 
     private Map<String, Object> decrypt(Map<String, Object> sourceMap) {
-        final Map<String, Object> result = new HashMap<String, Object>();
+        final Map<String, Object> result = new HashMap<>();
         for (Map.Entry<String, Object> entry : sourceMap.entrySet()) {
-            result.put(entry.getKey(), decryptIfEncrypted(entry.getValue()));
+            try {
+                result.put(entry.getKey(), decryptIfEncrypted(entry.getValue()));
+            } catch (Exception e) {
+                log.error("Exception occurred while trying to decrypt key [{}]", entry.getKey());
+                Throwables.propagate(e);
+            }
         }
         return result;
     }

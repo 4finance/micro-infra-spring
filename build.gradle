@@ -60,6 +60,7 @@ apply from: "${rootProject.buildDir}/release/gradle/release.gradle"
 allprojects {
     repositories {
         mavenLocal()
+        mavenCentral()
         jcenter()
     }
 

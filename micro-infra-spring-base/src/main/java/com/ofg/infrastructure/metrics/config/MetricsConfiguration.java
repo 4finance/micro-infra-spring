@@ -85,7 +85,7 @@ public class MetricsConfiguration {
     @Bean
     @Profile(PRODUCTION)
     public MetricsBasePath metricsBasePath(@Value("${metrics.path.root:apps}") String rootName,
-                                           @Value("${metrics.path.environment:test}") String environment,
+                                           @Value("${metrics.path.environment:#{systemProperties['APP_ENV'] ?: 'test'}}") String environment,
                                            @Value("${metrics.path.country:pl}") String country,
                                            @Value("${metrics.path.app:service-name}") String appName,
                                            @Value("${metrics.path.node:#{T(com.ofg.infrastructure.metrics.config.MetricsConfiguration).resolveLocalHostName()}}") String node) {

@@ -12,6 +12,7 @@ import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
 import com.netflix.hystrix.contrib.codahalemetricspublisher.HystrixCodaHaleMetricsPublisher;
 import com.netflix.hystrix.strategy.HystrixPlugins;
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver;
 import com.ofg.infrastructure.metrics.publishing.EnvironmentAwareMetricsBasePath;
 import com.ofg.infrastructure.metrics.publishing.GraphitePublisher;
 import com.ofg.infrastructure.metrics.publishing.JmxPublisher;
@@ -19,11 +20,13 @@ import com.ofg.infrastructure.metrics.publishing.MetricsBasePath;
 import com.ofg.infrastructure.metrics.publishing.PublishingInterval;
 import groovy.util.logging.Slf4j;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -54,6 +57,9 @@ import static org.springframework.util.StringUtils.isEmpty;
 public class MetricsConfiguration {
 
     private static final Logger log = getLogger(lookup().lookupClass());
+
+    @Autowired
+    private Environment env;
 
     @Value("${metrics.jvm.path.base:jvm}")
     private String jvmMetricsPathBase;
@@ -86,9 +92,10 @@ public class MetricsConfiguration {
     @Profile(PRODUCTION)
     public MetricsBasePath metricsBasePath(@Value("${metrics.path.root:apps}") String rootName,
                                            @Value("${metrics.path.environment:#{systemProperties['APP_ENV'] ?: 'test'}}") String environment,
-                                           @Value("${metrics.path.country:pl}") String country,
-                                           @Value("${metrics.path.app:service-name}") String appName,
+                                           ServiceConfigurationResolver serviceConfigurationResolver,
                                            @Value("${metrics.path.node:#{T(com.ofg.infrastructure.metrics.config.MetricsConfiguration).resolveLocalHostName()}}") String node) {
+        String country = env.getProperty("metrics.path.country", serviceConfigurationResolver.getBasePath());
+        String appName = env.getProperty("metrics.path.app", serviceConfigurationResolver.getMicroservicePath().getLastName());
         return new EnvironmentAwareMetricsBasePath(rootName, environment, country, appName, node);
     }
 

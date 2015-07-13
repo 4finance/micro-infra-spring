@@ -1,5 +1,9 @@
 package com.ofg.infrastructure.discovery;
 
+import com.google.common.collect.Iterables;
+
+import java.util.Arrays;
+
 /**
  * Path to dependency as registered in service resolver, like ZooKeeper
  */
@@ -12,6 +16,10 @@ public class ServicePath {
 
     public String getPath() {
         return path;
+    }
+
+    public String getLastName() {
+        return Iterables.getLast(Arrays.asList(path.split("/")));
     }
 
     @Override

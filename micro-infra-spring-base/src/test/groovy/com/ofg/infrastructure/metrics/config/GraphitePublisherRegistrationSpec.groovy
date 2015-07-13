@@ -2,6 +2,7 @@ package com.ofg.infrastructure.metrics.config
 
 import com.codahale.metrics.graphite.GraphiteSender
 import com.ofg.infrastructure.base.BaseConfiguration
+import com.ofg.infrastructure.metrics.publishing.EnvironmentAwareMetricsBasePath
 import com.ofg.infrastructure.metrics.publishing.GraphitePublisher
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.core.env.PropertySource
@@ -10,6 +11,8 @@ import org.springframework.mock.env.MockPropertySource
 import spock.lang.AutoCleanup
 import spock.lang.Specification
 import spock.lang.Unroll
+
+import java.util.regex.Pattern
 
 import static com.ofg.config.BasicProfiles.PRODUCTION
 import static com.ofg.infrastructure.metrics.config.IsGraphitePublishingEnabled.GRAPHITE_PUBLISHING
@@ -21,7 +24,7 @@ class GraphitePublisherRegistrationSpec extends Specification {
     def setup() {
         applicationContext = new AnnotationConfigApplicationContext()
         applicationContext.environment.setActiveProfiles(PRODUCTION)
-        applicationContext.register(BaseConfiguration, MetricsConfiguration)
+        applicationContext.register(BaseConfiguration, GraphiteServiceConfig, MetricsConfiguration)
     }
 
     @Unroll
@@ -74,6 +77,21 @@ class GraphitePublisherRegistrationSpec extends Specification {
             beanIsAbsent(GraphiteSender)
     }
 
+    def 'should pick values from microservice.json as defaults for metrics if props are not passed explicitly'() {
+        given:
+            applicationContext.refresh()
+        expect:
+            metricPathConsistsOf(microserviceJsonEntries())
+    }
+
+    def 'should ignore microservice.json values and the ones from props if they have been passed explicitly'() {
+        given:
+            registerInContext(new ResourcePropertySource('graphiteWithDefaultProps.properties'))
+            applicationContext.refresh()
+        expect:
+            metricPathConsistsOf(valuesFromPropertyFile())
+    }
+
     private registerInContext(PropertySource propertySource) {
         applicationContext.environment.propertySources.addFirst(propertySource)
     }
@@ -86,11 +104,23 @@ class GraphitePublisherRegistrationSpec extends Specification {
         return new MockPropertySource().withProperty(GRAPHITE_PUBLISHING, flagValue)
     }
 
-    private beanIsPresent(Class<?> beanClass) {
+    private boolean beanIsPresent(Class<?> beanClass) {
         applicationContext.getBean(beanClass) != null
     }
 
-    private beanIsAbsent(Class<?> beanClass) {
+    private boolean beanIsAbsent(Class<?> beanClass) {
         applicationContext.getBeanNamesForType(beanClass) == []
+    }
+
+    private boolean metricPathConsistsOf(Pattern regex) {
+        applicationContext.getBean(EnvironmentAwareMetricsBasePath).path.matches(regex)
+    }
+
+    private Pattern microserviceJsonEntries() {
+        return ~/^.*realm.some-super-name.*$/
+    }
+
+    private Pattern valuesFromPropertyFile() {
+        return ~/^.*country-not-from-json.imaginary-app.*$/
     }
 }

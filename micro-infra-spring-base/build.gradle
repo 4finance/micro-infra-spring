@@ -2,7 +2,6 @@ description = 'Microservice base infrastructure registered in Spring'
 
 ext {
     metricsVersion = '3.1.2'
-    jacksonMapper = '1.9.13'
     hystrixVersion = '1.4.12'
 }
 
@@ -15,8 +14,6 @@ dependencies {
     compile "org.codehaus.groovy:groovy-all"
     compile 'com.fasterxml.jackson.core:jackson-databind'
     compile "org.springframework.boot:spring-boot-starter-web"
-    compile "org.codehaus.jackson:jackson-mapper-asl:$jacksonMapper"
-    compile "org.codehaus.jackson:jackson-core-asl:$jacksonMapper"
     compile "org.aspectj:aspectjrt"
     compile "io.dropwizard.metrics:metrics-core:$metricsVersion"
     compile "io.dropwizard.metrics:metrics-jvm:$metricsVersion"

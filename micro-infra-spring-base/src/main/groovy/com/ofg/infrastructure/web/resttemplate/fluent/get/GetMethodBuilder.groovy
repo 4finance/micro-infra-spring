@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.get
+
 import com.google.common.base.Function
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
@@ -8,12 +9,7 @@ import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.AbstractMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodyContainingWithHeaders
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersHaving
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
@@ -24,11 +20,12 @@ import java.util.concurrent.Callable
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder.EMPTY_HOST
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
+
 /**
  * Implementation of the {@link org.springframework.http.HttpMethod#GET method} fluent API
  */
 @TypeChecked
-class GetMethodBuilder extends AbstractMethodBuilder implements GetMethod, UrlParameterizableGetMethod, ResponseReceivingGetMethod, HeadersHaving<ResponseReceivingGetMethod> {
+class GetMethodBuilder extends AbstractMethodBuilder implements GetMethod, UrlParameterizableGetMethod, ResponseReceivingGetMethod, HeadersHaving<ResponseReceivingGetMethod>, ParametersHaving<ResponseReceivingGetMethod> {
 
     private final RestOperations restOperations
     private final RetryExecutor retryExecutor
@@ -154,6 +151,11 @@ class GetMethodBuilder extends AbstractMethodBuilder implements GetMethod, UrlPa
     @Override
     HeadersSetting<ResponseReceivingGetMethod> withHeaders() {
         return withHeaders.withHeaders()
+    }
+
+    @Override
+    ParametersSetting<ResponseReceivingGetMethod> withQueryParameters() {
+        return withQueryParameters.withQueryParameters()
     }
 
     @Override

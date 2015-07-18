@@ -162,7 +162,7 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
                     .anObject()
                     .ofType(BigDecimal)
         then:
-            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?parameterOne=valueOne&parameterTwo="), GET, _ as HttpEntity, BigDecimal)
+            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?parameterOne=valueOne&parameterTwo"), GET, _ as HttpEntity, BigDecimal)
     }
 
 }

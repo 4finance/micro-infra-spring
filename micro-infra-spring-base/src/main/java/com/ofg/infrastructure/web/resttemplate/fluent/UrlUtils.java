@@ -23,9 +23,10 @@ public class UrlUtils {
             validateParameters(paramName);
             urlParametersBuilder.append(concatenator);
             urlParametersBuilder.append(paramName);
-            urlParametersBuilder.append(PARAMETERS_ASSIGNMENT);
             Object parameterValue = params.get(paramName);
+
             if (parameterValue != null && !parameterValue.toString().isEmpty()) {
+                urlParametersBuilder.append(PARAMETERS_ASSIGNMENT);
                 urlParametersBuilder.append(parameterValue.toString());
             }
             concatenator = SECOND_AND_LATER_CONCATENATOR;

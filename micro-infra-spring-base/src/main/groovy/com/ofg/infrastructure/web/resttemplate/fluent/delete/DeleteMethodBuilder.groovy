@@ -13,6 +13,9 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.R
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodylessWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.QueryParametersHaving
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.QueryParametersSetting
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodylessWithQueryParameters
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod

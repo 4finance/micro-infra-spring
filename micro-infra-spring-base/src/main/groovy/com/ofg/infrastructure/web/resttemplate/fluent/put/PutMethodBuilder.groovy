@@ -28,10 +28,12 @@ class PutMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPutMethod, U
         PutMethod, RequestHavingPutMethod, ResponseReceivingPutMethod,
         UrlParameterizablePutMethod {
 
+    private final WithQueryParameters<ResponseReceivingPutMethod> withQueryParameters
+
     PutMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
         super(predefinedHeaders, restOperations, retryExecutor)
         params.host = host
-
+        withQueryParameters = new BodyContainingWithQueryParameters<ResponseReceivingPutMethod>(this, params)
     }
 
     @Override
@@ -105,5 +107,10 @@ class PutMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPutMethod, U
     ListenableFuture<Void> ignoringResponseAsync() {
         ListenableFuture<ResponseEntity<Object>> future = aResponseEntity().ofTypeAsync(Object)
         return Futures.transform(future, { null } as Function<ResponseEntity<Object>, Void>)
+    }
+
+    @Override
+    QueryParametersSetting<ResponseReceivingPutMethod> withQueryParameters() {
+        return withQueryParameters.withQueryParameters()
     }
 }

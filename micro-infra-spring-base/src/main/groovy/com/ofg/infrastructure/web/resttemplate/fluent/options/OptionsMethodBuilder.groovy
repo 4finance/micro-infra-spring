@@ -9,10 +9,7 @@ import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
@@ -29,19 +26,21 @@ import static org.springframework.http.HttpMethod.OPTIONS
  */
 @TypeChecked
 class OptionsMethodBuilder implements
-        OptionsMethod, UrlParameterizableOptionsMethod,
-        ResponseReceivingOptionsMethod, AllowHeaderReceiving {
+        OptionsMethod, UrlParameterizableOptionsMethod, ResponseReceivingOptionsMethod, AllowHeaderReceiving,
+        QueryParametersHaving<ResponseReceivingOptionsMethod> {
 
     private final Map params = [:]
     private final RestOperations restOperations
     private final RetryExecutor retryExecutor
     private final AllowContainingWithHeaders withHeaders
+    private final BodylessWithQueryParameters<ResponseReceivingOptionsMethod> withQueryParameters
     private final OptionsAllowHeaderExecutor allowHeaderExecutor
 
     OptionsMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
         this.restOperations = restOperations
         params.host = host
         withHeaders = new AllowContainingWithHeaders(this, params, predefinedHeaders)
+        withQueryParameters = new BodylessWithQueryParameters<ResponseReceivingOptionsMethod>(this, params)
         allowHeaderExecutor = new OptionsAllowHeaderExecutor(restOperations, retryExecutor, params)
         this.retryExecutor = retryExecutor
     }
@@ -55,7 +54,7 @@ class OptionsMethodBuilder implements
         params.url = url
         return this
     }
-    
+
     @Override
     ResponseReceivingOptionsMethod onUrl(String url) {
         params.url = new URI(url)
@@ -167,5 +166,10 @@ class OptionsMethodBuilder implements
     @Override
     HeadersSetting<ResponseReceivingOptionsMethod> withHeaders() {
         return withHeaders.withHeaders()
+    }
+
+    @Override
+    QueryParametersSetting<ResponseReceivingOptionsMethod> withQueryParameters() {
+        return withQueryParameters.withQueryParameters()
     }
 }

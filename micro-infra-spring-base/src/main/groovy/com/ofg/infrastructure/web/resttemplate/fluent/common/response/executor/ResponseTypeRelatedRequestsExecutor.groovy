@@ -4,11 +4,8 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpMethod
-import org.springframework.http.HttpMethod as SpringHttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
-
-import static org.springframework.http.HttpMethod.DELETE
 
 /**
  * Abstraction over {@link RestOperations} that for a {@link ResponseTypeRelatedRequestsExecutor#getHttpMethod()} 
@@ -38,6 +35,7 @@ public class ResponseTypeRelatedRequestsExecutor<T> {
         this.responseType = responseType
         this.restExecutor = new RestExecutor(restOperations, retryExecutor)
         this.httpMethod = httpMethod
+        params.url = params?.urlWithQueryParameters?params.urlWithQueryParameters:params.url
     }
 
     ResponseEntity<T> exchange() {

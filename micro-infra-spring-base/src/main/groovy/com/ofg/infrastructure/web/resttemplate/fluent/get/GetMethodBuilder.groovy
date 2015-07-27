@@ -25,11 +25,14 @@ import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.rec
  * Implementation of the {@link org.springframework.http.HttpMethod#GET method} fluent API
  */
 @TypeChecked
-class GetMethodBuilder extends AbstractMethodBuilder implements GetMethod, UrlParameterizableGetMethod, ResponseReceivingGetMethod, HeadersHaving<ResponseReceivingGetMethod>, ParametersHaving<ResponseReceivingGetMethod> {
+class GetMethodBuilder extends AbstractMethodBuilder implements GetMethod, UrlParameterizableGetMethod, ResponseReceivingGetMethod,
+        HeadersHaving<ResponseReceivingGetMethod>,
+        QueryParametersHaving<ResponseReceivingGetMethod> {
 
     private final RestOperations restOperations
     private final RetryExecutor retryExecutor
     private final BodyContainingWithHeaders<ResponseReceivingGetMethod> withHeaders
+    private final BodyContainingWithQueryParameters<ResponseReceivingGetMethod> withQueryParameters
 
     GetMethodBuilder(RestOperations restOperations) {
         this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE)
@@ -39,6 +42,7 @@ class GetMethodBuilder extends AbstractMethodBuilder implements GetMethod, UrlPa
         this.restOperations = restOperations
         params.host = host
         withHeaders = new BodyContainingWithHeaders<ResponseReceivingGetMethod>(this, params, predefinedHeaders)
+        withQueryParameters = new BodyContainingWithQueryParameters<ResponseReceivingGetMethod>(this, params)
         this.retryExecutor = retryExecutor
     }
 
@@ -47,7 +51,7 @@ class GetMethodBuilder extends AbstractMethodBuilder implements GetMethod, UrlPa
         params.url = url
         return this
     }
-    
+
     @Override
     ResponseReceivingGetMethod onUrl(String url) {
         params.url = new URI(url)
@@ -75,7 +79,7 @@ class GetMethodBuilder extends AbstractMethodBuilder implements GetMethod, UrlPa
     @Override
     ResponseReceivingGetMethod withVariables(Object... urlVariables) {
         params.urlVariablesArray = urlVariables
-        if(templateStartsWithPlaceholder()) {
+        if (templateStartsWithPlaceholder()) {
             replaceFirstPlaceholderWithValue()
         }
         return this
@@ -133,7 +137,7 @@ class GetMethodBuilder extends AbstractMethodBuilder implements GetMethod, UrlPa
     @Override
     ListenableFuture<Void> ignoringResponseAsync() {
         ListenableFuture<ResponseEntity<Object>> future = aResponseEntity().ofTypeAsync(Object)
-        return Futures.transform(future, {ResponseEntity r -> null as Void} as Function<ResponseEntity, Void>)
+        return Futures.transform(future, { ResponseEntity r -> null as Void } as Function<ResponseEntity, Void>)
     }
 
     com.ofg.infrastructure.web.resttemplate.fluent.common.request.HttpMethod<ResponseReceivingGetMethod, UrlParameterizableGetMethod> withCircuitBreaker(HystrixCommand.Setter setter) {
@@ -154,7 +158,7 @@ class GetMethodBuilder extends AbstractMethodBuilder implements GetMethod, UrlPa
     }
 
     @Override
-    ParametersSetting<ResponseReceivingGetMethod> withQueryParameters() {
+    QueryParametersSetting<ResponseReceivingGetMethod> withQueryParameters() {
         return withQueryParameters.withQueryParameters()
     }
 

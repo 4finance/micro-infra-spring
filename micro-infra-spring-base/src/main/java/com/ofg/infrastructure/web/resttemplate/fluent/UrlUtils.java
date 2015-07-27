@@ -12,26 +12,30 @@ public class UrlUtils {
     private static final String PARAMETERS_ASSIGNMENT = "=";
     private static final String SECOND_AND_LATER_CONCATENATOR = "&";
 
-    public static URI addQueryParametersToUri(URI uri, Map<String, Object> params) throws URISyntaxException {
+    public static URI addQueryParametersToUri(URI uri, Map<String, Object> parameters) throws URISyntaxException {
         StringBuilder urlParametersBuilder = new StringBuilder();
         if (uri == null) {
             throw new IllegalArgumentException("Define URL before URL parameters");
         }
         urlParametersBuilder.append(uri.toString());
         String concatenator = FIRST_PARAMETER_CONCATENATOR;
-        for (String paramName : params.keySet()) {
+        for (String paramName : parameters.keySet()) {
             validateParameters(paramName);
             urlParametersBuilder.append(concatenator);
             urlParametersBuilder.append(paramName);
-            Object parameterValue = params.get(paramName);
+            Object parameterValue = parameters.get(paramName);
 
-            if (parameterValue != null && !parameterValue.toString().isEmpty()) {
+            if (doesContainValue(parameterValue)) {
                 urlParametersBuilder.append(PARAMETERS_ASSIGNMENT);
                 urlParametersBuilder.append(parameterValue.toString());
             }
             concatenator = SECOND_AND_LATER_CONCATENATOR;
         }
         return new URI(urlParametersBuilder.toString());
+    }
+
+    private static boolean doesContainValue(Object value) {
+        return value!=null && !value.toString().equals("");
     }
 
     private static void validateParameters(String paramName) {

@@ -175,12 +175,15 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
                 .withQueryParameters()
                     .parameter("size",123)
                     .parameter("sort",null)
-                    .parameter("filter",Optional.empty())
+                    .parameter("filter","")
                 .andExecuteFor()
                 .anObject()
                 .ofType(BigDecimal)
         then:
-            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?size=123&sort&filter"), GET, _ as HttpEntity, BigDecimal)
+            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?filter&size=123&sort"),
+                    GET,
+                    _ as HttpEntity,
+                    BigDecimal)
     }
 
 }

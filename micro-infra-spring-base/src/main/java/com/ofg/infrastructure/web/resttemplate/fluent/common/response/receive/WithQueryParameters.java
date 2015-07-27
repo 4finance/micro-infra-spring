@@ -6,8 +6,8 @@ import groovy.transform.TypeChecked;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Default implementation of query parameters setting for requests
@@ -17,7 +17,7 @@ import java.util.Map;
 @TypeChecked
 public class WithQueryParameters<T> implements QueryParametersSetting<T>, QueryParametersHaving<T> {
     private final T parent;
-    private final Map<String, Object> queryParams = new HashMap<>();
+    private final Map<String, Object> queryParams = new TreeMap<>();
     private Map params;
 
     public WithQueryParameters(T parent, Map<String, Object> params) {

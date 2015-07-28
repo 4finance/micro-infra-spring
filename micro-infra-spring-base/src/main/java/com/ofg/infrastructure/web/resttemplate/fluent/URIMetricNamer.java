@@ -16,5 +16,5 @@ import java.net.URI;
  * The returned names must not start with a dot.
  */
 public interface URIMetricNamer {
-    public abstract String metricNameFor(URI uri);
+    String metricNameFor(URI uri);
 }

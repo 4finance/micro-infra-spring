@@ -18,7 +18,6 @@ import com.ofg.infrastructure.metrics.publishing.GraphitePublisher;
 import com.ofg.infrastructure.metrics.publishing.JmxPublisher;
 import com.ofg.infrastructure.metrics.publishing.MetricsBasePath;
 import com.ofg.infrastructure.metrics.publishing.PublishingInterval;
-import groovy.util.logging.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,7 +52,6 @@ import static org.springframework.util.StringUtils.isEmpty;
  * @see EnvironmentAwareMetricsBasePath
  */
 @Configuration
-@Slf4j
 public class MetricsConfiguration {
 
     private static final Logger log = getLogger(lookup().lookupClass());

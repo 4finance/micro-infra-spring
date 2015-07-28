@@ -16,7 +16,6 @@ import com.ofg.infrastructure.web.resttemplate.fluent.post.PostMethod;
 import com.ofg.infrastructure.web.resttemplate.fluent.post.PostMethodBuilder;
 import com.ofg.infrastructure.web.resttemplate.fluent.put.PutMethod;
 import com.ofg.infrastructure.web.resttemplate.fluent.put.PutMethodBuilder;
-import groovy.transform.CompileStatic;
 import org.springframework.web.client.RestOperations;
 
 import java.util.concurrent.Callable;
@@ -33,8 +32,16 @@ import java.util.concurrent.Callable;
  * @see PostMethod
  * @see PutMethod
  */
-@CompileStatic
 public class HttpMethodBuilder {
+
+    /**
+     * URL of an external URL or a service retrieved via service discovery
+     */
+    private final Callable<String> serviceUrl;
+    private final RestOperations restOperations;
+    private final PredefinedHttpHeaders predefinedHeaders;
+    private RetryExecutor retryExecutor = SyncRetryExecutor.INSTANCE;
+
     public HttpMethodBuilder(RestOperations restOperations) {
         this(new Callable<String>() {
             @Override
@@ -98,18 +105,10 @@ public class HttpMethodBuilder {
         return new PutMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor);
     }
 
-    private final RestOperations restOperations;
     public static final Callable<String> EMPTY_HOST = new Callable<String>() {
         @Override
         public String call() throws Exception {
             return "";
         }
-
     };
-    /**
-     * URL of an external URL or a service retrieved via service discovery
-     */
-    private final Callable<String> serviceUrl;
-    private final PredefinedHttpHeaders predefinedHeaders;
-    private RetryExecutor retryExecutor = SyncRetryExecutor.INSTANCE;
 }

@@ -2,7 +2,6 @@ package com.ofg.infrastructure.web.resttemplate.fluent;
 
 import com.ofg.infrastructure.discovery.*;
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders;
-import groovy.transform.CompileStatic;
 import org.springframework.web.client.RestOperations;
 
 import java.net.URI;
@@ -73,8 +72,12 @@ import java.util.concurrent.Callable;
  * concurrently, combine them, etc.
  * @see <a href="https://github.com/nurkiewicz/async-retry">async-retry</a>
  */
-@CompileStatic
 public class ServiceRestClient {
+
+    private final RestOperations restOperations;
+    private final ServiceResolver serviceResolver;
+    private final ServiceConfigurationResolver configurationResolver;
+
     public ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver) {
         this.configurationResolver = configurationResolver;
         this.restOperations = restOperations;
@@ -127,8 +130,4 @@ public class ServiceRestClient {
     public HttpMethodBuilder forExternalService() {
         return new HttpMethodBuilder(restOperations);
     }
-
-    private final RestOperations restOperations;
-    private final ServiceResolver serviceResolver;
-    private final ServiceConfigurationResolver configurationResolver;
 }

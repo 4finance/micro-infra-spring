@@ -4,6 +4,8 @@ import com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthUtil;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryClientConfiguration;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
@@ -42,6 +44,13 @@ public class ExternalPropertiesConfiguration implements ApplicationContextInitia
     }
 
     @Bean
+    @ConditionalOnMissingBean(ZookeeperDiscoveryProperties.class)
+    public AppCoordinates deprecatedAppCoordinates() {
+        return AppCoordinates.defaults(microserviceConfig);
+    }
+
+    @Bean
+    @ConditionalOnBean(ZookeeperDiscoveryProperties.class)
     public AppCoordinates appCoordinates(ZookeeperDiscoveryProperties zookeeperDiscoveryProperties,
                                          @Value("${spring.application.name}") String applicationName) {
         return AppCoordinates.defaults(zookeeperDiscoveryProperties, applicationName);

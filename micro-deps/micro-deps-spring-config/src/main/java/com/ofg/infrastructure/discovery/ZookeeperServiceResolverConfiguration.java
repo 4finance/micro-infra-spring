@@ -5,12 +5,16 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.x.discovery.details.InstanceSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperInstance;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperServiceDiscovery;
+import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 
 /**
@@ -22,19 +26,30 @@ import org.springframework.core.env.Environment;
  * <li>{@link DependencyResolutionConfiguration} - Configuration of microservice's dependencies resolving classes.
  * </ul>
  */
-@Import({ConsumerDrivenContractConfiguration.class})
+@Import({ConsumerDrivenContractConfiguration.class, ZookeeperAutoConfiguration.class})
 @Configuration
+@Profile(BasicProfiles.SPRING_CLOUD)
 public class ZookeeperServiceResolverConfiguration {
 
     static final Integer DEFAULT_SERVER_PORT = 8080;
 
     @Autowired Environment environment;
 
-    @Bean
+    @Bean(initMethod = "build")
     public ZookeeperServiceDiscovery zookeeperServiceDiscovery(CuratorFramework curator, ZookeeperDiscoveryProperties zookeeperDiscoveryProperties, InstanceSerializer<ZookeeperInstance> instanceSerializer) {
         ZookeeperServiceDiscovery zookeeperServiceDiscovery = new ZookeeperServiceDiscovery(curator, zookeeperDiscoveryProperties, instanceSerializer);
         zookeeperServiceDiscovery.setPort(resolveMicroservicePort(environment));
         return zookeeperServiceDiscovery;
+    }
+
+    @Bean
+    public ServiceResolver zooKeeperServiceResolver(ZookeeperDependencies zookeeperDependencies,
+                                                    DiscoveryClient discoveryClient,
+                                                    ZookeeperServiceDiscovery zookeeperServiceDiscovery,
+                                                    CuratorFramework curatorFramework,
+                                                    ZookeeperDiscoveryProperties zookeeperDiscoveryProperties) {
+        return new SpringCloudZookeeperServiceResolver(zookeeperDependencies,
+                discoveryClient, curatorFramework, zookeeperServiceDiscovery, zookeeperDiscoveryProperties);
     }
 
     private Integer resolveMicroservicePort(Environment environment) {

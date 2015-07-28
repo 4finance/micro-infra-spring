@@ -25,7 +25,9 @@ public class BasicProfiles {
      */
     public static final String SMOKE_TESTS = "smokeTests";
 
+    public static final String SPRING_CLOUD = "springCloud";
+
     public static List<String> all() {
-        return Arrays.asList(DEVELOPMENT, PRODUCTION, TEST, SMOKE_TESTS);
+        return Arrays.asList(DEVELOPMENT, PRODUCTION, TEST, SMOKE_TESTS, SPRING_CLOUD);
     }
 }

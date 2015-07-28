@@ -1,12 +1,15 @@
 package com.ofg.infrastructure.discovery;
 
+import com.ofg.config.BasicProfiles;
 import org.apache.curator.test.TestingServer;
 import org.springframework.cloud.zookeeper.ZookeeperProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
+@Profile(BasicProfiles.SPRING_CLOUD)
 public class SpringCloudZookeeperConnectorConfiguration {
 
     @Bean
@@ -32,4 +35,5 @@ public class SpringCloudZookeeperConnectorConfiguration {
 
         };
     }
+
 }

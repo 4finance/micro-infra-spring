@@ -1,11 +1,16 @@
 package com.ofg.stub.config
+
+import com.ofg.infrastructure.discovery.MicroserviceConfigurationNotPresentException
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.stub.*
 import groovy.grape.Grape
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.apache.curator.test.TestingServer
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties
+import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -46,6 +51,10 @@ import org.springframework.context.annotation.Import
 @CompileStatic
 class StubRunnerConfiguration {
 
+    @Deprecated @Autowired(required = false) private ServiceConfigurationResolver serviceConfigurationResolver
+    @Autowired(required = false) ZookeeperDependencies zookeeperDependencies
+    @Autowired(required = false) ZookeeperDiscoveryProperties zookeeperDiscoveryProperties
+
     /**
      * Bean that initializes stub runners, runs them and on shutdown closes them. Upon its instantiation
      * JAR with stubs is downloaded and unpacked to a temporary folder. Next, {@link StubRunner} instance are
@@ -77,14 +86,36 @@ class StubRunnerConfiguration {
                                 @Value('${stubrunner.use-microservice-definitions:false}') boolean useMicroserviceDefinitions,
                                 @Value('${stubrunner.wait-for-service:false}') boolean waitForService,
                                 @Value('${stubrunner.wait-timeout:1}') Integer waitTimeout,
-                                TestingServer testingServer,
-                                ServiceConfigurationResolver serviceConfigurationResolver) {
+                                TestingServer testingServer) {
+        checkIfConfigurationIsPresent()
         boolean shouldWorkOnline = isPropertySetToWorkOnline(workOffline, skipLocalRepo)
         StubRunnerOptions stubRunnerOptions = new StubRunnerOptions(minPortValue, maxPortValue, stubRepositoryRoot, stubsGroup, stubsModule, shouldWorkOnline,
                 useMicroserviceDefinitions, testingServer.connectString, testingServer.port, stubsSuffx, waitForService, waitTimeout)
-        List<String> dependenciesPath = serviceConfigurationResolver.dependencies.collect { it.servicePath.path }
-        Collaborators dependencies = new Collaborators(serviceConfigurationResolver.basePath, dependenciesPath)
+        List<String> dependenciesPath = getDependenciesPaths()
+        Collaborators dependencies = new Collaborators(getBasePath(), dependenciesPath)
         return new BatchStubRunnerFactory(stubRunnerOptions, dependencies).buildBatchStubRunner()
+    }
+
+    private void checkIfConfigurationIsPresent() {
+        if (!serviceConfigurationResolver && !zookeeperDependencies) {
+            throw new MicroserviceConfigurationNotPresentException()
+        }
+    }
+
+    private String getBasePath() {
+        if (zookeeperDiscoveryProperties) {
+            return zookeeperDiscoveryProperties.root
+        } else if (serviceConfigurationResolver) {
+            return serviceConfigurationResolver.basePath
+        }
+    }
+
+    private List<String> getDependenciesPaths() {
+        if (zookeeperDependencies) {
+            return zookeeperDependencies.getDependencyConfigurations().collect { it.path }
+        } else if (serviceConfigurationResolver) {
+            return serviceConfigurationResolver.dependencies.collect { it.servicePath.path }
+        }
     }
 
     private boolean isPropertySetToWorkOnline(boolean workOffline, boolean skipLocalRepo) {

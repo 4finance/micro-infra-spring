@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Import;
  * <li>{@link DependencyResolutionConfiguration} - Configuration of microservice's dependencies resolving classes.
  * </ul>
  */
-@Import({AddressProviderConfiguration.class, ServiceDiscoveryInfrastructureConfiguration.class, DependencyResolutionConfiguration.class })
+@Import({AddressProviderConfiguration.class, ServiceDiscoveryInfrastructureConfiguration.class, DependencyResolutionConfiguration.class, SpringCloudZookeeperConfiguration.class })
 @Configuration
-@Deprecated
 public class ServiceResolverConfiguration {
+
 }

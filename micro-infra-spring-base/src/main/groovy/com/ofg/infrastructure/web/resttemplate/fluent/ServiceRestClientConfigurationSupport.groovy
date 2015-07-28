@@ -3,6 +3,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent
 import com.codahale.metrics.MetricRegistry
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor
+import com.ofg.infrastructure.discovery.MicroserviceConfigurationNotPresentException
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.web.resttemplate.RestOperationsMetricsAspect
@@ -59,9 +60,13 @@ class ServiceRestClientConfigurationSupport {
     private RestClientConfigurer configurer
 
     @Autowired(required = false) ZookeeperDependencies zookeeperDependencies
+    @Deprecated @Autowired(required = false) ServiceConfigurationResolver configurationResolver
 
     @Bean
-    ServiceRestClient serviceRestClient(ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver) {
+    ServiceRestClient serviceRestClient(ServiceResolver serviceResolver) {
+        if (zookeeperDependencies == null && configurationResolver == null) {
+            throw new MicroserviceConfigurationNotPresentException()
+        }
         if (zookeeperDependencies) {
             return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, zookeeperDependencies)
         }

@@ -7,10 +7,10 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.ofg.infrastructure.discovery.util.CollectionUtils;
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.x.discovery.ServiceDiscovery;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
+import org.springframework.cloud.zookeeper.discovery.ZookeeperServiceDiscovery;
 import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies;
 
 import java.net.URI;
@@ -26,10 +26,14 @@ public class SpringCloudZookeeperServiceResolver implements ServiceResolver {
     private final ZookeeperDependencies zookeeperDependencies;
     private final DiscoveryClient discoveryClient;
     private final CuratorFramework curatorFramework;
-    private final ServiceDiscovery serviceDiscovery;
+    private final ZookeeperServiceDiscovery serviceDiscovery;
     private final ZookeeperDiscoveryProperties zookeeperDiscoveryProperties;
 
-    public SpringCloudZookeeperServiceResolver(ZookeeperDependencies zookeeperDependencies, DiscoveryClient discoveryClient, CuratorFramework curatorFramework, ServiceDiscovery serviceDiscovery, ZookeeperDiscoveryProperties zookeeperDiscoveryProperties) {
+    public SpringCloudZookeeperServiceResolver(ZookeeperDependencies zookeeperDependencies,
+                                               DiscoveryClient discoveryClient,
+                                               CuratorFramework curatorFramework,
+                                               ZookeeperServiceDiscovery serviceDiscovery,
+                                               ZookeeperDiscoveryProperties zookeeperDiscoveryProperties) {
         this.zookeeperDependencies = zookeeperDependencies;
         this.discoveryClient = discoveryClient;
         this.curatorFramework = curatorFramework;
@@ -114,7 +118,7 @@ public class SpringCloudZookeeperServiceResolver implements ServiceResolver {
     private boolean isServiceName(String path) {
         final String potentialServiceName = path.substring(zookeeperDiscoveryProperties.getRoot().length());
         try {
-            return !serviceDiscovery.queryForInstances(potentialServiceName).isEmpty();
+            return !serviceDiscovery.getServiceDiscovery().queryForInstances(potentialServiceName).isEmpty();
         } catch (Exception ignored) {
             //ignored, not a service
             return false;

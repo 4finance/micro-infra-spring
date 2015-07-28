@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import groovy.transform.CompileStatic;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +23,6 @@ import static com.ofg.config.BasicProfiles.TEST;
  * - in production environment pretty printing is set to false,
  * - in test or development environment pretty printing is set to true.
  */
-@CompileStatic
 @Configuration
 public class ViewConfiguration extends WebMvcConfigurationSupport {
     private static final boolean ON = true;

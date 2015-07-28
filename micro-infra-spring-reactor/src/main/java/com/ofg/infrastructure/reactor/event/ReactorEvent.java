@@ -1,8 +1,6 @@
 package com.ofg.infrastructure.reactor.event;
 
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder;
-import groovy.transform.CompileStatic;
-import groovy.util.logging.Slf4j;
 import reactor.event.Event;
 import reactor.function.Consumer;
 
@@ -16,8 +14,6 @@ import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATI
  * @see CorrelationIdHolder
  * @see Event
  */
-@CompileStatic
-@Slf4j
 public class ReactorEvent<T> extends Event<T> {
     public ReactorEvent(Class<T> klass) {
         super(klass);
@@ -43,7 +39,6 @@ public class ReactorEvent<T> extends Event<T> {
         if (!getHeaders().contains(CORRELATION_ID_HEADER)) {
             getHeaders().set(CORRELATION_ID_HEADER, CorrelationIdHolder.get());
         }
-
     }
 
     /**
@@ -68,5 +63,4 @@ public class ReactorEvent<T> extends Event<T> {
     public static <T> Event<T> wrap(T obj, Object replyToKey) {
         return new ReactorEvent<T>(obj).setReplyTo(replyToKey);
     }
-
 }

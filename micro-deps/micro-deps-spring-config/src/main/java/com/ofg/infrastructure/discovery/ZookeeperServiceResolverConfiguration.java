@@ -3,7 +3,11 @@ package com.ofg.infrastructure.discovery;
 import com.ofg.config.BasicProfiles;
 import org.apache.commons.lang.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.x.discovery.ServiceInstance;
+import org.apache.curator.x.discovery.UriSpec;
 import org.apache.curator.x.discovery.details.InstanceSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration;
@@ -11,11 +15,16 @@ import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryPropertie
 import org.springframework.cloud.zookeeper.discovery.ZookeeperInstance;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperServiceDiscovery;
 import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
+
+import java.lang.invoke.MethodHandles;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Configuration that binds together whole service discovery. Imports:
@@ -31,13 +40,29 @@ import org.springframework.core.env.Environment;
 @Profile(BasicProfiles.SPRING_CLOUD)
 public class ZookeeperServiceResolverConfiguration {
 
+    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     static final Integer DEFAULT_SERVER_PORT = 8080;
 
     @Autowired Environment environment;
 
     @Bean(initMethod = "build")
     public ZookeeperServiceDiscovery zookeeperServiceDiscovery(CuratorFramework curator, ZookeeperDiscoveryProperties zookeeperDiscoveryProperties, InstanceSerializer<ZookeeperInstance> instanceSerializer) {
-        ZookeeperServiceDiscovery zookeeperServiceDiscovery = new ZookeeperServiceDiscovery(curator, zookeeperDiscoveryProperties, instanceSerializer);
+        ZookeeperServiceDiscovery zookeeperServiceDiscovery = new ZookeeperServiceDiscovery(curator, zookeeperDiscoveryProperties, instanceSerializer) {
+            @Override
+            protected void configureServiceInstance(AtomicReference<ServiceInstance<ZookeeperInstance>> serviceInstance, String appName, ApplicationContext context, AtomicInteger port, String host, UriSpec uriSpec) {
+                try {
+                    serviceInstance.set(ServiceInstance.<ZookeeperInstance>builder()
+                            .name(appName)
+                            .port(port.get())
+                            .address(host)
+                            .uriSpec(uriSpec).build());
+                } catch (Exception e) {
+                    LOG.error("Exception occurred while trying to build ServiceInstance", e);
+                    throw new RuntimeException(e);
+                }
+            }
+        };
         zookeeperServiceDiscovery.setPort(resolveMicroservicePort(environment));
         return zookeeperServiceDiscovery;
     }

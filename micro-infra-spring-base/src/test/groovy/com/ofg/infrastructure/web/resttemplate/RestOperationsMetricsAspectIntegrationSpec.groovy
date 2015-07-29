@@ -3,6 +3,7 @@ package com.ofg.infrastructure.web.resttemplate
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.Timer
 import com.ofg.infrastructure.base.MvcWiremockIntegrationSpec
+import com.ofg.infrastructure.discovery.ServiceDiscoveryConfiguration
 import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClientConfiguration
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,7 +25,7 @@ import java.util.concurrent.Callable
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*
 
-@ContextConfiguration(classes = [ServiceRestClientConfiguration, Config], loader = SpringApplicationContextLoader)
+@ContextConfiguration(classes = [ServiceRestClientConfiguration, ServiceDiscoveryConfiguration, Config], loader = SpringApplicationContextLoader)
 class RestOperationsMetricsAspectIntegrationSpec extends MvcWiremockIntegrationSpec {
 
     @Resource

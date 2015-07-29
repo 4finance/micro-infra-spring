@@ -3,6 +3,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent
 import com.codahale.metrics.MetricRegistry
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
+import com.ofg.infrastructure.discovery.EnableServiceDiscovery
 import com.ofg.infrastructure.web.resttemplate.RestOperationsMetricsAspect
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
@@ -28,6 +29,7 @@ class ServiceRestClientCustomizationByNameSpec extends MvcCorrelationIdSettingIn
     @Configuration
     @Import(BaseConfiguration)
     @EnableServiceRestClient
+    @EnableServiceDiscovery
     @CompileStatic
     @EnableAspectJAutoProxy(proxyTargetClass = true)
     static class CustomConfig {

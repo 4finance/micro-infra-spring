@@ -60,7 +60,7 @@ public class SpringCloudZookeeperServiceResolver implements ServiceResolver {
     }
 
     private List<ServiceInstance> getInstancesForPath(ServicePath service) {
-        return discoveryClient.getInstances(zookeeperDependencies.getAliasForPath(service.getPath()));
+        return discoveryClient.getInstances(service.getPathWithStartingSlash());
     }
 
     @Override

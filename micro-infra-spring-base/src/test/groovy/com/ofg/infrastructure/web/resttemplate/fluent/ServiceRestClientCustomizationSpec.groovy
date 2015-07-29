@@ -2,6 +2,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent
 
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
+import com.ofg.infrastructure.discovery.EnableServiceDiscovery
 import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import com.ofg.infrastructure.web.resttemplate.fluent.config.ServiceRestClientConfigurerAdapter
 import groovy.transform.CompileStatic
@@ -34,6 +35,7 @@ class ServiceRestClientCustomizationSpec extends MvcCorrelationIdSettingIntegrat
     @Configuration
     @Import(BaseConfiguration)
     @EnableServiceRestClient
+    @EnableServiceDiscovery
     @CompileStatic
     @EnableAspectJAutoProxy(proxyTargetClass = true)
     static class CustomConfig extends ServiceRestClientConfigurerAdapter {

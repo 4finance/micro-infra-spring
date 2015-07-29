@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.discovery;
 
-import com.ofg.config.BasicProfiles;
+import com.ofg.config.NotSpringCloudProfile;
 import com.ofg.infrastructure.discovery.util.ProviderStrategyFactory;
 import com.ofg.infrastructure.discovery.watcher.DependencyWatcher;
 import com.ofg.infrastructure.discovery.watcher.presence.DefaultDependencyPresenceOnStartupVerifier;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
@@ -33,7 +32,7 @@ import java.io.IOException;
  */
 @Configuration
 @Deprecated
-@Profile("!" + BasicProfiles.SPRING_CLOUD)
+@NotSpringCloudProfile
 public class DependencyResolutionConfiguration {
 
     @Autowired(required = false) DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier;

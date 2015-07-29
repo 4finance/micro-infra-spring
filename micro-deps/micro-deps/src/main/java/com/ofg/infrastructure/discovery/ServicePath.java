@@ -22,6 +22,10 @@ public class ServicePath {
         return Iterables.getLast(Arrays.asList(path.split("/")));
     }
 
+    public String getPathWithStartingSlash() {
+        return path.startsWith("/") ? path : "/" + path;
+    }
+
     @Override
     public String toString() {
         return path;

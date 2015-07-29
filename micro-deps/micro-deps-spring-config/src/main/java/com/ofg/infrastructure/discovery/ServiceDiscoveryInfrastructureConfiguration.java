@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.discovery;
 
 import com.ofg.config.BasicProfiles;
+import com.ofg.config.NotSpringCloudProfile;
 import com.ofg.infrastructure.discovery.ZookeeperConnectorConditions.InMemoryZookeeperCondition;
 import com.ofg.infrastructure.discovery.ZookeeperConnectorConditions.StandaloneZookeeperCondition;
 import org.apache.curator.RetryPolicy;
@@ -32,7 +33,7 @@ import static java.lang.invoke.MethodHandles.lookup;
 @Import(ConsumerDrivenContractConfiguration.class)
 @Configuration
 @Deprecated
-@Profile("!" + BasicProfiles.SPRING_CLOUD)
+@NotSpringCloudProfile
 public class ServiceDiscoveryInfrastructureConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(lookup().lookupClass());

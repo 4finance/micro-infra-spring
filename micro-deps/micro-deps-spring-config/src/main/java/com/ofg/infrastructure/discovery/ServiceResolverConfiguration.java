@@ -15,5 +15,6 @@ import org.springframework.context.annotation.Import;
  */
 @Import({AddressProviderConfiguration.class, ServiceDiscoveryInfrastructureConfiguration.class, DependencyResolutionConfiguration.class })
 @Configuration
+@Deprecated
 public class ServiceResolverConfiguration {
 }

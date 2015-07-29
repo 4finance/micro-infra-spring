@@ -112,6 +112,8 @@ configure(srcSubprojects) {
             "org.codehaus.groovy:groovy-all" "2.4.3"
             "com.google.guava:guava" "18.0"
             "commons-io:commons-io" "2.4"
+            "org.springframework.cloud:spring-cloud-zookeeper-core" "1.0.0.BUILD-SNAPSHOT"
+            "org.springframework.cloud:spring-cloud-zookeeper-discovery" "1.0.0.BUILD-SNAPSHOT"
 
             dependencySet(group:"org.apache.curator", version: "2.8.0") {
                 entry "curator-x-discovery"

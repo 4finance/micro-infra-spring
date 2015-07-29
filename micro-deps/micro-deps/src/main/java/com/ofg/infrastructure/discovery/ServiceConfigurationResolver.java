@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import java.util.List;
 import java.util.Set;
 
+@Deprecated
 public class ServiceConfigurationResolver {
 
     private final String basePath;

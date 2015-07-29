@@ -1,7 +1,11 @@
 package com.ofg.infrastructure.web.resttemplate.fluent;
 
-import com.ofg.infrastructure.discovery.*;
+import com.ofg.infrastructure.discovery.MicroserviceConfiguration;
+import com.ofg.infrastructure.discovery.ServiceAlias;
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver;
+import com.ofg.infrastructure.discovery.ServiceResolver;
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders;
+import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies;
 import org.springframework.web.client.RestOperations;
 
 import java.net.URI;
@@ -73,15 +77,24 @@ import java.util.concurrent.Callable;
  * @see <a href="https://github.com/nurkiewicz/async-retry">async-retry</a>
  */
 public class ServiceRestClient {
-
     private final RestOperations restOperations;
     private final ServiceResolver serviceResolver;
     private final ServiceConfigurationResolver configurationResolver;
+    private final ZookeeperDependencies zookeeperDependencies;
 
+    @Deprecated
     public ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver) {
         this.configurationResolver = configurationResolver;
         this.restOperations = restOperations;
         this.serviceResolver = serviceResolver;
+        this.zookeeperDependencies = null;
+    }
+
+    public ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver, ZookeeperDependencies zookeeperDependencies) {
+        this.restOperations = restOperations;
+        this.serviceResolver = serviceResolver;
+        this.zookeeperDependencies = zookeeperDependencies;
+        this.configurationResolver = null;
     }
 
     /**
@@ -104,8 +117,21 @@ public class ServiceRestClient {
      * @return builder for the specified HttpMethod
      */
     public HttpMethodBuilder forService(ServiceAlias serviceAlias) {
+        if (configurationResolver != null) {
+            return getMethodBuilderUsingConfigurationResolver(serviceAlias);
+        }
+        return getMethodBuilderUsingZookeeperDeps(serviceAlias);
+    }
+
+    @Deprecated
+    private HttpMethodBuilder getMethodBuilderUsingConfigurationResolver(ServiceAlias serviceAlias) {
         final MicroserviceConfiguration.Dependency dependency = configurationResolver.getDependency(serviceAlias);
         final PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(dependency);
+        return new HttpMethodBuilder(getServiceUri(serviceAlias), restOperations, predefinedHeaders);
+    }
+
+    private HttpMethodBuilder getMethodBuilderUsingZookeeperDeps(ServiceAlias serviceAlias) {
+        final PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(zookeeperDependencies.getDependencyForAlias(serviceAlias.getName()));
         return new HttpMethodBuilder(getServiceUri(serviceAlias), restOperations, predefinedHeaders);
     }
 

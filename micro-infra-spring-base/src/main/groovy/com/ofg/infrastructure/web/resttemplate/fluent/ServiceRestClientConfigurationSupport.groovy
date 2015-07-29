@@ -10,9 +10,11 @@ import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import com.ofg.infrastructure.web.resttemplate.fluent.config.RestClientConfigurer
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies
 import org.springframework.context.annotation.Bean
 import org.springframework.http.client.BufferingClientHttpRequestFactory
 import org.springframework.http.client.ClientHttpRequestFactory
@@ -56,8 +58,18 @@ class ServiceRestClientConfigurationSupport {
 
     private RestClientConfigurer configurer
 
+    @Autowired(required = false) ZookeeperDependencies zookeeperDependencies
+
     @Bean
     ServiceRestClient serviceRestClient(ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver) {
+        if (zookeeperDependencies) {
+            return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, zookeeperDependencies)
+        }
+        return createServiceRestClientUsingServiceConfigurationResolver(serviceResolver, configurationResolver)
+    }
+
+    @Deprecated
+    private ServiceRestClient createServiceRestClientUsingServiceConfigurationResolver(ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver) {
         return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, configurationResolver)
     }
 

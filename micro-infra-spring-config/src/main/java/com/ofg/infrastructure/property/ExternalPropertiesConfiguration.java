@@ -4,10 +4,14 @@ import com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthUtil;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration;
+import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryClientConfiguration;
+import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.Resource;
@@ -16,6 +20,7 @@ import org.springframework.security.crypto.encrypt.TextEncryptor;
 import static java.lang.invoke.MethodHandles.lookup;
 import static org.slf4j.LoggerFactory.getLogger;
 
+@Import({ ZookeeperAutoConfiguration.class, ZookeeperDiscoveryClientConfiguration.class })
 @Configuration
 @Profile("!test")
 public class ExternalPropertiesConfiguration implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
@@ -29,16 +34,17 @@ public class ExternalPropertiesConfiguration implements ApplicationContextInitia
     private Resource microserviceConfig;
 
     @Bean
-    public FileSystemLocator fileSystemLocator() {
+    public FileSystemLocator fileSystemLocator(AppCoordinates appCoordinates) {
         return new FileSystemLocator(
                 PropertiesFolderFinder.find(),
-                appCoordinates(),
+                appCoordinates,
                 textEncryptor == null ? new FailsafeTextEncryptor() : textEncryptor);
     }
 
     @Bean
-    public AppCoordinates appCoordinates() {
-        return AppCoordinates.defaults(microserviceConfig);
+    public AppCoordinates appCoordinates(ZookeeperDiscoveryProperties zookeeperDiscoveryProperties,
+                                         @Value("${spring.application.name}") String applicationName) {
+        return AppCoordinates.defaults(zookeeperDiscoveryProperties, applicationName);
     }
 
     @Override

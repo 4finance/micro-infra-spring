@@ -19,6 +19,7 @@ class LoadingFromFileSystemSpec extends AbstractIntegrationSpec {
     private MyBean myBean
 
     def setupSpec() {
+        setValidBootstrapConfig()
         context = contextWithSources(BasicApp)
         myBean = context.getBean(MyBean)
     }

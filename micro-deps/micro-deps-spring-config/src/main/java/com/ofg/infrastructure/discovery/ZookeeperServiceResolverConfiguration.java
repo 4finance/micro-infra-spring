@@ -1,0 +1,45 @@
+package com.ofg.infrastructure.discovery;
+
+import com.ofg.config.BasicProfiles;
+import org.apache.commons.lang.StringUtils;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.x.discovery.details.InstanceSerializer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
+import org.springframework.cloud.zookeeper.discovery.ZookeeperInstance;
+import org.springframework.cloud.zookeeper.discovery.ZookeeperServiceDiscovery;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
+
+/**
+ * Configuration that binds together whole service discovery. Imports:
+ * <p/>
+ * <ul>
+ * <li>{@link AddressProviderConfiguration} - contains beans related to microservice's address and port resolution</li>
+ * <li>{@link ServiceDiscoveryInfrastructureConfiguration} - contains beans related to connection to service discovery provider (available only in {@link BasicProfiles#PRODUCTION}</li>
+ * <li>{@link DependencyResolutionConfiguration} - Configuration of microservice's dependencies resolving classes.
+ * </ul>
+ */
+@Import({ConsumerDrivenContractConfiguration.class})
+@Configuration
+public class ZookeeperServiceResolverConfiguration {
+
+    static final Integer DEFAULT_SERVER_PORT = 8080;
+
+    @Autowired Environment environment;
+
+    @Bean
+    public ZookeeperServiceDiscovery zookeeperServiceDiscovery(CuratorFramework curator, ZookeeperDiscoveryProperties zookeeperDiscoveryProperties, InstanceSerializer<ZookeeperInstance> instanceSerializer) {
+        ZookeeperServiceDiscovery zookeeperServiceDiscovery = new ZookeeperServiceDiscovery(curator, zookeeperDiscoveryProperties, instanceSerializer);
+        zookeeperServiceDiscovery.setPort(resolveMicroservicePort(environment));
+        return zookeeperServiceDiscovery;
+    }
+
+    private Integer resolveMicroservicePort(Environment environment) {
+        final String property = System.getProperty("port");
+        String port = StringUtils.isNotBlank(property) ? property : environment.getProperty("server.port");
+        return port != null ? Integer.valueOf(port) : DEFAULT_SERVER_PORT;
+    }
+}

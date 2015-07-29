@@ -42,4 +42,8 @@ abstract class AbstractIntegrationSpec extends Specification {
                 .web(false)
                 .showBanner(false)
     }
+
+    protected static void setValidBootstrapConfig() {
+        System.setProperty('spring.cloud.bootstrap.name', 'bootstrap-ok')
+    }
 }

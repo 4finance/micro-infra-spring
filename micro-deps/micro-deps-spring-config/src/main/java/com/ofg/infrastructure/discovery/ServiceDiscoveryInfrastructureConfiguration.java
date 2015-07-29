@@ -34,6 +34,7 @@ import static java.lang.invoke.MethodHandles.lookup;
  */
 @Import(ConsumerDrivenContractConfiguration.class)
 @Configuration
+@Deprecated
 public class ServiceDiscoveryInfrastructureConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(lookup().lookupClass());

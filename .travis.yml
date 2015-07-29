@@ -9,6 +9,7 @@ before_install:
   - "sh -e /etc/init.d/xvfb start"
 
 install:
+- git clone https://github.com/marcingrzejszczak/spring-cloud-zookeeper.git && cd spring-cloud-zookeeper && git checkout tech/further-4financeit-migration && mvn clean install -s .settings.xml && cd .. && rm -rf spring-cloud-zookeeper
 - ./gradlew assemble --stacktrace
 
 script:

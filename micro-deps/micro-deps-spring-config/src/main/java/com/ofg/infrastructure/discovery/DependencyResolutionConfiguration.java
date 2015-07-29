@@ -30,6 +30,7 @@ import java.io.IOException;
  * @see ServiceConfigurationResolver
  */
 @Configuration
+@Deprecated
 public class DependencyResolutionConfiguration {
 
     @Autowired(required = false) DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier;

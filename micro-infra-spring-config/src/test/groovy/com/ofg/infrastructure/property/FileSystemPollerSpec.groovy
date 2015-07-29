@@ -1,5 +1,4 @@
 package com.ofg.infrastructure.property
-
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.cloud.autoconfigure.ConfigClientAutoConfiguration
 import org.springframework.cloud.context.config.annotation.RefreshScope
@@ -33,6 +32,7 @@ class FileSystemPollerSpec extends AbstractIntegrationSpec {
     private PollingConditions conditions = new PollingConditions()
 
     def setupSpec() {
+        setValidBootstrapConfig()
         context = contextWithSources(RefreshingApp)
         counter = context.getBean(InitCounter)
         poller = context.getBean(FileSystemPoller)

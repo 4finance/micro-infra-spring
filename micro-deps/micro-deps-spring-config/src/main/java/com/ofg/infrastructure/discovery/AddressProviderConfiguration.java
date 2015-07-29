@@ -20,6 +20,7 @@ import static java.lang.invoke.MethodHandles.lookup;
  * @see MicroserviceAddressProvider
  */
 @Configuration
+@Deprecated
 public class AddressProviderConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(lookup().lookupClass());

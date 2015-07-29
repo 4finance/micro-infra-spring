@@ -33,7 +33,7 @@ class CommonHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should fail at last possible step to send a request when service is not found"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder({ throw new ServiceUnavailableException('someService') }, restOperations, new PredefinedHttpHeaders(null))
+            httpMethodBuilder = new HttpMethodBuilder({ throw new ServiceUnavailableException('someService') }, restOperations, new PredefinedHttpHeaders())
             String url = 'http://some.url/api/objects'
             HttpEntity expectedHttpEntity = new HttpEntity('')
         and:

@@ -3,8 +3,7 @@ description = 'Spring configuration for stub-runner'
 dependencies {
     compile project(':micro-deps-root:micro-deps')
     compile project(':stub-runner-root:stub-runner')
-    compile 'org.springframework.cloud:spring-cloud-zookeeper-core'
-    compile 'org.springframework.cloud:spring-cloud-zookeeper-discovery'
+    compile 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery'
 
     compile 'org.codehaus.groovy:groovy-all'
     compile 'org.springframework:spring-context'

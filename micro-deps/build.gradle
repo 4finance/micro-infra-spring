@@ -34,8 +34,7 @@ project(':micro-deps-root:micro-deps-spring-config') {
             exclude group: "org.slf4j", module: "log4j-over-slf4j"
         }
         compile "org.springframework:spring-context"
-        compile 'org.springframework.cloud:spring-cloud-zookeeper-core'
-        compile 'org.springframework.cloud:spring-cloud-zookeeper-discovery'
+        compile 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery'
 
         testCompile 'org.codehaus.groovy:groovy-all'
         testCompile "org.spockframework:spock-core"

@@ -21,8 +21,7 @@ dependencies {
     compile "org.codehaus.groovy:groovy-all"
     compile "org.aspectj:aspectjrt"
     compile "commons-io:commons-io"
-    compile 'org.springframework.cloud:spring-cloud-zookeeper-core'
-    compile 'org.springframework.cloud:spring-cloud-zookeeper-discovery'
+    compile 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery'
 
     testCompile "org.spockframework:spock-core"
     testRuntime "org.springframework:spring-test"

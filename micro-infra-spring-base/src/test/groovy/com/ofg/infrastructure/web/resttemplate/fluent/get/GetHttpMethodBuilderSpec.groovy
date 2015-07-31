@@ -162,7 +162,28 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
                     .anObject()
                     .ofType(BigDecimal)
         then:
-            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?parameterOne=valueOne&parameterTwo="), GET, _ as HttpEntity, BigDecimal)
+            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?parameterOne=valueOne&parameterTwo"), GET, _ as HttpEntity, BigDecimal)
+    }
+
+    def "should add parameters to query string when sending request to a service via DSL"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+        when:
+            httpMethodBuilder
+                .get()
+                .onUrl(PATH)
+                .withQueryParameters()
+                    .parameter("size",123)
+                    .parameter("sort",null)
+                    .parameter("filter","")
+                .andExecuteFor()
+                .anObject()
+                .ofType(BigDecimal)
+        then:
+            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?filter&size=123&sort"),
+                    GET,
+                    _ as HttpEntity,
+                    BigDecimal)
     }
 
 }

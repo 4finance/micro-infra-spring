@@ -1,13 +1,11 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.head
-
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 
-import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.*
-import static org.springframework.http.HttpMethod.GET
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
 import static org.springframework.http.HttpMethod.HEAD
 import static org.springframework.http.HttpStatus.OK
 
@@ -161,7 +159,26 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
                     .andExecuteFor()
                     .ignoringResponse()
         then:
-            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?parameterOne=valueOne&parameterTwo="), HEAD, new HttpEntity(null), Object)
+            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?parameterOne=valueOne&parameterTwo"), HEAD, new HttpEntity(null), Object)
     }
 
+    def "should add parameters to query string when sending request to a service via DSL"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+        when:
+            httpMethodBuilder
+                    .head()
+                    .onUrl(PATH)
+                    .withQueryParameters()
+                        .parameter("size",123)
+                        .parameter("sort",null)
+                        .parameter("filter","")
+                    .andExecuteFor()
+                    .ignoringResponse()
+        then:
+            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?filter&size=123&sort"),
+                    HEAD,
+                    _ as HttpEntity,
+                    Object)
+    }
 }

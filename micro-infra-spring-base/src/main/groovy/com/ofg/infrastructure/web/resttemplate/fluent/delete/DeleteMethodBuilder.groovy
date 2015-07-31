@@ -13,6 +13,9 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.R
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodylessWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.QueryParametersHaving
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.QueryParametersSetting
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodylessWithQueryParameters
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
@@ -27,17 +30,20 @@ import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.rec
  * Implementation of the {@link org.springframework.http.HttpMethod#DELETE method} fluent API
  */
 @TypeChecked
-class DeleteMethodBuilder extends AbstractMethodBuilder implements DeleteMethod, UrlParameterizableDeleteMethod, ResponseReceivingDeleteMethod {
+class DeleteMethodBuilder extends AbstractMethodBuilder implements DeleteMethod, UrlParameterizableDeleteMethod,
+        ResponseReceivingDeleteMethod, QueryParametersHaving<ResponseReceivingDeleteMethod> {
 
 
     private final RestOperations restOperations
     private final RetryExecutor retryExecutor
     private final BodylessWithHeaders<ResponseReceivingDeleteMethod> withHeaders
+    private final BodylessWithQueryParameters<ResponseReceivingDeleteMethod> withQueryParameters
 
     DeleteMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
         this.restOperations = restOperations
         params.host = host
         withHeaders =  new BodylessWithHeaders<ResponseReceivingDeleteMethod>(this, params, predefinedHeaders)
+        withQueryParameters = new BodylessWithQueryParameters<ResponseReceivingDeleteMethod>(this, params)
         this.retryExecutor = retryExecutor
     }
 
@@ -132,5 +138,10 @@ class DeleteMethodBuilder extends AbstractMethodBuilder implements DeleteMethod,
     @Override
     HeadersSetting<ResponseReceivingDeleteMethod> withHeaders() {
         return withHeaders.withHeaders()
+    }
+
+    @Override
+    QueryParametersSetting<ResponseReceivingDeleteMethod> withQueryParameters() {
+        return withQueryParameters.withQueryParameters()
     }
 }

@@ -4,6 +4,6 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.E
 /**
  * Interface that is a base for all the HttpMethods
  */
-interface ResponseReceiving<T> extends HeadersHaving<T>, Executable<T>, ResponseExtracting {
+interface ResponseReceiving<T> extends HeadersHaving<T>, QueryParametersHaving<T>, Executable<T>, ResponseExtracting {
     
 }

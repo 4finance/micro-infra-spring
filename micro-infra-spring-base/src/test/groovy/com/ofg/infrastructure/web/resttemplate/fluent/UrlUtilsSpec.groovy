@@ -21,7 +21,7 @@ class UrlUtilsSpec extends Specification {
         when:
             URI result = UrlUtils.addQueryParametersToUri(new URI(""), parameters)
         then:
-            result.toString() == "?firstParam=&secondParam="
+            result.toString() == "?firstParam&secondParam"
     }
 
     @Unroll("should not add '#paramName' as parameter name")

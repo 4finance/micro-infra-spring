@@ -3,12 +3,11 @@ package com.ofg.infrastructure.web.resttemplate.fluent.delete
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
 
-import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.*
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 
 import static org.springframework.http.HttpMethod.DELETE
-import static org.springframework.http.HttpMethod.GET
 import static org.springframework.http.HttpStatus.OK
 
 class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
@@ -139,10 +138,29 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
                     .withQueryParameters(['parameterOne': 'valueOne', 'parameterTwo': null])
                     .ignoringResponse()
         then:
-            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?parameterOne=valueOne&parameterTwo="), DELETE, new HttpEntity<Object>(null), Object)
+            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?parameterOne=valueOne&parameterTwo"),
+                    DELETE,
+                    _ as HttpEntity,
+                    Object)
     }
 
-    private boolean hasNoContentTypeHeaderSet(HttpEntity it) {
-        it.getHeaders().getContentType() == null
+    def "should add parameters to query string when sending request to a service via DSL"() {
+        given:
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+        when:
+            httpMethodBuilder
+                    .delete()
+                    .onUrl(PATH)
+                    .withQueryParameters()
+                        .parameter("size",123)
+                        .parameter("sort",null)
+                        .parameter("filter","")
+                    .andExecuteFor()
+                    .ignoringResponse()
+        then:
+            1 * restOperations.exchange(new URI(FULL_SERVICE_URL + "?filter&size=123&sort"),
+                    DELETE,
+                    _ as HttpEntity,
+                    Object)
     }
 }

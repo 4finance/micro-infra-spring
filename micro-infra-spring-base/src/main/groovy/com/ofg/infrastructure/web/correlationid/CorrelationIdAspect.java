@@ -13,8 +13,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestOperations;
+import org.springframework.web.context.request.async.WebAsyncTask;
 
 import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -64,12 +66,20 @@ public class CorrelationIdAspect {
     private void anyPublicMethodReturningCallable() {
     }
 
-    @Pointcut("(anyRestControllerAnnotated() || anyControllerAnnotated()) && anyPublicMethodReturningCallable()")
-    private void anyControllerOrRestControllerWithPublicAsyncMethod() {
+    @Pointcut("execution(public org.springframework.web.context.request.async.WebAsyncTask *(..))")
+    private void anyPublicMethodReturningWebAsyncTask() {
     }
 
-    @Around("anyControllerOrRestControllerWithPublicAsyncMethod()")
-    public Object wrapWithCorrelationId(ProceedingJoinPoint pjp) throws Throwable {
+    @Pointcut("(anyRestControllerAnnotated() || anyControllerAnnotated()) && anyPublicMethodReturningCallable()")
+    private void anyControllerOrRestControllerWithPublicCallableMethod() {
+    }
+
+    @Pointcut("(anyRestControllerAnnotated() || anyControllerAnnotated()) && anyPublicMethodReturningWebAsyncTask()")
+    private void anyControllerOrRestControllerWithPublicWebAsyncTaskMethod() {
+    }
+
+    @Around("anyControllerOrRestControllerWithPublicCallableMethod()")
+    public Object wrapCallableWithCorrelationId(ProceedingJoinPoint pjp) throws Throwable {
         final Callable callable = (Callable) pjp.proceed();
         log.debug("Wrapping callable with correlation id [" + CorrelationIdHolder.get() + "]");
         return CorrelationIdUpdater.wrapCallableWithId(new Callable() {
@@ -78,6 +88,20 @@ public class CorrelationIdAspect {
                 return callable.call();
             }
         });
+    }
+
+    @Around("anyControllerOrRestControllerWithPublicWebAsyncTaskMethod()")
+    public Object wrapWebAsyncTaskWithCorrelationId(ProceedingJoinPoint pjp) throws Throwable {
+        final WebAsyncTask webAsyncTask = (WebAsyncTask) pjp.proceed();
+        log.debug("Wrapping webAsyncTask with correlation id [" + CorrelationIdHolder.get() + "]");
+        try {
+            Field callableField = WebAsyncTask.class.getDeclaredField("callable");
+            callableField.setAccessible(true);
+            callableField.set(webAsyncTask, CorrelationIdUpdater.wrapCallableWithId(webAsyncTask.getCallable()));
+        } catch (NoSuchFieldException ex) {
+            log.warn("Cannot wrap webAsyncTask with correlation id", ex);
+        }
+        return webAsyncTask;
     }
 
     @Pointcut("execution(public * org.springframework.web.client.RestOperations.exchange(..))")

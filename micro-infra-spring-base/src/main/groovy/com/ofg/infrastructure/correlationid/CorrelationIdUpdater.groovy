@@ -93,7 +93,7 @@ class CorrelationIdUpdater {
      *
      * <pre><code>
      * &#64;Around('...')
-     * Object wrapWithCorrelationId(ProceedingJoinPoint pjp) throws Throwable {
+     * Object wrapCallableWithCorrelationId(ProceedingJoinPoint pjp) throws Throwable {
      *     Callable callable = pjp.proceed() as Callable
      *     return CorrelationIdUpdater.wrapCallableWithId {
      *         callable.call()

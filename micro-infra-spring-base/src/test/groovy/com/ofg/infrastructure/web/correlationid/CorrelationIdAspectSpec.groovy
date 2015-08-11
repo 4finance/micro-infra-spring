@@ -21,7 +21,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.context.request.async.WebAsyncTask
 import spock.lang.Shared
+import spock.lang.Unroll
 
 import java.util.concurrent.Callable
 
@@ -48,11 +50,12 @@ class CorrelationIdAspectSpec extends MicroserviceMvcWiremockSpec {
             wireMock.verifyThat(getRequestedFor(urlMatching('.*')).withHeader(CORRELATION_ID_HEADER, matching(/^(?!\s*$).+/)))
     }
 
-    def "should set correlationId on header via aspect in asynchronous call"() {
+    @Unroll
+    def "should set correlationId on header via aspect in asynchronous call using #url"() {
         given:
             stubInteraction(get(urlMatching('.*')), aResponse().withStatus(200))
         when:
-            MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get('/asyncPing').accept(MediaType.TEXT_PLAIN))
+            MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(url).accept(MediaType.TEXT_PLAIN))
                     .andExpect(request().asyncStarted())
                     .andReturn()
         and:
@@ -63,6 +66,9 @@ class CorrelationIdAspectSpec extends MicroserviceMvcWiremockSpec {
                     andExpect(status().isOk())
         then:
             wireMock.verifyThat(getRequestedFor(urlMatching('.*')).withHeader(CORRELATION_ID_HEADER, matching(/^(?!\s*$).+/)))
+
+        where:
+            url << ['/callablePing', '/webAsyncTaskPing']
     }
 
     @CompileStatic
@@ -85,12 +91,21 @@ class CorrelationIdAspectSpec extends MicroserviceMvcWiremockSpec {
             callWiremockAndReturnOk()
         }
 
-        @RequestMapping(value = "/asyncPing", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
+        @RequestMapping(value = "/callablePing", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
         Callable<String> asyncPing() {
             return {
                 callWiremockAndReturnOk()
             }
         }
+
+        @RequestMapping(value = "/webAsyncTaskPing", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
+        WebAsyncTask<String> webAsyncTaskPing() {
+            return new WebAsyncTask<>(
+                {
+                    callWiremockAndReturnOk()
+                }
+            );
+        };
 
         private String callWiremockAndReturnOk() {
             serviceRestClient.forExternalService()

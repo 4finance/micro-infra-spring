@@ -1,15 +1,14 @@
 package com.ofg.infrastructure.healthcheck;
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClient;
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.util.Map;
 
 class PingClient {
@@ -22,41 +21,34 @@ class PingClient {
     }
 
     public Optional<String> ping(URI uri) {
+        final String fullUrl = uri.resolve("/ping").toString();
         try {
-            return restCall(uri.toURL(), "ping", String.class).transform(new Function<String, String>() {
-                public String apply(String s) {
-                    return s.trim();
-                }
-            });
-        } catch (MalformedURLException e) {
-            log.error("Exception occurred while trying to perform a rest call", e);
-            return Optional.absent();
+            final String response = executeHttpRequest(fullUrl).ofType(String.class);
+            return Optional.of(StringUtils.trimToEmpty(response));
+        } catch (Exception e) {
+            return onException(fullUrl, e);
         }
     }
 
     public Optional<Map> checkCollaborators(URI uri) {
+        String fullUrl = uri.resolve("/collaborators").toString();
         try {
-            return restCall(uri.toURL(), "collaborators", Map.class);
-        } catch (MalformedURLException e) {
-            log.error("Exception occurred while trying to perform a rest call", e);
-            return Optional.absent();
+            return Optional.fromNullable(
+                    executeHttpRequest(fullUrl).ofType(Map.class));
+        } catch (Exception e) {
+            return onException(fullUrl, e);
         }
     }
 
-    private <T> Optional<T> restCall(URL url, String path, Class<T> type) {
-        try {
-            String fullUrl = String.valueOf(url) + "/" + path;
-            Optional<T> result = Optional.fromNullable(serviceRestClient.forExternalService()
-                                                                        .get()
-                                                                        .onUrl(fullUrl)
-                                                                        .andExecuteFor()
-                                                                        .anObject()
-                                                                        .ofType(type));
-            log.debug(fullUrl + " returned " + String.valueOf(result));
-            return result;
-        } catch (Exception e) {
-            log.warn("Unable to ping service [" + String.valueOf(url) + "]!", e);
-            return Optional.absent();
-        }
+    private ObjectReceiving executeHttpRequest(String url) {
+        return serviceRestClient.forExternalService()
+                .get().onUrl(url)
+                .andExecuteFor().anObject();
     }
+
+    private <T> Optional<T> onException(String fullUrl, Exception e) {
+        log.warn("Unable to call {}", fullUrl, e);
+        return Optional.absent();
+    }
+
 }

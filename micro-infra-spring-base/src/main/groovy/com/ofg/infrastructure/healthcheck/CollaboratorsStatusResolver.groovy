@@ -121,9 +121,7 @@ class CollaboratorsStatusResolver {
     }
 
     private boolean checkConnectionStatus(URI url) {
-        final Optional<String> pingResult = pingClient.ping(url)
-        return pingResult == Optional.of('OK') ||
-                pingResult == Optional.of('')
+        return pingClient.ping(url).isPresent()
     }
 
 }

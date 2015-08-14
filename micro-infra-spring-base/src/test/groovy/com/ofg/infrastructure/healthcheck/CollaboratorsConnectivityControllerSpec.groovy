@@ -84,6 +84,7 @@ class CollaboratorsConnectivityControllerSpec extends Specification {
         urls.each {
             pingClientMock.ping(it) >> GuavaOptional.of('OK')
         }
+        pingClientMock.ping(_) >> GuavaOptional.absent()
     }
 
     def 'should return empty map of all collaborators in the system'() {
@@ -162,6 +163,7 @@ class CollaboratorsConnectivityControllerSpec extends Specification {
 
     private void collaboratorsCheckFailed(URI url) {
         pingClientMock.checkCollaborators(url) >> GuavaOptional.absent()
+        pingClientMock.ping(url) >> GuavaOptional.absent()
     }
 
     private void collaboratorsStatusOf(URI url, Map status) {
@@ -228,9 +230,9 @@ class CollaboratorsConnectivityControllerSpec extends Specification {
     def 'when /collaborators is unavailable, try to at least call /ping and degrade response gracefully'() {
         given:
             instancesOfMicroservices(['/com/micro1': [MICRO_1A_URL]])
-            collaboratorsCheckFailed(MICRO_1A_URL)
-        and:
             theseAreOk(MICRO_1A_URL)
+        and:
+            collaboratorsCheckFailed(MICRO_1A_URL)
 
         when:
             Map info = controller.allCollaboratorsConnectivityInfo

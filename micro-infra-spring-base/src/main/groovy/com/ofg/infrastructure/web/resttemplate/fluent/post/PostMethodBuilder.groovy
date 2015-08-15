@@ -7,9 +7,7 @@ import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ObjectReceiving
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.ResponseEntityReceiving
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
@@ -29,9 +27,12 @@ class PostMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPostMethod,
         PostMethod, RequestHavingPostMethod, ResponseReceivingPostMethod,
         UrlParameterizablePostMethod {
 
+    private final BodyContainingWithQueryParameters<ResponseReceivingPostMethod> withQueryParameters
+
     PostMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
         super(predefinedHeaders, restOperations, retryExecutor)
         params.host = host
+        withQueryParameters = new BodyContainingWithQueryParameters<ResponseReceivingPostMethod>(this, params)
     }
 
     PostMethodBuilder(RestOperations restOperations) {
@@ -106,5 +107,10 @@ class PostMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPostMethod,
     ListenableFuture<Void> ignoringResponseAsync() {
         ListenableFuture<ResponseEntity<Object>> future = aResponseEntity().ofTypeAsync(Object)
         return Futures.transform(future, {null} as Function<ResponseEntity<Object>, Void>)
+    }
+
+    @Override
+    QueryParametersSetting<ResponseReceivingPostMethod> withQueryParameters() {
+        return withQueryParameters.withQueryParameters()
     }
 }

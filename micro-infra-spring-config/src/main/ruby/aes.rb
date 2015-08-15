@@ -17,7 +17,7 @@ end
 def decrypt(encrypted, password)
     CIPHER.decrypt
     CIPHER.key = key(password)
-    decrypted_bytes = CIPHER.update([encrypted].pack('H*')) + CIPHER.final
+    decrypted_bytes = CIPHER.update([encrypted.sub(/^\{cipher\}/, '')].pack('H*')) + CIPHER.final
     return decrypted_bytes[16..-1]
 end
 

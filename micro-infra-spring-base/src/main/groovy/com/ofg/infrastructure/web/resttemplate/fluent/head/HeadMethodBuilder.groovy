@@ -9,8 +9,11 @@ import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodylessWithHeaders
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodylessWithQueryParameters
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.QueryParametersHaving
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.QueryParametersSetting
 import groovy.transform.TypeChecked
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -22,22 +25,24 @@ import java.util.concurrent.Callable
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder.EMPTY_HOST
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
-
 /**
  * Implementation of the {@link org.springframework.http.HttpMethod#HEAD method} fluent API
  */
 @TypeChecked
-class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, ResponseReceivingHeadMethod {
+class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, ResponseReceivingHeadMethod,
+        QueryParametersHaving<ResponseReceivingHeadMethod> {
 
     private final Map params = [:]
     private final RestOperations restOperations
     private final RetryExecutor retryExecutor
     private final BodylessWithHeaders<ResponseReceivingHeadMethod> withHeaders
+    private final BodylessWithQueryParameters<ResponseReceivingHeadMethod> withQueryParameters
 
     HeadMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
         this.restOperations = restOperations
         params.host = host
         withHeaders =  new BodylessWithHeaders<ResponseReceivingHeadMethod>(this, params, predefinedHeaders)
+        withQueryParameters = new BodylessWithQueryParameters<ResponseReceivingHeadMethod>(this, params)
         this.retryExecutor = retryExecutor
     }
 
@@ -141,5 +146,10 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
     @Override
     HeadersSetting<ResponseReceivingHeadMethod> withHeaders() {
         return withHeaders.withHeaders()
+    }
+
+    @Override
+    QueryParametersSetting<ResponseReceivingHeadMethod> withQueryParameters() {
+        return withQueryParameters.withQueryParameters()
     }
 }

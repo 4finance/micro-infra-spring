@@ -1,5 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive
 
+import com.google.common.base.Function
+import com.google.common.collect.Maps
 import com.ofg.infrastructure.discovery.MicroserviceConfiguration
 import groovy.text.SimpleTemplateEngine
 import groovy.transform.CompileStatic
@@ -58,17 +60,24 @@ public class PredefinedHttpHeaders {
 
     private void copyUsingZookeeperDeps(HttpHeaders httpHeaders) {
         if (zookeeperDependency.contentTypeTemplate) {
-            String contentTypeTemplate = zookeeperDependency.contentTypeTemplate
             if (zookeeperDependency.getVersion().isEmpty()) {
                 throw new ContentTypeTemplateWithoutVersionException()
             }
-            String contentTypeHeader = engine.createTemplate(contentTypeTemplate).make([version: zookeeperDependency.version])
-            httpHeaders.set(CONTENT_TYPE_HEADER_NAME, contentTypeHeader)
+            httpHeaders.set(CONTENT_TYPE_HEADER_NAME, zookeeperDependency.contentTypeWithVersion)
         }
         if (zookeeperDependency?.headers) {
-            Map<String, String> predefinedHeaders = zookeeperDependency.headers
-            predefinedHeaders.each { key, value -> httpHeaders.set(key, value) }
+            Map<String, Collection<String>> predefinedHeaders = zookeeperDependency.headers
+            httpHeaders.putAll(convertHeadersFromCollectionToList(predefinedHeaders))
         }
+    }
+
+    private static Map<String, List<String>> convertHeadersFromCollectionToList(Map<String, Collection<String>>  headers) {
+        return Maps.transformValues(headers, new Function<Collection<String>, List<String>>() {
+            @Override
+            public List<String> apply(Collection<String> input) {
+                return (List<String>) input;
+            }
+        });
     }
 
     static class ContentTypeTemplateWithoutVersionException extends RuntimeException {}

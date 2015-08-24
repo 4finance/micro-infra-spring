@@ -12,9 +12,15 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperServiceDiscovery;
 import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies;
+import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependency;
 
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static com.google.common.collect.Collections2.transform;
 import static com.ofg.infrastructure.discovery.util.CollectionUtils.flatten;
@@ -82,9 +88,9 @@ public class SpringCloudZookeeperServiceResolver implements ServiceResolver {
 
     @Override
     public Set<ServicePath> fetchMyDependencies() {
-        Map<String, ZookeeperDependencies.ZookeeperDependency> dependencies = zookeeperDependencies.getDependencies();
+        Map<String, ZookeeperDependency> dependencies = zookeeperDependencies.getDependencies();
         Set<ServicePath> servicePaths = new HashSet<>();
-        for (Map.Entry<String, ZookeeperDependencies.ZookeeperDependency> zookeeperDependencyEntry : dependencies.entrySet()) {
+        for (Map.Entry<String, ZookeeperDependency> zookeeperDependencyEntry : dependencies.entrySet()) {
             servicePaths.add(new ServicePath(zookeeperDependencyEntry.getValue().getPath()));
         }
         return servicePaths;

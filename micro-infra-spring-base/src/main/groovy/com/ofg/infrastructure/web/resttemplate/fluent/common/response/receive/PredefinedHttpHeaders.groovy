@@ -1,11 +1,10 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive
-
 import com.google.common.base.Function
 import com.google.common.collect.Maps
 import com.ofg.infrastructure.discovery.MicroserviceConfiguration
 import groovy.text.SimpleTemplateEngine
 import groovy.transform.CompileStatic
-import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies
+import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependency
 import org.springframework.http.HttpHeaders
 
 @CompileStatic
@@ -15,7 +14,7 @@ public class PredefinedHttpHeaders {
 
     private static final String CONTENT_TYPE_HEADER_NAME = 'Content-Type'
     @Deprecated private final MicroserviceConfiguration.Dependency serviceConfig
-    private final ZookeeperDependencies.ZookeeperDependency zookeeperDependency;
+    private final ZookeeperDependency zookeeperDependency;
     private final SimpleTemplateEngine engine = new SimpleTemplateEngine()
 
     @Deprecated
@@ -24,7 +23,7 @@ public class PredefinedHttpHeaders {
         this.zookeeperDependency = null;
     }
 
-    PredefinedHttpHeaders(ZookeeperDependencies.ZookeeperDependency zookeeperDependency) {
+    PredefinedHttpHeaders(ZookeeperDependency zookeeperDependency) {
         this.serviceConfig = null
         this.zookeeperDependency = zookeeperDependency;
     }

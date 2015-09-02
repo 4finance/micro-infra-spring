@@ -110,7 +110,7 @@ public class SpringCloudZookeeperServiceResolver implements ServiceResolver {
         try {
             String path = root;
             if (!path.startsWith("/")) {
-                path += "/" + path;
+                path = "/" + path;
             }
             children = curatorFramework.getChildren().forPath(path);
         } catch (Exception e) {

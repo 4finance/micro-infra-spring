@@ -108,7 +108,11 @@ public class SpringCloudZookeeperServiceResolver implements ServiceResolver {
 
         List<String> children = new ArrayList<String>();
         try {
-            children = curatorFramework.getChildren().forPath("/" + root);
+            String path = root;
+            if (!path.startsWith("/")) {
+                path += "/" + path;
+            }
+            children = curatorFramework.getChildren().forPath(path);
         } catch (Exception e) {
             Throwables.propagate(e);
         }

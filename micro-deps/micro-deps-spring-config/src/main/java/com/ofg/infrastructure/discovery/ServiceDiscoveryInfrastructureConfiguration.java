@@ -1,8 +1,7 @@
 package com.ofg.infrastructure.discovery;
 
-import com.ofg.config.BasicProfiles;
-import com.ofg.infrastructure.discovery.ZookeeperConnectorConditions.InMemoryZookeeperCondition;
-import com.ofg.infrastructure.discovery.ZookeeperConnectorConditions.StandaloneZookeeperCondition;
+import static java.lang.invoke.MethodHandles.lookup;
+
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -20,7 +19,9 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import static java.lang.invoke.MethodHandles.lookup;
+import com.ofg.config.BasicProfiles;
+import com.ofg.infrastructure.discovery.ZookeeperConnectorConditions.InMemoryZookeeperCondition;
+import com.ofg.infrastructure.discovery.ZookeeperConnectorConditions.StandaloneZookeeperCondition;
 
 /**
  * Class holding configuration to Zookeeper server, Zookeeper service instance and to Curator framework.
@@ -86,18 +87,34 @@ public class ServiceDiscoveryInfrastructureConfiguration {
                 .build();
     }
 
-    @Bean(initMethod = "start", destroyMethod = "close")
+    @Bean(destroyMethod = "close")
     @SuppressWarnings("unchecked")
     public ServiceDiscovery serviceDiscovery(CuratorFramework curatorFramework,
                                              ServiceInstance serviceInstance,
                                              ServiceConfigurationResolver serviceConfigurationResolver) {
         log.info("Registering myself: " + String.valueOf(serviceInstance));
-        return ServiceDiscoveryBuilder
+        final ServiceDiscovery<Void> serviceDiscovery = ServiceDiscoveryBuilder
                 .builder(Void.class)
                 .basePath("/" + serviceConfigurationResolver.getBasePath())
                 .client(curatorFramework)
                 .thisInstance(serviceInstance)
                 .build();
+        asyncRegisterInsideZookeeper(serviceDiscovery);
+        return serviceDiscovery;
+    }
+
+    private void asyncRegisterInsideZookeeper(final ServiceDiscovery<Void> serviceDiscovery) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    serviceDiscovery.start();
+                } catch (Exception e) {
+                    log.error("Error during service registration inside Zookeeper");
+                    System .exit(1);
+                }
+            }
+        }).start();
     }
 
 }

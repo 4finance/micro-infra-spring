@@ -22,10 +22,10 @@ script:
 after_success:
 - ./gradlew jacocoRootReport coveralls -Pcoverage --continue
 
-#cache:
-#  directories:
-#  - $HOME/.gradle
-#  - $HOME/.m2
+cache:
+  directories:
+  - $HOME/.gradle
+  - $HOME/.m2
 
 language: groovy
 

@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.Ordered
 import org.springframework.http.converter.HttpMessageConverter
+import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.web.client.RestOperations
 
 /**
@@ -30,6 +31,9 @@ class ServiceRestClientConfiguration extends ServiceRestClientConfigurationSuppo
 
     @Autowired(required = false)
     private ServiceRestClientConfigurer serviceRestClientConfigurer
+
+    @Autowired(required = false)
+    List<ClientHttpRequestInterceptor> interceptors
 
     @Bean
     static RestTemplateAutowireCandidateFalsePostProcessor disableMicroInfraSpringRestTemplateAutowiring() {

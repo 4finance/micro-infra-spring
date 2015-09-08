@@ -10,12 +10,14 @@ import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import com.ofg.infrastructure.web.resttemplate.fluent.config.RestClientConfigurer
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean
 import org.springframework.http.client.BufferingClientHttpRequestFactory
 import org.springframework.http.client.ClientHttpRequestFactory
+import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.web.client.RestOperations
 
@@ -44,6 +46,10 @@ class ServiceRestClientConfigurationSupport {
     @Value('${rest.client.maxLogResponseChars:4096}')
     int maxLogResponseChars
 
+
+    @Autowired(required = false)
+    List<ClientHttpRequestInterceptor> interceptors
+
     /**
      * @deprecated use {@code rest.client.retry.threads} instead
      */
@@ -67,6 +73,7 @@ class ServiceRestClientConfigurationSupport {
         RestTemplate restTemplate = new RestTemplate(configurer.maxLogResponseChars)
         this.configureMessageConverters(restTemplate.messageConverters)
         restTemplate.requestFactory = requestFactory()
+        restTemplate.interceptors = interceptors
         return restTemplate
     }
 

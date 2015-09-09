@@ -16,6 +16,7 @@ dumpCurrentMicroInfraSpringVersionToFile
 
 git clone https://github.com/4finance/boot-microservice.git
 cd boot-microservice
+git clone tech/spring-cloud-zookeeper-migration
 updateMicroInfraSpringVersionInConfigurationFile
 ./gradlew clean check --stacktrace --continue --info --no-daemon
 

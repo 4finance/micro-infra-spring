@@ -1,7 +1,7 @@
 package com.ofg.infrastructure.reactor
 
-import com.ofg.infrastructure.reactor.event.ReactorEvent
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder
+import com.ofg.infrastructure.reactor.event.ReactorEvent
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.SpringApplicationContextLoader
@@ -12,7 +12,7 @@ import org.springframework.test.context.ContextConfiguration
 import reactor.core.Reactor
 import reactor.event.Event
 import reactor.spring.annotation.Selector
-import reactor.spring.context.config.EnableReactor
+import spock.lang.Ignore
 import spock.lang.Specification
 
 import java.util.concurrent.atomic.AtomicReference
@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicReference
 import static com.jayway.awaitility.Awaitility.await
 import static org.hamcrest.Matchers.equalTo
 
+@Ignore
 @ContextConfiguration(classes = Config, loader = SpringApplicationContextLoader)
 class ReactorAspectSpec extends Specification {
 
@@ -46,17 +47,16 @@ class ReactorAspectSpec extends Specification {
     }
 
     @Configuration
-    @EnableReactor
     @ComponentScan
     @EnableAutoConfiguration
     static class Config {
+
     }
 
 
     @Component
     static class MySubscriber {
-        @Autowired
-        public Reactor reactor
+        @Autowired Reactor reactor
 
         AtomicReference<String> atomicReference = new AtomicReference<>()
 

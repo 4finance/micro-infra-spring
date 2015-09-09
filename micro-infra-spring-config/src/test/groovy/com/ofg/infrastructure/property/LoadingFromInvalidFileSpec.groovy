@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.property
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.cloud.autoconfigure.ConfigClientAutoConfiguration
+import org.springframework.cloud.config.client.ConfigClientAutoConfiguration
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 

@@ -3,7 +3,7 @@ package com.ofg.infrastructure.property.decrypt
 import com.ofg.infrastructure.property.AbstractIntegrationSpec
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.cloud.autoconfigure.ConfigClientAutoConfiguration
+import org.springframework.cloud.config.client.ConfigClientAutoConfiguration
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan

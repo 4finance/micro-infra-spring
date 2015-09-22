@@ -49,9 +49,6 @@ project(':micro-deps-root:micro-deps-spring-config') {
 project(':micro-deps-root:micro-deps-spring-test-config') {
     description = 'Microservice dependency manager - Spring test configuration'
 
-    ext {
-        spock07Version = "0.7-groovy-2.0"
-    }
     dependencies {
         compile project(':micro-deps-root:micro-deps-spring-config')
         compile 'org.codehaus.groovy:groovy-all'
@@ -59,14 +56,8 @@ project(':micro-deps-root:micro-deps-spring-test-config') {
         compile 'org.objenesis:objenesis:2.1'
         compile 'org.aspectj:aspectjweaver'
 
-        //Workaround for a bug in Idea which mixes classpath when running tests - it prevents clashing Spock versions
-        if (System.properties.'idea.active') {
-            compile "org.spockframework:spock-core"
-            compile "org.spockframework:spock-spring"
-        } else {
-            compile "org.spockframework:spock-core:$spock07Version"
-            compile "org.spockframework:spock-spring:$spock07Version"
-        }
+        compile "org.spockframework:spock-core"
+        compile "org.spockframework:spock-spring"
         compile "org.springframework:spring-webmvc"
         compile "org.springframework:spring-test"
         compile('com.github.tomakehurst:wiremock') {

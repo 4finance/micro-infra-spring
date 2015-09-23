@@ -11,7 +11,8 @@ buildscript {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
         classpath 'com.ofg:uptodate-gradle-plugin:+'
         classpath "com.ofg:micro-common-release:0.1.18"
-        classpath "io.spring.gradle:dependency-management-plugin:0.2.1.RELEASE"
+        classpath "io.spring.gradle:dependency-management-plugin:0.5.3.RELEASE"
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:+"
         if (project.hasProperty("coverage")) {
             classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+'
             classpath "org.sonarqube.gradle:gradle-sonarqube-plugin:1.0"

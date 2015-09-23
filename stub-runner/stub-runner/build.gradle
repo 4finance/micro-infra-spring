@@ -2,6 +2,8 @@ description = 'Runs stubs for service collaborators'
 
 apply plugin: 'application'
 
+mainClassName = 'com.ofg.stub.StubRunnerMain'
+
 dependencies {
     compile project(':micro-deps-root:micro-deps')
     compile 'org.apache.ivy:ivy:2.4.0'

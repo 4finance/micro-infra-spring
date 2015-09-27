@@ -1,20 +1,17 @@
 package com.ofg.infrastructure.discovery;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.ofg.infrastructure.discovery.util.CollectionUtils;
+import com.ofg.infrastructure.discovery.MicroserviceConfiguration.Dependency.StubConfiguration;
 import com.ofg.infrastructure.discovery.util.LoadBalancerType;
 import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.PATH;
 
@@ -33,19 +30,44 @@ class JsonToMicroserviceConfigurationConverter {
                 String version = getPropertyOrDefault(input.getValue(), ServiceConfigurationProperties.VERSION, StringUtils.EMPTY);
                 JSONObject headers = (JSONObject) input.getValue().get(ServiceConfigurationProperties.HEADERS);
                 Map<String, String> headersAsMap = Maps.newHashMap();
-                if (headers != null) {
-                    for (Object entry : headers.entrySet()) {
-                        Map.Entry<String, Object> headerEntry = (Map.Entry<String, Object>) entry;
-                        headersAsMap.put(headerEntry.getKey(), String.valueOf(headerEntry.getValue()));
-                    }
-                }
-                return new MicroserviceConfiguration.Dependency(new ServiceAlias(alias), new ServicePath(path), required, loadBalancerType, contentTypeTemplate, version, headersAsMap);
+                fillHeadersIfPresent(headers, headersAsMap);
+                JSONObject stubs = (JSONObject) input.getValue().get(ServiceConfigurationProperties.STUBS);
+                ServicePath servicePath = new ServicePath(path);
+                StubConfiguration stubConfiguration = parseStubConfiguration(stubs, servicePath);
+                return new MicroserviceConfiguration.Dependency(new ServiceAlias(alias), servicePath, required, loadBalancerType,
+                        contentTypeTemplate, version, headersAsMap, stubConfiguration);
             }
         }));
     }
 
+    private StubConfiguration parseStubConfiguration(JSONObject stubs, ServicePath servicePath) {
+        StubConfiguration stubConfiguration = new StubConfiguration(servicePath);
+        if (stubs != null) {
+			String stubGroupId = getPropertyOrNull(stubs, ServiceConfigurationProperties.STUBS_GROUPID);
+			String stubArtifactId = getPropertyOrNull(stubs, ServiceConfigurationProperties.STUBS_ARTIFACTID);
+			String stubClassifier = getPropertyOrNull(stubs, ServiceConfigurationProperties.STUBS_CLASSIFIER);
+            if (StringUtils.isNotBlank(stubGroupId) && StringUtils.isNotBlank(stubArtifactId)) {
+                return new StubConfiguration(stubGroupId, stubArtifactId, stubClassifier);
+            }
+        }
+        return stubConfiguration;
+    }
+
+    private void fillHeadersIfPresent(JSONObject headers, Map<String, String> headersAsMap) {
+        if (headers != null) {
+			for (Object entry : headers.entrySet()) {
+				Map.Entry<String, Object> headerEntry = (Map.Entry<String, Object>) entry;
+				headersAsMap.put(headerEntry.getKey(), String.valueOf(headerEntry.getValue()));
+			}
+		}
+    }
+
     private static <T> T getPropertyOrDefault(JSONObject jsonObject, String propertyName, T defaultValue) {
         return jsonObject.has(propertyName) ? (T) jsonObject.get(propertyName) : defaultValue;
+    }
+
+    private static <T> T getPropertyOrNull(JSONObject jsonObject, String propertyName) {
+        return jsonObject.has(propertyName) ? (T) jsonObject.get(propertyName) : null;
     }
 
     static void convertFlatDependenciesToMapFormat(JSONObject serviceMetadata) {

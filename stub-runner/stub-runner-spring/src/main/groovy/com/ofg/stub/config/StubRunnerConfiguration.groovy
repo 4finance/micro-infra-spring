@@ -82,9 +82,7 @@ class StubRunnerConfiguration {
         boolean shouldWorkOnline = isPropertySetToWorkOnline(workOffline, skipLocalRepo)
         StubRunnerOptions stubRunnerOptions = new StubRunnerOptions(minPortValue, maxPortValue, stubRepositoryRoot, stubsGroup, stubsModule, shouldWorkOnline,
                 useMicroserviceDefinitions, testingServer.connectString, testingServer.port, stubsSuffx, waitForService, waitTimeout)
-        List<String> dependenciesPath = serviceConfigurationResolver.dependencies.collect { it.servicePath.path }
-        Collaborators dependencies = new Collaborators(serviceConfigurationResolver.basePath, dependenciesPath)
-        return new BatchStubRunnerFactory(stubRunnerOptions, dependencies).buildBatchStubRunner()
+        return new BatchStubRunnerFactory(stubRunnerOptions, serviceConfigurationResolver).buildBatchStubRunner()
     }
 
     private boolean isPropertySetToWorkOnline(boolean workOffline, boolean skipLocalRepo) {

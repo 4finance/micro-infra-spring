@@ -3,7 +3,12 @@
         "this": "foo/bar/registration",
         "dependencies": {
             "users": {
-                "path": "foo/bar/users"
+                "path": "foo/bar/users",
+                "stubs": {
+                    "stubsGroupId" : "foo.bar",
+                    "stubsArtifactdId" : "users",
+                    "stubsClassifier" : "stubs"
+                }
             },
             "newsletter": {
                 "path": "foo/bar/comms/newsletter"

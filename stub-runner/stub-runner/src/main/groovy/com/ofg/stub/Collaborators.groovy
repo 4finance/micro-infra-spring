@@ -1,5 +1,6 @@
 package com.ofg.stub
 
+import com.ofg.infrastructure.discovery.MicroserviceConfiguration
 import groovy.transform.CompileStatic
 import groovy.transform.Immutable
 
@@ -10,5 +11,5 @@ import groovy.transform.Immutable
 @CompileStatic
 class Collaborators {
     String basePath
-    List<String> collaboratorsPath
+    List<MicroserviceConfiguration.Dependency> dependencies
 }

@@ -1,6 +1,7 @@
 package com.ofg.stub
 
 import com.google.common.base.Optional
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import groovy.transform.CompileStatic
 
 /**
@@ -13,16 +14,16 @@ import groovy.transform.CompileStatic
 class BatchStubRunnerFactory {
 
     private final StubRunnerOptions stubRunnerOptions
-    private final Collaborators dependencies
+    private final ServiceConfigurationResolver serviceConfigurationResolver
 
-    BatchStubRunnerFactory(StubRunnerOptions stubRunnerOptions, Collaborators dependencies) {
+    BatchStubRunnerFactory(StubRunnerOptions stubRunnerOptions, ServiceConfigurationResolver serviceConfigurationResolver) {
         this.stubRunnerOptions = stubRunnerOptions
-        this.dependencies = dependencies
+        this.serviceConfigurationResolver = serviceConfigurationResolver
     }
 
     BatchStubRunner buildBatchStubRunner() {
         List<Optional<StubRunner>> stubRunners
-        StubRunnerFactory stubRunnerFactory = new StubRunnerFactory(stubRunnerOptions, dependencies)
+        StubRunnerFactory stubRunnerFactory = new StubRunnerFactory(stubRunnerOptions, serviceConfigurationResolver)
         if (!stubRunnerOptions.useMicroserviceDefinitions) {
             stubRunners = stubRunnerFactory.createStubsFromStubsModule()
         } else {

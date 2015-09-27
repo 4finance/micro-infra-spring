@@ -67,7 +67,7 @@ class JsonToMicroserviceConfigurationConverter {
     }
 
     private static <T> T getPropertyOrNull(JSONObject jsonObject, String propertyName) {
-        return jsonObject.has(propertyName) ? (T) jsonObject.get(propertyName) : null;
+        return getPropertyOrDefault(jsonObject, propertyName, null);
     }
 
     static void convertFlatDependenciesToMapFormat(JSONObject serviceMetadata) {

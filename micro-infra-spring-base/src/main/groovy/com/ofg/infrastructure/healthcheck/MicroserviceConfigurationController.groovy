@@ -23,6 +23,12 @@ class MicroserviceConfigurationController {
     }
 
     @RequestMapping(value = '${endpoints.microservicejson.id:microservice.json}', method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Deprecated
+    Object getMicroserviceConfigurationDeprecated() {
+        return getContent()
+    }
+
+    @RequestMapping(value = 'microserviceDescriptor', method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     Object getMicroserviceConfiguration() {
         return getContent()
     }

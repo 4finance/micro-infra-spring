@@ -4,7 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Collections2;
 import com.ofg.infrastructure.discovery.MicroserviceConfiguration;
-import com.ofg.infrastructure.discovery.MicroserviceConfiguration.Dependency.StubConfiguration;
+import com.ofg.infrastructure.discovery.MicroserviceConfiguration.Dependency.StubsConfiguration;
 import com.ofg.infrastructure.discovery.ServiceAlias;
 import com.ofg.infrastructure.discovery.ServicePath;
 import org.apache.commons.lang.StringUtils;
@@ -34,10 +34,10 @@ public class DependencyCreator {
         });
     }
 
-    private static StubConfiguration parseStubConfiguration(Map<String, Object> value) {
+    private static StubsConfiguration parseStubConfiguration(Map<String, Object> value) {
         Map<String, String> stubs = (Map<String, String>) value.get("stubs");
         if (stubs != null) {
-			return new StubConfiguration(stubs.get("stubGroupId"), stubs.get("stubArtifactId"), stubs.get("stubClassifier"));
+			return new StubsConfiguration(stubs.get("stubsGroupId"), stubs.get("stubsArtifactId"), stubs.get("stubsClassifier"));
 		}
         return null;
     }

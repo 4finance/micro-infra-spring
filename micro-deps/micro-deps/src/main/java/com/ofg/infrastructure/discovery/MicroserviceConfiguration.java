@@ -65,7 +65,7 @@ public class MicroserviceConfiguration {
         private final String contentTypeTemplate;
         private final String version;
         private final Map<String, String> headers;
-        private final StubConfiguration stubs;
+        private final StubsConfiguration stubs;
 
         public Dependency(ServiceAlias serviceAlias, ServicePath servicePath, boolean required,
                           LoadBalancerType loadBalancerType, String contentTypeTemplate, String version, Map<String, String> headers) {
@@ -76,11 +76,11 @@ public class MicroserviceConfiguration {
             this.contentTypeTemplate = contentTypeTemplate;
             this.version = version;
             this.headers = ImmutableMap.copyOf(headers);
-            this.stubs = new StubConfiguration(servicePath);
+            this.stubs = new StubsConfiguration(servicePath);
         }
 
         public Dependency(ServiceAlias serviceAlias, ServicePath servicePath, boolean required, LoadBalancerType
-                loadBalancerType, String contentTypeTemplate, String version, Map<String, String> headers, StubConfiguration stubConfiguration) {
+                loadBalancerType, String contentTypeTemplate, String version, Map<String, String> headers, StubsConfiguration stubsConfiguration) {
             this.serviceAlias = serviceAlias;
             this.servicePath = servicePath;
             this.required = required;
@@ -88,7 +88,7 @@ public class MicroserviceConfiguration {
             this.contentTypeTemplate = contentTypeTemplate;
             this.version = version;
             this.headers = ImmutableMap.copyOf(headers);
-            this.stubs = MoreObjects.firstNonNull(stubConfiguration, new StubConfiguration(servicePath));
+            this.stubs = MoreObjects.firstNonNull(stubsConfiguration, new StubsConfiguration(servicePath));
         }
 
         public Dependency(ServiceAlias serviceAlias, ServicePath servicePath) {
@@ -138,45 +138,45 @@ public class MicroserviceConfiguration {
             return headers;
         }
 
-        public StubConfiguration getStubs() {
+        public StubsConfiguration getStubs() {
             return stubs;
         }
 
-        public static class StubConfiguration {
-            private static final String DEFAULT_STUB_SUFFIX = "stubs";
+        public static class StubsConfiguration {
+            private static final String DEFAULT_STUBS_CLASSIFIER = "stubs";
 
-            private final String stubGroupId;
-            private final String stubArtifactId;
-            private final String stubClassifier;
+            private final String stubsGroupId;
+            private final String stubsArtifactId;
+            private final String stubsClassifier;
 
-            public StubConfiguration(String stubGroupId, String stubArtifactId) {
-                this.stubGroupId = stubGroupId;
-                this.stubArtifactId = stubArtifactId;
-                this.stubClassifier = DEFAULT_STUB_SUFFIX;
+            public StubsConfiguration(String stubsGroupId, String stubsArtifactId) {
+                this.stubsGroupId = stubsGroupId;
+                this.stubsArtifactId = stubsArtifactId;
+                this.stubsClassifier = DEFAULT_STUBS_CLASSIFIER;
             }
 
-            public StubConfiguration(String stubGroupId, String stubArtifactId, String stubClassifier) {
-                this.stubGroupId = stubGroupId;
-                this.stubArtifactId = stubArtifactId;
-                this.stubClassifier = StringUtils.defaultIfEmpty(stubClassifier, DEFAULT_STUB_SUFFIX);
+            public StubsConfiguration(String stubsGroupId, String stubsArtifactId, String stubsClassifier) {
+                this.stubsGroupId = stubsGroupId;
+                this.stubsArtifactId = stubsArtifactId;
+                this.stubsClassifier = StringUtils.defaultIfEmpty(stubsClassifier, DEFAULT_STUBS_CLASSIFIER);
             }
 
-            public StubConfiguration(ServicePath servicePath) {
-                this.stubGroupId = servicePath.getPathToLastName().replaceAll("/", ".");
-                this.stubArtifactId = servicePath.getLastName();
-                this.stubClassifier = DEFAULT_STUB_SUFFIX;
+            public StubsConfiguration(ServicePath servicePath) {
+                this.stubsGroupId = servicePath.getPathToLastName().replaceAll("/", ".");
+                this.stubsArtifactId = servicePath.getLastName();
+                this.stubsClassifier = DEFAULT_STUBS_CLASSIFIER;
             }
 
-            public String getStubGroupId() {
-                return stubGroupId;
+            public String getStubsGroupId() {
+                return stubsGroupId;
             }
 
-            public String getStubArtifactId() {
-                return stubArtifactId;
+            public String getStubsArtifactId() {
+                return stubsArtifactId;
             }
 
-            public String getStubClassifier() {
-                return stubClassifier;
+            public String getStubsClassifier() {
+                return stubsClassifier;
             }
 
             @Override

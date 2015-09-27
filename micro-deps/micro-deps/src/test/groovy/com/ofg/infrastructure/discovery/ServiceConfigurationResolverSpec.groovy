@@ -19,16 +19,16 @@ class ServiceConfigurationResolverSpec extends Specification {
             Collection<MicroserviceConfiguration.Dependency> expectedDependencies = DependencyCreator.fromMap(['ping':
                                                                                ['path':'com/ofg/ping',
                                                                                 'stubs' : [
-                                                                                        'stubGroupId': 'com.ofg',
-                                                                                        'stubArtifactId': 'ping',
-                                                                                        'stubClassifier': 'stubs'
+                                                                                        'stubsGroupId': 'com.ofg',
+                                                                                        'stubsArtifactId': 'ping',
+                                                                                        'stubsClassifier': 'stubs'
                                                                                 ]],
                                                                        'pong':
                                                                                ['path':'com/ofg/pong',
                                                                                 'stubs' : [
-                                                                                        'stubGroupId': 'com.ofg',
-                                                                                        'stubArtifactId': 'pong',
-                                                                                        'stubClassifier': 'stubs'
+                                                                                        'stubsGroupId': 'com.ofg',
+                                                                                        'stubsArtifactId': 'pong',
+                                                                                        'stubsClassifier': 'stubs'
                                                                                 ]
                                                                                ]])
             CollectionUtils.isEqualCollection(resolver.dependencies, expectedDependencies)

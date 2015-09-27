@@ -4,7 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.ofg.infrastructure.discovery.MicroserviceConfiguration.Dependency.StubConfiguration;
+import com.ofg.infrastructure.discovery.MicroserviceConfiguration.Dependency.StubsConfiguration;
 import com.ofg.infrastructure.discovery.util.LoadBalancerType;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -33,24 +33,24 @@ class JsonToMicroserviceConfigurationConverter {
                 fillHeadersIfPresent(headers, headersAsMap);
                 JSONObject stubs = (JSONObject) input.getValue().get(ServiceConfigurationProperties.STUBS);
                 ServicePath servicePath = new ServicePath(path);
-                StubConfiguration stubConfiguration = parseStubConfiguration(stubs, servicePath);
+                StubsConfiguration stubsConfiguration = parseStubConfiguration(stubs, servicePath);
                 return new MicroserviceConfiguration.Dependency(new ServiceAlias(alias), servicePath, required, loadBalancerType,
-                        contentTypeTemplate, version, headersAsMap, stubConfiguration);
+                        contentTypeTemplate, version, headersAsMap, stubsConfiguration);
             }
         }));
     }
 
-    private StubConfiguration parseStubConfiguration(JSONObject stubs, ServicePath servicePath) {
-        StubConfiguration stubConfiguration = new StubConfiguration(servicePath);
+    private StubsConfiguration parseStubConfiguration(JSONObject stubs, ServicePath servicePath) {
+        StubsConfiguration stubsConfiguration = new StubsConfiguration(servicePath);
         if (stubs != null) {
 			String stubGroupId = getPropertyOrNull(stubs, ServiceConfigurationProperties.STUBS_GROUPID);
 			String stubArtifactId = getPropertyOrNull(stubs, ServiceConfigurationProperties.STUBS_ARTIFACTID);
 			String stubClassifier = getPropertyOrNull(stubs, ServiceConfigurationProperties.STUBS_CLASSIFIER);
             if (StringUtils.isNotBlank(stubGroupId) && StringUtils.isNotBlank(stubArtifactId)) {
-                return new StubConfiguration(stubGroupId, stubArtifactId, stubClassifier);
+                return new StubsConfiguration(stubGroupId, stubArtifactId, stubClassifier);
             }
         }
-        return stubConfiguration;
+        return stubsConfiguration;
     }
 
     private void fillHeadersIfPresent(JSONObject headers, Map<String, String> headersAsMap) {

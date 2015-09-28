@@ -122,7 +122,9 @@ public class CorrelationIdAspect {
     private HttpEntity createNewHttpEntity(HttpEntity httpEntity, String correlationId) {
         HttpHeaders newHttpHeaders = new HttpHeaders();
         newHttpHeaders.putAll(httpEntity.getHeaders());
-        newHttpHeaders.add(CORRELATION_ID_HEADER, correlationId);
+        if (correlationId != null) {
+            newHttpHeaders.add(CORRELATION_ID_HEADER, correlationId);
+        }
         return new HttpEntity(httpEntity.getBody(), newHttpHeaders);
     }
 

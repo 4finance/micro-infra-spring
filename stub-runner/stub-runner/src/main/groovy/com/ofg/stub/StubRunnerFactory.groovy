@@ -49,7 +49,7 @@ class StubRunnerFactory {
             String dependencyMappingsPath = dependency.servicePath.path
             StubsConfiguration stubsConfiguration = dependency.stubs
             final File unzipedStubDir = stubDownloader.downloadAndUnpackStubJar(stubRunnerOptions.skipLocalRepo, stubRunnerOptions.stubRepositoryRoot,
-                    stubsConfiguration.stubsGroupId, "$stubsConfiguration.stubsArtifactId${stubsConfiguration.stubsClassifier}")
+                    stubsConfiguration.stubsGroupId, "$stubsConfiguration.stubsArtifactId-${stubsConfiguration.stubsClassifier}")
             final String context = serviceConfigurationResolver.basePath
             return createStubRunner(unzipedStubDir, stubsConfiguration, context, dependencyMappingsPath)
         }

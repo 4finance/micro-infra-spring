@@ -1,10 +1,9 @@
 package com.ofg.infrastructure.healthcheck;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.io.Resource;
 
 /**
  * Registers {@link PingController} (the microservice health check controller) and {@link CollaboratorsConnectivityController} (provider of a state of microservice connection with dependent services).
@@ -26,8 +25,8 @@ public class HealthCheckConfiguration {
     }
 
     @Bean
-    public MicroserviceConfigurationController microserviceConfigurationController(@Value("${microservice.config.file:classpath:microservice.json}") Resource microserviceConfig) {
-        return new MicroserviceConfigurationController(microserviceConfig);
+    public MicroserviceConfigurationController microserviceConfigurationController(ServiceConfigurationResolver serviceConfigurationResolver) {
+        return new MicroserviceConfigurationController(serviceConfigurationResolver);
     }
 
 }

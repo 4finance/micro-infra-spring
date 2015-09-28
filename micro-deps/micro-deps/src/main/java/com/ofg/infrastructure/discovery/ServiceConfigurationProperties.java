@@ -10,7 +10,4 @@ public class ServiceConfigurationProperties {
     public static final String DEPENDENCIES = "dependencies";
     public static final String THIS = "this";
     public static final String STUBS = "stubs";
-    public static final String STUBS_GROUPID = "stubsGroupId";
-    public static final String STUBS_ARTIFACTID = "stubsArtifactId";
-    public static final String STUBS_CLASSIFIER = "stubsClassifier";
 }

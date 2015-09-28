@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.discovery;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
@@ -149,12 +150,6 @@ public class MicroserviceConfiguration {
             private final String stubsArtifactId;
             private final String stubsClassifier;
 
-            public StubsConfiguration(String stubsGroupId, String stubsArtifactId) {
-                this.stubsGroupId = stubsGroupId;
-                this.stubsArtifactId = stubsArtifactId;
-                this.stubsClassifier = DEFAULT_STUBS_CLASSIFIER;
-            }
-
             public StubsConfiguration(String stubsGroupId, String stubsArtifactId, String stubsClassifier) {
                 this.stubsGroupId = stubsGroupId;
                 this.stubsArtifactId = stubsArtifactId;
@@ -192,6 +187,10 @@ public class MicroserviceConfiguration {
             @Override
             public boolean equals(Object o) {
                 return EqualsBuilder.reflectionEquals(this, o);
+            }
+
+            public String toGradleNotation() {
+                return Joiner.on(":").join(getStubsGroupId(), getStubsArtifactId(), getStubsClassifier());
             }
         }
     }

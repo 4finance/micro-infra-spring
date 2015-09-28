@@ -12,10 +12,13 @@ import org.apache.commons.lang.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.PATH;
 
 class JsonToMicroserviceConfigurationConverter {
+
+    public static final String GRADLE_DEPENDENCY_SEPARATOR = ":";
 
     List<MicroserviceConfiguration.Dependency> convertJsonToDependencies(JSONObject dependenciesAsJson) {
         return new ArrayList(Collections2.transform(dependenciesAsJson.entrySet(), new Function<Map.Entry<String, JSONObject>, MicroserviceConfiguration.Dependency>() {
@@ -31,7 +34,7 @@ class JsonToMicroserviceConfigurationConverter {
                 JSONObject headers = (JSONObject) input.getValue().get(ServiceConfigurationProperties.HEADERS);
                 Map<String, String> headersAsMap = Maps.newHashMap();
                 fillHeadersIfPresent(headers, headersAsMap);
-                JSONObject stubs = (JSONObject) input.getValue().get(ServiceConfigurationProperties.STUBS);
+                String stubs = (String) input.getValue().get(ServiceConfigurationProperties.STUBS);
                 ServicePath servicePath = new ServicePath(path);
                 StubsConfiguration stubsConfiguration = parseStubConfiguration(stubs, servicePath);
                 return new MicroserviceConfiguration.Dependency(new ServiceAlias(alias), servicePath, required, loadBalancerType,
@@ -40,26 +43,51 @@ class JsonToMicroserviceConfigurationConverter {
         }));
     }
 
-    private StubsConfiguration parseStubConfiguration(JSONObject stubs, ServicePath servicePath) {
+    JSONObject addAllDefaultJsonObjectValues(JSONObject dependenciesAsJson) {
+        Set<Map.Entry<String, JSONObject>> set = dependenciesAsJson.entrySet();
+        for(Map.Entry<String, JSONObject> entry: set) {
+            String stubs = (String) entry.getValue().get(ServiceConfigurationProperties.STUBS);
+            if (StringUtils.isBlank(stubs)) {
+                String path = entry.getValue().getString(ServiceConfigurationProperties.PATH);
+                ServicePath servicePath = new ServicePath(path);
+                StubsConfiguration stubsConfiguration = new StubsConfiguration(servicePath);
+                entry.getValue().put(ServiceConfigurationProperties.STUBS, stubsConfiguration.toGradleNotation());
+            }
+        }
+        return dependenciesAsJson;
+    }
+
+    private StubsConfiguration parseStubConfiguration(String stubs, ServicePath servicePath) {
         StubsConfiguration stubsConfiguration = new StubsConfiguration(servicePath);
-        if (stubs != null) {
-			String stubGroupId = getPropertyOrNull(stubs, ServiceConfigurationProperties.STUBS_GROUPID);
-			String stubArtifactId = getPropertyOrNull(stubs, ServiceConfigurationProperties.STUBS_ARTIFACTID);
-			String stubClassifier = getPropertyOrNull(stubs, ServiceConfigurationProperties.STUBS_CLASSIFIER);
+        if (StringUtils.isNotBlank(stubs)) {
+            String[] splitStubDependency = stubs.split(GRADLE_DEPENDENCY_SEPARATOR);
+            if (splitStubDependency.length < 2) {
+                throw new InvalidStubDefinitionException("Dependency [" + stubs + "] doesn't have proper Gradle notation. " +
+                        "E.g. 'foo.bar:artifact-name:classifier' or 'foo.bar:artifact-name' for default 'stubs' classifier value");
+            }
+            String stubGroupId = splitStubDependency[0];
+            String stubArtifactId = splitStubDependency[1];
             if (StringUtils.isNotBlank(stubGroupId) && StringUtils.isNotBlank(stubArtifactId)) {
-                return new StubsConfiguration(stubGroupId, stubArtifactId, stubClassifier);
+                return new StubsConfiguration(stubGroupId, stubArtifactId, stubClassifierOrEmptyIfNotPresent(splitStubDependency));
             }
         }
         return stubsConfiguration;
     }
 
+    private String stubClassifierOrEmptyIfNotPresent(String[] splitStubDependency) {
+        if (splitStubDependency.length == 3) {
+            return splitStubDependency[2];
+        }
+        return StringUtils.EMPTY;
+    }
+
     private void fillHeadersIfPresent(JSONObject headers, Map<String, String> headersAsMap) {
         if (headers != null) {
-			for (Object entry : headers.entrySet()) {
-				Map.Entry<String, Object> headerEntry = (Map.Entry<String, Object>) entry;
-				headersAsMap.put(headerEntry.getKey(), String.valueOf(headerEntry.getValue()));
-			}
-		}
+            for (Object entry : headers.entrySet()) {
+                Map.Entry<String, Object> headerEntry = (Map.Entry<String, Object>) entry;
+                headersAsMap.put(headerEntry.getKey(), String.valueOf(headerEntry.getValue()));
+            }
+        }
     }
 
     private static <T> T getPropertyOrDefault(JSONObject jsonObject, String propertyName, T defaultValue) {
@@ -96,6 +124,12 @@ class JsonToMicroserviceConfigurationConverter {
             serviceMetadata.put(ServiceConfigurationProperties.DEPENDENCIES, new JSONObject());
         }
 
+    }
+
+    public static class InvalidStubDefinitionException extends RuntimeException {
+        public InvalidStubDefinitionException(String message) {
+            super(message);
+        }
     }
 
 }

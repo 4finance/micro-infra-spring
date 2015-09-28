@@ -4,11 +4,7 @@
         "dependencies": {
             "users": {
                 "path": "foo/bar/users",
-                "stubs": {
-                    "stubsGroupId" : "foo.bar",
-                    "stubsArtifactdId" : "users",
-                    "stubsClassifier" : "stubs"
-                }
+                "stubs": "foo.bar:users:stubs"
             },
             "newsletter": {
                 "path": "foo/bar/comms/newsletter"

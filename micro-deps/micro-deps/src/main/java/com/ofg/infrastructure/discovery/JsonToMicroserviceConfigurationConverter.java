@@ -18,7 +18,7 @@ import static com.ofg.infrastructure.discovery.ServiceConfigurationProperties.PA
 
 class JsonToMicroserviceConfigurationConverter {
 
-    public static final String GRADLE_DEPENDENCY_SEPARATOR = ":";
+    public static final String COLON_DEPENDENCY_SEPARATOR = ":";
 
     List<MicroserviceConfiguration.Dependency> convertJsonToDependencies(JSONObject dependenciesAsJson) {
         return new ArrayList(Collections2.transform(dependenciesAsJson.entrySet(), new Function<Map.Entry<String, JSONObject>, MicroserviceConfiguration.Dependency>() {
@@ -51,7 +51,7 @@ class JsonToMicroserviceConfigurationConverter {
                 String path = entry.getValue().getString(ServiceConfigurationProperties.PATH);
                 ServicePath servicePath = new ServicePath(path);
                 StubsConfiguration stubsConfiguration = new StubsConfiguration(servicePath);
-                entry.getValue().put(ServiceConfigurationProperties.STUBS, stubsConfiguration.toGradleNotation());
+                entry.getValue().put(ServiceConfigurationProperties.STUBS, stubsConfiguration.toColonSeparatedDependencyNotation());
             }
         }
         return dependenciesAsJson;
@@ -60,9 +60,9 @@ class JsonToMicroserviceConfigurationConverter {
     private StubsConfiguration parseStubConfiguration(String stubs, ServicePath servicePath) {
         StubsConfiguration stubsConfiguration = new StubsConfiguration(servicePath);
         if (StringUtils.isNotBlank(stubs)) {
-            String[] splitStubDependency = stubs.split(GRADLE_DEPENDENCY_SEPARATOR);
+            String[] splitStubDependency = stubs.split(COLON_DEPENDENCY_SEPARATOR);
             if (splitStubDependency.length < 2) {
-                throw new InvalidStubDefinitionException("Dependency [" + stubs + "] doesn't have proper Gradle notation. " +
+                throw new InvalidStubDefinitionException("Dependency [" + stubs + "] doesn't have a proper colon separated dependency notation. " +
                         "E.g. 'foo.bar:artifact-name:classifier' or 'foo.bar:artifact-name' for default 'stubs' classifier value");
             }
             String stubGroupId = splitStubDependency[0];
@@ -94,10 +94,6 @@ class JsonToMicroserviceConfigurationConverter {
         return jsonObject.has(propertyName) ? (T) jsonObject.get(propertyName) : defaultValue;
     }
 
-    private static <T> T getPropertyOrNull(JSONObject jsonObject, String propertyName) {
-        return getPropertyOrDefault(jsonObject, propertyName, null);
-    }
-
     static void convertFlatDependenciesToMapFormat(JSONObject serviceMetadata) {
         JSONObject dependenciesAsJson = getDependenciesAsJsonObject(serviceMetadata);
         if (dependenciesAsJson == null) {
@@ -113,8 +109,7 @@ class JsonToMicroserviceConfigurationConverter {
 
     private static JSONObject getDependenciesAsJsonObject(JSONObject serviceMetadata) {
         Object dependencies = serviceMetadata.get(ServiceConfigurationProperties.DEPENDENCIES);
-        JSONObject dependenciesAsJson = (JSONObject) dependencies;
-        return dependenciesAsJson;
+        return (JSONObject) dependencies;
     }
 
 

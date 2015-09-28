@@ -189,7 +189,7 @@ public class MicroserviceConfiguration {
                 return EqualsBuilder.reflectionEquals(this, o);
             }
 
-            public String toGradleNotation() {
+            public String toColonSeparatedDependencyNotation() {
                 return Joiner.on(":").join(getStubsGroupId(), getStubsArtifactId(), getStubsClassifier());
             }
         }

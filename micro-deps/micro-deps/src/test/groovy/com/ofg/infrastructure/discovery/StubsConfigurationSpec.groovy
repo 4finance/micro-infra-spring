@@ -6,8 +6,8 @@ import static com.ofg.infrastructure.discovery.MicroserviceConfiguration.Depende
 
 class StubsConfigurationSpec extends Specification {
 
-    def "should print stubs configuration in Gradle notation"() {
+    def "should print stubs configuration in colon separated notation"() {
         expect:
-            new StubsConfiguration('foo.bar', 'artifact', 'classifier').toGradleNotation() == 'foo.bar:artifact:classifier'
+            new StubsConfiguration('foo.bar', 'artifact', 'classifier').toColonSeparatedDependencyNotation() == 'foo.bar:artifact:classifier'
     }
 }

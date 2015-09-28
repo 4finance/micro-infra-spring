@@ -59,9 +59,7 @@ project(':micro-deps-root:micro-deps-spring-test-config') {
         compile "org.spockframework:spock-spring"
         compile "org.springframework:spring-webmvc"
         compile "org.springframework:spring-test"
-        compile('com.github.tomakehurst:wiremock') {
-            exclude group: "org.mortbay.jetty", module: "servlet-api"
-        }
+        compile('com.github.tomakehurst:wiremock')
 
         testCompile "com.jayway.restassured:rest-assured"
     }

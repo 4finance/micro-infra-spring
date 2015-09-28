@@ -1,0 +1,15 @@
+{
+  "pl": {
+	"this": "com/ofg/testService",
+	"dependencies": {
+	  "ping": {
+		"path": "com/ofg/ping",
+		"stubs": "com.ofg:ping"
+	  },
+	  "pong": {
+		"path": "com/ofg/pong",
+		"stubs": "com.ofg:pong"
+	  }
+	}
+  }
+}

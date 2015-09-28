@@ -1,9 +1,12 @@
 package com.ofg.infrastructure.discovery;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.ofg.infrastructure.discovery.util.LoadBalancerType;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
@@ -63,8 +66,10 @@ public class MicroserviceConfiguration {
         private final String contentTypeTemplate;
         private final String version;
         private final Map<String, String> headers;
+        private final StubsConfiguration stubs;
 
-        public Dependency(ServiceAlias serviceAlias, ServicePath servicePath, boolean required, LoadBalancerType loadBalancerType, String contentTypeTemplate, String version, Map<String, String> headers) {
+        public Dependency(ServiceAlias serviceAlias, ServicePath servicePath, boolean required,
+                          LoadBalancerType loadBalancerType, String contentTypeTemplate, String version, Map<String, String> headers) {
             this.serviceAlias = serviceAlias;
             this.servicePath = servicePath;
             this.required = required;
@@ -72,6 +77,19 @@ public class MicroserviceConfiguration {
             this.contentTypeTemplate = contentTypeTemplate;
             this.version = version;
             this.headers = ImmutableMap.copyOf(headers);
+            this.stubs = new StubsConfiguration(servicePath);
+        }
+
+        public Dependency(ServiceAlias serviceAlias, ServicePath servicePath, boolean required, LoadBalancerType
+                loadBalancerType, String contentTypeTemplate, String version, Map<String, String> headers, StubsConfiguration stubsConfiguration) {
+            this.serviceAlias = serviceAlias;
+            this.servicePath = servicePath;
+            this.required = required;
+            this.loadBalancerType = loadBalancerType;
+            this.contentTypeTemplate = contentTypeTemplate;
+            this.version = version;
+            this.headers = ImmutableMap.copyOf(headers);
+            this.stubs = MoreObjects.firstNonNull(stubsConfiguration, new StubsConfiguration(servicePath));
         }
 
         public Dependency(ServiceAlias serviceAlias, ServicePath servicePath) {
@@ -119,6 +137,61 @@ public class MicroserviceConfiguration {
 
         public Map<String, String> getHeaders() {
             return headers;
+        }
+
+        public StubsConfiguration getStubs() {
+            return stubs;
+        }
+
+        public static class StubsConfiguration {
+            private static final String DEFAULT_STUBS_CLASSIFIER = "stubs";
+
+            private final String stubsGroupId;
+            private final String stubsArtifactId;
+            private final String stubsClassifier;
+
+            public StubsConfiguration(String stubsGroupId, String stubsArtifactId, String stubsClassifier) {
+                this.stubsGroupId = stubsGroupId;
+                this.stubsArtifactId = stubsArtifactId;
+                this.stubsClassifier = StringUtils.defaultIfEmpty(stubsClassifier, DEFAULT_STUBS_CLASSIFIER);
+            }
+
+            public StubsConfiguration(ServicePath servicePath) {
+                this.stubsGroupId = servicePath.getPathToLastName().replaceAll("/", ".");
+                this.stubsArtifactId = servicePath.getLastName();
+                this.stubsClassifier = DEFAULT_STUBS_CLASSIFIER;
+            }
+
+            public String getStubsGroupId() {
+                return stubsGroupId;
+            }
+
+            public String getStubsArtifactId() {
+                return stubsArtifactId;
+            }
+
+            public String getStubsClassifier() {
+                return stubsClassifier;
+            }
+
+            @Override
+            public String toString() {
+                return ReflectionToStringBuilder.toString(this);
+            }
+
+            @Override
+            public int hashCode() {
+                return HashCodeBuilder.reflectionHashCode(this);
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                return EqualsBuilder.reflectionEquals(this, o);
+            }
+
+            public String toColonSeparatedDependencyNotation() {
+                return Joiner.on(":").join(getStubsGroupId(), getStubsArtifactId(), getStubsClassifier());
+            }
         }
     }
 

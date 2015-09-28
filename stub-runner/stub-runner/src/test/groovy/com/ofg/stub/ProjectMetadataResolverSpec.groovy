@@ -1,5 +1,6 @@
 package com.ofg.stub
 import com.github.tomakehurst.wiremock.WireMockServer
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.stub.server.ZookeeperServer
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.test.TestingServer
@@ -31,13 +32,13 @@ class ProjectMetadataResolverSpec extends Specification {
             WireMockServer wireMockServer = new WireMockServer(wireMockConfig().port(COLLABORATOR_URL))
             wireMockServer.start()
         and:
-            wireMockServer.givenThat(get(urlEqualTo('/collaborators')).willReturn(aResponse().withBody('{"com/ofg/ping":{}, "com/ofg/pong":{}}')))
+            wireMockServer.givenThat(get(urlEqualTo('/microservice.json')).willReturn(aResponse().withBody(ProjectMetadataResolverSpec.getResource('/microservice_example.json').text)))
         when:
-            Collaborators collaborators = CollaboratorsPathResolver.resolveFromZookeeper(TEST_SERVICE_PATH, 'pl', zookeeperServer, new StubRunnerOptions())
+            ServiceConfigurationResolver serviceConfigurationResolver = CollaboratorsPathResolver.resolveFromZookeeper(TEST_SERVICE_PATH, 'pl', zookeeperServer, new StubRunnerOptions())
         then:
-            collaborators.basePath == 'pl'
+            serviceConfigurationResolver.basePath == 'pl'
         and:
-            List<String> collaboratorsPaths = collaborators.collaboratorsPath
+            List<String> collaboratorsPaths = serviceConfigurationResolver.dependencies.collect { it.servicePath.path }
             collaboratorsPaths.size() == 2
             collaboratorsPaths.containsAll(['com/ofg/ping', 'com/ofg/pong'])
         cleanup:

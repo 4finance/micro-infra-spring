@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Collections2;
 import com.ofg.infrastructure.discovery.MicroserviceConfiguration;
+import com.ofg.infrastructure.discovery.MicroserviceConfiguration.Dependency.StubsConfiguration;
 import com.ofg.infrastructure.discovery.ServiceAlias;
 import com.ofg.infrastructure.discovery.ServicePath;
 import org.apache.commons.lang.StringUtils;
@@ -26,10 +27,19 @@ public class DependencyCreator {
                         LoadBalancerType.fromName((String) value.get("load-balancer-type")),
                         MoreObjects.firstNonNull((String) value.get("contentTypeTemplate"), StringUtils.EMPTY),
                         MoreObjects.firstNonNull((String) value.get("version"), StringUtils.EMPTY),
-                        MoreObjects.firstNonNull((Map<String, String>) value.get("headers"), new HashMap<String, String>()));
+                        MoreObjects.firstNonNull((Map<String, String>) value.get("headers"), new HashMap<String, String>()),
+                        parseStubConfiguration(value));
             }
 
         });
+    }
+
+    private static StubsConfiguration parseStubConfiguration(Map<String, Object> value) {
+        Map<String, String> stubs = (Map<String, String>) value.get("stubs");
+        if (stubs != null) {
+			return new StubsConfiguration(stubs.get("stubsGroupId"), stubs.get("stubsArtifactId"), stubs.get("stubsClassifier"));
+		}
+        return null;
     }
 
 }

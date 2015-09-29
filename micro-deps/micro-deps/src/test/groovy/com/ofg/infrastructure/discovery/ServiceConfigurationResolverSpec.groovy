@@ -16,8 +16,22 @@ class ServiceConfigurationResolverSpec extends Specification {
         then:
             resolver.basePath == 'pl'
             resolver.microservicePath == new ServicePath('com/ofg/service')
-            CollectionUtils.isEqualCollection(resolver.dependencies, DependencyCreator.fromMap(['ping':['path':'com/ofg/ping'],
-                                                                                            'pong':['path':'com/ofg/pong']]))
+            Collection<MicroserviceConfiguration.Dependency> expectedDependencies = DependencyCreator.fromMap(['ping':
+                                                                               ['path':'com/ofg/ping',
+                                                                                'stubs' : [
+                                                                                        'stubsGroupId': 'com.ofg',
+                                                                                        'stubsArtifactId': 'ping',
+                                                                                        'stubsClassifier': 'stubs'
+                                                                                ]],
+                                                                       'pong':
+                                                                               ['path':'com/ofg/pong',
+                                                                                'stubs' : [
+                                                                                        'stubsGroupId': 'com.ofg',
+                                                                                        'stubsArtifactId': 'pong',
+                                                                                        'stubsClassifier': 'stubs'
+                                                                                ]
+                                                                               ]])
+            CollectionUtils.isEqualCollection(resolver.dependencies, expectedDependencies)
     }
 
     def 'should parse flat configuration'() {

@@ -16,20 +16,23 @@ public class ServiceConfigurationResolver {
     private final MicroserviceConfiguration microserviceConfiguration;
     private final ServiceConfigurationValidator serviceConfigurationValidator;
     private final JsonToMicroserviceConfigurationConverter jsonToMicroserviceConfigurationConverter;
+    private final String configurationAsString;
 
-    public ServiceConfigurationResolver(String configuration) throws InvalidMicroserviceConfigurationException {
+    public ServiceConfigurationResolver(String configurationAsString) throws InvalidMicroserviceConfigurationException {
         this.serviceConfigurationValidator = new ServiceConfigurationValidator();
         this.jsonToMicroserviceConfigurationConverter = new JsonToMicroserviceConfigurationConverter();
-        JSONObject parsedJson = serializeJson(configuration);
+        JSONObject parsedJson = serializeJson(configurationAsString);
         String basePath = extractBasePath(parsedJson);
         JSONObject metaData = getJsonAsJsonObjectForBasePath(parsedJson, basePath);
         validateConfiguration(metaData);
         JSONObject dependenciesAsJson = getDependenciesAsJsonObject(metaData);
         ServicePath servicePath = retrieveThisElement(metaData);
         List<MicroserviceConfiguration.Dependency> dependencies = jsonToMicroserviceConfigurationConverter.convertJsonToDependencies(dependenciesAsJson);
+        jsonToMicroserviceConfigurationConverter.addAllDefaultJsonObjectValues(dependenciesAsJson);
         MicroserviceConfiguration microserviceConfiguration = new MicroserviceConfiguration(servicePath, dependencies);
         this.basePath = basePath;
         this.microserviceConfiguration = microserviceConfiguration;
+        this.configurationAsString = parsedJson.toString();
     }
 
     private ServicePath retrieveThisElement(JSONObject metaData) {
@@ -40,8 +43,8 @@ public class ServiceConfigurationResolver {
         return parsedJson.getJSONObject(basePath);
     }
 
-    private JSONObject serializeJson(String configuration) {
-        return (JSONObject) JSONSerializer.toJSON(StringUtils.deleteWhitespace(configuration));
+    private JSONObject serializeJson(String configurationAsString) {
+        return (JSONObject) JSONSerializer.toJSON(StringUtils.deleteWhitespace(configurationAsString));
     }
 
     private String extractBasePath(JSONObject parsedJson) {
@@ -113,5 +116,9 @@ public class ServiceConfigurationResolver {
 
     public MicroserviceConfiguration getMicroserviceConfiguration() {
         return microserviceConfiguration;
+    }
+
+    public String getConfigurationAsString() {
+        return configurationAsString;
     }
 }

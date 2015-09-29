@@ -23,7 +23,7 @@ abstract class AbstractPayloadObfusctator {
 
     abstract String getApplicableContentType()
 
-    protected final  String obfuscate(String value){
+    protected String obfuscate(String value){
         return obfuscationFieldStrategy.obfuscate(value)
     }
 

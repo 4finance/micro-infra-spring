@@ -23,13 +23,13 @@ class HttpDataFactory {
                             url : request.requestURI,
                             path : request.requestURI,
                             httpMethod : request.method,
-                            content: request.bytes.toString())
+                            content: new String(request.bytes))
     }
 
     static HttpData createHttpData(HttpServletResponseLoggingWrapper response){
         return new HttpData(headers : extractHeaders(response),
                             httpStatus : response.status,
-                            content: response.bytes.toString())
+                            content: new String(response.bytes))
     }
 
     static HttpData createHttpData(ClientHttpResponse response){

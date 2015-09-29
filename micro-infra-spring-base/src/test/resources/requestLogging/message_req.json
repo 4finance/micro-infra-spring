@@ -1,0 +1,24 @@
+{
+  "affiliates": [],
+  "clientGroup": null,
+  "clientNumber": "999995",
+  "companyBankAccount": "ES1100491893042710390399",
+  "creditLimits": [
+    {
+      "activeFrom": "2009-01-01",
+      "limit": 300.0
+    }
+  ],
+  "discountPercent": 0.0,
+  "email": "antonio@mail.com",
+  "grantedDiscounts": [],
+  "id": 6,
+  "identificationNumber": "38367554178",
+  "landlinePhone": "982145983",
+  "mobilePhone": "682145983",
+  "personalId": "65464654F",
+  "status": "IDENTIFIED",
+  "surplusAmount": 0.0 ,
+  "requiredAdditionalDocuments" : [{"type":"PERSONAL_INVOICE", "attachmentFileName":"file.txt"},
+    {"type":"CERTIFICATE_OF_EMPLOYMENT", "attachmentFileName":"file.txt"}]
+}

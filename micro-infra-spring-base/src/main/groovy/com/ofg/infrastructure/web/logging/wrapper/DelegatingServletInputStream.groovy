@@ -6,7 +6,7 @@ import javax.servlet.ReadListener
 import javax.servlet.ServletInputStream
 
 @CompileStatic
-class DelegatingServletInputStream extends ServletInputStream{
+class DelegatingServletInputStream extends ServletInputStream {
 
     private final  ServletInputStream source
     private final ByteArrayOutputStream target

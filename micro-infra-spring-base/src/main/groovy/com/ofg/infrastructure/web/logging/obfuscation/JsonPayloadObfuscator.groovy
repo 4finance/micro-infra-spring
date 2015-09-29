@@ -4,39 +4,39 @@ import groovy.json.JsonSlurper
 import org.springframework.core.annotation.Order
 
 @Order(value = 0)
-class JsonPayloadObfuscator extends AbstractPayloadObfusctator{
+class JsonPayloadObfuscator extends AbstractPayloadObfusctator {
 
     JsonPayloadObfuscator(ObfuscationFieldStrategy obfuscationFieldStrategy) {
         super(obfuscationFieldStrategy)
     }
 
-    static String cleanFieldsFromJson(String content, List<String> fields){
-        String result = null
-        if(content){
+    String cleanFieldsFromJson(String content, List<String> fields){
+        if(content && fields.size() > 0){
             try{
-                Map nodes = new JsonSlurper().parseText(content)
+                def nodes = new JsonSlurper().parseText(content)
                 if(nodes){
                     cleanRecursive(nodes, fields)
                 }
-                result = nodes.toString()
+                return nodes.toString()
             }catch (all){
+                all.printStackTrace()
             }
         }
-        return result
+        return content
     }
 
-    private static void cleanRecursive(Map nodes,  List<String> fields) {
+    private void cleanRecursive(Map nodes,  List<String> fields) {
         nodes.each {
             if(isCollectionOrArray(it.value)){
                 cleanRecursive(it.value, fields)
             }
             if(fields?.contains(it.key)) {
-                nodes.put(it.key, obfuscate(it.value))
+                nodes.put(it.key, obfuscate(it.value.toString()))
             }
         }
     }
 
-    private static void cleanRecursive(List list,  List<String> fields) {
+    private void cleanRecursive(List list,  List<String> fields) {
         list.each {
             if(isCollectionOrArray(it)){
                 cleanRecursive(it, fields)
@@ -44,7 +44,7 @@ class JsonPayloadObfuscator extends AbstractPayloadObfusctator{
         }
     }
 
-    private static boolean isCollectionOrArray(object) {
+    private boolean isCollectionOrArray(object) {
         [Map, Object[], List].any { it.isAssignableFrom(object.getClass()) }
     }
 

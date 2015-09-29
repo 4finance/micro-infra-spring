@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.web.logging;
 
+import com.ofg.infrastructure.web.logging.config.LogsConfig;
 import com.ofg.infrastructure.web.logging.obfuscation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,10 +21,6 @@ import java.util.List;
 @Configuration
 public class RequestLoggingConfiguration {
 
-
-    @Autowired(required = true)
-    List<AbstractPayloadObfusctator> obfusctatorList;
-
     @Bean
     public Filter requestBodyLoggingContextFilter(@Value("${request.payload.logging.maxlength:2000}") int maxPayloadLength) {
         return new RequestBodyLoggingContextFilter(maxPayloadLength);
@@ -35,8 +32,8 @@ public class RequestLoggingConfiguration {
     }
 
     @Bean
-    Filter createHttpControllerCallLogger() {
-        return new HttpControllerCallLogger();
+    Filter createHttpControllerCallLogger(LogsConfig props, PayloadObfuscationProcessor obfuscator) {
+        return new HttpControllerCallLogger(props, obfuscator);
     }
 
     @Bean
@@ -55,8 +52,13 @@ public class RequestLoggingConfiguration {
     }
 
     @Bean
-    PayloadObfuscationProcessor createObfuscationProcessor(){
-        return new PayloadObfuscationProcessor(this.obfusctatorList);
+    PayloadObfuscationProcessor createObfuscationProcessor(List<AbstractPayloadObfusctator> obfusctatorList){
+        return new PayloadObfuscationProcessor(obfusctatorList);
+    }
+
+    @Bean
+    LogsConfig createLogsConfig(){
+        return new LogsConfig();
     }
 
 }

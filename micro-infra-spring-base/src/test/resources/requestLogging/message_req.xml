@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<client>
+    <acceptNews>true</acceptNews>
+    <actualPostAddress>
+        <location1>Región de Murcia</location1>
+        <location2>San Fernando</location2>
+        <location3>Sth</location3>
+        <location4>666</location4>
+        <location5>20</location5>
+        <location6></location6>
+        <postalCode>75744</postalCode>
+    </actualPostAddress>
+    <availableCreditLimit>300.00</availableCreditLimit>
+    <bankAccountNumber>ES2721002489392251670530</bankAccountNumber>
+    <budgetInfo>
+        <entry>
+            <key>UNDEFINED</key>
+            <value>
+                <actualFrom>2014-12-12</actualFrom>
+                <entry>
+                    <category>Monthly income</category>
+                    <type>INCOME</type>
+                </entry>
+                <id>41</id>
+            </value>
+        </entry>
+    </budgetInfo>
+    <comments></comments>
+    <creditLimits>
+        <activeFrom>2014-12-12</activeFrom>
+        <limit>300.00</limit>
+    </creditLimits>
+    <customParameters/>
+    <dateOfBirth>1989-01-01</dateOfBirth>
+    <declaredBudget>
+        <actualFrom>2014-12-12</actualFrom>
+        <entry>
+            <category>Monthly income</category>
+            <type>INCOME</type>
+        </entry>
+        <id>41</id>
+    </declaredBudget>
+    <declaredPostAddress>
+        <location1>Región de Murcia</location1>
+        <location2>San Fernando</location2>
+        <location3>Sth</location3>
+        <location4>666</location4>
+        <location5>20</location5>
+        <location6></location6>
+        <postalCode>75744</postalCode>
+    </declaredPostAddress>
+    <emailAddress>ignacio.melndez@gaona.com</emailAddress>
+    <employerData>
+        <employmentStatus>Pensionista</employmentStatus>
+    </employerData>
+    <firstName>Cristobal</firstName>
+    <id>175004</id>
+    <identificationNumber>68415234348</identificationNumber>
+    <identifiedBy>BROKER</identifiedBy>
+    <invoiceType>EMAIL</invoiceType>
+    <language>es</language>
+    <lastName>Zepeda Tirado</lastName>
+    <loansCount>0</loansCount>
+    <middleName></middleName>
+    <minimalAllowedTerm>7</minimalAllowedTerm>
+    <mobilePhoneNumber>676560389</mobilePhoneNumber>
+    <nonVoidedLoansCount>0</nonVoidedLoansCount>
+    <number>175003</number>
+    <openLoansExist>false</openLoansExist>
+    <personalId>45683666P</personalId>
+    <registeredBy>BROKER</registeredBy>
+    <registrationEvent>
+        <created>2014-12-12T14:46:29.082+02:00</created>
+        <ipAddress>127.0.0.1</ipAddress>
+    </registrationEvent>
+    <status>REGISTERED</status>
+    <title>N/A</title>
+</client>

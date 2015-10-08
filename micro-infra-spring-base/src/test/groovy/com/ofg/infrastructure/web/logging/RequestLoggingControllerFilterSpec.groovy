@@ -34,7 +34,6 @@ import java.util.regex.Pattern
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @ContextConfiguration(classes = [RequestLoggingSpecConfiguration, BaseConfiguration, ConfigurationWithoutServiceDiscovery, ViewConfiguration],
         loader = SpringApplicationContextLoader)
@@ -51,14 +50,14 @@ class RequestLoggingControllerFilterSpec extends MvcIntegrationSpec {
         mockMvcBuilder.addFilter(this.createHttpControllerCallLogger)
     }
 
-    def 'Should create log REQ/RES with all HTTP elements for POST json message'() {
+    def 'JSON: Should create log REQ/RES with all HTTP elements for POST json message'() {
         given:
             final Appender mockAppender = insertAppender(Mock(Appender.class))
         when:
             mockMvc.perform(post("/logTestJson")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(readResource(JSON_REQ_RESOURCE_NAME)))
-                    .andExpect(status().isCreated())
+                    .andReturn()
         then:
             interaction {
                     checkInteraction(mockAppender,'.*REQ CONTROLLER->.*method.*POST.*url.*/logTestJson.*headers.*application/json.*body.*affiliates.*', 1)
@@ -69,12 +68,12 @@ class RequestLoggingControllerFilterSpec extends MvcIntegrationSpec {
             removeAppender(mockAppender)
     }
 
-    def 'Should create log REQ/RES with all HTTP elements for GET json message'() {
+    def 'JSON: Should create log REQ/RES with all HTTP elements for GET json message'() {
         given:
             final Appender mockAppender = insertAppender(Mock(Appender.class))
         when:
             mockMvc.perform(get("/logTestJson"))
-                    .andExpect(status().isOk())
+                    .andReturn()
         then:
             interaction {
                     checkInteraction(mockAppender,'.*REQ CONTROLLER->.*method.*GET.*url.*/logTestJson.*', 1)
@@ -85,12 +84,12 @@ class RequestLoggingControllerFilterSpec extends MvcIntegrationSpec {
             removeAppender(mockAppender)
     }
 
-    def 'Should not create log REQ/RES for GET call due to skip configuration'() {
+    def 'JSON: Should not create log REQ/RES for GET call due to skip configuration'() {
         given:
             final Appender mockAppender = insertAppender(Mock(Appender.class))
         when:
             mockMvc.perform(get("/logTestJsonSkip"))
-                    .andExpect(status().isOk())
+                    .andReturn()
         then:
             interaction {
                     checkInteraction(mockAppender,'.*REQ CONTROLLER->.*method.*GET.*url.*/logTestJson.*', 0)
@@ -101,14 +100,14 @@ class RequestLoggingControllerFilterSpec extends MvcIntegrationSpec {
             removeAppender(mockAppender)
     }
 
-    def 'Should create log REQ/RES for POST call due to skip configuration only for GET'() {
+    def 'JSON: Should create log REQ/RES for POST call due to skip configuration only for GET'() {
         given:
             final Appender mockAppender = insertAppender(Mock(Appender.class))
         when:
             mockMvc.perform(post("/logTestJsonSkip")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(readResource(JSON_REQ_RESOURCE_NAME)))
-                    .andExpect(status().isCreated())
+                    .andReturn()
         then:
             interaction {
                     checkInteraction(mockAppender,'.*REQ CONTROLLER->.*method.*POST.*url.*/logTestJson.*headers.*application/json.*body.*affiliates.*', 1)
@@ -119,7 +118,7 @@ class RequestLoggingControllerFilterSpec extends MvcIntegrationSpec {
             removeAppender(mockAppender)
     }
 
-    def 'Should create log REQ/RES for POST call and remove REQ/RES headers due to configuration'() {
+    def 'JSON: Should create log REQ/RES for POST call and remove REQ/RES headers due to configuration'() {
         given:
             final Appender mockAppender = insertAppender(Mock(Appender.class))
         when:
@@ -128,7 +127,7 @@ class RequestLoggingControllerFilterSpec extends MvcIntegrationSpec {
                     .header('header-req-to-remove-2','header-req-to-remove-2-value')
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(readResource(JSON_REQ_RESOURCE_NAME)))
-                    .andExpect(status().isCreated())
+                    .andReturn()
         then:
             interaction {
                     checkInteraction(mockAppender,'.*REQ CONTROLLER->.*method.*POST.*url.*/logTestJsonSkipHeaders.*headers.*header-req-to-remove.*', 0)
@@ -139,14 +138,14 @@ class RequestLoggingControllerFilterSpec extends MvcIntegrationSpec {
             removeAppender(mockAppender)
     }
 
-    def 'Should create log REQ/RES for POST call and set REMOVED on fields from REQ due to configuration'() {
+    def 'JSON: Should create log REQ/RES for POST call and set REMOVED on fields from REQ due to configuration'() {
         given:
         final Appender mockAppender = insertAppender(Mock(Appender.class))
         when:
         mockMvc.perform(post("/logTestJsonObfuscateFieldsMsg")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(readResource(JSON_REQ_RESOURCE_NAME)))
-                .andExpect(status().isCreated())
+                .andReturn()
         then:
         interaction {
                 checkInteraction(mockAppender,'.*REQ CONTROLLER->.*companyBankAccount=REMOVED.*activeFrom=REMOVED.*limit=REMOVED.*requiredAdditionalDocuments=REMOVED.*', 1)
@@ -157,12 +156,11 @@ class RequestLoggingControllerFilterSpec extends MvcIntegrationSpec {
             removeAppender(mockAppender)
     }
 
-    def 'Should create log REQ/RES for GET call and set REMOVED on fields from RES due to configuration'() {
+    def 'JSON: Should create log REQ/RES for GET call and set REMOVED on fields from RES due to configuration'() {
         given:
             final Appender mockAppender = insertAppender(Mock(Appender.class))
         when:
-            mockMvc.perform(get("/logTestJsonObfuscateFieldsMsg"))
-                    .andExpect(status().isOk())
+            mockMvc.perform(get("/logTestJsonObfuscateFieldsMsg")).andReturn()
         then:
             interaction {
                     checkInteraction(mockAppender,'.*REQ CONTROLLER->.*method.*GET.*url.*/logTestJsonObfuscateFieldsMsg.*', 1)
@@ -173,7 +171,7 @@ class RequestLoggingControllerFilterSpec extends MvcIntegrationSpec {
             removeAppender(mockAppender)
     }
 
-    def 'Should create log REQ/RES for POST finished with exception'() {
+    def 'JSON: Should create log REQ/RES for POST finished with exception'() {
         given:
             final Appender mockAppender = insertAppender(Mock(Appender.class))
         when:
@@ -199,15 +197,6 @@ class RequestLoggingControllerFilterSpec extends MvcIntegrationSpec {
         })
     }
 
-    @Configuration
-    @EnableRequestBodyLogging
-    static class RequestLoggingSpecConfiguration {
-        @Bean
-        RequestLoggingTestingController requestLoggingTestingController() {
-            return new RequestLoggingTestingController()
-        }
-    }
-
     static String readResource(String resourcePath) {
         return new String(this.getClass().getResource('/' + resourcePath).getBytes())
     }
@@ -223,6 +212,15 @@ class RequestLoggingControllerFilterSpec extends MvcIntegrationSpec {
 
     private Logger root() {
         return (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)
+    }
+
+    @Configuration
+    @EnableRequestBodyLogging
+    static class RequestLoggingSpecConfiguration {
+        @Bean
+        RequestLoggingTestingController requestLoggingTestingController() {
+            return new RequestLoggingTestingController()
+        }
     }
 }
 

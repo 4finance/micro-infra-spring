@@ -2,7 +2,6 @@ package com.ofg.infrastructure.web.logging;
 
 import com.ofg.infrastructure.web.logging.config.LogsConfig;
 import com.ofg.infrastructure.web.logging.obfuscation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +26,8 @@ public class RequestLoggingConfiguration {
     }
 
     @Bean
-    ClientHttpRequestInterceptor createHttpClientCallLogger() {
-        return new HttpClientCallLogger();
+    ClientHttpRequestInterceptor createHttpClientCallLogger(LogsConfig props, PayloadObfuscationProcessor obfuscator) {
+        return new HttpClientCallLogger(props, obfuscator);
     }
 
     @Bean
@@ -42,17 +41,17 @@ public class RequestLoggingConfiguration {
     }
 
     @Bean
-    AbstractPayloadObfusctator createJsonObfuscator(ObfuscationFieldStrategy obfuscationFieldStrategy){
+    AbstractPayloadObfuscator createJsonObfuscator(ObfuscationFieldStrategy obfuscationFieldStrategy){
         return new JsonPayloadObfuscator(obfuscationFieldStrategy);
     }
 
     @Bean
-    AbstractPayloadObfusctator createXmlObfuscator(ObfuscationFieldStrategy obfuscationFieldStrategy){
+    AbstractPayloadObfuscator createXmlObfuscator(ObfuscationFieldStrategy obfuscationFieldStrategy){
         return new XmlPayloadObfuscator(obfuscationFieldStrategy);
     }
 
     @Bean
-    PayloadObfuscationProcessor createObfuscationProcessor(List<AbstractPayloadObfusctator> obfusctatorList){
+    PayloadObfuscationProcessor createObfuscationProcessor(List<AbstractPayloadObfuscator> obfusctatorList){
         return new PayloadObfuscationProcessor(obfusctatorList);
     }
 

@@ -1,27 +1,28 @@
 package com.ofg.infrastructure.web.logging.obfuscation
 
 import groovy.json.JsonSlurper
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.core.annotation.Order
 
 @Order(value = 0)
-class JsonPayloadObfuscator extends AbstractPayloadObfusctator {
+class JsonPayloadObfuscator extends AbstractPayloadObfuscator {
+
+    private static final Logger log = LoggerFactory.getLogger(JsonPayloadObfuscator.class);
 
     JsonPayloadObfuscator(ObfuscationFieldStrategy obfuscationFieldStrategy) {
         super(obfuscationFieldStrategy)
     }
 
     String cleanFieldsFromJson(String content, List<String> fields){
-        if(content && fields.size() > 0){
-            try{
-                def nodes = new JsonSlurper().parseText(content)
-                if(nodes){
-                    cleanRecursive(nodes, fields)
-                }
-                return nodes.toString()
-            }catch (all){
-                all.printStackTrace()
+        try{
+            def nodes = new JsonSlurper().parseText(content)
+            if(nodes){
+                cleanRecursive(nodes, fields)
             }
-        }
+            return nodes.toString()
+        }catch (Exception ex){
+            log.error("Error with [$content]",ex)}
         return content
     }
 
@@ -45,12 +46,17 @@ class JsonPayloadObfuscator extends AbstractPayloadObfusctator {
     }
 
     private boolean isCollectionOrArray(object) {
-        [Map, Object[], List].any { it.isAssignableFrom(object.getClass()) }
+        [Map, Object[], List, Set].any { it.isAssignableFrom(object.getClass()) }
     }
 
     @Override
     String process(String content, List<String> fieldsToObfuscate) {
-        cleanFieldsFromJson(content, fieldsToObfuscate)
+        if(content && fieldsToObfuscate?.size() > 0){
+            return cleanFieldsFromJson(content, fieldsToObfuscate)
+        } else {
+            return  content
+        }
+
     }
 
     @Override

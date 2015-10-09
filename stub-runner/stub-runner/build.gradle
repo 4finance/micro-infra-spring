@@ -8,9 +8,8 @@ dependencies {
     compile project(':micro-deps-root:micro-deps')
     compile 'org.apache.ivy:ivy:2.4.0'
     compile 'org.codehaus.groovy:groovy-all'
-    compile('com.github.tomakehurst:wiremock') {
-        exclude group: 'org.mortbay.jetty', module: 'servlet-api'
-    }
+    compile 'com.github.tomakehurst:wiremock'
+    compile 'javax.servlet:javax.servlet-api:3.1.0'
     compile "org.apache.curator:curator-x-discovery"
     compile "org.apache.curator:curator-test"
     compile "commons-io:commons-io"
@@ -18,7 +17,6 @@ dependencies {
     compile "org.slf4j:log4j-over-slf4j"
     compile 'ch.qos.logback:logback-classic'
     compile 'args4j:args4j:2.32'
-    compile 'javax.servlet:javax.servlet-api:3.1.0'
     compile 'com.nurkiewicz.asyncretry:asyncretry-jdk7:0.0.6'
 
     testCompile 'org.spockframework:spock-core'

@@ -25,7 +25,7 @@ class MappingDescriptor {
     }
 
     StubMapping getMapping() {
-        return StubMapping.buildFrom(descriptor.text)
+        return StubMapping.buildFrom(descriptor.getText('UTF-8'))
     }
 
     static enum MappingType {

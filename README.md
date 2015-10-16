@@ -3,7 +3,7 @@
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/4finance/micro-infra-spring?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 micro-infra-spring
-=======================
+======================
 
 Sets up the whole Spring infrastructure stack that will turn your microservice into a beauty.
 

@@ -1,7 +1,12 @@
 package com.ofg.infrastructure.web.logging;
 
 import com.ofg.infrastructure.web.logging.config.LogsConfig;
-import com.ofg.infrastructure.web.logging.obfuscation.*;
+import com.ofg.infrastructure.web.logging.obfuscation.AbstractPayloadObfuscator;
+import com.ofg.infrastructure.web.logging.obfuscation.FieldReplacementStrategy;
+import com.ofg.infrastructure.web.logging.obfuscation.JsonPayloadObfuscator;
+import com.ofg.infrastructure.web.logging.obfuscation.ObfuscationFieldStrategy;
+import com.ofg.infrastructure.web.logging.obfuscation.PayloadObfuscationProcessor;
+import com.ofg.infrastructure.web.logging.obfuscation.XmlPayloadObfuscator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

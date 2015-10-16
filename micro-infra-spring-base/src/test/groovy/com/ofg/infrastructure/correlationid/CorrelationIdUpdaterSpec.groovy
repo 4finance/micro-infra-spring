@@ -35,6 +35,13 @@ class CorrelationIdUpdaterSpec extends Specification {
             CorrelationIdHolder.get() == 'A'
     }
 
+    def 'should clean up correlation ID after running closure when thread had no correlation ID'() {
+        when:
+            CorrelationIdUpdater.withId('C') {}
+        then:
+            CorrelationIdHolder.get() == null
+    }
+
     def "correlation ID should not be propagated to other thread by default"() {
         given:
             CorrelationIdUpdater.updateCorrelationId('A')

@@ -24,11 +24,9 @@ import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATI
 class CorrelationIdUpdater {
 
     static void updateCorrelationId(String correlationId) {
-        if (StringUtils.hasText(correlationId)) {
-            log.debug("Updating correlationId with value: [$correlationId]")
-            CorrelationIdHolder.set(correlationId)
-            MDC.put(CORRELATION_ID_HEADER, correlationId)
-        }
+        log.debug("Updating correlationId with value: [$correlationId]")
+        CorrelationIdHolder.set(correlationId)
+        MDC.put(CORRELATION_ID_HEADER, correlationId)
     }
 
     /**

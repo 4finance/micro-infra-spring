@@ -100,6 +100,22 @@ class RequestLoggingControllerFilterSpec extends MvcIntegrationSpec {
             removeAppender(mockAppender)
     }
 
+    def 'JSON: Should not create log REQ/RES for GET call due to default skip configuration'() {
+        given:
+            final Appender mockAppender = insertAppender(Mock(Appender.class))
+        when:
+            mockMvc.perform(get("/swagger"))
+                    .andReturn()
+        then:
+            interaction {
+                    checkInteraction(mockAppender,'.*REQ CONTROLLER->.*method.*GET.*url.*/swagger.*', 0)
+                and:
+                    checkInteraction(mockAppender,'.*RES CONTROLLER<-headers.*status.*body.*response.*',0)
+            }
+        cleanup:
+            removeAppender(mockAppender)
+    }
+
     def 'JSON: Should create log REQ/RES for POST call due to skip configuration only for GET'() {
         given:
             final Appender mockAppender = insertAppender(Mock(Appender.class))
@@ -244,6 +260,12 @@ class RequestLoggingTestingController {
 
     @RequestMapping(value = "/logTestJsonSkip", produces = "application/json", method = RequestMethod.GET)
     ResponseEntity<String> logTestJsonSkipGet(HttpServletRequest request) {
+        request.getInputStream().bytes
+        return new ResponseEntity<String>(RequestLoggingControllerFilterSpec.readResource(JSON_RES_RESOURCE_NAME),HttpStatus.OK)
+    }
+
+    @RequestMapping(value = "/swagger", produces = "application/json", method = RequestMethod.GET)
+    ResponseEntity<String> logTestSwaggerGet(HttpServletRequest request) {
         request.getInputStream().bytes
         return new ResponseEntity<String>(RequestLoggingControllerFilterSpec.readResource(JSON_RES_RESOURCE_NAME),HttpStatus.OK)
     }

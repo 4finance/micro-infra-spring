@@ -30,7 +30,7 @@ class HttpClientCallLogger implements ClientHttpRequestInterceptor {
         if(!config.isSkipAll()){
             reqData.setProcessedContent(obfuscator.process(reqData.getContent(), reqData.getHeaders(), config.getFilteredReqFields()));
             reqData.setProcessedHeaders(config.getRequestHeadersToLogging(reqData.getHeaders()));
-            log.info("REQ CLIENT->" + LogBuilder.createLogBuilder()
+            log.debug("REQ CLIENT->" + LogBuilder.createLogBuilder()
                                                 .withHttpData(reqData)
                                                 .build());
         }
@@ -41,7 +41,7 @@ class HttpClientCallLogger implements ClientHttpRequestInterceptor {
             HttpData resData = createHttpData(response);
             resData.setProcessedContent(obfuscator.process(resData.getContent(), resData.getHeaders(), config.getFilteredResFields()));
             resData.setProcessedHeaders(config.getResponseHeadersToLogging(resData.getHeaders()));
-            log.info("RES CLIENT<-" + LogBuilder.createLogBuilder()
+            log.debug("RES CLIENT<-" + LogBuilder.createLogBuilder()
                                                 .withHttpData(resData)
                                                 .build());
         }

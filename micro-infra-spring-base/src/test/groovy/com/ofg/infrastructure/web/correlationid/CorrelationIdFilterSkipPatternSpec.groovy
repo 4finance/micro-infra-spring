@@ -9,12 +9,13 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
+import static com.ofg.infrastructure.web.WebConsts.DEFAULT_SKIP_PATTERN;
 
 
 @Unroll
 class CorrelationIdFilterSkipPatternSpec extends Specification {
 
-    CorrelationIdFilter filter = new CorrelationIdFilter(Stub(UuidGenerator), CorrelationIdFilter.DEFAULT_SKIP_PATTERN)
+    CorrelationIdFilter filter = new CorrelationIdFilter(Stub(UuidGenerator), DEFAULT_SKIP_PATTERN)
 
     def 'should skip meaningless URIs like #uri'() {
         given:

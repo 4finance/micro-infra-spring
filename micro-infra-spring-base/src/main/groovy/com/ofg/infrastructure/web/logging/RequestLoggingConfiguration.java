@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.web.logging;
 
 import com.ofg.infrastructure.web.logging.config.LogsConfig;
+import com.ofg.infrastructure.web.logging.config.LogsConfigElement;
 import com.ofg.infrastructure.web.logging.obfuscation.AbstractPayloadObfuscator;
 import com.ofg.infrastructure.web.logging.obfuscation.FieldReplacementStrategy;
 import com.ofg.infrastructure.web.logging.obfuscation.JsonPayloadObfuscator;
@@ -64,5 +65,4 @@ public class RequestLoggingConfiguration {
     LogsConfig createLogsConfig(){
         return new LogsConfig();
     }
-
 }

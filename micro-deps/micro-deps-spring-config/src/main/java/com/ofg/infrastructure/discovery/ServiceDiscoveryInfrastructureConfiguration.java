@@ -109,12 +109,13 @@ public class ServiceDiscoveryInfrastructureConfiguration {
             public void run() {
                 try {
                     serviceDiscovery.start();
+                    log.info("Registration inside zookeeper successful");
                 } catch (Exception e) {
                     log.error("Error during service registration inside Zookeeper");
-                    System .exit(1);
+                    System.exit(1);
                 }
             }
-        }).start();
+        }, "async-register-service-thread").start();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.discovery;
 
 import com.google.common.collect.Iterables;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.Arrays;
 
@@ -19,7 +20,29 @@ public class ServicePath {
     }
 
     public String getLastName() {
+        if (path == null) {
+            return StringUtils.EMPTY;
+        }
         return Iterables.getLast(Arrays.asList(path.split("/")));
+    }
+
+    public String getPathToLastName() {
+        if (path == null) {
+            return StringUtils.EMPTY;
+        }
+        int lastOccurenceOfSlash = path.lastIndexOf("/");
+        if (thereIsNoSlash(lastOccurenceOfSlash)) {
+            return path;
+        }
+        return getPathWithoutLastName(lastOccurenceOfSlash);
+    }
+
+    private String getPathWithoutLastName(int lastOccurenceOfSlash) {
+        return path.substring(0, lastOccurenceOfSlash);
+    }
+
+    private boolean thereIsNoSlash(int lastOccurenceOfSlash) {
+        return lastOccurenceOfSlash == -1;
     }
 
     public String getPathWithStartingSlash() {

@@ -1,9 +1,10 @@
 package com.ofg.stub
-
 import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor
 import com.nurkiewicz.asyncretry.RetryExecutor
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.stub.server.ZookeeperServer
+import groovy.json.JsonOutput
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -17,7 +18,6 @@ import org.apache.curator.x.discovery.details.ServiceCacheListener
 import org.apache.http.conn.HttpHostConnectException
 
 import java.util.concurrent.*
-
 /**
  * Class that resolves your service's collaborators from Zookeeper
  */
@@ -26,7 +26,8 @@ import java.util.concurrent.*
 @CompileStatic
 class CollaboratorsPathResolver {
 
-    private static final String COLLABORATORS_ENDPOINT = '/collaborators'
+    private static final String OLD_COLLABORATORS_ENDPOINT = '/microservice.json'
+    private static final String COLLABORATORS_ENDPOINT = '/microserviceDescriptor'
     private static final String APPLICATION_JSON_CONTENT_TYPE = 'application/json'
 
     /**
@@ -37,23 +38,22 @@ class CollaboratorsPathResolver {
      * @param zookeeperServer - the ZookeeperServer where your service is registered
      * @return - collaborators of your service
      */
-    static Collaborators resolveFromZookeeper(String serviceName, String context, ZookeeperServer zookeeperServer, StubRunnerOptions config) {
-        List<String> dependencies = resolveServiceDependenciesFromZookeeper(context, zookeeperServer, serviceName, config)
-        return new Collaborators(context, dependencies)
+    static ServiceConfigurationResolver resolveFromZookeeper(String serviceName, String context, ZookeeperServer zookeeperServer, StubRunnerOptions config) {
+        return resolveServiceDependenciesFromZookeeper(context, zookeeperServer, serviceName, config)
     }
 
     private
-    static List<String> resolveServiceDependenciesFromZookeeper(String context, ZookeeperServer zookeeperServer, String serviceName, StubRunnerOptions config) {
+    static ServiceConfigurationResolver resolveServiceDependenciesFromZookeeper(String context, ZookeeperServer zookeeperServer, String serviceName, StubRunnerOptions config) {
         ServiceDiscovery discovery = ServiceDiscoveryBuilder.builder(Void)
                 .basePath(context)
                 .client(zookeeperServer.curatorFramework)
                 .build()
         discovery.start()
         String uriSpec = obtainServiceInstanceUri(discovery, serviceName, config)
-        ListenableFuture<Map<String, Map<String, String>>> collaborators = getCollaborators(uriSpec, config.waitTimeout);
-        List<String> collaboratorsList = collaborators.get()?.keySet()?.toList()
+        ListenableFuture<String> microserviceDescriptor = getMicroserviceDescriptor(uriSpec, config.waitTimeout)
+        ServiceConfigurationResolver serviceConfigurationResolver = new ServiceConfigurationResolver(microserviceDescriptor.get())
         discovery?.close()
-        return collaboratorsList
+        return serviceConfigurationResolver
     }
 
     private
@@ -138,7 +138,7 @@ class CollaboratorsPathResolver {
 
     @CompileDynamic
     @TypeChecked
-    static ListenableFuture<Map<String, Map<String, String>>> getCollaborators(String uriSpec, Integer timeout) {
+    static ListenableFuture<String> getMicroserviceDescriptor(String uriSpec, Integer timeout) {
         final HTTPBuilder httpRequest = new HTTPBuilder(uriSpec)
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         RetryExecutor executor = new AsyncRetryExecutor(scheduler)
@@ -147,10 +147,11 @@ class CollaboratorsPathResolver {
                     withExponentialBackoff(500, 2).     //500ms times 2 after each retry
                     withMaxDelay(timeout * 1000);       //timeout in seconds;
         }
-        return executor.getWithRetry(new Callable<Map<String, Map<String, String>>>() {
+        return executor.getWithRetry(new Callable<String>() {
             @Override
-            Map<String, Map<String, String>> call() throws Exception {
-                return httpRequest.get(path: COLLABORATORS_ENDPOINT, contentType: APPLICATION_JSON_CONTENT_TYPE)
+            String call() throws Exception {
+                // TODO: add support for new collaborators endpoint
+                return JsonOutput.toJson(httpRequest.get(path: OLD_COLLABORATORS_ENDPOINT, contentType: APPLICATION_JSON_CONTENT_TYPE))
             }
         })
     }

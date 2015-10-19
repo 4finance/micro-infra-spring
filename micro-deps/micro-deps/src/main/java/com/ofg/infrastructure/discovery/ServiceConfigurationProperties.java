@@ -9,4 +9,5 @@ public class ServiceConfigurationProperties {
     public static final String LOAD_BALANCER = "load-balancer";
     public static final String DEPENDENCIES = "dependencies";
     public static final String THIS = "this";
+    public static final String STUBS = "stubs";
 }

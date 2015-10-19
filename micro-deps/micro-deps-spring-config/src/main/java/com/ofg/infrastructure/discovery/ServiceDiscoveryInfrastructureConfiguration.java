@@ -86,18 +86,35 @@ public class ServiceDiscoveryInfrastructureConfiguration {
                 .build();
     }
 
-    @Bean(initMethod = "start", destroyMethod = "close")
+    @Bean(destroyMethod = "close")
     @SuppressWarnings("unchecked")
     public ServiceDiscovery serviceDiscovery(CuratorFramework curatorFramework,
                                              ServiceInstance serviceInstance,
                                              ServiceConfigurationResolver serviceConfigurationResolver) {
         log.info("Registering myself: " + String.valueOf(serviceInstance));
-        return ServiceDiscoveryBuilder
+        final ServiceDiscovery<Void> serviceDiscovery = ServiceDiscoveryBuilder
                 .builder(Void.class)
                 .basePath("/" + serviceConfigurationResolver.getBasePath())
                 .client(curatorFramework)
                 .thisInstance(serviceInstance)
                 .build();
+        asyncRegisterInsideZookeeper(serviceDiscovery);
+        return serviceDiscovery;
+    }
+
+    private void asyncRegisterInsideZookeeper(final ServiceDiscovery<Void> serviceDiscovery) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    serviceDiscovery.start();
+                    log.info("Registration inside zookeeper successful");
+                } catch (Exception e) {
+                    log.error("Error during service registration inside Zookeeper");
+                    System.exit(1);
+                }
+            }
+        }, "async-register-service-thread").start();
     }
 
 }

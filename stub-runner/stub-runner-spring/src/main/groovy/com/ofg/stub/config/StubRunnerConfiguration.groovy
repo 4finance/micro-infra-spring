@@ -91,8 +91,7 @@ class StubRunnerConfiguration {
         boolean shouldWorkOnline = isPropertySetToWorkOnline(workOffline, skipLocalRepo)
         StubRunnerOptions stubRunnerOptions = new StubRunnerOptions(minPortValue, maxPortValue, stubRepositoryRoot, stubsGroup, stubsModule, shouldWorkOnline,
                 useMicroserviceDefinitions, testingServer.connectString, testingServer.port, stubsSuffx, waitForService, waitTimeout)
-        List<String> dependenciesPath = getDependenciesPaths()
-        Collaborators dependencies = new Collaborators(getBasePath(), dependenciesPath)
+        Collaborators dependencies = getCollaborators()
         return new BatchStubRunnerFactory(stubRunnerOptions, dependencies).buildBatchStubRunner()
     }
 
@@ -102,20 +101,11 @@ class StubRunnerConfiguration {
         }
     }
 
-    private String getBasePath() {
-        if (zookeeperDiscoveryProperties) {
-            return zookeeperDiscoveryProperties.root
-        } else if (serviceConfigurationResolver) {
-            return serviceConfigurationResolver.basePath
+    private Collaborators getCollaborators() {
+        if (zookeeperDiscoveryProperties && zookeeperDependencies) {
+            return new Collaborators(zookeeperDiscoveryProperties.root,  zookeeperDependencies.getDependencyConfigurations().collect { it.path })
         }
-    }
-
-    private List<String> getDependenciesPaths() {
-        if (zookeeperDependencies) {
-            return zookeeperDependencies.getDependencyConfigurations().collect { it.path }
-        } else if (serviceConfigurationResolver) {
-            return serviceConfigurationResolver.dependencies.collect { it.servicePath.path }
-        }
+        return DescriptorToCollaborators.fromDeprecatedMicroserviceDescriptor(serviceConfigurationResolver)
     }
 
     private boolean isPropertySetToWorkOnline(boolean workOffline, boolean skipLocalRepo) {

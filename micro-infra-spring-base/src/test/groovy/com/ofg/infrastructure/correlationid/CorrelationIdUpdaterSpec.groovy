@@ -35,6 +35,13 @@ class CorrelationIdUpdaterSpec extends Specification {
             CorrelationIdHolder.get() == 'A'
     }
 
+    def 'should clean up correlation ID after running closure when thread had no correlation ID'() {
+        when:
+            CorrelationIdUpdater.withId('C') {}
+        then:
+            CorrelationIdHolder.get() == null
+    }
+
     def "correlation ID should not be propagated to other thread by default"() {
         given:
             CorrelationIdUpdater.updateCorrelationId('A')
@@ -103,7 +110,7 @@ class CorrelationIdUpdaterSpec extends Specification {
         given:
             ExecutorService threadPool = Executors.newFixedThreadPool(1)
             CorrelationIdUpdater.updateCorrelationId('A')
-            Callable<String> callable = new CorrelationIdTestCallable()
+            Callable<String> callable = [call: { CorrelationIdHolder.get() }] as Callable<String>
         when:
             Callable<String> wrappedCallable = CorrelationIdUpdater.wrapCallableWithId(callable)
             String nestedCorrelationId = threadPool.submit(wrappedCallable).get(1, SECONDS)
@@ -117,7 +124,7 @@ class CorrelationIdUpdaterSpec extends Specification {
         given:
             ExecutorService threadPool = Executors.newFixedThreadPool(1)
             CorrelationIdUpdater.updateCorrelationId('A')
-            Callable<String> callable = new CorrelationIdTestCallable()
+            Callable<String> callable = [call: { CorrelationIdHolder.get() }] as Callable<String>
         and:
             threadPool.submit({ CorrelationIdHolder.set('B') }).get(1, SECONDS)
         when:
@@ -127,13 +134,5 @@ class CorrelationIdUpdaterSpec extends Specification {
             restoredCorrelationId == 'B'
         cleanup:
             threadPool.shutdown()
-    }
-
-    //Explicit plain old Callable class instead of `{} as Callable`
-    private static class CorrelationIdTestCallable implements Callable<String> {
-        @Override
-        String call() throws Exception {
-            CorrelationIdHolder.get()
-        }
     }
 }

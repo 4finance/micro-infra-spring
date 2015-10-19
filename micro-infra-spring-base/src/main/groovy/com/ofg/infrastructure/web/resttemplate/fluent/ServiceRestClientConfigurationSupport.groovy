@@ -19,6 +19,7 @@ import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDepende
 import org.springframework.context.annotation.Bean
 import org.springframework.http.client.BufferingClientHttpRequestFactory
 import org.springframework.http.client.ClientHttpRequestFactory
+import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.web.client.RestOperations
 
@@ -46,6 +47,10 @@ class ServiceRestClientConfigurationSupport {
 
     @Value('${rest.client.maxLogResponseChars:4096}')
     int maxLogResponseChars
+
+
+    @Autowired(required = false)
+    List<ClientHttpRequestInterceptor> interceptors
 
     /**
      * @deprecated use {@code rest.client.retry.threads} instead
@@ -84,6 +89,7 @@ class ServiceRestClientConfigurationSupport {
         RestTemplate restTemplate = new RestTemplate(configurer.maxLogResponseChars)
         this.configureMessageConverters(restTemplate.messageConverters)
         restTemplate.requestFactory = requestFactory()
+        restTemplate.interceptors = interceptors
         return restTemplate
     }
 

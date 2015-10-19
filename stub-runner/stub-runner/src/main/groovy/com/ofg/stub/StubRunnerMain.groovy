@@ -1,5 +1,6 @@
 package com.ofg.stub
 
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.stub.mapping.StubRepository
 import com.ofg.stub.registry.StubRegistry
 import com.ofg.stub.server.ZookeeperServer
@@ -9,8 +10,8 @@ import org.kohsuke.args4j.CmdLineException
 import org.kohsuke.args4j.CmdLineParser
 import org.kohsuke.args4j.Option
 
-import static org.apache.commons.lang.StringUtils.*
-import static org.kohsuke.args4j.OptionHandlerFilter.*
+import static org.apache.commons.lang.StringUtils.isNotBlank
+import static org.kohsuke.args4j.OptionHandlerFilter.ALL
 
 /**
  * Class having the main method to be executed in the fatJar
@@ -123,7 +124,8 @@ class StubRunnerMain {
     private void execute() {
         try {
             log.debug("Launching StubRunner with args: $arguments")
-            Collaborators collaborators = new CollaboratorsPathResolver().resolveFromZookeeper(arguments.serviceName, arguments.context, zookeeperServer, arguments.stubRunnerOptions)
+            ServiceConfigurationResolver microserviceDescriptor = new CollaboratorsPathResolver().resolveFromZookeeper(arguments.serviceName, arguments.context, zookeeperServer, arguments.stubRunnerOptions)
+            Collaborators collaborators = DescriptorToCollaborators.fromDeprecatedMicroserviceDescriptor(microserviceDescriptor)
             BatchStubRunner stubRunner = new BatchStubRunnerFactory(arguments.stubRunnerOptions, collaborators).buildBatchStubRunner()
             stubRunner.runStubs()
         } catch (Exception e) {

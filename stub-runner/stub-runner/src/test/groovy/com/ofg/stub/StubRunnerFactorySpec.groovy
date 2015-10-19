@@ -1,5 +1,4 @@
 package com.ofg.stub
-
 import com.google.common.base.Optional
 import org.apache.curator.framework.CuratorFramework
 import org.junit.Rule

@@ -10,11 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.ofg.infrastructure.web.logging.config.LogsConfigElement.DEFAULT_CONFIG_ELEMENT;
+import static com.ofg.infrastructure.web.logging.config.LogsConfigElement.EMPTY_CONFIG_ELEMENT;
+
 @ConfigurationProperties(prefix="logs")
 public class LogsConfig {
 
-    private final static LogsConfigElement EMPTY_CONFIG_ELEMENT = new LogsConfigElement();
     private List<LogsConfigElement> config = new ArrayList<>();
+
+    public LogsConfig() {
+
+        config.add(DEFAULT_CONFIG_ELEMENT);
+    }
 
     public List<LogsConfigElement> getConfig() {
         return config;
@@ -29,7 +36,7 @@ public class LogsConfig {
         Preconditions.checkArgument(StringUtils.isNotEmpty(url), "Url can not be empty");
         return Iterables.find(config, new Predicate<LogsConfigElement>() {
             public boolean apply(LogsConfigElement arg) {
-                return method.toUpperCase().equals(arg.getMethod().toUpperCase()) && Pattern.matches(arg.getUrlPattern(), url);
+                return Pattern.matches(arg.getMethodPattern(), method) && Pattern.matches(arg.getUrlPattern(), url);
             }
         }, EMPTY_CONFIG_ELEMENT);
     }

@@ -9,15 +9,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.ofg.infrastructure.web.WebConsts.DEFAULT_SKIP_PATTERN_STRING;
+
 public class LogsConfigElement {
 
-    String skipAll = Boolean.FALSE.toString();
-    String method = StringUtils.EMPTY;
-    String urlPattern = StringUtils.EMPTY;
-    List<String> filteredReqHeaders = new ArrayList<>();
-    List<String> filteredResHeaders = new ArrayList<>();
-    List<String> filteredReqFields = new ArrayList<>();
-    List<String> filteredResFields = new ArrayList<>();
+    final static LogsConfigElement EMPTY_CONFIG_ELEMENT = new LogsConfigElement();
+    final static LogsConfigElement DEFAULT_CONFIG_ELEMENT = defaultSkipConfigElement();
+    private String skipAll = Boolean.FALSE.toString();
+    private String methodPattern = ".*";
+    private String urlPattern = StringUtils.EMPTY;
+    private List<String> filteredReqHeaders = new ArrayList<>();
+    private List<String> filteredResHeaders = new ArrayList<>();
+    private List<String> filteredReqFields = new ArrayList<>();
+    private List<String> filteredResFields = new ArrayList<>();
 
     public String getSkipAll() {
         return skipAll;
@@ -27,12 +31,12 @@ public class LogsConfigElement {
         this.skipAll = skipAll;
     }
 
-    public String getMethod() {
-        return method;
+    public String getMethodPattern() {
+        return methodPattern;
     }
 
-    public void setMethod(String method) {
-        this.method = method;
+    public void setMethodPattern(String methodPattern) {
+        this.methodPattern = methodPattern;
     }
 
     public String getUrlPattern() {
@@ -109,5 +113,13 @@ public class LogsConfigElement {
             if(this.isResponseHeaderAllowed(entry.getKey())) builder.put(entry);
         }
         return builder.build();
+    }
+
+    private static LogsConfigElement defaultSkipConfigElement(){
+        LogsConfigElement defaultSkipConfig = new LogsConfigElement();
+        defaultSkipConfig.setSkipAll(Boolean.TRUE.toString());
+        defaultSkipConfig.setMethodPattern(".*");
+        defaultSkipConfig.setUrlPattern(DEFAULT_SKIP_PATTERN_STRING);
+        return defaultSkipConfig;
     }
 }

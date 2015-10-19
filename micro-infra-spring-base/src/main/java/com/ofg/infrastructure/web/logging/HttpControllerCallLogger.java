@@ -33,11 +33,9 @@ class HttpControllerCallLogger extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 
+        log.debug("REQ CONTROLLER init {}", (((HttpServletRequest) request).getRequestURI()));
         HttpServletRequestLoggingWrapper requestWrapper = new HttpServletRequestLoggingWrapper((HttpServletRequest)request);
         HttpServletResponseLoggingWrapper responseWrapper = new HttpServletResponseLoggingWrapper((HttpServletResponse) response);
-
-
-        log.info("REQ CONTROLLER start {}", requestWrapper.getPathInfo());
         try {
             filterChain.doFilter(requestWrapper, responseWrapper);
         } finally {
@@ -46,14 +44,14 @@ class HttpControllerCallLogger extends GenericFilterBean {
             if(!config.isSkipAll()){
                 reqData.setProcessedContent(obfuscator.process(reqData.getContent(), reqData.getHeaders(), config.getFilteredReqFields()));
                 reqData.setProcessedHeaders(config.getRequestHeadersToLogging(reqData.getHeaders()));
-                log.info("REQ CONTROLLER->" + LogBuilder.createLogBuilder()
+                log.debug("REQ CONTROLLER->" + LogBuilder.createLogBuilder()
                         .withHttpData(reqData)
                         .build());
 
                 HttpData resData = createHttpData(responseWrapper);
                 resData.setProcessedContent(obfuscator.process(resData.getContent(), resData.getHeaders(), config.getFilteredResFields()));
                 resData.setProcessedHeaders(config.getResponseHeadersToLogging(resData.getHeaders()));
-                log.info("RES CONTROLLER<-" + LogBuilder.createLogBuilder()
+                log.debug("RES CONTROLLER<-" + LogBuilder.createLogBuilder()
                         .withHttpData(resData)
                         .build());
             }

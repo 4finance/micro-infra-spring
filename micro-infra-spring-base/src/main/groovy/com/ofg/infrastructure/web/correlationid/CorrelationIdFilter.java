@@ -32,8 +32,6 @@ import static org.springframework.util.StringUtils.hasText;
  */
 public class CorrelationIdFilter extends OncePerRequestFilter {
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    public static final Pattern DEFAULT_SKIP_PATTERN = Pattern.compile("/api-docs.*|/autoconfig|/configprops|/dump|/info|/metrics.*|/mappings|/trace|/swagger.*|.*\\.png|.*\\.css|.*\\.js|.*\\.html");
-
     private final Optional<Pattern> skipCorrId;
     private final UuidGenerator uuidGenerator;
 

@@ -6,8 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import java.util.regex.Pattern;
+
+import static com.ofg.infrastructure.web.WebConsts.DEFAULT_SKIP_PATTERN;
 
 /**
  * Registers beans that add correlation id to requests
@@ -28,7 +29,7 @@ public class CorrelationIdConfiguration {
 
     @Bean
     public FilterRegistrationBean correlationHeaderFilter(UuidGenerator uuidGenerator) {
-        Pattern pattern = StringUtils.isNotBlank(skipPattern) ? Pattern.compile(skipPattern) : CorrelationIdFilter.DEFAULT_SKIP_PATTERN;
+        Pattern pattern = StringUtils.isNotBlank(skipPattern) ? Pattern.compile(skipPattern) : DEFAULT_SKIP_PATTERN;
         return new FilterRegistrationBean(new CorrelationIdFilter(uuidGenerator, pattern));
     }
 

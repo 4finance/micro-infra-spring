@@ -45,6 +45,7 @@ public class ZookeeperServiceResolverConfiguration {
     static final Integer DEFAULT_SERVER_PORT = 8080;
 
     @Autowired Environment environment;
+    @Autowired ApplicationContext applicationContext;
 
     @Bean(initMethod = "build")
     public ZookeeperServiceDiscovery zookeeperServiceDiscovery(CuratorFramework curator, ZookeeperDiscoveryProperties zookeeperDiscoveryProperties, InstanceSerializer<ZookeeperInstance> instanceSerializer) {
@@ -63,6 +64,7 @@ public class ZookeeperServiceResolverConfiguration {
                 }
             }
         };
+        applicationContext.getAutowireCapableBeanFactory().autowireBean(zookeeperServiceDiscovery);
         zookeeperServiceDiscovery.setPort(resolveMicroservicePort(environment));
         return zookeeperServiceDiscovery;
     }

@@ -39,6 +39,14 @@ public class ServiceConfigurationResolver {
         this.configurationAsString = parsedJson.toString();
     }
 
+    public ServiceConfigurationResolver(String basePath, MicroserviceConfiguration microserviceConfiguration) {
+        this.basePath = basePath;
+        this.microserviceConfiguration = microserviceConfiguration;
+        this.serviceConfigurationValidator =  new ServiceConfigurationValidator();
+        this.jsonToMicroserviceConfigurationConverter = new JsonToMicroserviceConfigurationConverter();
+        this.configurationAsString = MicroserviceConfigurationToJsonConverter.fromConfiguration(basePath, microserviceConfiguration);
+    }
+
     private ServicePath retrieveThisElement(JSONObject metaData) {
         return new ServicePath(metaData.getString(ServiceConfigurationProperties.THIS));
     }

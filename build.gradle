@@ -147,8 +147,7 @@ configure(srcSubprojects) {
         jvmArgs project.gradle.startParameter.systemPropertiesArgs.entrySet().collect{"-D${it.key}=${it.value}"}
         testLogging {
             exceptionFormat = 'full'
-        }
-        maxHeapSize = "2g"
+        }         maxHeapSize = "2g"
     }
 
     if (project.hasProperty("compatibility")) {

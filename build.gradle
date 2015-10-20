@@ -148,6 +148,7 @@ configure(srcSubprojects) {
         testLogging {
             exceptionFormat = 'full'
         }
+        maxHeapSize = "2g"
     }
 
     if (project.hasProperty("compatibility")) {

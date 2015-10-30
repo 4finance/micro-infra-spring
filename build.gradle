@@ -5,7 +5,8 @@ buildscript {
     repositories {
         mavenLocal()
         jcenter()
-        maven { url "https://plugins.gradle.org/m2/" }  //for sonarqube plugin
+        maven { url 'https://plugins.gradle.org/m2/' }  //for sonarqube plugin
+        maven { url 'http://repo.spring.io/milestone' }
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"

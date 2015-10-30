@@ -13,7 +13,7 @@ class ApplicationContextStartupSpec extends Specification {
 
     def 'should fail to start application context if resource is missing when default bean is missing deps'() {
         given:
-            TestingServer testingServer = new TestingServer(2181)
+            TestingServer testingServer = new TestingServer()
         and:
             AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext()
             applicationContext.environment.setActiveProfiles(PRODUCTION)

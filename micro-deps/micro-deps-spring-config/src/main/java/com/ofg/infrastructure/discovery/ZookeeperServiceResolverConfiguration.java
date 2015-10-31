@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
+import org.springframework.util.SocketUtils;
 
 import java.lang.invoke.MethodHandles;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -82,6 +83,14 @@ public class ZookeeperServiceResolverConfiguration {
     private Integer resolveMicroservicePort(Environment environment) {
         final String property = System.getProperty("port");
         String port = StringUtils.isNotBlank(property) ? property : environment.getProperty("server.port");
-        return port != null ? Integer.valueOf(port) : DEFAULT_SERVER_PORT;
+        return port != null ? randomizePortIfRequired(port) : DEFAULT_SERVER_PORT;
+    }
+
+    private Integer randomizePortIfRequired(String port) {
+        Integer portToPick = Integer.valueOf(port);
+        if (portToPick == -1) {
+            return SocketUtils.findAvailableTcpPort();
+        }
+        return portToPick;
     }
 }

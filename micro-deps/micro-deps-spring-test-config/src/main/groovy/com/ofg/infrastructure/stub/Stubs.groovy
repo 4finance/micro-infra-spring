@@ -75,7 +75,7 @@ class Stubs {
 
     private boolean isUnknown(ServiceAlias serviceAlias) {
         if (zookeeperDependencies) {
-            return zookeeperDependencies.getPathForAlias(serviceAlias.name)
+            return !zookeeperDependencies.getPathForAlias(serviceAlias.name)
         }
         return !configurationResolver.dependencies.find { it.serviceAlias == serviceAlias }
     }

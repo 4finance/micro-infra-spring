@@ -67,6 +67,7 @@ allprojects {
             maven {
                 url 'http://repo.spring.io/snapshot'
             }
+            maven { url 'http://repo.spring.io/milestone' }
         }
     }
 

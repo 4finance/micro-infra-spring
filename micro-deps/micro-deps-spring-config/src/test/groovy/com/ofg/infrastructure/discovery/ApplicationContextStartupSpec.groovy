@@ -17,6 +17,7 @@ class ApplicationContextStartupSpec extends Specification {
         and:
             AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext()
             applicationContext.environment.setActiveProfiles(PRODUCTION)
+            PropertySourceConfiguration.setZookeeperConnectString(testingServer.connectString)
             applicationContext.register(PropertySourceConfiguration, ServiceResolverConfiguration)
         when:            
             applicationContext.refresh()

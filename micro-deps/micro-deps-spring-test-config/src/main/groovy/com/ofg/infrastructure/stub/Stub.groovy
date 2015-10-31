@@ -10,10 +10,14 @@ import groovyjarjarantlr.collections.List
 @CompileStatic
 class Stub {
 
-    private WireMock delegate;
+    private final WireMock delegate
+    final String host
+    final int port
 
     Stub(String host, int port) {
         this.delegate = new WireMock(host, port)
+        this.host = host
+        this.port = port
     }
 
     /**

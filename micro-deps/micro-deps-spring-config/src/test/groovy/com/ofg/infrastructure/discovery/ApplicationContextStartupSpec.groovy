@@ -14,10 +14,10 @@ class ApplicationContextStartupSpec extends Specification {
     def 'should fail to start application context if resource is missing when default bean is missing deps'() {
         given:
             TestingServer testingServer = new TestingServer()
+            System.setProperty('zookeeper.connectString', testingServer.connectString)
         and:
             AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext()
             applicationContext.environment.setActiveProfiles(PRODUCTION)
-            PropertySourceConfiguration.setZookeeperConnectString(testingServer.connectString)
             applicationContext.register(PropertySourceConfiguration, ServiceResolverConfiguration)
         when:            
             applicationContext.refresh()

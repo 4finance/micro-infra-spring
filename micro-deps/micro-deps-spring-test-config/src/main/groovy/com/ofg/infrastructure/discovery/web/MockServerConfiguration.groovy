@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.discovery.web
 
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
+import com.ofg.infrastructure.stub.StubConfiguration
 import com.ofg.infrastructure.stub.Stubs
 import com.ofg.stub.StubRunning
 import com.ofg.stub.server.AvailablePortScanner
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
+
 /**
  * Configuration that registers {@link HttpMockServer} as a Spring bean. Takes care
  * of graceful shutdown process.
@@ -17,6 +20,7 @@ import org.springframework.context.annotation.Configuration
  */
 @CompileStatic
 @Configuration
+@Import(StubConfiguration)
 class MockServerConfiguration {
 
     @Autowired(required = false) ServiceConfigurationResolver configurationResolver

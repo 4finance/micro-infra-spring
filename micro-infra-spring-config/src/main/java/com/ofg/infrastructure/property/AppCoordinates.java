@@ -37,7 +37,14 @@ public class AppCoordinates {
     }
 
     public static AppCoordinates defaults(ZookeeperDiscoveryProperties zookeeperDiscoveryProperties, String applicationName) {
-        return new AppCoordinates(findEnvironment(), applicationName, zookeeperDiscoveryProperties.getRoot());
+        return new AppCoordinates(findEnvironment(), applicationName, rootWithoutStartingSlash(zookeeperDiscoveryProperties));
+    }
+
+    private static String rootWithoutStartingSlash(ZookeeperDiscoveryProperties zookeeperDiscoveryProperties) {
+        if (zookeeperDiscoveryProperties.getRoot().startsWith("/")) {
+            return zookeeperDiscoveryProperties.getRoot().substring(1);
+        }
+        return zookeeperDiscoveryProperties.getRoot();
     }
 
     AppCoordinates(String environment, String path, String countryCode) {

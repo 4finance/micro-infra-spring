@@ -24,7 +24,7 @@ public class JceUnlimitedStrengthUtil {
         try {
             return Cipher.getMaxAllowedKeyLength("AES") > 128;
         } catch (NoSuchAlgorithmException e) {
-            log.warn("Error while checking is strong encryption supported", e);
+            log.warn("Error while checking if strong encryption is supported", e);
             return false;
         }
     }

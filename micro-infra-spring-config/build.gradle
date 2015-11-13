@@ -1,7 +1,7 @@
 description = 'Microservice Spring infrastructure for properties management'
 
 ext {
-    springCloudVersion = "1.0.0.RELEASE"
+    springCloudVersion = "1.1.0.M1"
     springSecurityRsaVersion = "1.0.0.RELEASE"
 }
 
@@ -21,6 +21,7 @@ dependencies {
     compile "org.codehaus.groovy:groovy-all"
     compile "org.aspectj:aspectjrt"
     compile "commons-io:commons-io"
+    compile 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery'
 
     testCompile "org.spockframework:spock-core"
     testRuntime "org.springframework:spring-test"

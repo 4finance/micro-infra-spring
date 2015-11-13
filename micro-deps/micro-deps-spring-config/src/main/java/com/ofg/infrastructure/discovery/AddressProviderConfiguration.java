@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.discovery;
 
+import com.ofg.config.NotSpringCloudProfile;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,8 @@ import static java.lang.invoke.MethodHandles.lookup;
  * @see MicroserviceAddressProvider
  */
 @Configuration
+@Deprecated
+@NotSpringCloudProfile
 public class AddressProviderConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(lookup().lookupClass());

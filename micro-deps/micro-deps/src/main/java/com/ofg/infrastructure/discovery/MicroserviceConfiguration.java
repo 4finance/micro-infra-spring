@@ -157,9 +157,20 @@ public class MicroserviceConfiguration {
             }
 
             public StubsConfiguration(ServicePath servicePath) {
-                this.stubsGroupId = servicePath.getPathToLastName().replaceAll("/", ".");
+                this.stubsGroupId = pathToLastNameWithoutStartingSlash(servicePath);
                 this.stubsArtifactId = servicePath.getLastName();
                 this.stubsClassifier = DEFAULT_STUBS_CLASSIFIER;
+            }
+
+            private String pathToLastNameWithoutStartingSlash(ServicePath servicePath) {
+                if (servicePath.getPathToLastName().startsWith("/")) {
+                    return replaceAllSlashesWithDots(servicePath).substring(1);
+                }
+                return replaceAllSlashesWithDots(servicePath);
+            }
+
+            private String replaceAllSlashesWithDots(ServicePath servicePath) {
+                return servicePath.getPathToLastName().replaceAll("/", ".");
             }
 
             public String getStubsGroupId() {

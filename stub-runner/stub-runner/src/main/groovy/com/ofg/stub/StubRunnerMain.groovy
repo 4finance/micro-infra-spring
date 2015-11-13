@@ -124,8 +124,9 @@ class StubRunnerMain {
     private void execute() {
         try {
             log.debug("Launching StubRunner with args: $arguments")
-            ServiceConfigurationResolver serviceConfigurationResolver = new CollaboratorsPathResolver().resolveFromZookeeper(arguments.serviceName, arguments.context, zookeeperServer, arguments.stubRunnerOptions)
-            BatchStubRunner stubRunner = new BatchStubRunnerFactory(arguments.stubRunnerOptions, serviceConfigurationResolver).buildBatchStubRunner()
+            ServiceConfigurationResolver microserviceDescriptor = new CollaboratorsPathResolver().resolveFromZookeeper(arguments.serviceName, arguments.context, zookeeperServer, arguments.stubRunnerOptions)
+            Collaborators collaborators = DescriptorToCollaborators.fromDeprecatedMicroserviceDescriptor(microserviceDescriptor)
+            BatchStubRunner stubRunner = new BatchStubRunnerFactory(arguments.stubRunnerOptions, collaborators).buildBatchStubRunner()
             stubRunner.runStubs()
         } catch (Exception e) {
             log.error("Closing zookeeper because of exception", e)

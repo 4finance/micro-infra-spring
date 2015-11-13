@@ -21,7 +21,7 @@ class PredefinedHttpHeadersSpec extends Specification {
 
     def 'should not set Content-Type header if there is no template defined'() {
         given:
-            PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(null)
+            PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders()
             HttpHeaders httpHeaders = new HttpHeaders()
         when:
             predefinedHeaders.copyTo(httpHeaders)

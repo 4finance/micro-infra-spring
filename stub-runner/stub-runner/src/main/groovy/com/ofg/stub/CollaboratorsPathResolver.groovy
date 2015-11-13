@@ -39,20 +39,18 @@ class CollaboratorsPathResolver {
      * @return - collaborators of your service
      */
     static ServiceConfigurationResolver resolveFromZookeeper(String serviceName, String context, ZookeeperServer zookeeperServer, StubRunnerOptions config) {
-        ServiceConfigurationResolver serviceConfigurationResolver = resolveServiceDependenciesFromZookeeper(context, zookeeperServer, serviceName, config)
-        return serviceConfigurationResolver
+        return resolveServiceDependenciesFromZookeeper(context, zookeeperServer, serviceName, config)
     }
 
     private
-    static ServiceConfigurationResolver resolveServiceDependenciesFromZookeeper(String context, ZookeeperServer zookeeperServer,
-                                                                String serviceName, StubRunnerOptions config) {
+    static ServiceConfigurationResolver resolveServiceDependenciesFromZookeeper(String context, ZookeeperServer zookeeperServer, String serviceName, StubRunnerOptions config) {
         ServiceDiscovery discovery = ServiceDiscoveryBuilder.builder(Void)
                 .basePath(context)
                 .client(zookeeperServer.curatorFramework)
                 .build()
         discovery.start()
         String uriSpec = obtainServiceInstanceUri(discovery, serviceName, config)
-        ListenableFuture<String> microserviceDescriptor = getMicroserviceDescriptor(uriSpec, config.waitTimeout);
+        ListenableFuture<String> microserviceDescriptor = getMicroserviceDescriptor(uriSpec, config.waitTimeout)
         ServiceConfigurationResolver serviceConfigurationResolver = new ServiceConfigurationResolver(microserviceDescriptor.get())
         discovery?.close()
         return serviceConfigurationResolver

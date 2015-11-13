@@ -1,0 +1,3 @@
+spring.application.name: com/ofg/micro-app
+spring.cloud.zookeeper:
+  discovery.root: pl

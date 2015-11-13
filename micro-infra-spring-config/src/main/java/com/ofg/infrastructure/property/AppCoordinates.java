@@ -3,6 +3,7 @@ package com.ofg.infrastructure.property;
 import com.google.common.base.Optional;
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver;
 import org.apache.commons.io.IOUtils;
+import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
 import org.springframework.core.io.Resource;
 
 import java.io.File;
@@ -21,6 +22,7 @@ public class AppCoordinates {
     private final String path;
     private final String countryCode;
 
+    @Deprecated
     public static AppCoordinates defaults(Resource microserviceConfigResource) {
         requireNonNull(microserviceConfigResource, " Microservice configuration cannot be null");
         try {
@@ -32,6 +34,17 @@ public class AppCoordinates {
         } catch (IOException e) {
             throw new IllegalStateException("Can't read " + microserviceConfigResource, e);
         }
+    }
+
+    public static AppCoordinates defaults(ZookeeperDiscoveryProperties zookeeperDiscoveryProperties, String applicationName) {
+        return new AppCoordinates(findEnvironment(), applicationName, rootWithoutStartingSlash(zookeeperDiscoveryProperties));
+    }
+
+    private static String rootWithoutStartingSlash(ZookeeperDiscoveryProperties zookeeperDiscoveryProperties) {
+        if (zookeeperDiscoveryProperties.getRoot().startsWith("/")) {
+            return zookeeperDiscoveryProperties.getRoot().substring(1);
+        }
+        return zookeeperDiscoveryProperties.getRoot();
     }
 
     AppCoordinates(String environment, String path, String countryCode) {

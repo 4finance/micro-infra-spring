@@ -1,7 +1,5 @@
 package com.ofg.stub
-
 import com.google.common.base.Optional
-import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import org.apache.curator.framework.CuratorFramework
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
@@ -12,12 +10,12 @@ class StubRunnerFactorySpec extends Specification {
     @Rule
     TemporaryFolder folder = new TemporaryFolder()
 
-    ServiceConfigurationResolver serviceConfigurationResolver = new ServiceConfigurationResolver(StubRunnerFactorySpec.getResource('/microservice_example.json').text)
+    Collaborators collaborators = new Collaborators('pl', ["com/ofg/risk-service", "com/ofg/fraud"])
     CuratorFramework curatorFramework = Stub()
     StubDownloader downloader = Mock(StubDownloader)
     String connectString = "localhost:12345"
     StubRunnerOptions stubRunnerOptions = new StubRunnerOptions(zookeeperConnectString: connectString, stubRepositoryRoot: 'pl')
-    StubRunnerFactory factory = new StubRunnerFactory(stubRunnerOptions, serviceConfigurationResolver, curatorFramework, downloader)
+    StubRunnerFactory factory = new StubRunnerFactory(stubRunnerOptions, collaborators, curatorFramework, downloader)
 
     def "Should download stub definitions many times"() {
         given:

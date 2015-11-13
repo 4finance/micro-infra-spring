@@ -43,6 +43,7 @@ class DecryptingPropertyExtendedSpec extends AbstractIntegrationSpec {
     private ConfigurableApplicationContext contextWithProperties(String properties) {
         return applicationBuilderWithSources(DecryptingPropertyTestApp)
                 .properties(properties)
+                .profiles('ok')
                 .run()
     }
 }

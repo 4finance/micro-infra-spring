@@ -5,22 +5,17 @@ import com.codahale.metrics.graphite.Graphite;
 import com.codahale.metrics.graphite.GraphiteSender;
 import com.codahale.metrics.graphite.GraphiteUDP;
 import com.codahale.metrics.graphite.PickledGraphite;
-import com.codahale.metrics.jvm.ClassLoadingGaugeSet;
-import com.codahale.metrics.jvm.FileDescriptorRatioGauge;
-import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
-import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
-import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
+import com.codahale.metrics.jvm.*;
+import com.google.common.collect.Iterables;
 import com.netflix.hystrix.contrib.codahalemetricspublisher.HystrixCodaHaleMetricsPublisher;
 import com.netflix.hystrix.strategy.HystrixPlugins;
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver;
-import com.ofg.infrastructure.metrics.publishing.EnvironmentAwareMetricsBasePath;
-import com.ofg.infrastructure.metrics.publishing.GraphitePublisher;
-import com.ofg.infrastructure.metrics.publishing.JmxPublisher;
-import com.ofg.infrastructure.metrics.publishing.MetricsBasePath;
-import com.ofg.infrastructure.metrics.publishing.PublishingInterval;
+import com.ofg.infrastructure.metrics.publishing.*;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +25,7 @@ import org.springframework.core.env.Environment;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 import static com.ofg.config.BasicProfiles.DEVELOPMENT;
 import static com.ofg.config.BasicProfiles.PRODUCTION;
@@ -86,15 +82,27 @@ public class MetricsConfiguration {
         }
     }
 
+    @Autowired(required = false) ServiceConfigurationResolver serviceConfigurationResolver;
+    @Autowired(required = false) ZookeeperDiscoveryProperties zookeeperDiscoveryProperties;
+
     @Bean
     @Profile(PRODUCTION)
     public MetricsBasePath metricsBasePath(@Value("${metrics.path.root:apps}") String rootName,
                                            @Value("${metrics.path.environment:#{systemProperties['APP_ENV'] ?: 'test'}}") String environment,
-                                           ServiceConfigurationResolver serviceConfigurationResolver,
+                                           @Value("spring.application.name") String springAppName,
                                            @Value("${metrics.path.node:#{T(com.ofg.infrastructure.metrics.config.MetricsConfiguration).resolveLocalHostName()}}") String node) {
-        String country = env.getProperty("metrics.path.country", serviceConfigurationResolver.getBasePath());
-        String appName = env.getProperty("metrics.path.app", serviceConfigurationResolver.getMicroservicePath().getLastName());
+        String basePath = zookeeperDiscoveryProperties != null ? zookeeperDiscoveryProperties.getRoot() : serviceConfigurationResolver.getBasePath();
+        String applicationName = zookeeperDiscoveryProperties != null ? getLastName(springAppName) : serviceConfigurationResolver.getMicroservicePath().getLastName();
+        String country = env.getProperty("metrics.path.country", basePath);
+        String appName = env.getProperty("metrics.path.app", applicationName);
         return new EnvironmentAwareMetricsBasePath(rootName, environment, country, appName, node);
+    }
+
+    private String getLastName(String path) {
+        if (path == null) {
+            return StringUtils.EMPTY;
+        }
+        return Iterables.getLast(Arrays.asList(path.split("/")));
     }
 
     @Bean(initMethod = "start", destroyMethod = "stop")

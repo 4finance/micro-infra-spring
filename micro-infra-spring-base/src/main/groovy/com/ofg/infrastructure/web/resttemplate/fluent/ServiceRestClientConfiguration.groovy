@@ -1,6 +1,5 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
 
-import com.ofg.infrastructure.discovery.EnableServiceDiscovery
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.metrics.config.EnableMetrics
 import com.ofg.infrastructure.web.resttemplate.fluent.config.RestClientConfigurer
@@ -26,7 +25,6 @@ import org.springframework.web.client.RestOperations
 @Configuration
 @CompileStatic
 @EnableMetrics
-@EnableServiceDiscovery
 class ServiceRestClientConfiguration extends ServiceRestClientConfigurationSupport {
 
     @Autowired(required = false)

@@ -8,11 +8,7 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.SpringApplicationContextLoader
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.EnableAspectJAutoProxy
-import org.springframework.context.annotation.Import
-import org.springframework.context.annotation.Primary
+import org.springframework.context.annotation.*
 import org.springframework.core.io.Resource
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.web.client.RestOperations
@@ -36,6 +32,7 @@ class TwoRestOperationsImplementationsSpec extends MvcCorrelationIdSettingIntegr
     static class Config {
 
         @Bean
+        @Primary
         RestOperations customRestOperationsImplementation() {
             return new TestRestTemplate()
         }

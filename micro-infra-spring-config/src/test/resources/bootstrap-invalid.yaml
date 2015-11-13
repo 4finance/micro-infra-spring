@@ -1,0 +1,3 @@
+spring.application.name: /io/invalid-app
+spring.cloud.zookeeper:
+  discovery.root: iv

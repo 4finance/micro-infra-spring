@@ -45,6 +45,10 @@ public class ServicePath {
         return lastOccurenceOfSlash == -1;
     }
 
+    public String getPathWithStartingSlash() {
+        return path.startsWith("/") ? path : "/" + path;
+    }
+
     @Override
     public String toString() {
         return path;

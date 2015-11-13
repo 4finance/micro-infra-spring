@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.autoconfigure;
 
+import com.ofg.config.NotSpringCloudProfile;
 import com.ofg.infrastructure.config.EnableMicroservice;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnExpression("${com.ofg.infra.microservice.auto:true}")
 @EnableMicroservice
+@NotSpringCloudProfile
 public class MicroserviceAutoConfiguration {
 
 }

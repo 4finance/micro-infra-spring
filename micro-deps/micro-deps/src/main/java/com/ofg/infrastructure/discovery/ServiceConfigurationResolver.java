@@ -10,6 +10,10 @@ import org.apache.commons.lang.StringUtils;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Deprecated but used to represent the descriptor for micro-infra-view
+ */
+@Deprecated
 public class ServiceConfigurationResolver {
 
     private final String basePath;
@@ -33,6 +37,14 @@ public class ServiceConfigurationResolver {
         this.basePath = basePath;
         this.microserviceConfiguration = microserviceConfiguration;
         this.configurationAsString = parsedJson.toString();
+    }
+
+    public ServiceConfigurationResolver(String basePath, MicroserviceConfiguration microserviceConfiguration) {
+        this.basePath = basePath;
+        this.microserviceConfiguration = microserviceConfiguration;
+        this.serviceConfigurationValidator =  new ServiceConfigurationValidator();
+        this.jsonToMicroserviceConfigurationConverter = new JsonToMicroserviceConfigurationConverter();
+        this.configurationAsString = MicroserviceConfigurationToJsonConverter.fromConfiguration(basePath, microserviceConfiguration);
     }
 
     private ServicePath retrieveThisElement(JSONObject metaData) {

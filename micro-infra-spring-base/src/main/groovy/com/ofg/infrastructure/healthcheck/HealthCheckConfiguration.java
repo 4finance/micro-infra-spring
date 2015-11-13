@@ -1,6 +1,8 @@
 package com.ofg.infrastructure.healthcheck;
 
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver;
+import com.ofg.infrastructure.discovery.SpringCloudToMicroserviceJsonConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -14,6 +16,10 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import(CollaboratorsConfiguration.class)
 public class HealthCheckConfiguration {
+
+    @Autowired(required = false) ServiceConfigurationResolver serviceConfigurationResolver;
+    @Autowired(required = false) SpringCloudToMicroserviceJsonConverter springCloudToMicroserviceJsonConverter;
+
     @Bean
     public PingController pingController() {
         return new PingController();
@@ -25,8 +31,8 @@ public class HealthCheckConfiguration {
     }
 
     @Bean
-    public MicroserviceConfigurationController microserviceConfigurationController(ServiceConfigurationResolver serviceConfigurationResolver) {
-        return new MicroserviceConfigurationController(serviceConfigurationResolver);
+    public MicroserviceConfigurationController microserviceConfigurationController() {
+        return new MicroserviceConfigurationController(serviceConfigurationResolver, springCloudToMicroserviceJsonConverter);
     }
 
 }

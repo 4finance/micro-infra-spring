@@ -14,21 +14,15 @@ import org.apache.curator.x.discovery.ServiceProvider;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import static com.google.common.collect.Collections2.transform;
-import static com.ofg.infrastructure.discovery.util.CollectionUtils.find;
-import static com.ofg.infrastructure.discovery.util.CollectionUtils.flatten;
-import static com.ofg.infrastructure.discovery.util.CollectionUtils.toSet;
+import static com.ofg.infrastructure.discovery.util.CollectionUtils.*;
 import static java.util.Collections.singleton;
 
+@Deprecated
 public class ZookeeperServiceResolver implements ServiceResolver {
     private final ServiceConfigurationResolver serviceConfigurationResolver;
     private final ServiceDiscovery serviceDiscovery;

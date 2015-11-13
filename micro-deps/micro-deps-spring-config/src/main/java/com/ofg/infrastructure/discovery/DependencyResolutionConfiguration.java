@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.discovery;
 
+import com.ofg.config.NotSpringCloudProfile;
 import com.ofg.infrastructure.discovery.util.ProviderStrategyFactory;
 import com.ofg.infrastructure.discovery.watcher.DependencyWatcher;
 import com.ofg.infrastructure.discovery.watcher.presence.DefaultDependencyPresenceOnStartupVerifier;
@@ -30,6 +31,8 @@ import java.io.IOException;
  * @see ServiceConfigurationResolver
  */
 @Configuration
+@Deprecated
+@NotSpringCloudProfile
 public class DependencyResolutionConfiguration {
 
     @Autowired(required = false) DependencyPresenceOnStartupVerifier dependencyPresenceOnStartupVerifier;

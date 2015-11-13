@@ -3,6 +3,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent
 import com.codahale.metrics.MetricRegistry
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor
+import com.ofg.infrastructure.discovery.MicroserviceConfigurationNotPresentException
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.web.resttemplate.RestOperationsMetricsAspect
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies
 import org.springframework.context.annotation.Bean
 import org.springframework.http.client.BufferingClientHttpRequestFactory
 import org.springframework.http.client.ClientHttpRequestFactory
@@ -62,8 +64,22 @@ class ServiceRestClientConfigurationSupport {
 
     private RestClientConfigurer configurer
 
+    @Autowired(required = false) ZookeeperDependencies zookeeperDependencies
+    @Deprecated @Autowired(required = false) ServiceConfigurationResolver configurationResolver
+
     @Bean
-    ServiceRestClient serviceRestClient(ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver) {
+    ServiceRestClient serviceRestClient(ServiceResolver serviceResolver) {
+        if (zookeeperDependencies == null && configurationResolver == null) {
+            throw new MicroserviceConfigurationNotPresentException()
+        }
+        if (zookeeperDependencies) {
+            return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, zookeeperDependencies)
+        }
+        return createServiceRestClientUsingServiceConfigurationResolver(serviceResolver, configurationResolver)
+    }
+
+    @Deprecated
+    private ServiceRestClient createServiceRestClientUsingServiceConfigurationResolver(ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver) {
         return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, configurationResolver)
     }
 

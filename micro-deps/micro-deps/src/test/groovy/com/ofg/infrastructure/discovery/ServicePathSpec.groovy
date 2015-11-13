@@ -26,4 +26,11 @@ class ServicePathSpec extends Specification {
             'somename'                   || 'somename'
             null                         || ''
     }
+
+    def "should retrieve path with a starting slash"() {
+        given:
+            String path = 'io/fourfinanceit/somename'
+        expect:
+            new ServicePath(path).pathWithStartingSlash == "/$path"
+    }
 }

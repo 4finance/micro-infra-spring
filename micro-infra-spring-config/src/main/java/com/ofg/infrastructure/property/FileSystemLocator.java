@@ -3,15 +3,14 @@ package com.ofg.infrastructure.property;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.config.client.PropertySourceLocator;
-import org.springframework.cloud.config.server.SpringApplicationEnvironmentRepository;
-import org.springframework.core.env.CompositePropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.MapPropertySource;
-import org.springframework.core.env.PropertySource;
+import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
+import org.springframework.cloud.config.server.NativeEnvironmentRepository;
+import org.springframework.core.env.*;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,13 +32,90 @@ public class FileSystemLocator implements PropertySourceLocator {
 
     @Override
     public PropertySource<?> locate(Environment environment) {
-        final SpringApplicationEnvironmentRepository springEnv = new SpringApplicationEnvironmentRepository();
+        final ConfigurableEnvironment configurableEnvironment = (ConfigurableEnvironment) environment;
+        final NativeEnvironmentRepository springEnv = getNativeEnvRepoThatDoesNotAttachTrailingSlash(configurableEnvironment);
         final List<File> propertiesPath = getConfigFiles();
         logConfigurationFiles(propertiesPath);
         springEnv.setSearchLocations(toSearchLocations(propertiesPath));
         final org.springframework.cloud.config.environment.Environment loadedEnvs =
                 springEnv.findOne(appCoordinates.getPath(), "prod", null);
         return toPropertySource(loadedEnvs);
+    }
+
+    private NativeEnvironmentRepository getNativeEnvRepoThatDoesNotAttachTrailingSlash(final ConfigurableEnvironment configurableEnvironment) {
+        return new NativeEnvironmentRepository(configurableEnvironment) {
+            @Override
+            protected org.springframework.cloud.config.environment.Environment clean(org.springframework.cloud.config.environment.Environment value) {
+                org.springframework.cloud.config.environment.Environment result = new org.springframework.cloud.config.environment.Environment(value.getName(), value.getProfiles(),
+                        value.getLabel());
+                for (org.springframework.cloud.config.environment.PropertySource source : value.getPropertySources()) {
+                    String name = source.getName();
+                    if (configurableEnvironment.getPropertySources().contains(name)) {
+                        continue;
+                    }
+                    name = name.replace("applicationConfig: [", "");
+                    name = name.replace("]", "");
+                    if (getSearchLocations() != null) {
+                        boolean matches = false;
+                        String normal = name;
+                        if (normal.startsWith("file:")) {
+                            normal = StringUtils.cleanPath(new File(normal.substring("file:".length()))
+                                    .getAbsolutePath());
+                        }
+                        for (String pattern : StringUtils
+                                .commaDelimitedListToStringArray(getLocations(getSearchLocations(),
+                                        result.getLabel()))) {
+                            if (!pattern.contains(":")) {
+                                pattern = "file:" + pattern;
+                            }
+                            if (pattern.startsWith("file:")) {
+                                pattern = StringUtils.cleanPath(new File(pattern
+                                        // at the end of this line is a trailing slash that breaks our approach
+                                        .substring("file:".length())).getAbsolutePath());
+                            }
+                            if (log.isTraceEnabled()) {
+                                log.trace("Testing pattern: " + pattern
+                                        + " with property source: " + name);
+                            }
+                            if (normal.startsWith(pattern)
+                                    && !normal.substring(pattern.length()).contains("/")) {
+                                matches = true;
+                                break;
+                            }
+                        }
+                        if (!matches) {
+                            // Don't include this one: it wasn't matched by our search locations
+                            if (log.isDebugEnabled()) {
+                                log.debug("Not adding property source: " + name);
+                            }
+                            continue;
+                        }
+                    }
+                    log.info("Adding property source: " + name);
+                    result.add(new org.springframework.cloud.config.environment.PropertySource(name, source.getSource()));
+                }
+                return result;
+            }
+
+            private String getLocations(String[] locations, String label) {
+                List<String> output = new ArrayList<String>();
+                for (String location : locations) {
+                    output.add(location);
+                }
+                for (String location : locations) {
+                    if (isDirectory(location) && StringUtils.hasText(label)) {
+                        output.add(location + label.trim() + "/");
+                    }
+                }
+                return StringUtils.collectionToCommaDelimitedString(output);
+            }
+
+
+            private boolean isDirectory(String location) {
+                return !location.endsWith(".properties") && !location.endsWith(".yml")
+                        && !location.endsWith(".yaml");
+            }
+        };
     }
 
     private void logConfigurationFiles(List<File> propertiesPath) {

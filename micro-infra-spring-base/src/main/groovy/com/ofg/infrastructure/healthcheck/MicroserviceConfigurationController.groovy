@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.healthcheck
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
+import com.ofg.infrastructure.discovery.SpringCloudToMicroserviceJsonConverter
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
@@ -15,9 +16,11 @@ import org.springframework.web.bind.annotation.RestController
 class MicroserviceConfigurationController {
 
     private final ServiceConfigurationResolver serviceConfigurationResolver
+    private final SpringCloudToMicroserviceJsonConverter springCloudToMicroserviceJsonConverter;
 
-    MicroserviceConfigurationController(ServiceConfigurationResolver serviceConfigurationResolver) {
-        this.serviceConfigurationResolver = serviceConfigurationResolver
+    MicroserviceConfigurationController(ServiceConfigurationResolver serviceConfigurationResolver, SpringCloudToMicroserviceJsonConverter springCloudToMicroserviceJsonConverter) {
+        this.serviceConfigurationResolver = serviceConfigurationResolver;
+        this.springCloudToMicroserviceJsonConverter = springCloudToMicroserviceJsonConverter;
     }
 
     @RequestMapping(value = '${endpoints.microservicejson.id:microservice.json}', method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -33,7 +36,10 @@ class MicroserviceConfigurationController {
 
     @Memoized
     private Object getContent() {
-        return new JsonSlurper().parseText(serviceConfigurationResolver.configurationAsString)
+        if (serviceConfigurationResolver != null) {
+            return new JsonSlurper().parseText(serviceConfigurationResolver.configurationAsString)
+        }
+        return springCloudToMicroserviceJsonConverter.toMicroserviceJsonNotation();
     }
 
 }

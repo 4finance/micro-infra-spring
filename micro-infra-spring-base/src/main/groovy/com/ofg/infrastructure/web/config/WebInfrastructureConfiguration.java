@@ -1,5 +1,6 @@
 package com.ofg.infrastructure.web.config;
 
+import com.ofg.infrastructure.discovery.EnableServiceDiscovery;
 import com.ofg.infrastructure.web.correlationid.CorrelationIdConfiguration;
 import com.ofg.infrastructure.web.correlationid.EnableCorrelationId;
 import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClientConfiguration;
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.Import;
  * @see ViewConfiguration
  */
 @Configuration
+@EnableServiceDiscovery
 @EnableCorrelationId
 @Import({ServiceRestClientConfiguration.class,  ViewConfiguration.class})
 public class WebInfrastructureConfiguration {

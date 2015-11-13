@@ -10,7 +10,7 @@
 * Make sure you wrote unit tests, both for new features or bug fixes
 * Add JavaDoc when applicable
 * You should avoid breaking backward compatibility, especially repackaging and changing `public` methods
-* Be carefull when changing dependencies
+* Be careful when changing dependencies
 * You don't have to assign person and milestone
 * Document new features in [Wiki](https://github.com/4finance/micro-infra-spring/wiki), especially new [configuration properties](https://github.com/4finance/micro-infra-spring/wiki/Configuration) after they are merged
 
@@ -32,3 +32,8 @@ GitHub will detect automatically these operations and mark your pull request as 
 **Note**. If you prefer to merge with --ff-only from GUI (when possible) go to GitHub [contact section](https://github.com/contact) and write about it. Sample message to copy/paste.
 
 > Hi. It would be useful to be able to optionally merge PRs without a merge commit from GUI (if there were no other commits to master in the meantime).
+
+# Maintaining the "legacy" version
+
+In master ATM we have a version that supports Spring Cloud. There is a branch called "legacy" where we have the version that is not using Spring Cloud at all.
+If you want your feature to be present for applications that are using the legacy version of micro-infra-spring you'll have to apply your change also to that branch.

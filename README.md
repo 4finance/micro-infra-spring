@@ -9,14 +9,27 @@ Sets up the whole Spring infrastructure stack that will turn your microservice i
 
 Check out [the wiki](https://github.com/4finance/micro-infra-spring/wiki) to have a deeper insight into the project.
 
-# TROUBLESHOOTING SPRING CLOUD INTEGRATION
+## Versioning
+
+Currently we have two lines of versions. 
+
+### Version greater than 2.0.0
+
+This version is in the "master" branch and it contains micro-infra-spring integrated with Spring Cloud. We want to tightly couple micro-infra-spring with Spring Cloud thus this branch will be developed. All the new features will be also developed for this branch.
+
+
+### Versions smaller than 2.0.0
+
+All versions smaller than 2.0.0 are related to the micro-infra-spring version that does not contain Spring Cloud integration (other than the micro-infra-config module). The code containing that version is present in the "legacy" branch. This branch in general will not be maintained. If someone wants a feature to be present here he first needs to develop it in the "master" branch and then backport it to the "legacy" branch. The "legacy" branch in general will not be maintained if it won't be essential.
+
+## TROUBLESHOOTING SPRING CLOUD INTEGRATION
 
 Check [boot-microservice](https://github.com/4finance/boot-microservice) for an example of a working application
 
 Check [spring-cloud-zookeeper documentation](https://github.com/spring-cloud/spring-cloud-zookeeper/blob/master/docs/src/main/asciidoc/spring-cloud-zookeeper.adoc)
 on how to register your application with properties in Zookeeper
 
-## My application doesn't seem to use SpringCloud capabilities
+### My application doesn't seem to use SpringCloud capabilities
 
 Ensure that you have ALSO passed the `springCloud` profile. For example:
 
@@ -24,9 +37,9 @@ Ensure that you have ALSO passed the `springCloud` profile. For example:
 ./gradlew bootRun -Dspring.profiles.active=prod,springCloud -DAPP_ENV=prod -DCONFIG_FOLDER=/properties -Dserver.port=9090 -Dspring.application.name=foo
 ```
  
-## Wrong version of spring boot
+### Wrong version of spring boot
 
-### Issue
+#### Issue
  
 You may find issues like `NoClassDefFoundError` or `ArrayStoreException`. That most likely means that you have different versions of Spring on your classpath.
  
@@ -48,7 +61,7 @@ Caused by: java.lang.ClassNotFoundException: org.springframework.boot.context.co
 	... 6 more
 ```
 
-### Workaround
+#### Workaround
 
 Enforce Spring and Spring Boot library versions
 
@@ -65,9 +78,9 @@ configurations {
 }
 ```
 
-## ClientHttpRequestFactory duplicated beans
+### ClientHttpRequestFactory duplicated beans
 
-### Issue
+#### Issue
  
 With Ribbon coming in you have another `ClientHttpRequestFactory`. If you autowire one in your codebase you'll get the following exception:
  
@@ -84,7 +97,7 @@ Caused by: org.springframework.beans.factory.NoUniqueBeanDefinitionException: No
 	... 40 common frames omitted
 ```
 
-### Workaround
+#### Workaround
 
 Pass the `@Qualifier("requestFactory")` to get one from micro-infra
 
@@ -92,9 +105,9 @@ Pass the `@Qualifier("requestFactory")` to get one from micro-infra
 @Autowired @Qualifier("requestFactory") ClientHttpRequestFactory clientHttpRequestFactory;
 ```
 
-## ServiceConfigurationResolver missing
+### ServiceConfigurationResolver missing
 
-### Issue
+#### Issue
 
 If you're using `springCloud` profile you might get the following exception
  
@@ -107,16 +120,16 @@ No qualifying bean of type [com.ofg.infrastructure.discovery.ServiceConfiguratio
 expected at least 1 bean which qualifies as autowire candidate for this dependency. Dependency annotations: {}
 ```
 
-### Workaround:
+#### Workaround:
 
 You have legacy code that requires JSON representation whereas right now you have to use the ZookeeperDependencies class. 
 Together with ZookeeperDiscoveryProperties to retrieve the realm.
 
-## Application name is wrong!
+### Application name is wrong!
 
 There is a bug in Spring Boot - it should be fixed in 1.3.0.RC2 (https://github.com/spring-projects/spring-boot/pull/4362)
 
-### Workaround
+#### Workaround
 
 Pass `spring.application.name` via system prop or command line. For example:
 
@@ -124,13 +137,13 @@ Pass `spring.application.name` via system prop or command line. For example:
 ./gradlew bootRun -Dspring.profiles.active=prod,springCloud -DAPP_ENV=prod -DCONFIG_FOLDER=/properties -Dserver.port=9090 -Dspring.application.name=foo
 ```
 
-## Port in Zookeeper is wrong (the app booted correctly)
+### Port in Zookeeper is wrong (the app booted correctly)
 
-### Issue
+#### Issue
  
 There is a bug in Spring Boot - it should be fixed in 1.3.0.RC2 (https://github.com/spring-projects/spring-boot/pull/4362)
 
-### Workaround
+#### Workaround
 
 Pass `server.port` via system prop or command line.  For example:
 
@@ -138,7 +151,7 @@ Pass `server.port` via system prop or command line.  For example:
 ./gradlew bootRun -Dspring.profiles.active=prod,springCloud -DAPP_ENV=prod -DCONFIG_FOLDER=/properties -Dserver.port=9090 -Dspring.application.name=foo
 ```
 
-## I want to use the old functionality of micro-infra but it blows up with Spring Cloud stuff
+### I want to use the old functionality of micro-infra but it blows up with Spring Cloud stuff
 
 Ensure that you have a `bootstrap.yaml` file on your classpath that deregisters everything related to Spring Cloud. For example:
 

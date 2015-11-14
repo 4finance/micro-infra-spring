@@ -6,7 +6,6 @@ import com.mangofactory.swagger.plugin.EnableSwagger;
 import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -16,7 +15,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  * Adds configuration enabling Swagger in Spring via {@link SwaggerSpringMvcPlugin}
  */
 @Configuration
-@ComponentScan("com.mangofactory.swagger")
 @EnableSwagger
 public class SwaggerConfiguration extends WebMvcConfigurerAdapter {
 

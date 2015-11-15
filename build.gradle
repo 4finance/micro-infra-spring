@@ -100,7 +100,8 @@ task addHashFile << {
     String gitCmd = "git log --pretty=format:'%H' -n 1"
     def proc = gitCmd.execute()
     proc.waitFor()
-    new File("commitHash.txt").withWriter { it << proc.in.text }
+    project.buildDir.mkdirs()
+    new File(project.buildDir, "commitHash.txt").withWriter { it << proc.in.text }
 }
 
 configure(emptySubprojects + rootProject) {
@@ -166,7 +167,7 @@ configure(srcSubprojects) {
 
     jar {
         dependsOn addHashFile
-        from "commitHash.txt"
+        from new File(project.buildDir, "commitHash.txt")
     }
 
     //Dependencies in all subprojects - http://solidsoft.wordpress.com/2014/11/13/gradle-tricks-display-dependencies-for-all-subprojects-in-multi-project-build/
@@ -252,5 +253,5 @@ if (project.hasProperty("coverage")) {
 }
 
 wrapper {
-    gradleVersion '2.2.1'
+    gradleVersion '2.7'
 }

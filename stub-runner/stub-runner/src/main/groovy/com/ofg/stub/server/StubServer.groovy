@@ -47,7 +47,18 @@ class StubServer {
     private void registerStubMappings() {
         WireMock wireMock = new WireMock('localhost', wireMockServer.port())
         List<MappingDescriptor> sortedMappings =  mappings.sort(byGlobalMappingsFirst())
+        registerDefaultHealthChecks(wireMock)
         registerStubs(sortedMappings, wireMock)
+    }
+
+    private void registerDefaultHealthChecks(WireMock wireMock) {
+        registerHealthCheck(wireMock, '/ping')
+        registerHealthCheck(wireMock, '/health')
+        registerCollabs(wireMock)
+    }
+
+    private void registerCollabs(WireMock wireMock) {
+        wireMock.register(WireMock.get(WireMock.urlEqualTo('/collaborators')).willReturn(WireMock.aResponse().withHeader('Content-Type', 'application/json').withBody('{}').withStatus(200)))
     }
 
     private void registerStubs(List<MappingDescriptor> sortedMappings, WireMock wireMock) {
@@ -55,6 +66,10 @@ class StubServer {
             wireMock.register(mappingDescriptor.mapping)
             log.debug("Registered stub mappings from $mappingDescriptor.descriptor")
         }
+    }
+
+    void registerHealthCheck(WireMock wireMock, String url, String body = 'OK') {
+        wireMock.register(WireMock.get(WireMock.urlEqualTo(url)).willReturn(WireMock.aResponse().withBody(body).withStatus(200)))
     }
 
     private static Closure byGlobalMappingsFirst() {

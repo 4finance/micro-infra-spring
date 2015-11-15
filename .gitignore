@@ -6,7 +6,6 @@ build/
 .poject
 .settings
 .classpath
-commitHash.txt
 logs
 .log
 .zip

@@ -67,7 +67,7 @@ public class MetricsConfiguration {
     @Bean(destroyMethod = "close")
     @Profile(PRODUCTION)
     @Conditional(IsGraphitePublishingEnabled.class)
-    public GraphiteSender graphite(@Value("${graphite.host:graphite.4finance.net}") String hostname, @Value("${graphite.port:2003}") int port, @Value("${graphite.format:TCP}") GraphiteFormat format) {
+    public GraphiteSender graphite(@Value("${graphite.host:graphite.4finance.net}") String hostname, @Value("${graphite.port:2003}") int port, @Value("${graphite.format:UDP}") GraphiteFormat format) {
         final InetSocketAddress address = new InetSocketAddress(hostname, port);
         log.info("Configuring {} sender for Graphite server: {}", format, address);
         switch (format) {

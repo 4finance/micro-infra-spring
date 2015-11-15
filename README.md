@@ -17,6 +17,8 @@ Currently we have two lines of versions.
 
 This version is in the "master" branch and it contains micro-infra-spring integrated with Spring Cloud. We want to tightly couple micro-infra-spring with Spring Cloud thus this branch will be developed. All the new features will be also developed for this branch.
 
+This version is backwards compatible - you can use both the old (microservice.json) and the new (Spring Cloud Zookeeper approach). To enable the new approach you have to provide the `springCloud` profile.
+
 
 ### Versions smaller than 2.0.0
 

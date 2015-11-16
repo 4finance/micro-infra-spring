@@ -7,7 +7,8 @@ import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
-@ContextConfiguration(classes = [TaskSchedulingConfiguration, ScheduledBeanConfiguration, CorrelationIdConfiguration, BaseConfiguration])
+@ContextConfiguration(classes = [TaskSchedulingConfiguration, ScheduledBeanConfiguration,
+        CorrelationIdConfiguration, BaseConfiguration])
 class CorrelationIdOnScheduledMethodSpec extends Specification {
 
     @Autowired TestBeanWithScheduledMethod beanWithScheduledMethod

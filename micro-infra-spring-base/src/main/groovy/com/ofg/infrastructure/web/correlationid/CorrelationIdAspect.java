@@ -8,6 +8,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.sleuth.Span;
+import org.springframework.cloud.sleuth.TraceContextHolder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
@@ -81,7 +83,8 @@ public class CorrelationIdAspect {
     @Around("anyControllerOrRestControllerWithPublicCallableMethod()")
     public Object wrapCallableWithCorrelationId(ProceedingJoinPoint pjp) throws Throwable {
         final Callable callable = (Callable) pjp.proceed();
-        log.debug("Wrapping callable with correlation id [" + CorrelationIdHolder.get() + "]");
+        Span currentSpan = TraceContextHolder.getCurrentSpan();
+        log.debug("Wrapping callable with correlation id [" + currentSpan.getTraceId() + "]");
         return CorrelationIdUpdater.wrapCallableWithId(new Callable() {
             @Override
             public Object call() throws Exception {

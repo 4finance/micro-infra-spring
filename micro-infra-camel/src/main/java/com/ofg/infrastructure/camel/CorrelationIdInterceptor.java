@@ -7,6 +7,7 @@ import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.sleuth.IdGenerator;
 
 import java.lang.invoke.MethodHandles;
 
@@ -19,10 +20,10 @@ public class CorrelationIdInterceptor implements Processor {
 
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private final UuidGenerator uuidGenerator;
+    private final IdGenerator idGenerator;
 
-    public CorrelationIdInterceptor(UuidGenerator uuidGenerator) {
-        this.uuidGenerator = uuidGenerator;
+    public CorrelationIdInterceptor(IdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
     }
 
     /**
@@ -42,7 +43,7 @@ public class CorrelationIdInterceptor implements Processor {
         String correlationIdHeader = (String) exchange.getIn().getHeader(CORRELATION_ID_HEADER);
         if (correlationIdHeader == null) {
             log.debug("No correlationId has been set in request inbound message. Creating new one.");
-            correlationIdHeader = uuidGenerator.create();
+            correlationIdHeader = idGenerator.create();
         }
         return correlationIdHeader;
     }

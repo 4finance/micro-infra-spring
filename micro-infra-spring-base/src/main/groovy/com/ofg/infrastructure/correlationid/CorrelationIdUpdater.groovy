@@ -4,12 +4,12 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 import groovy.util.logging.Slf4j
 import org.slf4j.MDC
-import org.springframework.util.StringUtils
+import org.springframework.cloud.sleuth.Span
+import org.springframework.cloud.sleuth.TraceContextHolder
 
 import java.util.concurrent.Callable
 
 import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
-
 /**
  * Class that takes care of updating all necessary components with new value
  * of correlation id.
@@ -23,27 +23,27 @@ import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATI
 @CompileStatic
 class CorrelationIdUpdater {
 
-    static void updateCorrelationId(String correlationId) {
-        log.debug("Updating correlationId with value: [$correlationId]")
-        CorrelationIdHolder.set(correlationId)
-        MDC.put(CORRELATION_ID_HEADER, correlationId)
+    static void updateCorrelationId(Span span) {
+        log.debug("Updating correlationId with value: [$span.traceId]")
+        TraceContextHolder.setCurrentSpan(span)
+        MDC.put(CORRELATION_ID_HEADER, span.traceId)
     }
 
     /**
      * Temporarily updates correlation ID inside block of code.
      * Makes sure previous ID is restored after block's execution
      *
-     * @param temporaryCorrelationId
+     * @param span
      * @param block Closure to be executed with new ID
      * @return
      */
-    static <T> T withId(String temporaryCorrelationId, Callable<T> block) {
-        final String oldCorrelationId = CorrelationIdHolder.get()
+    static <T> T withId(Span span, Callable<T> block) {
+        final Span oldSpan = TraceContextHolder.currentSpan
         try {
-            updateCorrelationId(temporaryCorrelationId)
+            updateCorrelationId(span)
             return block.call()
         } finally {
-            updateCorrelationId(oldCorrelationId)
+            updateCorrelationId(oldSpan)
         }
     }
 
@@ -70,14 +70,14 @@ class CorrelationIdUpdater {
      */
     @CompileStatic(TypeCheckingMode.SKIP)
     static <T> Closure<T> wrapClosureWithId(Closure<T> block) {
-        final String temporaryCorrelationId = CorrelationIdHolder.get()
+        final Span span = TraceContextHolder.currentSpan
         return { Object[] args ->
-            final String oldCorrelationId = CorrelationIdHolder.get()
+            final Span oldSpan = TraceContextHolder.currentSpan
             try {
-                updateCorrelationId(temporaryCorrelationId)
+                updateCorrelationId(span)
                 return block(*args)
             } finally {
-                updateCorrelationId(oldCorrelationId)
+                updateCorrelationId(oldSpan)
             }
         }
     }
@@ -106,16 +106,16 @@ class CorrelationIdUpdater {
      * @since 0.8.4
      */
     static <T> Callable<T> wrapCallableWithId(Callable<T> block) {
-        final String temporaryCorrelationId = CorrelationIdHolder.get()
+        final Span span = TraceContextHolder.getCurrentSpan()
         return new Callable() {     //Cannot use `new Callable<T>()` as it fails with Groovyc (works fine with Javac)
             @Override
             Object call() throws Exception {
-                final String oldCorrelationId = CorrelationIdHolder.get()
+                final Span oldSpan = TraceContextHolder.getCurrentSpan()
                 try {
-                    updateCorrelationId(temporaryCorrelationId)
+                    updateCorrelationId(span)
                     return block.call()
                 } finally {
-                    updateCorrelationId(oldCorrelationId)
+                    updateCorrelationId(oldSpan)
                 }
             }
         }

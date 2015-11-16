@@ -3,12 +3,14 @@ package com.ofg.infrastructure.scheduling
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.web.correlationid.CorrelationIdConfiguration
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cloud.sleuth.autoconfig.TraceAutoConfiguration
+import org.springframework.cloud.sleuth.instrument.web.TraceWebAutoConfiguration
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
-@ContextConfiguration(classes = [TaskSchedulingConfiguration, ScheduledBeanConfiguration,
-        CorrelationIdConfiguration, BaseConfiguration])
+@ContextConfiguration(classes = [TraceAutoConfiguration, TraceWebAutoConfiguration,
+        ScheduledBeanConfiguration, CorrelationIdConfiguration, BaseConfiguration])
 class CorrelationIdOnScheduledMethodSpec extends Specification {
 
     @Autowired TestBeanWithScheduledMethod beanWithScheduledMethod

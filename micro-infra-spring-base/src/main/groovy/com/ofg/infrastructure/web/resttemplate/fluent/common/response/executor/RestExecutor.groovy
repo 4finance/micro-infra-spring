@@ -11,6 +11,7 @@ import com.ofg.infrastructure.correlationid.CorrelationIdHolder
 import com.ofg.infrastructure.correlationid.CorrelationIdUpdater
 import com.ofg.infrastructure.hystrix.CorrelatedCommand
 import groovy.transform.TypeChecked
+import org.springframework.cloud.sleuth.Span
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -44,6 +45,7 @@ final class RestExecutor<T> {
             return exchangeInternal(params, httpMethod, responseType).get()
         } catch (ExecutionException e) {
             propagate(e.cause)
+            return null
         }
     }
 
@@ -100,9 +102,9 @@ final class RestExecutor<T> {
     }
 
     private ListenableFuture<ResponseEntity<T>> withRetry(HystrixCommand.Setter hystrix, Callable<T> hystrixFallback, Callable<ResponseEntity<T>> httpInvocation) {
-        String correlationId = CorrelationIdHolder.get()
+        Span span = CorrelationIdHolder.get()
         return retryExecutor.getWithRetry {
-            return CorrelationIdUpdater.withId(correlationId) {
+            return CorrelationIdUpdater.withId(span) {
                 return callHttp(hystrix, hystrixFallback, httpInvocation)
             }
         }

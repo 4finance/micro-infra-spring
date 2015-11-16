@@ -49,14 +49,14 @@ class AcceptanceSpec extends Specification {
         when:
             template.sendBodyAndHeader('<message/>', CORRELATION_ID_HEADER, correlationIdValue)
         then:
-            CorrelationIdHolder.get() == correlationIdValue
+            CorrelationIdHolder.get().traceId == correlationIdValue
     }
 
     def 'should set new correlationId if header in input message is empty'() {
         when:
             template.sendBody('<message/>')
         then:
-            CorrelationIdHolder.get() != null
+            CorrelationIdHolder.get().traceId != null
     }
 
     def 'should set correlationId in output message when it is missing on the input'() {

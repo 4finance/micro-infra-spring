@@ -37,7 +37,7 @@ public class ReactorEvent<T> extends Event<T> {
 
     private void setCorrelationIdOnHeaders() {
         if (!getHeaders().contains(CORRELATION_ID_HEADER)) {
-            getHeaders().set(CORRELATION_ID_HEADER, CorrelationIdHolder.get());
+            getHeaders().set(CORRELATION_ID_HEADER, CorrelationIdHolder.get().getTraceId());
         }
     }
 

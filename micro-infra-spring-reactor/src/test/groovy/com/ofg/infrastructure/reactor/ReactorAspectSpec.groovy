@@ -5,6 +5,7 @@ import com.ofg.infrastructure.reactor.event.ReactorEvent
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.cloud.sleuth.Span
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
@@ -58,7 +59,7 @@ class ReactorAspectSpec extends Specification {
     static class MySubscriber {
         @Autowired Reactor reactor
 
-        AtomicReference<String> atomicReference = new AtomicReference<>()
+        AtomicReference<Span> atomicReference = new AtomicReference<>()
 
         @Selector('key')
         void receive(Event<String> event) {

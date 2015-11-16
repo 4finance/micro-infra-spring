@@ -24,6 +24,11 @@ import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATI
 class CorrelationIdUpdater {
 
     static void updateCorrelationId(Span span) {
+        if (!span) {
+            log.debug("There is no span to update. Clearing up the current context")
+            TraceContextHolder.removeCurrentSpan()
+            return
+        }
         log.debug("Updating correlationId with value: [$span.traceId]")
         TraceContextHolder.setCurrentSpan(span)
         MDC.put(CORRELATION_ID_HEADER, span.traceId)

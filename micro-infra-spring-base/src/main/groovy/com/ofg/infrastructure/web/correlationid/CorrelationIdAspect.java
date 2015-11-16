@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.sleuth.Span;
+import org.springframework.cloud.sleuth.Trace;
 import org.springframework.cloud.sleuth.TraceContextHolder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -48,7 +49,6 @@ import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATI
  * @see Controller
  * @see RestOperations
  * @see CorrelationIdHolder
- * @see CorrelationIdFilter
  */
 @Aspect
 public class CorrelationIdAspect {
@@ -64,39 +64,18 @@ public class CorrelationIdAspect {
     private void anyControllerAnnotated() {
     }
 
-    @Pointcut("execution(public java.util.concurrent.Callable *(..))")
-    private void anyPublicMethodReturningCallable() {
-    }
-
     @Pointcut("execution(public org.springframework.web.context.request.async.WebAsyncTask *(..))")
     private void anyPublicMethodReturningWebAsyncTask() {
-    }
-
-    @Pointcut("(anyRestControllerAnnotated() || anyControllerAnnotated()) && anyPublicMethodReturningCallable()")
-    private void anyControllerOrRestControllerWithPublicCallableMethod() {
     }
 
     @Pointcut("(anyRestControllerAnnotated() || anyControllerAnnotated()) && anyPublicMethodReturningWebAsyncTask()")
     private void anyControllerOrRestControllerWithPublicWebAsyncTaskMethod() {
     }
 
-    @Around("anyControllerOrRestControllerWithPublicCallableMethod()")
-    public Object wrapCallableWithCorrelationId(ProceedingJoinPoint pjp) throws Throwable {
-        final Callable callable = (Callable) pjp.proceed();
-        Span currentSpan = TraceContextHolder.getCurrentSpan();
-        log.debug("Wrapping callable with correlation id [" + currentSpan.getTraceId() + "]");
-        return CorrelationIdUpdater.wrapCallableWithId(new Callable() {
-            @Override
-            public Object call() throws Exception {
-                return callable.call();
-            }
-        });
-    }
-
     @Around("anyControllerOrRestControllerWithPublicWebAsyncTaskMethod()")
     public Object wrapWebAsyncTaskWithCorrelationId(ProceedingJoinPoint pjp) throws Throwable {
         final WebAsyncTask webAsyncTask = (WebAsyncTask) pjp.proceed();
-        log.debug("Wrapping webAsyncTask with correlation id [" + CorrelationIdHolder.get() + "]");
+        log.debug("Wrapping webAsyncTask with correlation id [" + TraceContextHolder.getCurrentSpan().getTraceId() + "]");
         try {
             Field callableField = WebAsyncTask.class.getDeclaredField("callable");
             callableField.setAccessible(true);
@@ -113,22 +92,31 @@ public class CorrelationIdAspect {
 
     @Around("anyExchangeRestOperationsMethod()")
     public Object wrapWithCorrelationIdForRestOperations(ProceedingJoinPoint pjp) throws Throwable {
-        String correlationId = CorrelationIdHolder.get();
-        log.debug("Wrapping RestTemplate call with correlation id [" + correlationId + "]");
+        Span span = TraceContextHolder.getCurrentSpan();
+        log.debug("Wrapping RestTemplate call with correlation id [" + span.getTraceId() + "]");
         HttpEntity httpEntity = (HttpEntity) pjp.getArgs()[HTTP_ENTITY_PARAM_INDEX];
-        HttpEntity newHttpEntity = createNewHttpEntity(httpEntity, correlationId);
+        HttpEntity newHttpEntity = createNewHttpEntity(httpEntity, span);
         List<Object> newArgs = modifyHttpEntityInMethodArguments(pjp, newHttpEntity);
         return pjp.proceed(newArgs.toArray());
     }
 
     @SuppressWarnings("unchecked")
-    private HttpEntity createNewHttpEntity(HttpEntity httpEntity, String correlationId) {
+    private HttpEntity createNewHttpEntity(HttpEntity httpEntity, Span span) {
         HttpHeaders newHttpHeaders = new HttpHeaders();
         newHttpHeaders.putAll(httpEntity.getHeaders());
-        if (correlationId != null) {
-            newHttpHeaders.add(CORRELATION_ID_HEADER, correlationId);
+        if (span != null) {
+            newHttpHeaders.add(CORRELATION_ID_HEADER, span.getTraceId());
+            newHttpHeaders.add(Trace.SPAN_ID_NAME, span.getSpanId());
+            newHttpHeaders.add(Trace.TRACE_ID_NAME, span.getTraceId());
+            newHttpHeaders.add(Trace.NOT_SAMPLED_NAME, span.getName());
+            newHttpHeaders.add(Trace.PARENT_ID_NAME, getFirst(span.getParents()));
+            newHttpHeaders.add(Trace.PROCESS_ID_NAME, span.getProcessId());
         }
         return new HttpEntity(httpEntity.getBody(), newHttpHeaders);
+    }
+
+    private static String getFirst(List<String> parents) {
+        return parents == null || parents.isEmpty() ? null : parents.get(0);
     }
 
     private List<Object> modifyHttpEntityInMethodArguments(ProceedingJoinPoint pjp, HttpEntity newHttpEntity) {

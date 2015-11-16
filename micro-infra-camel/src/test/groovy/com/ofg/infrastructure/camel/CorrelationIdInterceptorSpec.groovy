@@ -6,6 +6,7 @@ import org.apache.camel.CamelContext
 import org.apache.camel.Exchange
 import org.apache.camel.impl.DefaultCamelContext
 import org.apache.camel.impl.DefaultExchange
+import org.springframework.cloud.sleuth.IdGenerator
 import spock.lang.Specification
 
 class CorrelationIdInterceptorSpec extends Specification {
@@ -28,9 +29,9 @@ class CorrelationIdInterceptorSpec extends Specification {
             def correlationIdValue = UUID.randomUUID().toString()
             exchange.in.setHeader(CorrelationIdHolder.CORRELATION_ID_HEADER, correlationIdValue)
         when:
-            new CorrelationIdInterceptor(Stub(UuidGenerator)).process(exchange)
+            new CorrelationIdInterceptor(Stub(IdGenerator)).process(exchange)
         then:
-            CorrelationIdHolder.get() == correlationIdValue
+            CorrelationIdHolder.get().traceId == correlationIdValue
     }
 
     Exchange defaultExchange() {

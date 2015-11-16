@@ -2,13 +2,14 @@ package com.ofg.infrastructure.hystrix;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
-import com.ofg.infrastructure.correlationid.CorrelationIdHolder;
 import com.ofg.infrastructure.correlationid.CorrelationIdUpdater;
+import org.springframework.cloud.sleuth.Span;
+import org.springframework.cloud.sleuth.TraceContextHolder;
 
 import java.util.concurrent.Callable;
 
 public abstract class CorrelatedCommand<R> extends HystrixCommand<R> {
-    private final String clientCorrelationId = CorrelationIdHolder.get();
+    private final Span span = TraceContextHolder.getCurrentSpan();
 
     protected CorrelatedCommand(HystrixCommandGroupKey group) {
         super(group);
@@ -20,7 +21,7 @@ public abstract class CorrelatedCommand<R> extends HystrixCommand<R> {
 
     @Override
     protected final R run() throws Exception {
-        return CorrelationIdUpdater.withId(clientCorrelationId, new Callable<R>() {
+        return CorrelationIdUpdater.withId(span, new Callable<R>() {
             @Override
             public R call() throws Exception {
                 return doRun();

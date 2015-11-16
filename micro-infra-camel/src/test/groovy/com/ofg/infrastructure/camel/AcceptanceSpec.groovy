@@ -1,5 +1,4 @@
 package com.ofg.infrastructure.camel
-
 import com.ofg.infrastructure.camel.config.CamelRouteAsBeanConfiguration
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder
 import com.ofg.infrastructure.web.correlationid.CorrelationIdConfiguration
@@ -10,13 +9,12 @@ import org.apache.camel.impl.DefaultProducerTemplate
 import org.apache.camel.impl.InterceptSendToEndpoint
 import org.apache.camel.model.ModelCamelContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cloud.sleuth.Trace
 import org.springframework.context.annotation.Bean
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.AutoCleanup
 import spock.lang.Specification
-
-import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
 
 @Slf4j
 @ContextConfiguration(classes = [CamelRouteAsBeanConfiguration, CorrelationIdConfiguration, Config])
@@ -47,7 +45,7 @@ class AcceptanceSpec extends Specification {
         given:
             String correlationIdValue = UUID.randomUUID().toString()
         when:
-            template.sendBodyAndHeader('<message/>', CORRELATION_ID_HEADER, correlationIdValue)
+            template.sendBodyAndHeader('<message/>', Trace.TRACE_ID_NAME, correlationIdValue)
         then:
             CorrelationIdHolder.get().traceId == correlationIdValue
     }
@@ -63,16 +61,16 @@ class AcceptanceSpec extends Specification {
         when:
             template.sendBody('<message/>')
         then:
-            resultEndpoint.message(0).header(CORRELATION_ID_HEADER).isNotNull()
+            resultEndpoint.message(0).header(Trace.TRACE_ID_NAME).isNotNull()
     }
 
     def 'should copy correlationId from header of input message to the output'() {
         given:
             String correlationIdValue = UUID.randomUUID().toString()
         when:
-            template.sendBodyAndHeader('<message/>', CORRELATION_ID_HEADER, correlationIdValue)
+            template.sendBodyAndHeader('<message/>', Trace.TRACE_ID_NAME, correlationIdValue)
         then:
-            resultEndpoint.message(0).header(CORRELATION_ID_HEADER).isEqualTo(correlationIdValue)
+            resultEndpoint.message(0).header(Trace.TRACE_ID_NAME).isEqualTo(correlationIdValue)
     }
 
 }

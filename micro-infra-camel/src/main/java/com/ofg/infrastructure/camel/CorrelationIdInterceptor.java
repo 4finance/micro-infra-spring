@@ -41,14 +41,14 @@ public class CorrelationIdInterceptor implements Processor {
     }
 
     private Span getCorrelationId(Exchange exchange) {
-        String spanId = (String) exchange.getIn().getHeader(Trace.SPAN_ID_NAME);
         String traceId = (String) exchange.getIn().getHeader(Trace.TRACE_ID_NAME);
+        String spanId = (String) exchange.getIn().getHeader(Trace.SPAN_ID_NAME);
         String notSampledName = (String) exchange.getIn().getHeader(Trace.NOT_SAMPLED_NAME);
         String parentId = (String) exchange.getIn().getHeader(Trace.PARENT_ID_NAME);
         String processID = (String) exchange.getIn().getHeader(Trace.PROCESS_ID_NAME);
-        if (spanId == null) {
+        if (traceId == null) {
             log.debug("No correlationId has been set in request inbound message. Creating new one.");
-            spanId = idGenerator.create();
+            traceId = idGenerator.create();
         }
         return MilliSpan.builder().spanId(spanId).traceId(traceId).name(notSampledName).parent(parentId).processId(processID).build();
     }

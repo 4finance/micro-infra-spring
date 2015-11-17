@@ -55,6 +55,7 @@ public class CorrelationIdAspect {
     private static final int HTTP_ENTITY_PARAM_INDEX = 2;
 
     @Autowired IdGenerator idGenerator;
+    @Autowired Trace trace;
 
     @Pointcut("@target(org.springframework.web.bind.annotation.RestController)")
     private void anyRestControllerAnnotated() {
@@ -86,7 +87,9 @@ public class CorrelationIdAspect {
         } catch (NoSuchFieldException ex) {
             log.warn("Cannot wrap webAsyncTask with correlation id", ex);
         }
-        return webAsyncTask;
+        try (TraceScope traceScope = trace.continueSpan(span)) {
+            return webAsyncTask;
+        }
     }
 
     @Pointcut("execution(public * org.springframework.web.client.RestOperations.exchange(..))")
@@ -102,7 +105,9 @@ public class CorrelationIdAspect {
         HttpEntity httpEntity = (HttpEntity) pjp.getArgs()[HTTP_ENTITY_PARAM_INDEX];
         HttpEntity newHttpEntity = createNewHttpEntity(httpEntity, span);
         List<Object> newArgs = modifyHttpEntityInMethodArguments(pjp, newHttpEntity);
-        return pjp.proceed(newArgs.toArray());
+        try (TraceScope traceScope = trace.continueSpan(span)) {
+            return pjp.proceed(newArgs.toArray());
+        }
     }
 
     @SuppressWarnings("unchecked")

@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.3.0.RELEASE'
+        springBootVersion = '1.2.6.RELEASE'
     }
     repositories {
         mavenLocal()
@@ -35,7 +35,7 @@ scmVersion {
 
 allprojects {
     group = 'com.ofg'
-    project.version = '0.0.4-SNAPSHOT'
+    project.version = scmVersion.version
 }
 
 Set emptySubprojects = [project(':swagger'), project(':micro-deps-root'), project(':stub-runner-root')]

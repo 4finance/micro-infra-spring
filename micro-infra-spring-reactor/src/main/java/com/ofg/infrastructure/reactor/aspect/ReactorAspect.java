@@ -9,6 +9,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.sleuth.MilliSpan;
+import org.springframework.cloud.sleuth.Span;
 import reactor.event.Event;
 import reactor.spring.annotation.Selector;
 
@@ -89,7 +91,8 @@ public class ReactorAspect {
         }
 
         final String correlationId = event.getHeaders().get(CORRELATION_ID_HEADER);
-        return CorrelationIdUpdater.withId(correlationId, new Callable() {
+        Span span = MilliSpan.builder().traceId(correlationId).build();
+        return CorrelationIdUpdater.withId(span, new Callable() {
             @Override
             public Object call() throws Exception {
                 log.debug("Setting correlationId retrieved from event header to [{}]", correlationId);

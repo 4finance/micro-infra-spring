@@ -1,2 +1,0 @@
-spring.zipkin.enabled: false
-spring.sleuth.log.slf4j.enabled: false

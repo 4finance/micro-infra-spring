@@ -4,12 +4,13 @@ import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.web.correlationid.CorrelationIdConfiguration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cloud.sleuth.autoconfig.TraceAutoConfiguration
+import org.springframework.cloud.sleuth.instrument.scheduling.TraceSchedulingAutoConfiguration
 import org.springframework.cloud.sleuth.instrument.web.TraceWebAutoConfiguration
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
-@ContextConfiguration(classes = [TraceAutoConfiguration, TraceWebAutoConfiguration,
+@ContextConfiguration(classes = [TraceAutoConfiguration, TraceWebAutoConfiguration, TraceSchedulingAutoConfiguration,
         ScheduledBeanConfiguration, CorrelationIdConfiguration, BaseConfiguration])
 class CorrelationIdOnScheduledMethodSpec extends Specification {
 
@@ -19,7 +20,7 @@ class CorrelationIdOnScheduledMethodSpec extends Specification {
         PollingConditions conditions = new PollingConditions(timeout: 1.5, initialDelay: 0.1, factor: 1.05)
         expect:
             conditions.eventually {
-                beanWithScheduledMethod.correlationId != null
+                beanWithScheduledMethod.span.traceId != null
             }
     }
 

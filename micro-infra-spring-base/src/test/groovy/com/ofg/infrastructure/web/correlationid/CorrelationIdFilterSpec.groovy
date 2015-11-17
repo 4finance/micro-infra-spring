@@ -1,5 +1,4 @@
 package com.ofg.infrastructure.web.correlationid
-
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.ConfigurationWithoutServiceDiscovery
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
@@ -9,6 +8,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import spock.lang.Ignore
 
 import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
 
@@ -34,6 +34,7 @@ class CorrelationIdFilterSpec extends MvcCorrelationIdSettingIntegrationSpec {
             getCorrelationIdFromResponseHeader(mvcResult) == passedCorrelationId
     }
 
+    @Ignore("With spans the approach is different")
     def "should clean up MDC after the call"() {
         given:
             String passedCorrelationId = "passedCorId"

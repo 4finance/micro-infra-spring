@@ -8,12 +8,12 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.sleuth.Span;
-import org.springframework.cloud.sleuth.Trace;
-import org.springframework.cloud.sleuth.TraceContextHolder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.sleuth.*;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.context.request.async.WebAsyncTask;
@@ -23,8 +23,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER;
 
 /**
  * Aspect that adds correlation id to
@@ -56,6 +54,8 @@ public class CorrelationIdAspect {
 
     private static final int HTTP_ENTITY_PARAM_INDEX = 2;
 
+    @Autowired IdGenerator idGenerator;
+
     @Pointcut("@target(org.springframework.web.bind.annotation.RestController)")
     private void anyRestControllerAnnotated() {
     }
@@ -75,7 +75,10 @@ public class CorrelationIdAspect {
     @Around("anyControllerOrRestControllerWithPublicWebAsyncTaskMethod()")
     public Object wrapWebAsyncTaskWithCorrelationId(ProceedingJoinPoint pjp) throws Throwable {
         final WebAsyncTask webAsyncTask = (WebAsyncTask) pjp.proceed();
-        log.debug("Wrapping webAsyncTask with correlation id [" + TraceContextHolder.getCurrentSpan().getTraceId() + "]");
+        Span span = TraceContextHolder.isTracing() ?
+                TraceContextHolder.getCurrentSpan() :
+                MilliSpan.builder().begin(System.currentTimeMillis()).traceId(idGenerator.create()).spanId(idGenerator.create()).build();
+        log.debug("Wrapping webAsyncTask with correlation id [" + span.getTraceId() + "]");
         try {
             Field callableField = WebAsyncTask.class.getDeclaredField("callable");
             callableField.setAccessible(true);
@@ -92,7 +95,9 @@ public class CorrelationIdAspect {
 
     @Around("anyExchangeRestOperationsMethod()")
     public Object wrapWithCorrelationIdForRestOperations(ProceedingJoinPoint pjp) throws Throwable {
-        Span span = TraceContextHolder.getCurrentSpan();
+        Span span = TraceContextHolder.isTracing() ?
+                TraceContextHolder.getCurrentSpan() :
+                MilliSpan.builder().begin(System.currentTimeMillis()).traceId(idGenerator.create()).spanId(idGenerator.create()).build();
         log.debug("Wrapping RestTemplate call with correlation id [" + span.getTraceId() + "]");
         HttpEntity httpEntity = (HttpEntity) pjp.getArgs()[HTTP_ENTITY_PARAM_INDEX];
         HttpEntity newHttpEntity = createNewHttpEntity(httpEntity, span);
@@ -105,17 +110,22 @@ public class CorrelationIdAspect {
         HttpHeaders newHttpHeaders = new HttpHeaders();
         newHttpHeaders.putAll(httpEntity.getHeaders());
         if (span != null) {
-            newHttpHeaders.add(CORRELATION_ID_HEADER, span.getTraceId());
-            newHttpHeaders.add(Trace.SPAN_ID_NAME, span.getSpanId());
-            newHttpHeaders.add(Trace.TRACE_ID_NAME, span.getTraceId());
-            newHttpHeaders.add(Trace.NOT_SAMPLED_NAME, span.getName());
-            newHttpHeaders.add(Trace.PARENT_ID_NAME, getFirst(span.getParents()));
-            newHttpHeaders.add(Trace.PROCESS_ID_NAME, span.getProcessId());
+            addHeaderIfPresent(newHttpHeaders, Trace.SPAN_ID_NAME, span.getSpanId());
+            addHeaderIfPresent(newHttpHeaders, Trace.TRACE_ID_NAME, span.getTraceId());
+            addHeaderIfPresent(newHttpHeaders, Trace.NOT_SAMPLED_NAME, span.getName());
+            addHeaderIfPresent(newHttpHeaders, Trace.PARENT_ID_NAME, getFirst(span.getParents()));
+            addHeaderIfPresent(newHttpHeaders, Trace.PROCESS_ID_NAME, span.getProcessId());
         }
         return new HttpEntity(httpEntity.getBody(), newHttpHeaders);
     }
 
-    private static String getFirst(List<String> parents) {
+    private void addHeaderIfPresent(HttpHeaders httpHeaders, String headerName, String value) {
+        if (StringUtils.hasText(value)) {
+            httpHeaders.add(headerName, value);
+        }
+    }
+
+    private String getFirst(List<String> parents) {
         return parents == null || parents.isEmpty() ? null : parents.get(0);
     }
 

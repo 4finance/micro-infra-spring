@@ -43,7 +43,7 @@ public class CorrelationIdInterceptor implements Processor {
     private Span getCorrelationId(Exchange exchange) {
         String traceId = (String) exchange.getIn().getHeader(Trace.TRACE_ID_NAME);
         String spanId = (String) exchange.getIn().getHeader(Trace.SPAN_ID_NAME);
-        String notSampledName = (String) exchange.getIn().getHeader(Trace.NOT_SAMPLED_NAME);
+        String notSampledName = (String) exchange.getIn().getHeader(Trace.SPAN_NAME_NAME);
         String parentId = (String) exchange.getIn().getHeader(Trace.PARENT_ID_NAME);
         String processID = (String) exchange.getIn().getHeader(Trace.PROCESS_ID_NAME);
         if (traceId == null) {
@@ -59,7 +59,7 @@ public class CorrelationIdInterceptor implements Processor {
             log.debug("Setting correlationId [{}] in header of inbound message", span.getSpanId());
             inboundMessage.setHeader(Trace.SPAN_ID_NAME, span.getSpanId());
             inboundMessage.setHeader(Trace.TRACE_ID_NAME, span.getTraceId());
-            inboundMessage.setHeader(Trace.NOT_SAMPLED_NAME, span.getName());
+            inboundMessage.setHeader(Trace.SPAN_NAME_NAME, span.getName());
             inboundMessage.setHeader(Trace.PARENT_ID_NAME, Iterables.getFirst(span.getParents(), null));
             inboundMessage.setHeader(Trace.PROCESS_ID_NAME, span.getProcessId());
         }

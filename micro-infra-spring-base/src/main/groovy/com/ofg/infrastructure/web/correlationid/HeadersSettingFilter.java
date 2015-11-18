@@ -1,6 +1,5 @@
 package com.ofg.infrastructure.web.correlationid;
 
-import com.ofg.infrastructure.correlationid.CorrelationIdHolder;
 import org.slf4j.MDC;
 import org.springframework.cloud.sleuth.IdGenerator;
 import org.springframework.cloud.sleuth.RandomUuidGenerator;
@@ -19,12 +18,8 @@ import static org.springframework.cloud.sleuth.Trace.TRACE_ID_NAME;
 import static org.springframework.util.StringUtils.hasText;
 
 /**
- * Filter that takes the value of the {@link CorrelationIdHolder#CORRELATION_ID_HEADER} header
- * from either request or response and sets it in the {@link CorrelationIdHolder}. It also provides
- * that value in {@link MDC} logging related class so that logger prints the value of
- * correlation id at each log.
+ * Workaround for missing header setting for TraceFilter in Spring Cloud Sleuth
  *
- * @see CorrelationIdHolder
  * @see MDC
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 2)

@@ -13,6 +13,9 @@ import org.springframework.core.env.PropertySource;
 
 import java.util.Arrays;
 
+/**
+ * Class that sets tracing related properties
+ */
 @Configuration
 public class TracingPropertiesEnabler implements ApplicationContextAware,
         BeanFactoryAware, SmartInitializingSingleton {

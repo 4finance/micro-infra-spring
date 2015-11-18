@@ -1,6 +1,5 @@
 package com.ofg.infrastructure.web.correlationid;
 
-import com.ofg.infrastructure.correlationid.UuidGenerator;
 import com.ofg.infrastructure.scheduling.TaskSchedulingConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
@@ -24,11 +23,6 @@ public class CorrelationIdConfiguration {
     @Bean
     public CorrelationIdAspect correlationIdAspect() {
         return new CorrelationIdAspect();
-    }
-
-    @Bean
-    public UuidGenerator uuidGenerator() {
-        return new UuidGenerator();
     }
 
     @Bean

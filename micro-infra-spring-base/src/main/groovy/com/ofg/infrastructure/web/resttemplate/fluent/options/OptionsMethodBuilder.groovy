@@ -11,6 +11,7 @@ import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import groovy.transform.TypeChecked
+import org.springframework.cloud.sleuth.Trace
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
@@ -35,18 +36,20 @@ class OptionsMethodBuilder implements
     private final AllowContainingWithHeaders withHeaders
     private final BodylessWithQueryParameters<ResponseReceivingOptionsMethod> withQueryParameters
     private final OptionsAllowHeaderExecutor allowHeaderExecutor
+    private final Trace trace
 
-    OptionsMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
+    OptionsMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Trace trace) {
         this.restOperations = restOperations
         params.host = host
         withHeaders = new AllowContainingWithHeaders(this, params, predefinedHeaders)
         withQueryParameters = new BodylessWithQueryParameters<ResponseReceivingOptionsMethod>(this, params)
-        allowHeaderExecutor = new OptionsAllowHeaderExecutor(restOperations, retryExecutor, params)
+        allowHeaderExecutor = new OptionsAllowHeaderExecutor(restOperations, retryExecutor, params, trace)
         this.retryExecutor = retryExecutor
+        this.trace = trace
     }
 
-    OptionsMethodBuilder(RestOperations restOperations) {
-        this(HttpMethodBuilder.EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE)
+    OptionsMethodBuilder(RestOperations restOperations, Trace trace) {
+        this(HttpMethodBuilder.EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, trace)
     }
 
     @Override
@@ -133,7 +136,7 @@ class OptionsMethodBuilder implements
     }
 
     private ResponseTypeRelatedRequestsExecutor options(Class responseType) {
-        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, responseType, OPTIONS)
+        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, responseType, OPTIONS, trace)
     }
 
     @Override

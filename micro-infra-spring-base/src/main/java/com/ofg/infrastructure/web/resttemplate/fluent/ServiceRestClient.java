@@ -4,7 +4,9 @@ import com.ofg.infrastructure.discovery.MicroserviceConfiguration;
 import com.ofg.infrastructure.discovery.ServiceAlias;
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver;
 import com.ofg.infrastructure.discovery.ServiceResolver;
+import com.ofg.infrastructure.discovery.watcher.presence.checker.NoInstancesRunningException;
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders;
+import org.springframework.cloud.sleuth.Trace;
 import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies;
 import org.springframework.web.client.RestOperations;
 
@@ -81,20 +83,23 @@ public class ServiceRestClient {
     private final ServiceResolver serviceResolver;
     private final ServiceConfigurationResolver configurationResolver;
     private final ZookeeperDependencies zookeeperDependencies;
+    private final Trace trace;
 
     @Deprecated
-    public ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver) {
+    public ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver, Trace trace) {
         this.configurationResolver = configurationResolver;
         this.restOperations = restOperations;
         this.serviceResolver = serviceResolver;
         this.zookeeperDependencies = null;
+        this.trace = trace;
     }
 
-    public ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver, ZookeeperDependencies zookeeperDependencies) {
+    public ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver, ZookeeperDependencies zookeeperDependencies, Trace trace) {
         this.restOperations = restOperations;
         this.serviceResolver = serviceResolver;
         this.zookeeperDependencies = zookeeperDependencies;
         this.configurationResolver = null;
+        this.trace = trace;
     }
 
     /**
@@ -127,12 +132,12 @@ public class ServiceRestClient {
     private HttpMethodBuilder getMethodBuilderUsingConfigurationResolver(ServiceAlias serviceAlias) {
         final MicroserviceConfiguration.Dependency dependency = configurationResolver.getDependency(serviceAlias);
         final PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(dependency);
-        return new HttpMethodBuilder(getServiceUri(serviceAlias), restOperations, predefinedHeaders);
+        return new HttpMethodBuilder(getServiceUri(serviceAlias), restOperations, predefinedHeaders, trace);
     }
 
     private HttpMethodBuilder getMethodBuilderUsingZookeeperDeps(ServiceAlias serviceAlias) {
         final PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(zookeeperDependencies.getDependencyForAlias(serviceAlias.getName()));
-        return new HttpMethodBuilder(getServiceUri(serviceAlias), restOperations, predefinedHeaders);
+        return new HttpMethodBuilder(getServiceUri(serviceAlias), restOperations, predefinedHeaders, trace);
     }
 
     /**
@@ -143,9 +148,18 @@ public class ServiceRestClient {
             @Override
             public String call() throws Exception {
                 final URI uri = serviceResolver.fetchUri(serviceAlias);
+                if (uri == null) {
+                    throw new DependencyMissingException(serviceAlias);
+                }
                 return uri.toString();
             }
         };
+    }
+
+    class DependencyMissingException extends RuntimeException {
+        public DependencyMissingException(ServiceAlias serviceAlias) {
+            super("No running instance of [" + serviceAlias.getName() + "] is available.");
+        }
     }
 
     /**
@@ -154,6 +168,6 @@ public class ServiceRestClient {
      * @return builder for the specified HttpMethod
      */
     public HttpMethodBuilder forExternalService() {
-        return new HttpMethodBuilder(restOperations);
+        return new HttpMethodBuilder(restOperations, trace);
     }
 }

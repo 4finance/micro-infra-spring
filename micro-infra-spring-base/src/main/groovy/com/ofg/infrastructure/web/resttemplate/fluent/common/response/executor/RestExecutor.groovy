@@ -12,6 +12,7 @@ import com.ofg.infrastructure.correlationid.CorrelationIdUpdater
 import com.ofg.infrastructure.hystrix.CorrelatedCommand
 import groovy.transform.TypeChecked
 import org.springframework.cloud.sleuth.Span
+import org.springframework.cloud.sleuth.Trace
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -34,10 +35,12 @@ import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.exe
 final class RestExecutor<T> {
     private final RestOperations restOperations
     private final RetryExecutor retryExecutor
+    private final Trace trace
 
-    RestExecutor(RestOperations restOperations, RetryExecutor retryExecutor) {
+    RestExecutor(RestOperations restOperations, RetryExecutor retryExecutor, Trace trace) {
         this.restOperations = restOperations
         this.retryExecutor = retryExecutor
+        this.trace = trace
     }
 
     ResponseEntity<T> exchange(HttpMethod httpMethod, Map params, Class<T> responseType) {
@@ -121,7 +124,7 @@ final class RestExecutor<T> {
     private ResponseEntity<T> runInsideHystrixCommand(HystrixCommand.Setter hystrix, Callable<T> hystrixFallback, Callable<ResponseEntity<T>> httpInvocation) {
         try {
             if (hystrixFallback) {
-                return new CorrelatedCommand<ResponseEntity<T>>(hystrix) {
+                return new CorrelatedCommand<ResponseEntity<T>>(trace, hystrix) {
                     @Override
                     ResponseEntity<T> doRun() throws Exception {
                         return httpInvocation.call()
@@ -133,7 +136,7 @@ final class RestExecutor<T> {
                     }
                 }.execute()
             }
-            return new CorrelatedCommand<ResponseEntity<T>>(hystrix) {
+            return new CorrelatedCommand<ResponseEntity<T>>(trace, hystrix) {
                 @Override
                 ResponseEntity<T> doRun() throws Exception {
                     return httpInvocation.call()

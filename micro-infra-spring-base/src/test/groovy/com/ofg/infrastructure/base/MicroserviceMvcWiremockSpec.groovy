@@ -1,4 +1,6 @@
 package com.ofg.infrastructure.base
+
+import com.ofg.infrastructure.web.correlationid.HeadersSettingFilter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.cloud.sleuth.Trace
@@ -14,6 +16,6 @@ abstract class MicroserviceMvcWiremockSpec extends MvcWiremockIntegrationSpec {
     @Override
     protected void configureMockMvcBuilder(ConfigurableMockMvcBuilder mockMvcBuilder) {
         super.configureMockMvcBuilder(mockMvcBuilder)
-        mockMvcBuilder.addFilter(new TraceFilter(trace))
+        mockMvcBuilder.addFilters(new HeadersSettingFilter(), new TraceFilter(trace))
     }
 }

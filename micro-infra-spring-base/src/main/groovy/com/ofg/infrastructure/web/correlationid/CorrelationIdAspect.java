@@ -83,13 +83,11 @@ public class CorrelationIdAspect {
         try {
             Field callableField = WebAsyncTask.class.getDeclaredField("callable");
             callableField.setAccessible(true);
-            callableField.set(webAsyncTask, CorrelationIdUpdater.wrapCallableWithId(webAsyncTask.getCallable()));
+            callableField.set(webAsyncTask, trace.wrap(webAsyncTask.getCallable()));
         } catch (NoSuchFieldException ex) {
             log.warn("Cannot wrap webAsyncTask with correlation id", ex);
         }
-        try (TraceScope traceScope = trace.continueSpan(span)) {
-            return webAsyncTask;
-        }
+        return webAsyncTask;
     }
 
     @Pointcut("execution(public * org.springframework.web.client.RestOperations.exchange(..))")
@@ -117,7 +115,7 @@ public class CorrelationIdAspect {
         if (span != null) {
             addHeaderIfPresent(newHttpHeaders, Trace.SPAN_ID_NAME, span.getSpanId());
             addHeaderIfPresent(newHttpHeaders, Trace.TRACE_ID_NAME, span.getTraceId());
-            addHeaderIfPresent(newHttpHeaders, Trace.NOT_SAMPLED_NAME, span.getName());
+            addHeaderIfPresent(newHttpHeaders, Trace.SPAN_NAME_NAME, span.getName());
             addHeaderIfPresent(newHttpHeaders, Trace.PARENT_ID_NAME, getFirst(span.getParents()));
             addHeaderIfPresent(newHttpHeaders, Trace.PROCESS_ID_NAME, span.getProcessId());
         }
@@ -146,4 +144,5 @@ public class CorrelationIdAspect {
         }
         return newArgs;
     }
+
 }

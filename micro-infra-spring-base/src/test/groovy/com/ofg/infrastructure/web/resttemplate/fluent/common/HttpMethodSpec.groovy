@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common
 
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
+import org.springframework.cloud.sleuth.Trace
 import org.springframework.web.client.RestOperations
 import spock.lang.Specification
 
@@ -18,5 +19,6 @@ class HttpMethodSpec extends Specification {
 
     RestOperations restOperations = Mock()
     HttpMethodBuilder httpMethodBuilder
+    Trace trace = Stub()
 
 }

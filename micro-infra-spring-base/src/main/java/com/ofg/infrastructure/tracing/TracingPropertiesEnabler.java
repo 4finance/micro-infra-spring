@@ -46,9 +46,6 @@ public class TracingPropertiesEnabler implements ApplicationContextAware,
                         if ("spring.zipkin.enabled".equals(name)) {
                             return Arrays.asList(environment.getActiveProfiles()).contains(BasicProfiles.PRODUCTION);
                         }
-                        if ("spring.sleuth.async.enabled".equals(name)) {
-                            return false;
-                        }
                         return null;
                     }
                 });

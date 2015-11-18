@@ -6,10 +6,7 @@ import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Trace;
 import org.springframework.cloud.sleuth.TraceContextHolder;
 import org.springframework.cloud.sleuth.TraceScope;
-import org.springframework.cloud.sleuth.instrument.TraceCallable;
 import org.springframework.cloud.sleuth.instrument.circuitbreaker.TraceCommand;
-
-import java.util.concurrent.Callable;
 
 public abstract class CorrelatedCommand<R> extends TraceCommand<R> {
 
@@ -48,14 +45,9 @@ public abstract class CorrelatedCommand<R> extends TraceCommand<R> {
 
     @Override
     protected R run() throws Exception {
-        TraceScope scope = trace.startSpan(getCommandKey().name());
+        TraceScope scope = trace.startSpan(getCommandKey().name(), storedSpan);
         try {
-            return new TraceCallable<>(trace, new Callable<R>() {
-                @Override
-                public R call() throws Exception {
-                    return doRun();
-                }
-            }, storedSpan).call();
+            return doRun();
         } finally {
             scope.close();
         }

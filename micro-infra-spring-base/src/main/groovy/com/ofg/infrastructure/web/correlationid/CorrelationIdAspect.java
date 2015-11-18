@@ -1,7 +1,6 @@
 package com.ofg.infrastructure.web.correlationid;
 
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder;
-import com.ofg.infrastructure.correlationid.CorrelationIdUpdater;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -36,7 +35,6 @@ import java.util.concurrent.Callable;
  * </ul>
  * <p/>
  * For controllers an around aspect is created that wraps the {@link Callable#call()} method execution
- * in {@link CorrelationIdUpdater#wrapCallableWithId(Callable)}
  * <p/>
  * For {@link RestOperations} we are wrapping all executions of the
  * <b>exchange</b> methods and we are extracting {@link HttpHeaders} from the passed {@link HttpEntity}.

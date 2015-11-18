@@ -1,7 +1,6 @@
 package com.ofg.infrastructure.camel;
 
 import com.google.common.collect.Iterables;
-import com.ofg.infrastructure.correlationid.CorrelationIdUpdater;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
@@ -11,6 +10,7 @@ import org.springframework.cloud.sleuth.IdGenerator;
 import org.springframework.cloud.sleuth.MilliSpan;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Trace;
+import org.springframework.util.StringUtils;
 
 import java.lang.invoke.MethodHandles;
 
@@ -22,9 +22,11 @@ public class CorrelationIdInterceptor implements Processor {
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final IdGenerator idGenerator;
+    private final Trace trace;
 
-    public CorrelationIdInterceptor(IdGenerator idGenerator) {
+    public CorrelationIdInterceptor(IdGenerator idGenerator, Trace trace) {
         this.idGenerator = idGenerator;
+        this.trace = trace;
     }
 
     /**
@@ -36,7 +38,7 @@ public class CorrelationIdInterceptor implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
         Span span = getCorrelationId(exchange);
-        CorrelationIdUpdater.updateCorrelationId(span);
+        trace.continueSpan(span);
         setCorrelationIdHeaderIfMissing(exchange, span);
     }
 
@@ -46,9 +48,13 @@ public class CorrelationIdInterceptor implements Processor {
         String notSampledName = (String) exchange.getIn().getHeader(Trace.SPAN_NAME_NAME);
         String parentId = (String) exchange.getIn().getHeader(Trace.PARENT_ID_NAME);
         String processID = (String) exchange.getIn().getHeader(Trace.PROCESS_ID_NAME);
-        if (traceId == null) {
+        if (!StringUtils.hasText(traceId)) {
             log.debug("No correlationId has been set in request inbound message. Creating new one.");
             traceId = idGenerator.create();
+        }
+        if (!StringUtils.hasText(spanId)) {
+            log.debug("No spanId has been set in request inbound message. Creating new one.");
+            spanId = idGenerator.create();
         }
         return MilliSpan.builder().spanId(spanId).traceId(traceId).name(notSampledName).parent(parentId).processId(processID).build();
     }
@@ -56,7 +62,7 @@ public class CorrelationIdInterceptor implements Processor {
     private void setCorrelationIdHeaderIfMissing(Exchange exchange, Span span) {
         Message inboundMessage = exchange.getIn();
         if (!inboundMessage.getHeaders().containsKey(Trace.SPAN_ID_NAME)) {
-            log.debug("Setting correlationId [{}] in header of inbound message", span.getSpanId());
+            log.debug("Setting correlationId [{}] in header of inbound message", span.getTraceId());
             inboundMessage.setHeader(Trace.SPAN_ID_NAME, span.getSpanId());
             inboundMessage.setHeader(Trace.TRACE_ID_NAME, span.getTraceId());
             inboundMessage.setHeader(Trace.SPAN_NAME_NAME, span.getName());

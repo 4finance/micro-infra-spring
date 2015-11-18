@@ -2,6 +2,7 @@ package com.ofg.infrastructure.camel;
 
 import com.ofg.infrastructure.camel.aspects.CorrelationIdOnCamelRouteAspect;
 import org.springframework.cloud.sleuth.IdGenerator;
+import org.springframework.cloud.sleuth.Trace;
 import org.springframework.cloud.sleuth.autoconfig.TraceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +18,7 @@ import org.springframework.context.annotation.Import;
 public class CorrelationIdOnCamelRouteConfiguration {
 
     @Bean
-    public CorrelationIdOnCamelRouteAspect correlationIdOnCamelRouteAspect(IdGenerator idGenerator) {
-        return new CorrelationIdOnCamelRouteAspect(idGenerator);
+    public CorrelationIdOnCamelRouteAspect correlationIdOnCamelRouteAspect(IdGenerator idGenerator, Trace trace) {
+        return new CorrelationIdOnCamelRouteAspect(idGenerator, trace);
     }
 }

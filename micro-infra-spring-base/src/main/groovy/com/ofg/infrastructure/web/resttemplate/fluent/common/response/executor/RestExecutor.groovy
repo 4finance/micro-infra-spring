@@ -1,5 +1,4 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
-
 import com.google.common.base.Throwables
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.UncheckedTimeoutException
@@ -7,11 +6,8 @@ import com.netflix.hystrix.HystrixCommand
 import com.netflix.hystrix.exception.HystrixRuntimeException
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
-import com.ofg.infrastructure.correlationid.CorrelationIdHolder
-import com.ofg.infrastructure.correlationid.CorrelationIdUpdater
 import com.ofg.infrastructure.hystrix.CorrelatedCommand
 import groovy.transform.TypeChecked
-import org.springframework.cloud.sleuth.Span
 import org.springframework.cloud.sleuth.Trace
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -24,7 +20,6 @@ import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeoutException
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.UrlParsingUtils.appendPathToHost
-
 /**
  * Utility class that extracts {@link HttpEntity} from the provided map of passed parameters
  *
@@ -105,12 +100,12 @@ final class RestExecutor<T> {
     }
 
     private ListenableFuture<ResponseEntity<T>> withRetry(HystrixCommand.Setter hystrix, Callable<T> hystrixFallback, Callable<ResponseEntity<T>> httpInvocation) {
-        Span span = CorrelationIdHolder.get()
-        return retryExecutor.getWithRetry {
-            return CorrelationIdUpdater.withId(span) {
+        return retryExecutor.getWithRetry(trace.wrap(new Callable() {
+            @Override
+            ResponseEntity<T> call() throws Exception {
                 return callHttp(hystrix, hystrixFallback, httpInvocation)
             }
-        }
+        }))
     }
 
     private ResponseEntity<T> callHttp(HystrixCommand.Setter hystrix, Callable<T> hystrixFallback, Callable<ResponseEntity<T>> httpInvocation) {

@@ -36,7 +36,7 @@ class ServiceRestClientSpec extends Specification {
     @AutoCleanup("shutdownNow")
     @Shared
     ScheduledExecutorService pool = Executors.newScheduledThreadPool(1)
-    Trace trace = Stub()
+    Trace trace = new FakeTrace()
     ServiceRestClient serviceRestClient = new ServiceRestClient(restOperations, serviceResolver, configurationResolver, trace)
 
     def setup() {

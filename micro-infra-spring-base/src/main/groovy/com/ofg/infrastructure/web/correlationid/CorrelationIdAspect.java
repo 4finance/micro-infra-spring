@@ -76,9 +76,7 @@ public class CorrelationIdAspect {
     @Around("anyControllerOrRestControllerWithPublicWebAsyncTaskMethod()")
     public Object wrapWebAsyncTaskWithCorrelationId(ProceedingJoinPoint pjp) throws Throwable {
         final WebAsyncTask webAsyncTask = (WebAsyncTask) pjp.proceed();
-        Span span = TraceContextHolder.isTracing() ?
-                TraceContextHolder.getCurrentSpan() :
-                MilliSpan.builder().begin(System.currentTimeMillis()).traceId(idGenerator.create()).spanId(idGenerator.create()).build();
+        Span span = getSpanOrCreateOne();
         log.debug("Wrapping webAsyncTask with correlation id [" + span.getTraceId() + "]");
         try {
             Field callableField = WebAsyncTask.class.getDeclaredField("callable");
@@ -96,9 +94,7 @@ public class CorrelationIdAspect {
 
     @Around("anyExchangeRestOperationsMethod()")
     public Object wrapWithCorrelationIdForRestOperations(ProceedingJoinPoint pjp) throws Throwable {
-        Span span = TraceContextHolder.isTracing() ?
-                TraceContextHolder.getCurrentSpan() :
-                MilliSpan.builder().begin(System.currentTimeMillis()).traceId(idGenerator.create()).spanId(idGenerator.create()).build();
+        Span span = getSpanOrCreateOne();
         log.debug("Wrapping RestTemplate call with correlation id [" + span.getTraceId() + "]");
         HttpEntity httpEntity = (HttpEntity) pjp.getArgs()[HTTP_ENTITY_PARAM_INDEX];
         HttpEntity newHttpEntity = createNewHttpEntity(httpEntity, span);
@@ -106,6 +102,12 @@ public class CorrelationIdAspect {
         try (TraceScope traceScope = trace.continueSpan(span)) {
             return pjp.proceed(newArgs.toArray());
         }
+    }
+
+    private Span getSpanOrCreateOne() {
+        return TraceContextHolder.isTracing() ?
+                    TraceContextHolder.getCurrentSpan() :
+                    MilliSpan.builder().begin(System.currentTimeMillis()).traceId(idGenerator.create()).spanId(idGenerator.create()).build();
     }
 
     @SuppressWarnings("unchecked")

@@ -22,7 +22,7 @@ dependencies {
     compile "com.netflix.hystrix:hystrix-core:$hystrixVersion"
     compile "com.netflix.hystrix:hystrix-metrics-event-stream:$hystrixVersion"
     compile "com.netflix.hystrix:hystrix-codahale-metrics-publisher:$hystrixVersion"
-    compile "org.springframework.cloud:spring-cloud-starter-zipkin:1.0.0.M2"
+    compile "org.springframework.cloud:spring-cloud-starter-zipkin"
 
     runtime "org.aspectj:aspectjweaver"
 

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.OLD_CORRELATION_ID_HEADER;
 import static org.springframework.cloud.sleuth.Trace.SPAN_ID_NAME;
 import static org.springframework.cloud.sleuth.Trace.TRACE_ID_NAME;
 import static org.springframework.util.StringUtils.hasText;
@@ -40,14 +41,36 @@ public class HeadersSettingFilter extends OncePerRequestFilter {
                                     HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String spanId = getHeader(request, response, SPAN_ID_NAME);
-        String traceId = getHeader(request, response, TRACE_ID_NAME);
-        if (!hasText(spanId)) {
-            addToResponseIfNotPresent(response, SPAN_ID_NAME, idGenerator.create());
-        }
-        if (!hasText(traceId)) {
-            addToResponseIfNotPresent(response, TRACE_ID_NAME, idGenerator.create());
-        }
+        String traceId = getFirstNonBlankHeader(request, response, OLD_CORRELATION_ID_HEADER, TRACE_ID_NAME);
+        appendSpanIdIfMissing(response, spanId);
+        appendTraceIdIfMissing(response, traceId);
         filterChain.doFilter(request, response);
+    }
+
+    private void appendSpanIdIfMissing(HttpServletResponse response, String spanId) {
+        String idToPass = spanId;
+        if (!hasText(spanId)) {
+            idToPass = idGenerator.create();
+        }
+        addToResponseIfNotPresent(response, SPAN_ID_NAME, idToPass);
+    }
+
+    private void appendTraceIdIfMissing(HttpServletResponse response, String traceId) {
+        String idToPass = traceId;
+        if (!hasText(traceId)) {
+            idToPass = idGenerator.create();
+        }
+        addToResponseIfNotPresent(response, TRACE_ID_NAME, idToPass);
+        addToResponseIfNotPresent(response, OLD_CORRELATION_ID_HEADER, idToPass);
+    }
+
+    private String getFirstNonBlankHeader(HttpServletRequest request, HttpServletResponse response,
+                             String firstName, String secondName) {
+        String firstValue = getHeader(request, response, firstName);
+        if (hasText(firstValue)) {
+            return firstValue;
+        }
+        return getHeader(request, response, secondName);
     }
 
     private String getHeader(HttpServletRequest request, HttpServletResponse response,

@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.OLD_CORRELATION_ID_HEADER;
+import static org.springframework.cloud.sleuth.Trace.*;
+
 /**
  * Aspect that adds correlation id to
  * <p/>
@@ -31,18 +34,12 @@ import java.util.concurrent.Callable;
  * with public {@link Callable} methods</li>
  * <li>{@link Controller} annotated classes
  * with public {@link Callable} methods</li>
- * <li>explicit {@link RestOperations}.exchange(..) method calls</li>
- * </ul>
- * <p/>
- * For controllers an around aspect is created that wraps the {@link Callable#call()} method execution
- * <p/>
- * For {@link RestOperations} we are wrapping all executions of the
- * <b>exchange</b> methods and we are extracting {@link HttpHeaders} from the passed {@link HttpEntity}.
- * Next we are adding correlation id header {@link CorrelationIdHolder#CORRELATION_ID_HEADER} with
- * the value taken from {@link CorrelationIdHolder}. Finally the method execution proceeds.
+ * <li>{@link Controller} annotated classes
+ * with public {@link WebAsyncTask} methods</li>
  *
  * @see RestController
  * @see Controller
+ * @see WebAsyncTask
  * @see RestOperations
  * @see CorrelationIdHolder
  */
@@ -113,11 +110,12 @@ public class CorrelationIdAspect {
         HttpHeaders newHttpHeaders = new HttpHeaders();
         newHttpHeaders.putAll(httpEntity.getHeaders());
         if (span != null) {
-            addHeaderIfPresent(newHttpHeaders, Trace.SPAN_ID_NAME, span.getSpanId());
-            addHeaderIfPresent(newHttpHeaders, Trace.TRACE_ID_NAME, span.getTraceId());
-            addHeaderIfPresent(newHttpHeaders, Trace.SPAN_NAME_NAME, span.getName());
-            addHeaderIfPresent(newHttpHeaders, Trace.PARENT_ID_NAME, getFirst(span.getParents()));
-            addHeaderIfPresent(newHttpHeaders, Trace.PROCESS_ID_NAME, span.getProcessId());
+            addHeaderIfPresent(newHttpHeaders, SPAN_ID_NAME, span.getSpanId());
+            addHeaderIfPresent(newHttpHeaders, TRACE_ID_NAME, span.getTraceId());
+            addHeaderIfPresent(newHttpHeaders, OLD_CORRELATION_ID_HEADER, span.getTraceId());
+            addHeaderIfPresent(newHttpHeaders, SPAN_NAME_NAME, span.getName());
+            addHeaderIfPresent(newHttpHeaders, PARENT_ID_NAME, getFirst(span.getParents()));
+            addHeaderIfPresent(newHttpHeaders, PROCESS_ID_NAME, span.getProcessId());
         }
         return new HttpEntity(httpEntity.getBody(), newHttpHeaders);
     }

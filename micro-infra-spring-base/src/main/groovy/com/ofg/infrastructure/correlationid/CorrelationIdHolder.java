@@ -9,6 +9,7 @@ import org.springframework.cloud.sleuth.TraceContextHolder;
  */
 public class CorrelationIdHolder {
     public static final String CORRELATION_ID_HEADER = Trace.TRACE_ID_NAME;
+    public static final String OLD_CORRELATION_ID_HEADER = "correlationId";
 
     public static void set(Span span) {
         TraceContextHolder.setCurrentSpan(span);

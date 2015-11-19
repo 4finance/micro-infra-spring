@@ -9,12 +9,14 @@ import org.apache.camel.impl.DefaultProducerTemplate
 import org.apache.camel.impl.InterceptSendToEndpoint
 import org.apache.camel.model.ModelCamelContext
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cloud.sleuth.Trace
 import org.springframework.context.annotation.Bean
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.AutoCleanup
 import spock.lang.Specification
+
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.OLD_CORRELATION_ID_HEADER
+import static org.springframework.cloud.sleuth.Trace.TRACE_ID_NAME
 
 @Slf4j
 @ContextConfiguration(classes = [CamelRouteAsBeanConfiguration, CorrelationIdConfiguration, Config])
@@ -45,7 +47,16 @@ class AcceptanceSpec extends Specification {
         given:
             String correlationIdValue = UUID.randomUUID().toString()
         when:
-            template.sendBodyAndHeader('<message/>', Trace.TRACE_ID_NAME, correlationIdValue)
+            template.sendBodyAndHeader('<message/>', TRACE_ID_NAME, correlationIdValue)
+        then:
+            CorrelationIdHolder.get().traceId == correlationIdValue
+    }
+
+    def 'should set correlationId from header of input message for old correlation id'() {
+        given:
+            String correlationIdValue = UUID.randomUUID().toString()
+        when:
+            template.sendBodyAndHeader('<message/>', OLD_CORRELATION_ID_HEADER, correlationIdValue)
         then:
             CorrelationIdHolder.get().traceId == correlationIdValue
     }
@@ -61,16 +72,25 @@ class AcceptanceSpec extends Specification {
         when:
             template.sendBody('<message/>')
         then:
-            resultEndpoint.message(0).header(Trace.TRACE_ID_NAME).isNotNull()
+            resultEndpoint.message(0).header(TRACE_ID_NAME).isNotNull()
     }
 
     def 'should copy correlationId from header of input message to the output'() {
         given:
             String correlationIdValue = UUID.randomUUID().toString()
         when:
-            template.sendBodyAndHeader('<message/>', Trace.TRACE_ID_NAME, correlationIdValue)
+            template.sendBodyAndHeader('<message/>', TRACE_ID_NAME, correlationIdValue)
         then:
-            resultEndpoint.message(0).header(Trace.TRACE_ID_NAME).isEqualTo(correlationIdValue)
+            resultEndpoint.message(0).header(TRACE_ID_NAME).isEqualTo(correlationIdValue)
+    }
+
+    def 'should copy old correlationId from header of input message to the output'() {
+        given:
+            String correlationIdValue = UUID.randomUUID().toString()
+        when:
+            template.sendBodyAndHeader('<message/>', OLD_CORRELATION_ID_HEADER, correlationIdValue)
+        then:
+            resultEndpoint.message(0).header(OLD_CORRELATION_ID_HEADER).isEqualTo(correlationIdValue)
     }
 
 }

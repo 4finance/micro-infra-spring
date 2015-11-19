@@ -10,9 +10,11 @@ import org.springframework.cloud.sleuth.IdGenerator;
 import org.springframework.cloud.sleuth.MilliSpan;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Trace;
-import org.springframework.util.StringUtils;
 
 import java.lang.invoke.MethodHandles;
+
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.OLD_CORRELATION_ID_HEADER;
+import static org.springframework.util.StringUtils.hasText;
 
 /**
  * Interceptor class that ensures the correlationId header is present in {@Exchange}.
@@ -44,27 +46,37 @@ public class CorrelationIdInterceptor implements Processor {
 
     private Span getCorrelationId(Exchange exchange) {
         String traceId = (String) exchange.getIn().getHeader(Trace.TRACE_ID_NAME);
+        String oldTraceId = (String) exchange.getIn().getHeader(OLD_CORRELATION_ID_HEADER);
         String spanId = (String) exchange.getIn().getHeader(Trace.SPAN_ID_NAME);
         String notSampledName = (String) exchange.getIn().getHeader(Trace.SPAN_NAME_NAME);
         String parentId = (String) exchange.getIn().getHeader(Trace.PARENT_ID_NAME);
         String processID = (String) exchange.getIn().getHeader(Trace.PROCESS_ID_NAME);
-        if (!StringUtils.hasText(traceId)) {
+        if (!hasText(traceId) && ! hasText(oldTraceId)) {
             log.debug("No correlationId has been set in request inbound message. Creating new one.");
             traceId = idGenerator.create();
         }
-        if (!StringUtils.hasText(spanId)) {
+        if (!hasText(spanId)) {
             log.debug("No spanId has been set in request inbound message. Creating new one.");
             spanId = idGenerator.create();
         }
-        return MilliSpan.builder().spanId(spanId).traceId(traceId).name(notSampledName).parent(parentId).processId(processID).build();
+        return MilliSpan.builder().spanId(spanId).traceId(firstNonNull(oldTraceId, traceId))
+                .name(notSampledName).parent(parentId).processId(processID).build();
+    }
+
+    private String firstNonNull(String first, String second) {
+        if (hasText(first)) {
+            return first;
+        }
+        return second;
     }
 
     private void setCorrelationIdHeaderIfMissing(Exchange exchange, Span span) {
         Message inboundMessage = exchange.getIn();
-        if (!inboundMessage.getHeaders().containsKey(Trace.SPAN_ID_NAME)) {
+        if (!inboundMessage.getHeaders().containsKey(OLD_CORRELATION_ID_HEADER)) {
             log.debug("Setting correlationId [{}] in header of inbound message", span.getTraceId());
             inboundMessage.setHeader(Trace.SPAN_ID_NAME, span.getSpanId());
             inboundMessage.setHeader(Trace.TRACE_ID_NAME, span.getTraceId());
+            inboundMessage.setHeader(OLD_CORRELATION_ID_HEADER, span.getTraceId());
             inboundMessage.setHeader(Trace.SPAN_NAME_NAME, span.getName());
             inboundMessage.setHeader(Trace.PARENT_ID_NAME, Iterables.getFirst(span.getParents(), null));
             inboundMessage.setHeader(Trace.PROCESS_ID_NAME, span.getProcessId());

@@ -29,7 +29,7 @@ public class ScheduledTaskWithCorrelationIdAspect {
         final Span span = TraceContextHolder.isTracing() ? TraceContextHolder.getCurrentSpan() :
                 MilliSpan.builder().begin(System.currentTimeMillis())
                 .traceId(uuidGenerator.create()).spanId(uuidGenerator.create()).build();
-        try (TraceScope traceScope = trace.continueSpan(span)) {
+        try (TraceScope traceScope = trace.startSpan(Thread.currentThread().getName(), span)) {
             return pjp.proceed();
         } catch (Throwable throwable) {
             log.error("Failed to proceed with the next advice or target method invocation", throwable);

@@ -19,6 +19,7 @@ import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.util.SocketUtils
 import org.springframework.web.client.ResourceAccessException
 import spock.lang.Shared
 
@@ -36,12 +37,13 @@ class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
     @Value('${rest.client.readTimeout}')
     int readTimeoutMillis
 
+    public static final Integer FREE_PORT = SocketUtils.findAvailableTcpPort()
+
     @Shared
     @ClassRule
-    public ProvideSystemProperty resolverUrlPropertyIsSet = new ProvideSystemProperty('service.resolver.url', 'localhost:2183');
+    public ProvideSystemProperty resolverUrlPropertyIsSet = new ProvideSystemProperty('service.resolver.url', "localhost:$FREE_PORT");
 
-    @Autowired
-    ServiceRestClient serviceRestClient
+    @Autowired ServiceRestClient serviceRestClient
 
     @Autowired ServiceResolver serviceResolver
 

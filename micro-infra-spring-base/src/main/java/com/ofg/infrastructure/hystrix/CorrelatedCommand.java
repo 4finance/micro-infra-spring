@@ -8,6 +8,13 @@ import org.springframework.cloud.sleuth.TraceContextHolder;
 import org.springframework.cloud.sleuth.TraceScope;
 import org.springframework.cloud.sleuth.instrument.circuitbreaker.TraceCommand;
 
+/**
+ * HystrixCommand that stores information about the span from the current thread
+ *
+ * TODO: Remove after fixing in Sleuth
+ *
+ * @param <R>
+ */
 public abstract class CorrelatedCommand<R> extends TraceCommand<R> {
 
     private final Trace trace;

@@ -1,5 +1,4 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
-
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.Appender
@@ -9,7 +8,6 @@ import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcWiremockIntegrationSpec
 import com.ofg.infrastructure.base.ServiceDiscoveryStubbingApplicationConfiguration
 import com.ofg.infrastructure.discovery.ServiceAlias
-import com.ofg.infrastructure.discovery.ServicePath
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.hystrix.CircuitBreakers
 import org.junit.ClassRule

@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
+
 import com.google.common.base.Throwables
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.UncheckedTimeoutException
@@ -21,6 +22,7 @@ import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeoutException
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.UrlParsingUtils.appendPathToHost
+
 /**
  * Utility class that extracts {@link HttpEntity} from the provided map of passed parameters
  *

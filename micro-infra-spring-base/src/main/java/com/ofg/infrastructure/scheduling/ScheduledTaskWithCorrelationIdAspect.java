@@ -26,7 +26,8 @@ public class ScheduledTaskWithCorrelationIdAspect {
 
     @Around("execution (@org.springframework.scheduling.annotation.Scheduled  * *.*(..))")
     public Object setNewCorrelationIdOnThread(final ProceedingJoinPoint pjp) throws Throwable {
-        final Span span = MilliSpan.builder().begin(System.currentTimeMillis())
+        final Span span = TraceContextHolder.isTracing() ? TraceContextHolder.getCurrentSpan() :
+                MilliSpan.builder().begin(System.currentTimeMillis())
                 .traceId(uuidGenerator.create()).spanId(uuidGenerator.create()).build();
         try (TraceScope traceScope = trace.continueSpan(span)) {
             return pjp.proceed();

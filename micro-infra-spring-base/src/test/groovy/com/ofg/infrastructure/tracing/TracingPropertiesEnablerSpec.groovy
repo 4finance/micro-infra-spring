@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.tracing
+
 import com.ofg.config.BasicProfiles
 import org.springframework.boot.test.EnvironmentTestUtils
 import org.springframework.context.ConfigurableApplicationContext
@@ -19,6 +20,7 @@ class TracingPropertiesEnablerSpec extends Specification {
         where:
             profile                   | appEnv     || propValue
             BasicProfiles.DEVELOPMENT | 'sth'      || false
+            BasicProfiles.DEVELOPMENT | 'test'      || false
             BasicProfiles.PRODUCTION  | 'sth'      || true
             BasicProfiles.PRODUCTION  | 'test'     || false
             BasicProfiles.PRODUCTION  | 'test-01'  || false

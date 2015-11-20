@@ -150,10 +150,12 @@ configure(srcSubprojects) {
 
     test {
         jvmArgs project.gradle.startParameter.systemPropertiesArgs.entrySet().collect{"-D${it.key}=${it.value}"}
+        jvmArgs '-XX:MaxPermSize=256m', '-Xmx512m'
         testLogging {
             exceptionFormat = 'full'
         }
         maxHeapSize = "2g"
+        maxParallelForks = project.hasProperty('parallel') ? Runtime.runtime.availableProcessors() : 1
     }
 
     if (project.hasProperty("compatibility")) {

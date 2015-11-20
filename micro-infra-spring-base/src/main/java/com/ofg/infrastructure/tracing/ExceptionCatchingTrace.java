@@ -7,6 +7,9 @@ import org.springframework.cloud.sleuth.TraceScope;
 import org.springframework.cloud.sleuth.trace.DefaultTrace;
 import org.springframework.context.ApplicationEventPublisher;
 
+/**
+ * TODO: Remove after fixing in Sleuth
+ */
 public class ExceptionCatchingTrace extends DefaultTrace {
     public ExceptionCatchingTrace(Sampler<Void> defaultSampler, IdGenerator idGenerator, ApplicationEventPublisher publisher) {
         super(defaultSampler, idGenerator, publisher);

@@ -13,6 +13,7 @@ import org.springframework.cloud.sleuth.Trace;
 
 import java.lang.invoke.MethodHandles;
 
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER;
 import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.OLD_CORRELATION_ID_HEADER;
 import static org.springframework.util.StringUtils.hasText;
 
@@ -45,7 +46,7 @@ public class CorrelationIdInterceptor implements Processor {
     }
 
     private Span getCorrelationId(Exchange exchange) {
-        String traceId = (String) exchange.getIn().getHeader(Trace.TRACE_ID_NAME);
+        String traceId = (String) exchange.getIn().getHeader(CORRELATION_ID_HEADER);
         String oldTraceId = (String) exchange.getIn().getHeader(OLD_CORRELATION_ID_HEADER);
         String spanId = (String) exchange.getIn().getHeader(Trace.SPAN_ID_NAME);
         String notSampledName = (String) exchange.getIn().getHeader(Trace.SPAN_NAME_NAME);
@@ -75,7 +76,7 @@ public class CorrelationIdInterceptor implements Processor {
         if (!inboundMessage.getHeaders().containsKey(OLD_CORRELATION_ID_HEADER)) {
             log.debug("Setting correlationId [{}] in header of inbound message", span.getTraceId());
             inboundMessage.setHeader(Trace.SPAN_ID_NAME, span.getSpanId());
-            inboundMessage.setHeader(Trace.TRACE_ID_NAME, span.getTraceId());
+            inboundMessage.setHeader(CORRELATION_ID_HEADER, span.getTraceId());
             inboundMessage.setHeader(OLD_CORRELATION_ID_HEADER, span.getTraceId());
             inboundMessage.setHeader(Trace.SPAN_NAME_NAME, span.getName());
             inboundMessage.setHeader(Trace.PARENT_ID_NAME, Iterables.getFirst(span.getParents(), null));

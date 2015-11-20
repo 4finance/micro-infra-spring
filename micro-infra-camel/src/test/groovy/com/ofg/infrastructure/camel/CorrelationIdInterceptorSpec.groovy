@@ -8,6 +8,8 @@ import org.springframework.cloud.sleuth.IdGenerator
 import org.springframework.cloud.sleuth.Trace
 import spock.lang.Specification
 
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
+
 class CorrelationIdInterceptorSpec extends Specification {
 
     Trace trace = Stub()
@@ -21,7 +23,7 @@ class CorrelationIdInterceptorSpec extends Specification {
         when:
             new CorrelationIdInterceptor(uuidGeneratorMock, trace).process(exchange)
         then:
-            exchange.in.getHeader(Trace.TRACE_ID_NAME) == '42'
+            exchange.in.getHeader(CORRELATION_ID_HEADER) == '42'
     }
 
     Exchange defaultExchange() {

@@ -11,17 +11,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({TaskSchedulingConfiguration.class, TraceAutoConfiguration.class, AsyncTracingConfiguration.class})
+@Import({TaskSchedulingConfiguration.class, TraceAutoConfiguration.class})
 public class TracingConfiguration {
 
     /**
-     * Our custom trace that wraps the existing trace to catch exceptions
-     * TODO: Remove after fixing in Sleuth
+     * Custom trace that wraps the existing trace to catch exceptions
      *
-     * @param sampler
-     * @param idGenerator
-     * @param publisher
-     * @return
+     * TODO: Remove after fixing in Sleuth
      */
     @Bean
     public Trace trace(Sampler<Void> sampler, IdGenerator idGenerator,

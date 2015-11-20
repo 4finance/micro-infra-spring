@@ -13,13 +13,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER;
 import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.OLD_CORRELATION_ID_HEADER;
 import static org.springframework.cloud.sleuth.Trace.SPAN_ID_NAME;
-import static org.springframework.cloud.sleuth.Trace.TRACE_ID_NAME;
 import static org.springframework.util.StringUtils.hasText;
 
 /**
  * Workaround for missing header setting for TraceFilter in Spring Cloud Sleuth
+ *
+ * TODO: Remove if fixed in Sleuth
  *
  * @see MDC
  */
@@ -41,7 +43,7 @@ public class HeadersSettingFilter extends OncePerRequestFilter {
                                     HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String spanId = getHeader(request, response, SPAN_ID_NAME);
-        String traceId = getFirstNonBlankHeader(request, response, OLD_CORRELATION_ID_HEADER, TRACE_ID_NAME);
+        String traceId = getFirstNonBlankHeader(request, response, OLD_CORRELATION_ID_HEADER, CORRELATION_ID_HEADER);
         appendSpanIdIfMissing(response, spanId);
         appendTraceIdIfMissing(response, traceId);
         filterChain.doFilter(request, response);
@@ -60,7 +62,7 @@ public class HeadersSettingFilter extends OncePerRequestFilter {
         if (!hasText(traceId)) {
             idToPass = idGenerator.create();
         }
-        addToResponseIfNotPresent(response, TRACE_ID_NAME, idToPass);
+        addToResponseIfNotPresent(response, CORRELATION_ID_HEADER, idToPass);
         addToResponseIfNotPresent(response, OLD_CORRELATION_ID_HEADER, idToPass);
     }
 

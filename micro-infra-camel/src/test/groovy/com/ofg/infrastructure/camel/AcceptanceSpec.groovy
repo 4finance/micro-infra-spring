@@ -15,8 +15,8 @@ import org.springframework.test.context.ContextConfiguration
 import spock.lang.AutoCleanup
 import spock.lang.Specification
 
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
 import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.OLD_CORRELATION_ID_HEADER
-import static org.springframework.cloud.sleuth.Trace.TRACE_ID_NAME
 
 @Slf4j
 @ContextConfiguration(classes = [CamelRouteAsBeanConfiguration, CorrelationIdConfiguration, Config])
@@ -47,7 +47,7 @@ class AcceptanceSpec extends Specification {
         given:
             String correlationIdValue = UUID.randomUUID().toString()
         when:
-            template.sendBodyAndHeader('<message/>', TRACE_ID_NAME, correlationIdValue)
+            template.sendBodyAndHeader('<message/>', CorrelationIdHolder.CORRELATION_ID_HEADER, correlationIdValue)
         then:
             CorrelationIdHolder.get().traceId == correlationIdValue
     }
@@ -72,16 +72,16 @@ class AcceptanceSpec extends Specification {
         when:
             template.sendBody('<message/>')
         then:
-            resultEndpoint.message(0).header(TRACE_ID_NAME).isNotNull()
+            resultEndpoint.message(0).header(CORRELATION_ID_HEADER).isNotNull()
     }
 
     def 'should copy correlationId from header of input message to the output'() {
         given:
             String correlationIdValue = UUID.randomUUID().toString()
         when:
-            template.sendBodyAndHeader('<message/>', TRACE_ID_NAME, correlationIdValue)
+            template.sendBodyAndHeader('<message/>', CORRELATION_ID_HEADER, correlationIdValue)
         then:
-            resultEndpoint.message(0).header(TRACE_ID_NAME).isEqualTo(correlationIdValue)
+            resultEndpoint.message(0).header(CORRELATION_ID_HEADER).isEqualTo(correlationIdValue)
     }
 
     def 'should copy old correlationId from header of input message to the output'() {

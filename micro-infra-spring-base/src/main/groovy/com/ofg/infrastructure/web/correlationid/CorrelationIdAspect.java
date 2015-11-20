@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.web.correlationid;
 
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder;
+import com.ofg.infrastructure.tracing.SpanRemovingCallable;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -76,7 +77,7 @@ public class CorrelationIdAspect {
         try {
             Field callableField = WebAsyncTask.class.getDeclaredField("callable");
             callableField.setAccessible(true);
-            callableField.set(webAsyncTask, trace.wrap(webAsyncTask.getCallable()));
+            callableField.set(webAsyncTask, new SpanRemovingCallable(trace.wrap(webAsyncTask.getCallable())));
         } catch (NoSuchFieldException ex) {
             log.warn("Cannot wrap webAsyncTask with correlation id", ex);
         }

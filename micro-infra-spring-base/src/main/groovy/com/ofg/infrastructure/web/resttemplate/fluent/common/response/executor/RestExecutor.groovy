@@ -7,6 +7,7 @@ import com.netflix.hystrix.exception.HystrixRuntimeException
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.hystrix.CorrelatedCommand
+import com.ofg.infrastructure.tracing.SpanRemovingCallable
 import groovy.transform.TypeChecked
 import org.springframework.cloud.sleuth.Trace
 import org.springframework.http.HttpEntity
@@ -100,12 +101,12 @@ final class RestExecutor<T> {
     }
 
     private ListenableFuture<ResponseEntity<T>> withRetry(HystrixCommand.Setter hystrix, Callable<T> hystrixFallback, Callable<ResponseEntity<T>> httpInvocation) {
-        return retryExecutor.getWithRetry(trace.wrap(new Callable() {
+        return retryExecutor.getWithRetry(new SpanRemovingCallable(trace.wrap(new Callable() {
             @Override
             ResponseEntity<T> call() throws Exception {
                 return callHttp(hystrix, hystrixFallback, httpInvocation)
             }
-        }))
+        })))
     }
 
     private ResponseEntity<T> callHttp(HystrixCommand.Setter hystrix, Callable<T> hystrixFallback, Callable<ResponseEntity<T>> httpInvocation) {

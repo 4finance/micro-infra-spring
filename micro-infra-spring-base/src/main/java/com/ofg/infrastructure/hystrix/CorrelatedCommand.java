@@ -50,6 +50,7 @@ public abstract class CorrelatedCommand<R> extends TraceCommand<R> {
             return doRun();
         } finally {
             scope.close();
+            TraceContextHolder.removeCurrentSpan();
         }
     }
 

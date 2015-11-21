@@ -17,10 +17,9 @@ class ApplicationContextStartupSpec extends Specification {
     def 'should fail to start application context if resource is missing when default bean is missing deps'() {
         given:
             TestingServer testingServer
-            Integer port
-            new AvailablePortScanner(9000, 9500).tryToExecuteWithFreePort { int freePort ->
+            Integer port = new AvailablePortScanner(9000, 9500).tryToExecuteWithFreePort { int freePort ->
                 testingServer = new TestingServer(freePort)
-                port = freePort
+                return freePort
             }
             System.setProperty('service.resolver.url', "localhost:$port")
         and:

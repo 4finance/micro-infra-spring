@@ -218,7 +218,7 @@ if (project.hasProperty("coverage")) {
 
         test {
             jacoco {
-                excludes = ['*Configuration']
+                excludes = ['*Configuration', 'repackaged.*']
             }
         }
 

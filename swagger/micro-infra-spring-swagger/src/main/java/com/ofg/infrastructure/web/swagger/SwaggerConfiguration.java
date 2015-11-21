@@ -1,9 +1,9 @@
 package com.ofg.infrastructure.web.swagger;
 
-import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
+import repackaged.com.mangofactory.swagger.configuration.SpringSwaggerConfig;
 import com.mangofactory.swagger.models.dto.ApiInfo;
-import com.mangofactory.swagger.plugin.EnableSwagger;
-import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
+import repackaged.com.mangofactory.swagger.plugin.EnableSwagger;
+import repackaged.com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

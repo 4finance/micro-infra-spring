@@ -1,7 +1,6 @@
 package com.ofg.infrastructure.camel.aspects;
 
 import com.ofg.infrastructure.camel.CorrelationIdInterceptor;
-import com.ofg.infrastructure.correlationid.UuidGenerator;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.aspectj.lang.JoinPoint;
@@ -9,6 +8,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.sleuth.IdGenerator;
+import org.springframework.cloud.sleuth.Trace;
 
 import java.lang.invoke.MethodHandles;
 
@@ -25,8 +26,8 @@ public class CorrelationIdOnCamelRouteAspect {
 
     private final Processor correlationIdInterceptor;
 
-    public CorrelationIdOnCamelRouteAspect(UuidGenerator uuidGenerator) {
-        correlationIdInterceptor = new CorrelationIdInterceptor(uuidGenerator);
+    public CorrelationIdOnCamelRouteAspect(IdGenerator idGenerator, Trace trace) {
+        correlationIdInterceptor = new CorrelationIdInterceptor(idGenerator, trace);
     }
 
     @Before(value = "execution(* org.apache.camel.builder.RouteBuilder.addRoutesToCamelContext(..))")

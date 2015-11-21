@@ -1,6 +1,7 @@
 package com.ofg.infrastructure.scheduling;
 
-import com.ofg.infrastructure.correlationid.UuidGenerator;
+import org.springframework.cloud.sleuth.IdGenerator;
+import org.springframework.cloud.sleuth.Trace;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -15,7 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class TaskSchedulingConfiguration {
 
     @Bean
-    public ScheduledTaskWithCorrelationIdAspect scheduledTaskPointcut(UuidGenerator uuidGenerator) {
-        return new ScheduledTaskWithCorrelationIdAspect(uuidGenerator);
+    public ScheduledTaskWithCorrelationIdAspect scheduledTaskPointcut(IdGenerator uuidGenerator, Trace trace) {
+        return new ScheduledTaskWithCorrelationIdAspect(uuidGenerator, trace);
     }
 }

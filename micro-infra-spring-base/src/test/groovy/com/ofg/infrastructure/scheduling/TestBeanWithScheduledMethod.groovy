@@ -1,15 +1,16 @@
 package com.ofg.infrastructure.scheduling
 
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder
+import org.springframework.cloud.sleuth.Span
 import org.springframework.scheduling.annotation.Scheduled
 
 class TestBeanWithScheduledMethod {
 
-    String correlationId
+    Span span
 
     @Scheduled(fixedDelay=50L)
     void scheduledMethod() {
-        correlationId = CorrelationIdHolder.get()
+        span = CorrelationIdHolder.get()
     }
 
 }

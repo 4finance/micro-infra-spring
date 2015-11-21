@@ -1,21 +1,25 @@
 package com.ofg.infrastructure.correlationid;
 
+import org.springframework.cloud.sleuth.Span;
+import org.springframework.cloud.sleuth.Trace;
+import org.springframework.cloud.sleuth.TraceContextHolder;
+
 /**
  * Component that stores correlation id using {@link ThreadLocal}
  */
 public class CorrelationIdHolder {
-    public static final String CORRELATION_ID_HEADER = "correlationId";
-    private static final ThreadLocal<String> id = new ThreadLocal<String>();
+    public static final String CORRELATION_ID_HEADER = Trace.TRACE_ID_NAME;
+    public static final String OLD_CORRELATION_ID_HEADER = "correlationId";
 
-    public static void set(String correlationId) {
-        id.set(correlationId);
+    public static void set(Span span) {
+        TraceContextHolder.setCurrentSpan(span);
     }
 
-    public static String get() {
-        return id.get();
+    public static Span get() {
+        return TraceContextHolder.getCurrentSpan();
     }
 
     public static void remove() {
-        id.remove();
+        TraceContextHolder.removeCurrentSpan();
     }
 }

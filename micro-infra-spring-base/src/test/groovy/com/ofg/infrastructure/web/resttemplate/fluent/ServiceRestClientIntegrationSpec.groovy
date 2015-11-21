@@ -1,5 +1,4 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
-
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.Appender
@@ -9,7 +8,6 @@ import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MvcWiremockIntegrationSpec
 import com.ofg.infrastructure.base.ServiceDiscoveryStubbingApplicationConfiguration
 import com.ofg.infrastructure.discovery.ServiceAlias
-import com.ofg.infrastructure.discovery.ServicePath
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.hystrix.CircuitBreakers
 import org.junit.ClassRule
@@ -21,6 +19,7 @@ import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.util.SocketUtils
 import org.springframework.web.client.ResourceAccessException
 import spock.lang.Shared
 
@@ -38,12 +37,13 @@ class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
     @Value('${rest.client.readTimeout}')
     int readTimeoutMillis
 
+    public static final Integer FREE_PORT = SocketUtils.findAvailableTcpPort()
+
     @Shared
     @ClassRule
-    public ProvideSystemProperty resolverUrlPropertyIsSet = new ProvideSystemProperty('service.resolver.url', 'localhost:2183');
+    public ProvideSystemProperty resolverUrlPropertyIsSet = new ProvideSystemProperty('service.resolver.url', "localhost:$FREE_PORT");
 
-    @Autowired
-    ServiceRestClient serviceRestClient
+    @Autowired ServiceRestClient serviceRestClient
 
     @Autowired ServiceResolver serviceResolver
 

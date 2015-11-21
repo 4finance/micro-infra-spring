@@ -12,7 +12,7 @@ class CommonHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should be able to send a request and ignore the response"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
             String url = 'http://some.url/api/objects'
             HttpEntity expectedHttpEntity = new HttpEntity('')
         when:
@@ -33,7 +33,7 @@ class CommonHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should fail at last possible step to send a request when service is not found"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder({ throw new ServiceUnavailableException('someService') }, restOperations, new PredefinedHttpHeaders())
+            httpMethodBuilder = new HttpMethodBuilder({ throw new ServiceUnavailableException('someService') }, restOperations, new PredefinedHttpHeaders(), trace)
             String url = 'http://some.url/api/objects'
             HttpEntity expectedHttpEntity = new HttpEntity('')
         and:

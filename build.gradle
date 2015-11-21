@@ -87,9 +87,11 @@ allprojects {
                     if (details.requested.group == 'org.codehaus.groovy' && details.requested.name != "groovy-all") {
                         details.useTarget("org.codehaus.groovy:groovy-all:${details.requested.version}")
                     }
-                    if (details.requested.group == 'org.springframework.boot') { details.useVersion '1.3.0.RC1' }
-                    if (details.requested.group == 'org.springframework') { details.useVersion '4.2.2.RELEASE' }
+                    if (details.requested.group == 'org.springframework.boot') { details.useVersion '1.3.0.RELEASE' }
+                    if (details.requested.group == 'org.springframework') { details.useVersion '4.2.3.RELEASE' }
                     if (details.requested.group == 'org.aspectj') { details.useVersion '1.8.7' }
+                    if (details.requested.group == 'org.springframework.cloud' &&
+                            ['sleuth', 'zipkin', 'zookeeper'].every { !details.requested.name.contains(it) } ) { details.useVersion '1.1.0.M3' }
                 }
             }
         }
@@ -120,7 +122,8 @@ configure(srcSubprojects) {
             dependency "org.codehaus.groovy:groovy-all:2.4.3"
             dependency "com.google.guava:guava:18.0"
             dependency "commons-io:commons-io:2.4"
-            dependency "org.springframework.cloud:spring-cloud-starter-zookeeper-discovery:1.0.0.M2"
+            dependency "org.springframework.cloud:spring-cloud-starter-zookeeper-discovery:1.0.0.M3"
+            dependency "org.springframework.cloud:spring-cloud-starter-zipkin:1.0.0.M3"
 
             dependencySet(group:"org.apache.curator", version: "2.8.0") {
                 entry "curator-x-discovery"
@@ -147,10 +150,12 @@ configure(srcSubprojects) {
 
     test {
         jvmArgs project.gradle.startParameter.systemPropertiesArgs.entrySet().collect{"-D${it.key}=${it.value}"}
+        jvmArgs '-XX:MaxPermSize=256m', '-Xmx512m'
         testLogging {
             exceptionFormat = 'full'
         }
         maxHeapSize = "2g"
+        maxParallelForks = project.hasProperty('parallel') ? Runtime.runtime.availableProcessors() : 1
     }
 
     if (project.hasProperty("compatibility")) {
@@ -213,7 +218,7 @@ if (project.hasProperty("coverage")) {
 
         test {
             jacoco {
-                excludes = ['*Configuration']
+                excludes = ['*Configuration', 'repackaged.*']
             }
         }
 

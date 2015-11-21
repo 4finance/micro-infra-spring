@@ -7,10 +7,10 @@ import com.netflix.hystrix.HystrixCommand
 import com.netflix.hystrix.exception.HystrixRuntimeException
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
-import com.ofg.infrastructure.correlationid.CorrelationIdHolder
-import com.ofg.infrastructure.correlationid.CorrelationIdUpdater
 import com.ofg.infrastructure.hystrix.CorrelatedCommand
+import com.ofg.infrastructure.tracing.SpanRemovingCallable
 import groovy.transform.TypeChecked
+import org.springframework.cloud.sleuth.Trace
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -33,10 +33,12 @@ import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.exe
 final class RestExecutor<T> {
     private final RestOperations restOperations
     private final RetryExecutor retryExecutor
+    private final Trace trace
 
-    RestExecutor(RestOperations restOperations, RetryExecutor retryExecutor) {
+    RestExecutor(RestOperations restOperations, RetryExecutor retryExecutor, Trace trace) {
         this.restOperations = restOperations
         this.retryExecutor = retryExecutor
+        this.trace = trace
     }
 
     ResponseEntity<T> exchange(HttpMethod httpMethod, Map params, Class<T> responseType) {
@@ -44,6 +46,7 @@ final class RestExecutor<T> {
             return exchangeInternal(params, httpMethod, responseType).get()
         } catch (ExecutionException e) {
             propagate(e.cause)
+            return null
         }
     }
 
@@ -100,12 +103,12 @@ final class RestExecutor<T> {
     }
 
     private ListenableFuture<ResponseEntity<T>> withRetry(HystrixCommand.Setter hystrix, Callable<T> hystrixFallback, Callable<ResponseEntity<T>> httpInvocation) {
-        String correlationId = CorrelationIdHolder.get()
-        return retryExecutor.getWithRetry {
-            return CorrelationIdUpdater.withId(correlationId) {
+        return retryExecutor.getWithRetry(new SpanRemovingCallable(trace.wrap(new Callable() {
+            @Override
+            ResponseEntity<T> call() throws Exception {
                 return callHttp(hystrix, hystrixFallback, httpInvocation)
             }
-        }
+        })))
     }
 
     private ResponseEntity<T> callHttp(HystrixCommand.Setter hystrix, Callable<T> hystrixFallback, Callable<ResponseEntity<T>> httpInvocation) {
@@ -119,7 +122,7 @@ final class RestExecutor<T> {
     private ResponseEntity<T> runInsideHystrixCommand(HystrixCommand.Setter hystrix, Callable<T> hystrixFallback, Callable<ResponseEntity<T>> httpInvocation) {
         try {
             if (hystrixFallback) {
-                return new CorrelatedCommand<ResponseEntity<T>>(hystrix) {
+                return new CorrelatedCommand<ResponseEntity<T>>(trace, hystrix) {
                     @Override
                     ResponseEntity<T> doRun() throws Exception {
                         return httpInvocation.call()
@@ -131,7 +134,7 @@ final class RestExecutor<T> {
                     }
                 }.execute()
             }
-            return new CorrelatedCommand<ResponseEntity<T>>(hystrix) {
+            return new CorrelatedCommand<ResponseEntity<T>>(trace, hystrix) {
                 @Override
                 ResponseEntity<T> doRun() throws Exception {
                     return httpInvocation.call()

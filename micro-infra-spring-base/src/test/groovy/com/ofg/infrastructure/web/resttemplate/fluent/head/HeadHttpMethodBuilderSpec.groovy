@@ -13,7 +13,7 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should use only url template without provided service url to retrieve response entity"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
         when:
             httpMethodBuilder
@@ -32,7 +32,7 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should use only url template without provided service url to retrieve http response headers"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
             HttpHeaders expectedHttpHeaders = new HttpHeaders()
             ResponseEntity<Object> expectedResponseEntity = new ResponseEntity<>(expectedHttpHeaders, OK)
@@ -54,7 +54,7 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should use only url template without provided service url to retrieve ResponseEntity"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
             ResponseEntity<Object> expectedResponseEntity = new ResponseEntity<>(OK)
         when:
@@ -75,7 +75,7 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should use only url template from map without provided service url"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
         when:
             httpMethodBuilder
@@ -94,7 +94,7 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add service url to template when provided"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
         when:
             httpMethodBuilder
                 .head()
@@ -108,7 +108,7 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should treat url as path when sending request to a service to a path containing a slash"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
         when:            
             httpMethodBuilder
                 .head()
@@ -121,7 +121,7 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should treat String url as path when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
         when:            
             httpMethodBuilder
                 .head()
@@ -134,7 +134,7 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should be able to send a request and ignore the response"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
             String url = 'http://some.url/api/objects'
         when:
             httpMethodBuilder
@@ -150,7 +150,7 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add parameters to query string when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
         when:
             httpMethodBuilder
                     .head()
@@ -164,7 +164,7 @@ class HeadHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add parameters to query string when sending request to a service via DSL"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
         when:
             httpMethodBuilder
                     .head()

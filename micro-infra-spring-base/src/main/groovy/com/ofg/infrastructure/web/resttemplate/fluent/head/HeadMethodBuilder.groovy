@@ -15,6 +15,7 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.Pr
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.QueryParametersHaving
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.QueryParametersSetting
 import groovy.transform.TypeChecked
+import org.springframework.cloud.sleuth.Trace
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -37,17 +38,19 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
     private final RetryExecutor retryExecutor
     private final BodylessWithHeaders<ResponseReceivingHeadMethod> withHeaders
     private final BodylessWithQueryParameters<ResponseReceivingHeadMethod> withQueryParameters
+    private final Trace trace
 
-    HeadMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
+    HeadMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Trace trace) {
         this.restOperations = restOperations
         params.host = host
         withHeaders =  new BodylessWithHeaders<ResponseReceivingHeadMethod>(this, params, predefinedHeaders)
         withQueryParameters = new BodylessWithQueryParameters<ResponseReceivingHeadMethod>(this, params)
         this.retryExecutor = retryExecutor
+        this.trace = trace
     }
 
-    HeadMethodBuilder(RestOperations restOperations) {
-        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE)
+    HeadMethodBuilder(RestOperations restOperations, Trace trace) {
+        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, trace)
     }
 
     @Override
@@ -114,7 +117,7 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
     }
 
     private ResponseTypeRelatedRequestsExecutor<Object> head() {
-        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, Object, HttpMethod.HEAD)
+        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, Object, HttpMethod.HEAD, trace)
     }
 
     @Override

@@ -1,5 +1,4 @@
 package com.ofg.infrastructure.camel
-
 import com.ofg.infrastructure.camel.config.CamelRouteAsBeanConfiguration
 import com.ofg.infrastructure.correlationid.CorrelationIdHolder
 import com.ofg.infrastructure.web.correlationid.CorrelationIdConfiguration
@@ -17,6 +16,7 @@ import spock.lang.AutoCleanup
 import spock.lang.Specification
 
 import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.OLD_CORRELATION_ID_HEADER
 
 @Slf4j
 @ContextConfiguration(classes = [CamelRouteAsBeanConfiguration, CorrelationIdConfiguration, Config])
@@ -47,16 +47,25 @@ class AcceptanceSpec extends Specification {
         given:
             String correlationIdValue = UUID.randomUUID().toString()
         when:
-            template.sendBodyAndHeader('<message/>', CORRELATION_ID_HEADER, correlationIdValue)
+            template.sendBodyAndHeader('<message/>', CorrelationIdHolder.CORRELATION_ID_HEADER, correlationIdValue)
         then:
-            CorrelationIdHolder.get() == correlationIdValue
+            CorrelationIdHolder.get().traceId == correlationIdValue
+    }
+
+    def 'should set correlationId from header of input message for old correlation id'() {
+        given:
+            String correlationIdValue = UUID.randomUUID().toString()
+        when:
+            template.sendBodyAndHeader('<message/>', OLD_CORRELATION_ID_HEADER, correlationIdValue)
+        then:
+            CorrelationIdHolder.get().traceId == correlationIdValue
     }
 
     def 'should set new correlationId if header in input message is empty'() {
         when:
             template.sendBody('<message/>')
         then:
-            CorrelationIdHolder.get() != null
+            CorrelationIdHolder.get().traceId != null
     }
 
     def 'should set correlationId in output message when it is missing on the input'() {
@@ -73,6 +82,15 @@ class AcceptanceSpec extends Specification {
             template.sendBodyAndHeader('<message/>', CORRELATION_ID_HEADER, correlationIdValue)
         then:
             resultEndpoint.message(0).header(CORRELATION_ID_HEADER).isEqualTo(correlationIdValue)
+    }
+
+    def 'should copy old correlationId from header of input message to the output'() {
+        given:
+            String correlationIdValue = UUID.randomUUID().toString()
+        when:
+            template.sendBodyAndHeader('<message/>', OLD_CORRELATION_ID_HEADER, correlationIdValue)
+        then:
+            resultEndpoint.message(0).header(OLD_CORRELATION_ID_HEADER).isEqualTo(correlationIdValue)
     }
 
 }

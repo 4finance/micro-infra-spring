@@ -2,7 +2,7 @@ sudo: false
 
 before_install:
   - "echo $JAVA_OPTS"
-  - "export JAVA_OPTS='-Xmx2048m -XX:MaxPermSize=500m'"
+  - "export JAVA_OPTS='-Xmx1024m -XX:MaxPermSize=384m'"
   - "echo $GRADLE_OPTS"
   - "export GRADLE_OPTS='-Dorg.gradle.parallel=false'"
   - "export DISPLAY=:99.0"

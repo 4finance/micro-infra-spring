@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Import;
 /**
  * Configuration that binds together whole service discovery
  */
-@Import({MicroserviceJsonConfiguration.class, SpringCloudZookeeperConfiguration.class })
+@Import({DiscoveryPropertiesEnabler.class, MicroserviceJsonConfiguration.class, SpringCloudZookeeperConfiguration.class })
 @Configuration
 public class ServiceResolverConfiguration {
 

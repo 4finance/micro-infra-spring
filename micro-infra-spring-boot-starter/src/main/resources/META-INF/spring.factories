@@ -1,6 +1,8 @@
 org.springframework.cloud.bootstrap.BootstrapConfiguration=\
-com.ofg.infrastructure.discovery.SpringCloudZookeeperConfiguration,\
-com.ofg.infrastructure.tracing.TracingPropertiesEnabler
+com.ofg.infrastructure.tracing.TracingPropertiesEnabler,\
+com.ofg.infrastructure.discovery.DiscoveryPropertiesEnabler,\
+com.ofg.infrastructure.discovery.SpringCloudZookeeperConfiguration
+
 
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.ofg.infrastructure.autoconfigure.MicroserviceAutoConfiguration,\

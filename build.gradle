@@ -35,7 +35,7 @@ scmVersion {
 
 allprojects {
     group = 'com.ofg'
-    project.version = scmVersion.version
+    project.version = '0.0.4-SNAPSHOT'
 }
 
 Set emptySubprojects = [project(':swagger'), project(':micro-deps-root'), project(':stub-runner-root')]

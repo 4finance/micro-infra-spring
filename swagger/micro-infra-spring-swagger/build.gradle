@@ -1,7 +1,8 @@
-description = 'Microservice Spring Swagger configuration'
+description = 'Microservice Spring Swagger configuration. REPACKAGED DUE TO https://github.com/springfox/springfox/issues/1055. ' +
+        'TODO: Remove after fix'
 
 dependencies {
-    compile("com.mangofactory:swagger-springmvc:1.0.2") {
+    compile("com.mangofactory:swagger-models:1.0.2") {
         exclude group: 'org.mockito'
         exclude module: 'scala-compiler'
     }

@@ -49,8 +49,6 @@ class PingControllerMvcSpec extends MvcCorrelationIdSettingIntegrationSpec {
     @Configuration
     @EnableHealthCheck
     @Import([BaseConfiguration, ServiceDiscoveryStubbingApplicationConfiguration])
-    static class TestConfig {
-
-    }
+    static class TestConfig { }
 
 }

@@ -4,7 +4,7 @@ import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.bootstrap.config.PropertySourceLocator;
-import org.springframework.cloud.config.server.NativeEnvironmentRepository;
+import org.springframework.cloud.config.server.environment.NativeEnvironmentRepository;
 import org.springframework.core.env.*;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.util.StringUtils;
@@ -47,7 +47,7 @@ public class FileSystemLocator implements PropertySourceLocator {
             @Override
             protected org.springframework.cloud.config.environment.Environment clean(org.springframework.cloud.config.environment.Environment value) {
                 org.springframework.cloud.config.environment.Environment result = new org.springframework.cloud.config.environment.Environment(value.getName(), value.getProfiles(),
-                        value.getLabel());
+                        value.getLabel(), value.getVersion());
                 for (org.springframework.cloud.config.environment.PropertySource source : value.getPropertySources()) {
                     String name = source.getName();
                     if (configurableEnvironment.getPropertySources().contains(name)) {

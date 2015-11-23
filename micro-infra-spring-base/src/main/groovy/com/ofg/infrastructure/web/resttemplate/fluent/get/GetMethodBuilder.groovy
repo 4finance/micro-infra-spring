@@ -11,6 +11,7 @@ import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import groovy.transform.TypeChecked
+import org.springframework.cloud.sleuth.Trace
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
@@ -33,17 +34,19 @@ class GetMethodBuilder extends AbstractMethodBuilder implements GetMethod, UrlPa
     private final RetryExecutor retryExecutor
     private final BodyContainingWithHeaders<ResponseReceivingGetMethod> withHeaders
     private final BodyContainingWithQueryParameters<ResponseReceivingGetMethod> withQueryParameters
+    private final Trace trace
 
-    GetMethodBuilder(RestOperations restOperations) {
-        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE)
+    GetMethodBuilder(RestOperations restOperations, Trace trace) {
+        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, trace)
     }
 
-    GetMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
+    GetMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Trace trace) {
         this.restOperations = restOperations
         params.host = host
         withHeaders = new BodyContainingWithHeaders<ResponseReceivingGetMethod>(this, params, predefinedHeaders)
         withQueryParameters = new BodyContainingWithQueryParameters<ResponseReceivingGetMethod>(this, params)
         this.retryExecutor = retryExecutor
+        this.trace = trace
     }
 
     @Override
@@ -126,7 +129,7 @@ class GetMethodBuilder extends AbstractMethodBuilder implements GetMethod, UrlPa
     }
 
     private ResponseTypeRelatedRequestsExecutor get(Class responseType) {
-        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, responseType, HttpMethod.GET)
+        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, responseType, HttpMethod.GET, trace)
     }
 
     @Override

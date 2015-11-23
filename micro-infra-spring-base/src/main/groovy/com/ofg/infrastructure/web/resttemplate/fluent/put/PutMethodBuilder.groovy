@@ -11,6 +11,7 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.R
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import com.ofg.infrastructure.web.resttemplate.fluent.post.DataUpdateMethodBuilder
 import groovy.transform.TypeChecked
+import org.springframework.cloud.sleuth.Trace
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
@@ -30,8 +31,8 @@ class PutMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPutMethod, U
 
     private final WithQueryParameters<ResponseReceivingPutMethod> withQueryParameters
 
-    PutMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor) {
-        super(predefinedHeaders, restOperations, retryExecutor)
+    PutMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Trace trace) {
+        super(predefinedHeaders, restOperations, retryExecutor, trace)
         params.host = host
         withQueryParameters = new BodyContainingWithQueryParameters<ResponseReceivingPutMethod>(this, params)
     }
@@ -42,8 +43,8 @@ class PutMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPutMethod, U
         return this
     }
 
-    PutMethodBuilder(RestOperations restOperations) {
-        this(HttpMethodBuilder.EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE)
+    PutMethodBuilder(RestOperations restOperations, Trace trace) {
+        this(HttpMethodBuilder.EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, trace)
     }
 
     @Override
@@ -96,7 +97,7 @@ class PutMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPutMethod, U
     }
 
     private ResponseTypeRelatedRequestsExecutor put(Class responseType) {
-        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, responseType, PUT)
+        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, responseType, PUT, trace)
     }
 
     @Override

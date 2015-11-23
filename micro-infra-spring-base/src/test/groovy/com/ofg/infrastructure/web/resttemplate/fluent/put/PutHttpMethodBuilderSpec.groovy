@@ -18,7 +18,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for location when sending a put request on given address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
             URI expectedLocation = new URI('http://localhost')
         when:
             URI actualLocation = httpMethodBuilder
@@ -36,7 +36,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should query for location when sending a put request on given address as String"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
             String expectedLocationAsString = 'http://localhost'
             URI expectedLocation = new URI(expectedLocationAsString)
         when:
@@ -55,7 +55,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should query for location when sending a put request on given template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
             URI expectedLocation = new URI('localhost')
         when:
@@ -76,7 +76,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for location when sending a put request on service template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
             URI expectedLocation = new URI('localhost')
         when:
             URI actualLocation = httpMethodBuilder
@@ -96,7 +96,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for location when sending a put request on service template address using map for url vars"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
             URI expectedLocation = new URI('localhost')
         when:
             URI actualLocation = httpMethodBuilder
@@ -116,7 +116,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for object when sending a put request on given template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
         when:
             String actualResponseBody = httpMethodBuilder
@@ -138,7 +138,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for object when sending a put request on service template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
         when:
             String actualResponseBody = httpMethodBuilder
                                                         .put()
@@ -159,7 +159,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for entity when sending a put request on given template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
             ResponseEntity<String> expectedResponseEntity = responseEntityWith(RESPONSE_BODY)
         when:
@@ -182,7 +182,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for entity when sending a put request on service template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
             ResponseEntity<String> expectedResponseEntity = responseEntityWith(RESPONSE_BODY)
         when:
             ResponseEntity<String> actualResponseEntity = httpMethodBuilder
@@ -204,7 +204,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should be able to send a request and ignore the response"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
             String url = 'http://some.url/api/objects'
         when:
             httpMethodBuilder
@@ -221,7 +221,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add parameters to query string when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
         when:
             httpMethodBuilder
                     .put()
@@ -238,7 +238,7 @@ class PutHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add parameters to query string when sending request to a service via DSL"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
         when:
             httpMethodBuilder
                     .put()

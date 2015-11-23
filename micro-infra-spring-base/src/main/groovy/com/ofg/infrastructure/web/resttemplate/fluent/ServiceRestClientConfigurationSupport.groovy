@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import org.springframework.cloud.sleuth.Trace
 import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies
 import org.springframework.context.annotation.Bean
 import org.springframework.http.client.BufferingClientHttpRequestFactory
@@ -68,19 +69,19 @@ class ServiceRestClientConfigurationSupport {
     @Deprecated @Autowired(required = false) ServiceConfigurationResolver configurationResolver
 
     @Bean
-    ServiceRestClient serviceRestClient(ServiceResolver serviceResolver) {
+    ServiceRestClient serviceRestClient(ServiceResolver serviceResolver, Trace trace) {
         if (zookeeperDependencies == null && configurationResolver == null) {
             throw new MicroserviceConfigurationNotPresentException()
         }
         if (zookeeperDependencies) {
-            return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, zookeeperDependencies)
+            return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, zookeeperDependencies, trace)
         }
-        return createServiceRestClientUsingServiceConfigurationResolver(serviceResolver, configurationResolver)
+        return createServiceRestClientUsingServiceConfigurationResolver(serviceResolver, configurationResolver, trace)
     }
 
     @Deprecated
-    private ServiceRestClient createServiceRestClientUsingServiceConfigurationResolver(ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver) {
-        return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, configurationResolver)
+    private ServiceRestClient createServiceRestClientUsingServiceConfigurationResolver(ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver, Trace trace) {
+        return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, configurationResolver, trace)
     }
 
     @Bean

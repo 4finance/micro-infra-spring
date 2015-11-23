@@ -2,6 +2,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent
 
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.metrics.config.EnableMetrics
+import com.ofg.infrastructure.tracing.EnableTracing
 import com.ofg.infrastructure.web.resttemplate.fluent.config.RestClientConfigurer
 import com.ofg.infrastructure.web.resttemplate.fluent.config.ServiceRestClientConfigurer
 import groovy.transform.CompileStatic
@@ -25,6 +26,7 @@ import org.springframework.web.client.RestOperations
 @Configuration
 @CompileStatic
 @EnableMetrics
+@EnableTracing
 class ServiceRestClientConfiguration extends ServiceRestClientConfigurationSupport {
 
     @Autowired(required = false)

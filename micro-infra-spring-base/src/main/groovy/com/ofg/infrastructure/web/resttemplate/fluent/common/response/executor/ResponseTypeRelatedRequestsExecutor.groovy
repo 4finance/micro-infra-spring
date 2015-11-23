@@ -3,6 +3,7 @@ package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
 import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
 import groovy.transform.TypeChecked
+import org.springframework.cloud.sleuth.Trace
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
@@ -30,10 +31,10 @@ public class ResponseTypeRelatedRequestsExecutor<T> {
     private final Class<T> responseType
     final HttpMethod httpMethod
 
-    public ResponseTypeRelatedRequestsExecutor(Map params, RestOperations restOperations, RetryExecutor retryExecutor, Class<T> responseType, HttpMethod httpMethod) {
+    public ResponseTypeRelatedRequestsExecutor(Map params, RestOperations restOperations, RetryExecutor retryExecutor, Class<T> responseType, HttpMethod httpMethod, Trace trace) {
         this.params = params
         this.responseType = responseType
-        this.restExecutor = new RestExecutor(restOperations, retryExecutor)
+        this.restExecutor = new RestExecutor(restOperations, retryExecutor, trace)
         this.httpMethod = httpMethod
         params.url = params?.urlWithQueryParameters?params.urlWithQueryParameters:params.url
     }

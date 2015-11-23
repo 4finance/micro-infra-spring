@@ -28,14 +28,14 @@ apply from: "${rootProject.buildDir}/release/gradle/version.gradle"
 
 scmVersion {
     tag {
-        prefix = 'release'
+        prefix = 'legacyRelease' //workaround for https://github.com/allegro/axion-release-plugin/issues/114
         versionSeparator = '/'
     }
 }
 
 allprojects {
     group = 'com.ofg'
-    project.version = '1.0.0-SNAPSHOT'
+    project.version = scmVersion.version
 }
 
 Set emptySubprojects = [project(':swagger'), project(':micro-deps-root'), project(':stub-runner-root')]

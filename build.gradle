@@ -28,7 +28,7 @@ apply from: "${rootProject.buildDir}/release/gradle/version.gradle"
 
 scmVersion {
     tag {
-        prefix = 'release'
+        prefix = 'legacyRelease' //workaround for https://github.com/allegro/axion-release-plugin/issues/114
         versionSeparator = '/'
     }
 }

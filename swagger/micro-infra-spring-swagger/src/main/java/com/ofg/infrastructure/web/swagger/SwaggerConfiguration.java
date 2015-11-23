@@ -1,15 +1,16 @@
 package com.ofg.infrastructure.web.swagger;
 
-import repackaged.com.mangofactory.swagger.configuration.SpringSwaggerConfig;
 import com.mangofactory.swagger.models.dto.ApiInfo;
-import repackaged.com.mangofactory.swagger.plugin.EnableSwagger;
-import repackaged.com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import repackaged.com.mangofactory.swagger.configuration.SpringSwaggerConfig;
+import repackaged.com.mangofactory.swagger.controllers.DefaultSwaggerController;
+import repackaged.com.mangofactory.swagger.plugin.EnableSwagger;
+import repackaged.com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
 
 /**
  * Adds configuration enabling Swagger in Spring via {@link SwaggerSpringMvcPlugin}
@@ -28,6 +29,11 @@ public class SwaggerConfiguration extends WebMvcConfigurerAdapter {
                 .apiInfo(apiInfo)
                 .apiVersion(apiVersion)
                 .includePatterns(urlsToList);
+    }
+
+    @Bean
+    DefaultSwaggerController defaultSwaggerController() {
+        return new DefaultSwaggerController();
     }
 
     @Bean

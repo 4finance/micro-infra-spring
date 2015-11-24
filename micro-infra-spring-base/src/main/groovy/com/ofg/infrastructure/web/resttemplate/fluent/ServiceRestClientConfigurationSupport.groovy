@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import org.springframework.cloud.client.loadbalancer.LoadBalancerInterceptor
 import org.springframework.cloud.sleuth.Trace
 import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies
 import org.springframework.context.annotation.Bean
@@ -90,8 +91,15 @@ class ServiceRestClientConfigurationSupport {
         RestTemplate restTemplate = new RestTemplate(configurer.maxLogResponseChars)
         this.configureMessageConverters(restTemplate.messageConverters)
         restTemplate.requestFactory = requestFactory()
-        restTemplate.interceptors = interceptors
+        restTemplate.interceptors = filteredInterceptors()
         return restTemplate
+    }
+
+    private List<ClientHttpRequestInterceptor> filteredInterceptors() {
+        if (interceptors == null) {
+            return []
+        }
+        return interceptors.findAll { !(it instanceof LoadBalancerInterceptor) }
     }
 
     private RestClientConfigurer getRestClientConfigurer() {

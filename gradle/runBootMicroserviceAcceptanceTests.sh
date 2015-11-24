@@ -22,4 +22,4 @@ updateMicroInfraSpringVersionInConfigurationFile
 git reset --hard
 git checkout boot-microservice-gui
 updateMicroInfraSpringVersionInConfigurationFile
-./gradlew clean check guiTest --stacktrace --continue --info --no-daemon
+./gradlew clean check guiTest uptodate --stacktrace --continue --info --no-daemon

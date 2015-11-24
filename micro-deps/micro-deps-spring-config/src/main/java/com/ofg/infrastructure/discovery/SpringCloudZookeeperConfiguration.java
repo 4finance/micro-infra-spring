@@ -16,7 +16,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Import({ SpringCloudZookeeperConnectorConfiguration.class, ZookeeperServiceResolverConfiguration.class, ZookeeperDependenciesAutoConfiguration.class})
+@Import({ SpringCloudZookeeperConnectorConfiguration.class, ZookeeperServiceResolverConfiguration.class,
+        ZookeeperDependenciesAutoConfiguration.class})
 @Profile(BasicProfiles.SPRING_CLOUD)
 @AutoConfigureBefore(ZookeeperAutoConfiguration.class)
 public class SpringCloudZookeeperConfiguration {

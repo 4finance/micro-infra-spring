@@ -163,3 +163,24 @@ spring.cloud.zookeeper.discovery.enabled: false
 ribbon.zookeeper.enabled: false
 spring.autoconfigure.exclude: org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration
 ```
+
+### Trying to connect to Zipkin
+
+You might have such an exception when trying to boot up the application:
+
+```
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'spanCollector' defined in class path resource [org/springframework/cloud/sleuth/zipkin/ZipkinAutoConfiguration.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.github.kristofa.brave.zipkin.ZipkinSpanCollector]: Factory method 'spanCollector' threw exception; nested exception is java.lang.IllegalStateException: org.apache.thrift.transport.TTransportException: java.net.ConnectException: Connection refused
+```
+
+That means that your application is trying to connect to Zipkin server and fails to do so. This will happen when you start your app in `prod` profile.
+
+#### Workaround
+
+There are two approaches:
+- set `spring.zipkin.enabled` to false in `bootstrap.yaml`
+- set `APP_ENV` to a value that contains `test` or `stage` or `rbt`
+
+Rationale:
+
+We want to connect to Zipkin only if one has the production profile turned on and he has deployed his application to the production environment. One can override this functionality by setting the `tracing.properties.enabled` to `false`. Check out `com.ofg.infrastructure.tracing.TracingPropertiesEnabler` for more infromation.
+

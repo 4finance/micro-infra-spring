@@ -1,16 +1,20 @@
 package com.ofg.infrastructure.web.logging.obfuscation
 
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class XmlPayloadObfuscatorSpec extends Specification {
 
-    def 'Should return input content when logic throws exception'() {
+    @Unroll
+    def 'Should return input content when logic throws exception for : [#content]'() {
         given:
             ObfuscationFieldStrategy obfuscationFieldStrategy = Mock(ObfuscationFieldStrategy)
             XmlPayloadObfuscator obfuscator = new XmlPayloadObfuscator(obfuscationFieldStrategy)
         when:
-            String result = obfuscator.process('no xml content', Collections.emptyList())
+            String result = obfuscator.process(content, Collections.emptyList())
         then:
-            result == 'no xml content'
+            result == content
+        where:
+            content << ['no xml content', '', ' ', null]
     }
 }

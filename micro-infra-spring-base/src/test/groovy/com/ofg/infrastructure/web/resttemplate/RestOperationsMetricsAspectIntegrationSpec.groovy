@@ -16,6 +16,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.RequestEntity
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.TestPropertySource
 import org.springframework.web.client.RequestCallback
 import org.springframework.web.client.ResponseExtractor
 import org.springframework.web.client.RestOperations
@@ -26,6 +27,7 @@ import java.util.concurrent.Callable
 import static com.github.tomakehurst.wiremock.client.WireMock.*
 
 @ContextConfiguration(classes = [ServiceRestClientConfiguration, ServiceDiscoveryConfiguration, Config], loader = SpringApplicationContextLoader)
+@TestPropertySource(properties = 'rest.client.metrics.enabled=true')
 class RestOperationsMetricsAspectIntegrationSpec extends MvcWiremockIntegrationSpec {
 
     @Resource

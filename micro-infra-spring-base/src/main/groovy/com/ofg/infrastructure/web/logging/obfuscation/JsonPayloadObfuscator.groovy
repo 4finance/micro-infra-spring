@@ -22,7 +22,7 @@ class JsonPayloadObfuscator extends AbstractPayloadObfuscator {
             }
             return nodes.toString()
         }catch (Exception ex){
-            log.error("Error with [$content]",ex)}
+            log.debug("Error with [$content]",ex)}
         return content
     }
 
@@ -54,7 +54,7 @@ class JsonPayloadObfuscator extends AbstractPayloadObfuscator {
         if(content && fieldsToObfuscate?.size() > 0){
             return cleanFieldsFromJson(content, fieldsToObfuscate)
         } else {
-            return  content
+            return content
         }
 
     }

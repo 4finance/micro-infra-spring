@@ -30,9 +30,9 @@ class XmlPayloadObfuscator extends AbstractPayloadObfuscator{
 
     @Override
     String process(String content, List<String> fieldsToObfuscate) {
-        if(content && fieldsToObfuscate?.size() > 0) {
+        if(content && fieldsToObfuscate){
             return cleanFieldsFromXml(content, fieldsToObfuscate)
-        }else {
+        } else {
             return content
         }
     }

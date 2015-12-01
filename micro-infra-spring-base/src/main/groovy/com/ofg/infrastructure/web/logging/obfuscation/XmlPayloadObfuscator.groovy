@@ -22,13 +22,19 @@ class XmlPayloadObfuscator extends AbstractPayloadObfuscator{
             def rootNode = new XmlSlurper().parseText(content)
             rootNode.'**'.findAll { fields?.contains(it.name()) }.each {NodeChild node -> node.replaceBody(obfuscate(node.toString())) }
             return new StreamingMarkupBuilder().bindNode(rootNode).toString()
-        }catch (Exception ex){log.error("Error with [$content]",ex)}
+        }catch (Exception ex){
+            log.debug("Error with [$content]",ex)
+        }
         return content
     }
 
     @Override
     String process(String content, List<String> fieldsToObfuscate) {
-        return cleanFieldsFromXml(content, fieldsToObfuscate)
+        if(content && fieldsToObfuscate){
+            return cleanFieldsFromXml(content, fieldsToObfuscate)
+        } else {
+            return content
+        }
     }
 
     @Override

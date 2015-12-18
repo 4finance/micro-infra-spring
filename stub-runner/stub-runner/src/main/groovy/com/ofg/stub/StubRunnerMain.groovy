@@ -1,5 +1,4 @@
 package com.ofg.stub
-
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.stub.mapping.StubRepository
 import com.ofg.stub.registry.StubRegistry
@@ -9,10 +8,10 @@ import groovy.util.logging.Slf4j
 import org.kohsuke.args4j.CmdLineException
 import org.kohsuke.args4j.CmdLineParser
 import org.kohsuke.args4j.Option
+import org.kohsuke.args4j.spi.ExplicitBooleanOptionHandler
 
 import static org.apache.commons.lang.StringUtils.isNotBlank
 import static org.kohsuke.args4j.OptionHandlerFilter.ALL
-
 /**
  * Class having the main method to be executed in the fatJar
  */
@@ -57,7 +56,8 @@ class StubRunnerMain {
     @Option(name = "-wo", aliases = ['--workOffline'], usage = "Switch to work offline. Defaults to 'false'", forbids = ['s'])
     private Boolean workOffline = Boolean.FALSE
 
-    @Option(name = "-md", aliases = ['--useMicroserviceDefinitions'], usage = "Switch to define whether you want to use the new approach with microservice definitions. Defaults to 'true'. To use old version switch to 'false'")
+    @Option(name = "-md", aliases = ['--useMicroserviceDefinitions'], usage = "Switch to define whether you want to use the new approach with microservice definitions. Defaults to 'true'. To use old version switch to 'false'",
+            handler = ExplicitBooleanOptionHandler.class)
     private Boolean useMicroserviceDefinitions = true
 
     @Option(name = "-c", aliases = ['--context'], usage = "Context for which the project should be run (e.g. 'pl', 'lt')", required = true)

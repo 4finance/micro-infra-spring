@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'openssl'
 
 CIPHER = OpenSSL::Cipher::AES.new(256, :CBC)

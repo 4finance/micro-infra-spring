@@ -52,8 +52,8 @@ project(':micro-deps-root:micro-deps-spring-test-config') {
     dependencies {
         compile project(':micro-deps-root:micro-deps-spring-config')
         compile 'org.codehaus.groovy:groovy-all'
-        compile 'cglib:cglib-nodep:3.1'
-        compile 'org.objenesis:objenesis:2.1'
+        compile 'cglib:cglib-nodep'
+        compile 'org.objenesis:objenesis'
         compile 'org.aspectj:aspectjweaver'
 
         compile "org.spockframework:spock-core"

@@ -23,7 +23,7 @@ class StubRunnerMain {
     @Option(name = "-r", aliases = ['--repository'], usage = "@Deprecated - Path to repository containing the 'repository' folder with 'project' and 'mapping' subfolders (e.g. '/home/4finance/stubs/')", forbids = ['-n'])
     private String repositoryPath
 
-    @Option(name = "-z", aliases = ['--zookeeperPort'], usage = "Port of the zookeeper instance (e.g. 2181)", forbids = ['lz'])
+    @Option(name = "-z", aliases = ['--zookeeperPort'], usage = "Port of the zookeeper instance (e.g. 2181)", forbids = ['zl'])
     private Integer testingZookeeperPort
 
     @Option(name = "-zl", aliases = ['--zookeeperLocation'], usage = "Location of local Zookeeper you want to connect to (e.g. localhost:23456)", forbids = ['-z'])

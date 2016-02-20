@@ -38,7 +38,7 @@ public class FileSystemLocator implements PropertySourceLocator {
         logConfigurationFiles(propertiesPath);
         springEnv.setSearchLocations(toSearchLocations(propertiesPath));
         final org.springframework.cloud.config.environment.Environment loadedEnvs =
-                springEnv.findOne(appCoordinates.getPath(), "prod", null);
+                springEnv.findOne(appCoordinates.getPath(), appCoordinates.getEnvironment(), null);
         return toPropertySource(loadedEnvs);
     }
 

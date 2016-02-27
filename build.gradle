@@ -13,6 +13,7 @@ buildscript {
         classpath "com.ofg:micro-common-release:0.1.18"
         classpath "io.spring.gradle:dependency-management-plugin:0.5.3.RELEASE"
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:+"
+        classpath 'com.updateimpact:updateimpact-gradle-plugin:1.1.6'
         if (project.hasProperty("coverage")) {
             classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+'
             classpath "org.sonarqube.gradle:gradle-sonarqube-plugin:1.0"
@@ -114,6 +115,7 @@ configure(srcSubprojects) {
 
     apply plugin: 'com.ofg.uptodate'
     apply plugin: "io.spring.dependency-management"
+    apply plugin: 'com.updateimpact.updateimpact'
 
     sourceCompatibility = 1.7
 
@@ -188,6 +190,10 @@ configure(srcSubprojects) {
     }
     dependencies {
         jansi 'org.fusesource.jansi:jansi:1.11'
+    }
+    updateImpactSubmit {
+        apiKey = updateimpactApiKey
+        openBrowser = updateimpactOpenBrowser
     }
 }
 

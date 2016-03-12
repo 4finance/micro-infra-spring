@@ -2,6 +2,9 @@ package com.ofg.infrastructure.jaxrs;
 
 import com.google.common.base.Supplier;
 
+/**
+ * Allows to obtain JAX-RS proxy service interface implementation from its interface
+ */
 public interface JaxRsServiceResolver {
     /**
      * Obtains proxy resolver for specified remote service class.

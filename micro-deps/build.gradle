@@ -22,7 +22,7 @@ project(':micro-deps-root:micro-deps') {
     }
 }
 
-project(':micro-deps-root:micro-deps-jax-rs') {
+project(':micro-deps-root:micro-deps-jax-rs-jersey') {
     description = 'Microservice dependency manager with JAR-RS support'
 
     configurations {

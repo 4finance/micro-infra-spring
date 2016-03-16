@@ -9,7 +9,7 @@ include ':swagger:micro-infra-spring-swagger-ui'
 include 'micro-infra-spring'
 include 'micro-infra-spring-config'
 include ':micro-deps:micro-deps'
-include ':micro-deps:micro-deps-jax-rs'
+include ':micro-deps:micro-deps-jax-rs-jersey'
 include ':micro-deps:micro-deps-spring-config'
 include ':micro-deps:micro-deps-spring-test-config'
 

@@ -36,7 +36,7 @@ public class JerseyTest {
      * Validates server is up to quickly distinguish between cases when it is not working and jersey issues.
      */
     @Test
-    public void restRemplate() {
+    public void restTemplate() {
         String url = "http://localhost:" + port + "/ctx/hello/get";
         log.info("URL=[{}]", url);
         ResponseEntity<String> response = new TestRestTemplate().getForEntity(url, String.class);

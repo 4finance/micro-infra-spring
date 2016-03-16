@@ -55,7 +55,6 @@ project(':micro-deps-root:micro-deps-spring-config') {
 
     dependencies {
         compile project(':micro-deps-root:micro-deps')
-//        compile project(':micro-deps-root:micro-deps-jax-rs')
         compile(project(':stub-runner-root:stub-runner-spring')) {
             exclude group: "org.slf4j", module: "log4j-over-slf4j"
         }

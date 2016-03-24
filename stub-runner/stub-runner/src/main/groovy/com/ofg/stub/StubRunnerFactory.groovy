@@ -1,5 +1,6 @@
 package com.ofg.stub
 
+import com.ofg.infrastructure.discovery.MicroserviceConfiguration
 import com.ofg.stub.mapping.ProjectMetadata
 import com.ofg.stub.registry.StubRegistry
 import groovy.transform.CompileStatic
@@ -72,7 +73,15 @@ class StubRunnerFactory {
         if (!unzipedStubDir) {
             return Optional.absent()
         }
-        return Optional.of(createStubRunner(module.artifactId, unzipedStubDir, context, dependencyMappingsPath, stubRunnerOptions, client))
+        String[] pathAndArtifactId = splitToPathAndArtifactId(dependencyMappingsPath)
+        return Optional.of(createStubRunner(pathAndArtifactId[0], unzipedStubDir, context, pathAndArtifactId[1] + module.artifactId, stubRunnerOptions, client))
+    }
+
+    private String[] splitToPathAndArtifactId(String dependencyMappingsPath) {
+        int idx = dependencyMappingsPath.lastIndexOf('/')
+        String path = dependencyMappingsPath.substring(0, idx + 1)
+        String artifactId = dependencyMappingsPath.substring(idx + 1)
+        [artifactId, path] as String[]
     }
 
     private StubRunner createStubRunner(String alias, File unzippedStubsDir, String context, String dependencyMappingsPath, StubRunnerOptions stubRunnerOptions, CuratorFramework client) {

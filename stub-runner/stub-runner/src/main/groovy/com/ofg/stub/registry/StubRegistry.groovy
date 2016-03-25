@@ -1,5 +1,6 @@
 package com.ofg.stub.registry
 
+import com.ofg.stub.mapping.ProjectMetadata
 import com.ofg.stub.server.StubServer
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -54,7 +55,18 @@ class StubRegistry {
                 .uriSpec(URI_SPEC)
                 .address('localhost')
                 .port(stubServer.port)
-                .name(stubServer.projectMetadata.projectRelativePath)
+                .name(serviceName(stubServer))
                 .build()
+    }
+
+    private static String serviceName(StubServer stubServer) {
+        ProjectMetadata metadata = stubServer.projectMetadata
+        String projectRelativePath = metadata.projectRelativePath
+        if (projectRelativePath.endsWith(metadata.projectName)) {
+            return projectRelativePath
+        } else {
+            int idx = projectRelativePath.lastIndexOf('/')
+            return projectRelativePath.substring(0, idx + 1) + metadata.projectName
+        }
     }
 }

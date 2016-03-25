@@ -72,7 +72,15 @@ class StubRunnerFactory {
         if (!unzipedStubDir) {
             return Optional.absent()
         }
-        return Optional.of(createStubRunner(stubsConfiguration.stubsArtifactId, unzipedStubDir, context, dependencyMappingsPath, stubRunnerOptions, client))
+        String[] pathAndArtifactId = splitToPathAndArtifactId(dependencyMappingsPath)
+        return Optional.of(createStubRunner(pathAndArtifactId[0], unzipedStubDir, context, pathAndArtifactId[1] + stubsConfiguration.stubsArtifactId, stubRunnerOptions, client))
+    }
+
+    private String[] splitToPathAndArtifactId(String dependencyMappingsPath) {
+        int idx = dependencyMappingsPath.lastIndexOf('/')
+        String path = dependencyMappingsPath.substring(0, idx + 1)
+        String artifactId = dependencyMappingsPath.substring(idx + 1)
+        return [artifactId, path] as String[]
     }
 
     private StubRunner createStubRunner(String alias, File unzippedStubsDir, String context, String dependencyMappingsPath, StubRunnerOptions stubRunnerOptions, CuratorFramework client) {

@@ -1,6 +1,5 @@
 package com.ofg.stub.registry
 
-import com.ofg.stub.mapping.ProjectMetadata
 import com.ofg.stub.server.StubServer
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -60,13 +59,21 @@ class StubRegistry {
     }
 
     private static String serviceName(StubServer stubServer) {
-        ProjectMetadata metadata = stubServer.projectMetadata
-        String projectRelativePath = metadata.projectRelativePath
-        if (projectRelativePath.endsWith(metadata.projectName)) {
+        String projectRelativePath = stubServer.projectMetadata.projectRelativePath
+        String projectName = stubServer.projectMetadata.projectName
+        if (projectRelativePath.endsWith(projectName)) {
             return projectRelativePath
         } else {
+            return pathWithoutProjectName(projectRelativePath) + projectName
+        }
+    }
+
+    private static String pathWithoutProjectName(String projectRelativePath) {
+        if (projectRelativePath.contains('/')) {
             int idx = projectRelativePath.lastIndexOf('/')
-            return projectRelativePath.substring(0, idx + 1) + metadata.projectName
+            return projectRelativePath.substring(0, idx + 1)
+        } else {
+            return ''
         }
     }
 }

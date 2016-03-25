@@ -81,7 +81,7 @@ class StubRunnerFactory {
         int idx = dependencyMappingsPath.lastIndexOf('/')
         String path = dependencyMappingsPath.substring(0, idx + 1)
         String artifactId = dependencyMappingsPath.substring(idx + 1)
-        [artifactId, path] as String[]
+        return [artifactId, path] as String[]
     }
 
     private StubRunner createStubRunner(String alias, File unzippedStubsDir, String context, String dependencyMappingsPath, StubRunnerOptions stubRunnerOptions, CuratorFramework client) {

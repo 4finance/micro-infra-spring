@@ -12,7 +12,7 @@ import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import groovy.transform.TypeChecked
-import org.springframework.cloud.sleuth.Trace
+import org.springframework.cloud.sleuth.Tracer
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
@@ -34,9 +34,9 @@ class DeleteMethodBuilder extends AbstractMethodBuilder implements DeleteMethod,
     private final RetryExecutor retryExecutor
     private final BodylessWithHeaders<ResponseReceivingDeleteMethod> withHeaders
     private final BodylessWithQueryParameters<ResponseReceivingDeleteMethod> withQueryParameters
-    private final Trace trace
+    private final Tracer trace
 
-    DeleteMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Trace trace) {
+    DeleteMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Tracer trace) {
         this.restOperations = restOperations
         params.host = host
         withHeaders =  new BodylessWithHeaders<ResponseReceivingDeleteMethod>(this, params, predefinedHeaders)
@@ -45,7 +45,7 @@ class DeleteMethodBuilder extends AbstractMethodBuilder implements DeleteMethod,
         this.trace = trace
     }
 
-    DeleteMethodBuilder(RestOperations restOperations, Trace trace) {
+    DeleteMethodBuilder(RestOperations restOperations, Tracer trace) {
         this(HttpMethodBuilder.EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, trace)
     }
 

@@ -13,7 +13,8 @@ import org.junit.ClassRule
 import org.junit.contrib.java.lang.system.ProvideSystemProperty
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
-import org.springframework.cloud.sleuth.Trace
+import org.springframework.cloud.sleuth.Tracer
+import org.springframework.cloud.sleuth.instrument.TraceKeys
 import org.springframework.cloud.sleuth.instrument.web.TraceFilter
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ActiveProfiles
@@ -42,11 +43,12 @@ class ServiceRestClientWebIntegrationSpec extends MvcWiremockIntegrationSpec {
     ServiceRestClient serviceRestClient
 
     @Autowired ServiceResolver serviceResolver
-    @Autowired Trace trace
+    @Autowired Tracer trace
+    @Autowired TraceKeys traceKeys
 
     @Override
     protected void configureMockMvcBuilder(ConfigurableMockMvcBuilder mockMvcBuilder) {
-        mockMvcBuilder.addFilters(new HeadersSettingFilter(), new TraceFilter(trace))
+        mockMvcBuilder.addFilters(new HeadersSettingFilter(), new TraceFilter(trace, traceKeys))
     }
 
     def "should pass correlationid when calling service via retry executor"() {

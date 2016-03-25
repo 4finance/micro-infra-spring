@@ -11,7 +11,7 @@ import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import groovy.transform.TypeChecked
-import org.springframework.cloud.sleuth.Trace
+import org.springframework.cloud.sleuth.Tracer
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
@@ -21,7 +21,6 @@ import java.util.concurrent.Callable
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
 import static org.springframework.http.HttpMethod.OPTIONS
-
 /**
  * Implementation of the {@link org.springframework.http.HttpMethod#HEAD method} fluent API
  */
@@ -36,9 +35,9 @@ class OptionsMethodBuilder implements
     private final AllowContainingWithHeaders withHeaders
     private final BodylessWithQueryParameters<ResponseReceivingOptionsMethod> withQueryParameters
     private final OptionsAllowHeaderExecutor allowHeaderExecutor
-    private final Trace trace
+    private final Tracer trace
 
-    OptionsMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Trace trace) {
+    OptionsMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Tracer trace) {
         this.restOperations = restOperations
         params.host = host
         withHeaders = new AllowContainingWithHeaders(this, params, predefinedHeaders)
@@ -48,7 +47,7 @@ class OptionsMethodBuilder implements
         this.trace = trace
     }
 
-    OptionsMethodBuilder(RestOperations restOperations, Trace trace) {
+    OptionsMethodBuilder(RestOperations restOperations, Tracer trace) {
         this(HttpMethodBuilder.EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, trace)
     }
 

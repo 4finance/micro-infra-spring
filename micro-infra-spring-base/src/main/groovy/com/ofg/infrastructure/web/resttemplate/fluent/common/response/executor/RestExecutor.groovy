@@ -5,12 +5,13 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.UncheckedTimeoutException
 import com.netflix.hystrix.HystrixCommand
 import com.netflix.hystrix.exception.HystrixRuntimeException
+import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
-import com.ofg.infrastructure.hystrix.CorrelatedCommand
-import com.ofg.infrastructure.tracing.SpanRemovingCallable
 import groovy.transform.TypeChecked
-import org.springframework.cloud.sleuth.Trace
+import org.springframework.cloud.sleuth.Tracer
+import org.springframework.cloud.sleuth.instrument.TraceCallable
+import org.springframework.cloud.sleuth.instrument.hystrix.TraceCommand
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -22,7 +23,6 @@ import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeoutException
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.UrlParsingUtils.appendPathToHost
-
 /**
  * Utility class that extracts {@link HttpEntity} from the provided map of passed parameters
  *
@@ -33,12 +33,12 @@ import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.exe
 final class RestExecutor<T> {
     private final RestOperations restOperations
     private final RetryExecutor retryExecutor
-    private final Trace trace
+    private final Tracer tracer
 
-    RestExecutor(RestOperations restOperations, RetryExecutor retryExecutor, Trace trace) {
+    RestExecutor(RestOperations restOperations, RetryExecutor retryExecutor, Tracer tracer) {
         this.restOperations = restOperations
         this.retryExecutor = retryExecutor
-        this.trace = trace
+        this.tracer = tracer
     }
 
     ResponseEntity<T> exchange(HttpMethod httpMethod, Map params, Class<T> responseType) {
@@ -103,12 +103,12 @@ final class RestExecutor<T> {
     }
 
     private ListenableFuture<ResponseEntity<T>> withRetry(HystrixCommand.Setter hystrix, Callable<T> hystrixFallback, Callable<ResponseEntity<T>> httpInvocation) {
-        return retryExecutor.getWithRetry(new SpanRemovingCallable(trace.wrap(new Callable() {
+        return retryExecutor.getWithRetry(new TraceCallable<ResponseEntity<T>>(tracer, new Callable() {
             @Override
             ResponseEntity<T> call() throws Exception {
                 return callHttp(hystrix, hystrixFallback, httpInvocation)
             }
-        })))
+        }))
     }
 
     private ResponseEntity<T> callHttp(HystrixCommand.Setter hystrix, Callable<T> hystrixFallback, Callable<ResponseEntity<T>> httpInvocation) {
@@ -120,9 +120,10 @@ final class RestExecutor<T> {
     }
 
     private ResponseEntity<T> runInsideHystrixCommand(HystrixCommand.Setter hystrix, Callable<T> hystrixFallback, Callable<ResponseEntity<T>> httpInvocation) {
+        HystrixRequestContext context = HystrixRequestContext.initializeContext()
         try {
             if (hystrixFallback) {
-                return new CorrelatedCommand<ResponseEntity<T>>(trace, hystrix) {
+                return new TraceCommand<ResponseEntity<T>>(tracer, hystrix) {
                     @Override
                     ResponseEntity<T> doRun() throws Exception {
                         return httpInvocation.call()
@@ -134,7 +135,7 @@ final class RestExecutor<T> {
                     }
                 }.execute()
             }
-            return new CorrelatedCommand<ResponseEntity<T>>(trace, hystrix) {
+            return new TraceCommand<ResponseEntity<T>>(tracer, hystrix) {
                 @Override
                 ResponseEntity<T> doRun() throws Exception {
                     return httpInvocation.call()
@@ -142,6 +143,8 @@ final class RestExecutor<T> {
             }.execute()
         } catch(HystrixRuntimeException e) {
             throw e.getCause()
+        } finally {
+           context.shutdown()
         }
     }
 

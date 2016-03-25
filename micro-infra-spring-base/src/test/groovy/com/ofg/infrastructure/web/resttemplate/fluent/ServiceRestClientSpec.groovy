@@ -8,7 +8,7 @@ import com.nurkiewicz.asyncretry.AsyncRetryExecutor
 import com.ofg.infrastructure.discovery.*
 import com.ofg.infrastructure.discovery.util.DependencyCreator
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
-import org.springframework.cloud.sleuth.Trace
+import org.springframework.cloud.sleuth.Tracer
 import org.springframework.http.HttpEntity
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestClientException
@@ -36,7 +36,7 @@ class ServiceRestClientSpec extends Specification {
     @AutoCleanup("shutdownNow")
     @Shared
     ScheduledExecutorService pool = Executors.newScheduledThreadPool(1)
-    Trace trace = new FakeTrace()
+    Tracer trace = new FakeTrace()
     ServiceRestClient serviceRestClient = new ServiceRestClient(restOperations, serviceResolver, configurationResolver, trace)
 
     def setup() {

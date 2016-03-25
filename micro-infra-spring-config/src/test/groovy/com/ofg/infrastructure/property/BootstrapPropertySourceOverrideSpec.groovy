@@ -1,12 +1,10 @@
 package com.ofg.infrastructure.property
 
-import org.springframework.cloud.bootstrap.BootstrapApplicationListener
+import org.springframework.cloud.bootstrap.config.PropertySourceBootstrapConfiguration
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.core.env.MutablePropertySources
-import org.springframework.core.env.PropertySource
 import org.springframework.core.env.StandardEnvironment
 import spock.lang.AutoCleanup
-import spock.lang.Shared
 
 class BootstrapPropertySourceOverrideSpec extends AbstractIntegrationSpec {
 
@@ -23,7 +21,7 @@ class BootstrapPropertySourceOverrideSpec extends AbstractIntegrationSpec {
     def 'bootstrap property source should be after system environment property source'() {
         when:
             int systemEnvironmentPrecedence = getPropertySourcePrecedence(StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME)
-            int bootstrapPrecedence = getPropertySourcePrecedence(BootstrapApplicationListener.BOOTSTRAP_PROPERTY_SOURCE_NAME)
+            int bootstrapPrecedence = getPropertySourcePrecedence(PropertySourceBootstrapConfiguration.BOOTSTRAP_PROPERTY_SOURCE_NAME)
         then:
             systemEnvironmentPrecedence < bootstrapPrecedence
     }

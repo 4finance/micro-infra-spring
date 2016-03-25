@@ -3,14 +3,14 @@ package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import com.ofg.infrastructure.web.resttemplate.fluent.FakeTrace
-import org.springframework.cloud.sleuth.Trace
+import org.springframework.cloud.sleuth.Tracer
 import org.springframework.http.HttpMethod
 import org.springframework.web.client.ResourceAccessException
 import spock.lang.Specification
 
 class RestExecutorSpec extends Specification {
 
-    Trace trace = new FakeTrace()
+    Tracer trace = new FakeTrace()
 
     def "should fail to run asynchronously if retry mechanism wasn't set up"() {
         given:

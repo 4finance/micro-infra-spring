@@ -11,7 +11,7 @@ import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.R
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import com.ofg.infrastructure.web.resttemplate.fluent.post.DataUpdateMethodBuilder
 import groovy.transform.TypeChecked
-import org.springframework.cloud.sleuth.Trace
+import org.springframework.cloud.sleuth.Tracer
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
@@ -20,7 +20,6 @@ import java.util.concurrent.Callable
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
 import static org.springframework.http.HttpMethod.PUT
-
 /**
  * Implementation of the {@link org.springframework.http.HttpMethod#PUT method} fluent API
  */
@@ -31,7 +30,7 @@ class PutMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPutMethod, U
 
     private final WithQueryParameters<ResponseReceivingPutMethod> withQueryParameters
 
-    PutMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Trace trace) {
+    PutMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Tracer trace) {
         super(predefinedHeaders, restOperations, retryExecutor, trace)
         params.host = host
         withQueryParameters = new BodyContainingWithQueryParameters<ResponseReceivingPutMethod>(this, params)
@@ -43,7 +42,7 @@ class PutMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPutMethod, U
         return this
     }
 
-    PutMethodBuilder(RestOperations restOperations, Trace trace) {
+    PutMethodBuilder(RestOperations restOperations, Tracer trace) {
         this(HttpMethodBuilder.EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, trace)
     }
 

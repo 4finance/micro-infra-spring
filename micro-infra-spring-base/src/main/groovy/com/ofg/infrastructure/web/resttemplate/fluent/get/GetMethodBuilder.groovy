@@ -11,7 +11,7 @@ import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import groovy.transform.TypeChecked
-import org.springframework.cloud.sleuth.Trace
+import org.springframework.cloud.sleuth.Tracer
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
@@ -21,7 +21,6 @@ import java.util.concurrent.Callable
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder.EMPTY_HOST
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
-
 /**
  * Implementation of the {@link org.springframework.http.HttpMethod#GET method} fluent API
  */
@@ -34,13 +33,13 @@ class GetMethodBuilder extends AbstractMethodBuilder implements GetMethod, UrlPa
     private final RetryExecutor retryExecutor
     private final BodyContainingWithHeaders<ResponseReceivingGetMethod> withHeaders
     private final BodyContainingWithQueryParameters<ResponseReceivingGetMethod> withQueryParameters
-    private final Trace trace
+    private final Tracer trace
 
-    GetMethodBuilder(RestOperations restOperations, Trace trace) {
+    GetMethodBuilder(RestOperations restOperations, Tracer trace) {
         this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, trace)
     }
 
-    GetMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Trace trace) {
+    GetMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Tracer trace) {
         this.restOperations = restOperations
         params.host = host
         withHeaders = new BodyContainingWithHeaders<ResponseReceivingGetMethod>(this, params, predefinedHeaders)

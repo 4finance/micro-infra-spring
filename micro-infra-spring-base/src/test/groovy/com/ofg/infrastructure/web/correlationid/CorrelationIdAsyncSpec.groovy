@@ -1,14 +1,13 @@
 package com.ofg.infrastructure.web.correlationid
+
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MicroserviceMvcWiremockSpec
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
-import org.springframework.cloud.sleuth.IdGenerator
-import org.springframework.cloud.sleuth.MilliSpan
 import org.springframework.cloud.sleuth.Span
-import org.springframework.cloud.sleuth.TraceContextHolder
 import org.springframework.cloud.sleuth.instrument.async.AsyncDefaultAutoConfiguration
+import org.springframework.cloud.sleuth.trace.SpanContextHolder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -24,14 +23,14 @@ class CorrelationIdAsyncSpec extends MicroserviceMvcWiremockSpec {
 
     @Autowired AsyncClass asyncClass
     @Autowired AsyncDelegation asyncDelegation
-    @Autowired IdGenerator idGenerator
+    @Autowired Random idGenerator
 
     PollingConditions pollingConditions = new PollingConditions()
 
     def "should set correlationId on an async annotated method"() {
         given:
-            Span span = MilliSpan.builder().traceId(idGenerator.create()).spanId(idGenerator.create()).build()
-            TraceContextHolder.currentSpan = span
+            Span span = Span.builder().traceId(idGenerator.nextLong()).spanId(idGenerator.nextLong()).build()
+            SpanContextHolder.currentSpan = span
         when:
             asyncDelegation.doSthSync()
         then:
@@ -40,7 +39,7 @@ class CorrelationIdAsyncSpec extends MicroserviceMvcWiremockSpec {
                 assert span.name != asyncClass.span?.get()?.name
             }
         cleanup:
-            TraceContextHolder.removeCurrentSpan()
+            SpanContextHolder.removeCurrentSpan()
     }
 
     @CompileStatic
@@ -77,7 +76,7 @@ class CorrelationIdAsyncSpec extends MicroserviceMvcWiremockSpec {
 
         @Async
         void doSth() {
-            span = new AtomicReference<>(TraceContextHolder.currentSpan)
+            span = new AtomicReference<>(SpanContextHolder.currentSpan)
         }
     }
 }

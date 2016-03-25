@@ -3,7 +3,7 @@ import ch.qos.logback.core.ConsoleAppender
 
 appender("CONSOLE", ConsoleAppender) {
     encoder(PatternLayoutEncoder) {
-        pattern = "%d{HH:mm:ss.SSSZ} | %-5level | %X{correlationId} | %thread | %logger{1} | %m%n"
+        pattern = "%d{HH:mm:ss.SSSZ} | %-5level | %X{X-Trace-Id} | %thread | %logger{1} | %m%n"
     }
 }
 

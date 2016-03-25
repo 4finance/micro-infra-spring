@@ -127,32 +127,6 @@ expected at least 1 bean which qualifies as autowire candidate for this dependen
 You have legacy code that requires JSON representation whereas right now you have to use the ZookeeperDependencies class. 
 Together with ZookeeperDiscoveryProperties to retrieve the realm.
 
-### Application name is wrong!
-
-There is a bug in Spring Boot - it should be fixed in 1.3.0.RC2 (https://github.com/spring-projects/spring-boot/pull/4362)
-
-#### Workaround
-
-Pass `spring.application.name` via system prop or command line. For example:
-
-```
-./gradlew bootRun -Dspring.profiles.active=prod,springCloud -DAPP_ENV=prod -DCONFIG_FOLDER=/properties -Dserver.port=9090 -Dspring.application.name=foo
-```
-
-### Port in Zookeeper is wrong (the app booted correctly)
-
-#### Issue
- 
-There is a bug in Spring Boot - it should be fixed in 1.3.0.RC2 (https://github.com/spring-projects/spring-boot/pull/4362)
-
-#### Workaround
-
-Pass `server.port` via system prop or command line.  For example:
-
-```
-./gradlew bootRun -Dspring.profiles.active=prod,springCloud -DAPP_ENV=prod -DCONFIG_FOLDER=/properties -Dserver.port=9090 -Dspring.application.name=foo
-```
-
 ### I want to use the old functionality of micro-infra but it blows up with Spring Cloud stuff
 
 Ensure that you have a `bootstrap.yaml` file on your classpath that deregisters everything related to Spring Cloud. For example:

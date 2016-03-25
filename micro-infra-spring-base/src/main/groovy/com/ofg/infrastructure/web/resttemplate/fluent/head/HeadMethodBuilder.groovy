@@ -8,14 +8,9 @@ import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodylessWithHeaders
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodylessWithQueryParameters
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.QueryParametersHaving
-import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.QueryParametersSetting
+import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import groovy.transform.TypeChecked
-import org.springframework.cloud.sleuth.Trace
+import org.springframework.cloud.sleuth.Tracer
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -38,9 +33,9 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
     private final RetryExecutor retryExecutor
     private final BodylessWithHeaders<ResponseReceivingHeadMethod> withHeaders
     private final BodylessWithQueryParameters<ResponseReceivingHeadMethod> withQueryParameters
-    private final Trace trace
+    private final Tracer trace
 
-    HeadMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Trace trace) {
+    HeadMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Tracer trace) {
         this.restOperations = restOperations
         params.host = host
         withHeaders =  new BodylessWithHeaders<ResponseReceivingHeadMethod>(this, params, predefinedHeaders)
@@ -49,7 +44,7 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
         this.trace = trace
     }
 
-    HeadMethodBuilder(RestOperations restOperations, Trace trace) {
+    HeadMethodBuilder(RestOperations restOperations, Tracer trace) {
         this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, trace)
     }
 

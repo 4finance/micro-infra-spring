@@ -1,5 +1,10 @@
 package com.ofg.infrastructure.web.resttemplate.fluent;
 
+import java.util.concurrent.Callable;
+
+import org.springframework.cloud.sleuth.Tracer;
+import org.springframework.web.client.RestOperations;
+
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor;
 import com.nurkiewicz.asyncretry.RetryExecutor;
 import com.nurkiewicz.asyncretry.SyncRetryExecutor;
@@ -16,10 +21,6 @@ import com.ofg.infrastructure.web.resttemplate.fluent.post.PostMethod;
 import com.ofg.infrastructure.web.resttemplate.fluent.post.PostMethodBuilder;
 import com.ofg.infrastructure.web.resttemplate.fluent.put.PutMethod;
 import com.ofg.infrastructure.web.resttemplate.fluent.put.PutMethodBuilder;
-import org.springframework.cloud.sleuth.Trace;
-import org.springframework.web.client.RestOperations;
-
-import java.util.concurrent.Callable;
 
 /**
  * Point of entry of the fluent API over {@link RestOperations}.
@@ -41,10 +42,10 @@ public class HttpMethodBuilder {
     private final Callable<String> serviceUrl;
     private final RestOperations restOperations;
     private final PredefinedHttpHeaders predefinedHeaders;
-    private final Trace trace;
+    private final Tracer trace;
     private RetryExecutor retryExecutor = SyncRetryExecutor.INSTANCE;
 
-    public HttpMethodBuilder(RestOperations restOperations, Trace trace) {
+    public HttpMethodBuilder(RestOperations restOperations, Tracer trace) {
         this(new Callable<String>() {
             @Override
             public String call() throws Exception {
@@ -54,7 +55,7 @@ public class HttpMethodBuilder {
         }, restOperations, PredefinedHttpHeaders.NO_PREDEFINED_HEADERS, trace);
     }
 
-    public HttpMethodBuilder(Callable<String> serviceUrl, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, Trace trace) {
+    public HttpMethodBuilder(Callable<String> serviceUrl, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, Tracer trace) {
         this.predefinedHeaders = predefinedHeaders;
         this.restOperations = restOperations;
         this.serviceUrl = serviceUrl;

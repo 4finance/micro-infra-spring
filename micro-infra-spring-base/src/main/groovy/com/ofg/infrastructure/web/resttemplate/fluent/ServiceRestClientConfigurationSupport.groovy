@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.cloud.client.loadbalancer.LoadBalancerInterceptor
-import org.springframework.cloud.sleuth.Trace
+import org.springframework.cloud.sleuth.Tracer
 import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies
 import org.springframework.context.annotation.Bean
 import org.springframework.http.client.BufferingClientHttpRequestFactory
@@ -70,7 +70,7 @@ class ServiceRestClientConfigurationSupport {
     @Deprecated @Autowired(required = false) ServiceConfigurationResolver configurationResolver
 
     @Bean
-    ServiceRestClient serviceRestClient(ServiceResolver serviceResolver, Trace trace) {
+    ServiceRestClient serviceRestClient(ServiceResolver serviceResolver, Tracer trace) {
         if (zookeeperDependencies == null && configurationResolver == null) {
             throw new MicroserviceConfigurationNotPresentException()
         }
@@ -81,7 +81,7 @@ class ServiceRestClientConfigurationSupport {
     }
 
     @Deprecated
-    private ServiceRestClient createServiceRestClientUsingServiceConfigurationResolver(ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver, Trace trace) {
+    private ServiceRestClient createServiceRestClientUsingServiceConfigurationResolver(ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver, Tracer trace) {
         return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, configurationResolver, trace)
     }
 

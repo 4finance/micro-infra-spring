@@ -1,17 +1,17 @@
 package com.ofg.infrastructure.web.resttemplate.fluent;
 
+import java.net.URI;
+import java.util.concurrent.Callable;
+
+import org.springframework.cloud.sleuth.Tracer;
+import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies;
+import org.springframework.web.client.RestOperations;
+
 import com.ofg.infrastructure.discovery.MicroserviceConfiguration;
 import com.ofg.infrastructure.discovery.ServiceAlias;
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver;
 import com.ofg.infrastructure.discovery.ServiceResolver;
-import com.ofg.infrastructure.discovery.watcher.presence.checker.NoInstancesRunningException;
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders;
-import org.springframework.cloud.sleuth.Trace;
-import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies;
-import org.springframework.web.client.RestOperations;
-
-import java.net.URI;
-import java.util.concurrent.Callable;
 
 /**
  * Abstraction over {@link RestOperations} that provides a fluent API for accessing HTTP resources.
@@ -83,10 +83,10 @@ public class ServiceRestClient {
     private final ServiceResolver serviceResolver;
     private final ServiceConfigurationResolver configurationResolver;
     private final ZookeeperDependencies zookeeperDependencies;
-    private final Trace trace;
+    private final Tracer trace;
 
     @Deprecated
-    public ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver, Trace trace) {
+    public ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver, Tracer trace) {
         this.configurationResolver = configurationResolver;
         this.restOperations = restOperations;
         this.serviceResolver = serviceResolver;
@@ -94,7 +94,7 @@ public class ServiceRestClient {
         this.trace = trace;
     }
 
-    public ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver, ZookeeperDependencies zookeeperDependencies, Trace trace) {
+    public ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver, ZookeeperDependencies zookeeperDependencies, Tracer trace) {
         this.restOperations = restOperations;
         this.serviceResolver = serviceResolver;
         this.zookeeperDependencies = zookeeperDependencies;

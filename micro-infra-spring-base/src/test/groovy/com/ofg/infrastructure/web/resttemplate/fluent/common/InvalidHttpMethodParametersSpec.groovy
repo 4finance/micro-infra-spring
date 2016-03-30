@@ -6,7 +6,7 @@ class InvalidHttpMethodParametersSpec extends HttpMethodSpec {
     
     def "should throw exception if wrong parameters are provided for get"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
         when:
             httpMethodBuilder
                     .get()
@@ -20,7 +20,7 @@ class InvalidHttpMethodParametersSpec extends HttpMethodSpec {
 
     def "should throw exception if wrong parameters are provided for post"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
         when:
             httpMethodBuilder
                     .post()
@@ -35,7 +35,7 @@ class InvalidHttpMethodParametersSpec extends HttpMethodSpec {
 
     def "should throw exception if wrong parameters are provided for head"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
         when:
             httpMethodBuilder
                     .head()
@@ -49,7 +49,7 @@ class InvalidHttpMethodParametersSpec extends HttpMethodSpec {
 
     def "should throw exception if wrong parameters are provided for options"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
         when:
             httpMethodBuilder
                     .options()
@@ -63,7 +63,7 @@ class InvalidHttpMethodParametersSpec extends HttpMethodSpec {
 
     def "should throw exception if wrong parameters are provided for delete"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
         when:
             httpMethodBuilder
                     .delete()

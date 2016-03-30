@@ -6,10 +6,12 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.netflix.hystrix.HystrixCommand
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
+import com.ofg.infrastructure.web.resttemplate.fluent.TracingInfo
 import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import groovy.transform.TypeChecked
+import org.springframework.cloud.sleuth.TraceKeys
 import org.springframework.cloud.sleuth.Tracer
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -33,19 +35,19 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
     private final RetryExecutor retryExecutor
     private final BodylessWithHeaders<ResponseReceivingHeadMethod> withHeaders
     private final BodylessWithQueryParameters<ResponseReceivingHeadMethod> withQueryParameters
-    private final Tracer trace
+    private final TracingInfo tracingInfo
 
-    HeadMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Tracer trace) {
+    HeadMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, TracingInfo tracingInfo) {
         this.restOperations = restOperations
         params.host = host
         withHeaders =  new BodylessWithHeaders<ResponseReceivingHeadMethod>(this, params, predefinedHeaders)
         withQueryParameters = new BodylessWithQueryParameters<ResponseReceivingHeadMethod>(this, params)
         this.retryExecutor = retryExecutor
-        this.trace = trace
+        this.tracingInfo = tracingInfo
     }
 
-    HeadMethodBuilder(RestOperations restOperations, Tracer trace) {
-        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, trace)
+    HeadMethodBuilder(RestOperations restOperations, TracingInfo tracingInfo) {
+        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, tracingInfo)
     }
 
     @Override
@@ -112,7 +114,7 @@ class HeadMethodBuilder implements HeadMethod, UrlParameterizableHeadMethod, Res
     }
 
     private ResponseTypeRelatedRequestsExecutor<Object> head() {
-        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, Object, HttpMethod.HEAD, trace)
+        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, Object, HttpMethod.HEAD, tracingInfo)
     }
 
     @Override

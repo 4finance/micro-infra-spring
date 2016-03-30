@@ -6,12 +6,12 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
+import com.ofg.infrastructure.web.resttemplate.fluent.TracingInfo
 import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import com.ofg.infrastructure.web.resttemplate.fluent.post.DataUpdateMethodBuilder
 import groovy.transform.TypeChecked
-import org.springframework.cloud.sleuth.Tracer
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
@@ -30,8 +30,8 @@ class PutMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPutMethod, U
 
     private final WithQueryParameters<ResponseReceivingPutMethod> withQueryParameters
 
-    PutMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Tracer trace) {
-        super(predefinedHeaders, restOperations, retryExecutor, trace)
+    PutMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, TracingInfo tracingInfo) {
+        super(predefinedHeaders, restOperations, retryExecutor, tracingInfo)
         params.host = host
         withQueryParameters = new BodyContainingWithQueryParameters<ResponseReceivingPutMethod>(this, params)
     }
@@ -42,8 +42,8 @@ class PutMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPutMethod, U
         return this
     }
 
-    PutMethodBuilder(RestOperations restOperations, Tracer trace) {
-        this(HttpMethodBuilder.EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, trace)
+    PutMethodBuilder(RestOperations restOperations, TracingInfo tracingInfo) {
+        this(HttpMethodBuilder.EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, tracingInfo)
     }
 
     @Override
@@ -96,7 +96,7 @@ class PutMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPutMethod, U
     }
 
     private ResponseTypeRelatedRequestsExecutor put(Class responseType) {
-        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, responseType, PUT, trace)
+        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, responseType, PUT, tracingInfo)
     }
 
     @Override

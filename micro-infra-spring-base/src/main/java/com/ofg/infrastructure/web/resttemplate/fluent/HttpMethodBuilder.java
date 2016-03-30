@@ -2,7 +2,6 @@ package com.ofg.infrastructure.web.resttemplate.fluent;
 
 import java.util.concurrent.Callable;
 
-import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.web.client.RestOperations;
 
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor;
@@ -42,24 +41,25 @@ public class HttpMethodBuilder {
     private final Callable<String> serviceUrl;
     private final RestOperations restOperations;
     private final PredefinedHttpHeaders predefinedHeaders;
-    private final Tracer trace;
+    private final TracingInfo tracingInfo;
     private RetryExecutor retryExecutor = SyncRetryExecutor.INSTANCE;
 
-    public HttpMethodBuilder(RestOperations restOperations, Tracer trace) {
+    public HttpMethodBuilder(RestOperations restOperations, TracingInfo tracingInfo) {
         this(new Callable<String>() {
             @Override
             public String call() throws Exception {
                 return "";
             }
 
-        }, restOperations, PredefinedHttpHeaders.NO_PREDEFINED_HEADERS, trace);
+        }, restOperations, PredefinedHttpHeaders.NO_PREDEFINED_HEADERS, tracingInfo);
     }
 
-    public HttpMethodBuilder(Callable<String> serviceUrl, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, Tracer trace) {
+    public HttpMethodBuilder(Callable<String> serviceUrl, RestOperations restOperations,
+                             PredefinedHttpHeaders predefinedHeaders, TracingInfo tracingInfo) {
         this.predefinedHeaders = predefinedHeaders;
         this.restOperations = restOperations;
         this.serviceUrl = serviceUrl;
-        this.trace = trace;
+        this.tracingInfo = tracingInfo;
     }
 
     /**
@@ -86,27 +86,27 @@ public class HttpMethodBuilder {
     }
 
     public DeleteMethod delete() {
-        return new DeleteMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor, trace);
+        return new DeleteMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor, tracingInfo);
     }
 
     public GetMethod get() {
-        return new GetMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor, trace);
+        return new GetMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor, tracingInfo);
     }
 
     public HeadMethod head() {
-        return new HeadMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor, trace);
+        return new HeadMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor, tracingInfo);
     }
 
     public OptionsMethod options() {
-        return new OptionsMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor, trace);
+        return new OptionsMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor, tracingInfo);
     }
 
     public PostMethod post() {
-        return new PostMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor, trace);
+        return new PostMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor, tracingInfo);
     }
 
     public PutMethod put() {
-        return new PutMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor, trace);
+        return new PutMethodBuilder(serviceUrl, restOperations, predefinedHeaders, retryExecutor, tracingInfo);
     }
 
     public static final Callable<String> EMPTY_HOST = new Callable<String>() {

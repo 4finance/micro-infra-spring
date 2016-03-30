@@ -4,10 +4,10 @@ import com.google.common.base.Function
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
+import com.ofg.infrastructure.web.resttemplate.fluent.TracingInfo
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.RestExecutor
 import groovy.transform.PackageScope
 import groovy.transform.TypeChecked
-import org.springframework.cloud.sleuth.Tracer
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
@@ -24,9 +24,9 @@ class OptionsAllowHeaderExecutor implements AllowHeaderReceiving {
     private final Map params
     private final RestExecutor restExecutor
 
-    OptionsAllowHeaderExecutor(RestOperations restOperations, RetryExecutor retryExecutor, Map params, Tracer trace) {
+    OptionsAllowHeaderExecutor(RestOperations restOperations, RetryExecutor retryExecutor, Map params, TracingInfo tracingInfo) {
         this.params = params
-        this.restExecutor = new RestExecutor<>(restOperations, retryExecutor, trace)
+        this.restExecutor = new RestExecutor<>(restOperations, retryExecutor, tracingInfo)
     }
 
     @Override

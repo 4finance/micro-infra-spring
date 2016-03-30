@@ -10,17 +10,17 @@ import java.util.concurrent.Callable
 class FakeTrace implements Tracer {
 
     @Override
-    Span startTrace(String name) {
+    Span createSpan(String name) {
         return Mockito.mock(Span)
     }
 
     @Override
-    Span joinTrace(String name, Span parent) {
+    Span createSpan(String name, Span parent) {
         return Mockito.mock(Span)
     }
 
     @Override
-    Span startTrace(String name, Sampler sampler) {
+    Span createSpan(String name, Sampler sampler) {
         return Mockito.mock(Span)
     }
 

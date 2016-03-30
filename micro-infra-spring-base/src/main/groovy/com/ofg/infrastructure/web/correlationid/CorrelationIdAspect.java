@@ -56,7 +56,7 @@ public class CorrelationIdAspect {
     private Span getSpanOrCreateOne() {
         return trace.isTracing() ?
                 trace.getCurrentSpan() :
-                trace.startTrace(Thread.currentThread().getName());
+                trace.createSpan(Thread.currentThread().getName());
     }
 
     @SuppressWarnings("unchecked")

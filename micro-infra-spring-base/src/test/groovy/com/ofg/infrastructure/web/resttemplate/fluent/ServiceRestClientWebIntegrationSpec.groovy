@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
+
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor
 import com.ofg.config.BasicProfiles
 import com.ofg.infrastructure.base.BaseConfiguration
@@ -13,8 +14,6 @@ import org.junit.ClassRule
 import org.junit.contrib.java.lang.system.ProvideSystemProperty
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
-import org.springframework.cloud.sleuth.Tracer
-import org.springframework.cloud.sleuth.instrument.TraceKeys
 import org.springframework.cloud.sleuth.instrument.web.TraceFilter
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ActiveProfiles
@@ -43,12 +42,11 @@ class ServiceRestClientWebIntegrationSpec extends MvcWiremockIntegrationSpec {
     ServiceRestClient serviceRestClient
 
     @Autowired ServiceResolver serviceResolver
-    @Autowired Tracer trace
-    @Autowired TraceKeys traceKeys
+    @Autowired TraceFilter traceFilter
 
     @Override
     protected void configureMockMvcBuilder(ConfigurableMockMvcBuilder mockMvcBuilder) {
-        mockMvcBuilder.addFilters(new HeadersSettingFilter(), new TraceFilter(trace, traceKeys))
+        mockMvcBuilder.addFilters(new HeadersSettingFilter(), traceFilter)
     }
 
     def "should pass correlationid when calling service via retry executor"() {

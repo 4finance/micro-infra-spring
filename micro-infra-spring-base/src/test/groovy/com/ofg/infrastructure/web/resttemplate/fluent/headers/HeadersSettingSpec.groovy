@@ -23,7 +23,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
 
     def "should fill out headers for get method"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
         when:
             httpMethodBuilder
                 .get()
@@ -51,7 +51,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
 
     def "should fill out headers for post method"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
         when:
             httpMethodBuilder
                 .post()
@@ -80,7 +80,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
 
     def "should fill out headers for head method"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
         when:
             httpMethodBuilder
                     .head()
@@ -107,7 +107,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
 
     def "should fill out headers for options method"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
         when:
             httpMethodBuilder
                     .options()
@@ -135,7 +135,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
 
     def "should fill out headers for delete method"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
         when:
             httpMethodBuilder
                     .delete()
@@ -163,7 +163,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
     def "should send a request from passed HttpEntity"() {
         given:
             String body = '''{"some":"body"}'''
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
         when:
             httpMethodBuilder
                     .post()
@@ -183,7 +183,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
     def "should add custom headers to request when predefined headers provided"() {
         given:
             PredefinedHttpHeaders predefinedHttpHeaders = new PredefinedHttpHeaders(ADDITIONAL_HEADERS_CONFIG)
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, predefinedHttpHeaders, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, predefinedHttpHeaders, tracingInfo)
         when:
             httpMethodBuilder
                 .get()
@@ -201,7 +201,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
     def "should set Content-Type header when template with version is provided"() {
         given:
             PredefinedHttpHeaders predefinedHttpHeaders = new PredefinedHttpHeaders(CONTENT_TYPE_HEADER_CONFIG)
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, predefinedHttpHeaders, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, predefinedHttpHeaders, tracingInfo)
         when:
             httpMethodBuilder
                 .get()
@@ -218,7 +218,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
 
     def "should fill out content type from media type"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
         when:
             httpMethodBuilder
                 .get()
@@ -240,7 +240,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
 
     def "should fill out headers from HttpHeaders"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             HttpHeaders headers = createHeaders()
         when:
             httpMethodBuilder
@@ -262,7 +262,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
 
     def "should fill out JSON content type header"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
         when:
             httpMethodBuilder
                     .get()
@@ -285,7 +285,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
 
     def "should fill out XML content type header"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
         when:
             httpMethodBuilder
                     .get()
@@ -307,7 +307,7 @@ class HeadersSettingSpec extends HttpMethodSpec {
     @Unroll
     def "should have 'Authorization' header with value: '#authorizationValue'"() {
         given:
-        httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+        httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
         when:
         httpMethodBuilder
                 .get()

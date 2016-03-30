@@ -14,7 +14,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should use only url template without provided service url to retrieve response entity"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
         when:
             httpMethodBuilder
@@ -33,7 +33,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should use only url template without provided service url to retrieve ResponseEntity"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
             ResponseEntity<Object> expectedResponseEntity = new ResponseEntity<>(OK)
         when:
@@ -54,7 +54,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should use only url template from map without provided service url"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
         when:
             httpMethodBuilder
@@ -73,7 +73,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add service url to template when provided"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:
             httpMethodBuilder
                     .delete()
@@ -87,7 +87,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should treat url as path when sending request to a service to a path containing a slash"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
             URI url = new URI(PATH_WITH_SLASH)
         when:
             httpMethodBuilder
@@ -101,7 +101,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should treat String url as path when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:
             httpMethodBuilder
                     .delete()
@@ -114,7 +114,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should be able to send a request and ignore the response"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String url = 'http://some.url/api/objects'
         when:
             httpMethodBuilder
@@ -130,7 +130,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add parameters to query string when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:
             httpMethodBuilder
                     .delete()
@@ -146,7 +146,7 @@ class DeleteHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add parameters to query string when sending request to a service via DSL"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:
             httpMethodBuilder
                     .delete()

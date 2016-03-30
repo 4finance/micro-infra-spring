@@ -6,16 +6,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.springframework.cloud.sleuth.autoconfig.TraceAutoConfiguration;
+import org.springframework.cloud.sleuth.log.SleuthLogAutoConfiguration;
 import org.springframework.context.annotation.Import;
 
 /**
  * Enables support for correlation id.
  *
  * @see org.springframework.cloud.sleuth.autoconfig.TraceAutoConfiguration
+ * @see org.springframework.cloud.sleuth.log.SleuthLogAutoConfiguration
  * */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import(TraceAutoConfiguration.class)
+@Import({TraceAutoConfiguration.class, SleuthLogAutoConfiguration.class})
 public @interface EnableCorrelationId {
 
 }

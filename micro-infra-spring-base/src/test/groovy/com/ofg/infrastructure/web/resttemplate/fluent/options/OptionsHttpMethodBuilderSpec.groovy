@@ -18,7 +18,7 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should use only url template without provided service url to retrieve an object"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
         when:
             httpMethodBuilder
@@ -38,7 +38,7 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should use only url template without provided service url to retrieve allow header"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
             Set<HttpMethod> expectedHttpMethods = [OPTIONS, DELETE] as Set<HttpMethod>
             HttpHeaders httpHeaders = new HttpHeaders(allow: expectedHttpMethods)
@@ -61,7 +61,7 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should use only url template without provided service url to retrieve ResponseEntity"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
             ResponseEntity<Object> expectedResponseEntity = new ResponseEntity<>(OK)
         when:
@@ -83,7 +83,7 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should use only url template from map without provided service url"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
         when:
             httpMethodBuilder
@@ -103,7 +103,7 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add service url to template when provided"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:
             httpMethodBuilder
                 .options()
@@ -118,7 +118,7 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should treat url as path when sending request to a service with a path containing a slash"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:            
             httpMethodBuilder
                 .options()
@@ -132,7 +132,7 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should treat String url as path when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:            
             httpMethodBuilder
                 .options()
@@ -146,7 +146,7 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should be able to send a request and ignore the response"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String url = 'http://some.url/api/objects'
         when:
             httpMethodBuilder
@@ -162,7 +162,7 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add parameters to query string when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:
             httpMethodBuilder
                     .options()
@@ -179,7 +179,7 @@ class OptionsHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add parameters to query string when sending request to a service via DSL"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:
             httpMethodBuilder
                     .options()

@@ -18,7 +18,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for location when sending a post request on given address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             URI expectedLocation = new URI('http://localhost')
         when:
             URI actualLocation = httpMethodBuilder
@@ -36,7 +36,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should query for location when sending a post request on given address as String"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String expectedLocationAsString = 'http://localhost'
             URI expectedLocation = new URI(expectedLocationAsString)
         when:
@@ -55,7 +55,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should query for location when sending a post request on given template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
             URI expectedLocation = new URI('localhost')
         when:
@@ -76,7 +76,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for location when sending a post request on service template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
             URI expectedLocation = new URI('localhost')
         when:
             URI actualLocation = httpMethodBuilder
@@ -96,7 +96,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for location when sending a post request on service template address using map for url vars"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
             URI expectedLocation = new URI('localhost')
         when:
             URI actualLocation = httpMethodBuilder
@@ -116,7 +116,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for location when sending a post request on service template address with url"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
             URI expectedLocation = new URI(FULL_SERVICE_URL)
         when:
             URI actualLocation = httpMethodBuilder
@@ -134,7 +134,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for location when sending a post request on service template address with String url"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
             URI expectedLocation = new URI('localhost')
         when:
             URI actualLocation = httpMethodBuilder
@@ -154,7 +154,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for object when sending a post request on given template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
         when:
             String actualResponseBody = httpMethodBuilder
@@ -176,7 +176,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for object when sending a post request on service template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:
             String actualResponseBody = httpMethodBuilder
                                                         .post()
@@ -197,7 +197,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for entity when sending a post request on given template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
             ResponseEntity<String> expectedResponseEntity = responseEntityWith(RESPONSE_BODY)
         when:
@@ -220,7 +220,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should query for entity when sending a post request on service template address"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
             ResponseEntity<String> expectedResponseEntity = responseEntityWith(RESPONSE_BODY)
         when:
             ResponseEntity<String> actualResponseEntity = httpMethodBuilder
@@ -242,7 +242,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should be able to send a request and ignore the response"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String url = 'http://some.url/api/objects'
         when:
             httpMethodBuilder
@@ -260,7 +260,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should treat url as path when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:
             httpMethodBuilder
                     .post()
@@ -273,7 +273,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should treat String url as path when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:
             httpMethodBuilder
                     .post()
@@ -286,7 +286,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add parameters to query string when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:
             httpMethodBuilder
                     .post()
@@ -303,7 +303,7 @@ class PostHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add parameters to query string when sending request to a service via DSL"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:
             httpMethodBuilder
                     .post()

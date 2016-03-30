@@ -12,10 +12,12 @@ import com.ofg.infrastructure.web.resttemplate.fluent.config.RestClientConfigure
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.cloud.client.loadbalancer.LoadBalancerInterceptor
+import org.springframework.cloud.sleuth.TraceKeys
 import org.springframework.cloud.sleuth.Tracer
 import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies
 import org.springframework.context.annotation.Bean
@@ -28,7 +30,6 @@ import org.springframework.web.client.RestOperations
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ThreadFactory
-
 /**
  * This is the main class providing the configuration for ServiceRestClient.
  * It's imported when using {@link EnableServiceRestClient}
@@ -70,19 +71,24 @@ class ServiceRestClientConfigurationSupport {
     @Deprecated @Autowired(required = false) ServiceConfigurationResolver configurationResolver
 
     @Bean
-    ServiceRestClient serviceRestClient(ServiceResolver serviceResolver, Tracer trace) {
+    TracingInfo tracingInfo(Tracer tracer, @Qualifier("traceKeys") TraceKeys keys){
+        return new TracingInfo(tracer, keys)
+    }
+
+    @Bean
+    ServiceRestClient serviceRestClient(ServiceResolver serviceResolver, TracingInfo tracingInfo) {
         if (zookeeperDependencies == null && configurationResolver == null) {
             throw new MicroserviceConfigurationNotPresentException()
         }
         if (zookeeperDependencies) {
-            return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, zookeeperDependencies, trace)
+            return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, zookeeperDependencies, tracingInfo)
         }
-        return createServiceRestClientUsingServiceConfigurationResolver(serviceResolver, configurationResolver, trace)
+        return createServiceRestClientUsingServiceConfigurationResolver(serviceResolver, configurationResolver, tracingInfo)
     }
 
     @Deprecated
-    private ServiceRestClient createServiceRestClientUsingServiceConfigurationResolver(ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver, Tracer trace) {
-        return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, configurationResolver, trace)
+    private ServiceRestClient createServiceRestClientUsingServiceConfigurationResolver(ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver, TracingInfo tracingInfo) {
+        return new ServiceRestClient(microInfraSpringRestTemplate(), serviceResolver, configurationResolver, tracingInfo)
     }
 
     @Bean

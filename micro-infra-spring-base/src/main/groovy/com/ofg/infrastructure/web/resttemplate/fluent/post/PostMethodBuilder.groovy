@@ -5,11 +5,11 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
+import com.ofg.infrastructure.web.resttemplate.fluent.TracingInfo
 import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import groovy.transform.TypeChecked
-import org.springframework.cloud.sleuth.Tracer
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
@@ -29,14 +29,14 @@ class PostMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPostMethod,
 
     private final BodyContainingWithQueryParameters<ResponseReceivingPostMethod> withQueryParameters
 
-    PostMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Tracer trace) {
-        super(predefinedHeaders, restOperations, retryExecutor, trace)
+    PostMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, TracingInfo tracingInfo) {
+        super(predefinedHeaders, restOperations, retryExecutor, tracingInfo)
         params.host = host
         withQueryParameters = new BodyContainingWithQueryParameters<ResponseReceivingPostMethod>(this, params)
     }
 
-    PostMethodBuilder(RestOperations restOperations, Tracer trace) {
-        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, trace)
+    PostMethodBuilder(RestOperations restOperations, TracingInfo tracingInfo) {
+        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, tracingInfo)
     }
 
     @Override
@@ -95,7 +95,7 @@ class PostMethodBuilder extends DataUpdateMethodBuilder<RequestHavingPostMethod,
     }
 
     private ResponseTypeRelatedRequestsExecutor post(Class responseType) {
-        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, responseType, POST, trace)
+        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, responseType, POST, tracingInfo)
     }
 
     @Override

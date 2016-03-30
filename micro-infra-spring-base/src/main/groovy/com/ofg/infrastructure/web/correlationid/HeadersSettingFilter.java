@@ -24,6 +24,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  *
  * @see MDC
  */
+//Rewrite using SpanInjector + SpanExtractor
 @Order(Ordered.HIGHEST_PRECEDENCE + 2)
 public class HeadersSettingFilter extends OncePerRequestFilter {
 
@@ -51,7 +52,7 @@ public class HeadersSettingFilter extends OncePerRequestFilter {
     private void appendSpanIdIfMissing(HttpServletResponse response, String spanId) {
         String idToPass = spanId;
         if (!hasText(spanId)) {
-            idToPass = Span.toHex(idGenerator.nextLong());
+            idToPass = String.valueOf(idGenerator.nextLong());
         }
         addToResponseIfNotPresent(response, Span.SPAN_ID_NAME, idToPass);
     }
@@ -59,7 +60,7 @@ public class HeadersSettingFilter extends OncePerRequestFilter {
     private void appendTraceIdIfMissing(HttpServletResponse response, String traceId) {
         String idToPass = traceId;
         if (!hasText(traceId)) {
-            idToPass = Span.toHex(idGenerator.nextLong());
+            idToPass = String.valueOf(idGenerator.nextLong());
         }
         addToResponseIfNotPresent(response, CORRELATION_ID_HEADER, idToPass);
         addToResponseIfNotPresent(response, OLD_CORRELATION_ID_HEADER, idToPass);

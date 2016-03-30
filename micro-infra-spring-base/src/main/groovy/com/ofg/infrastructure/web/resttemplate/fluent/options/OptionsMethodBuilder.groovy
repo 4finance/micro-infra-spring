@@ -7,11 +7,11 @@ import com.netflix.hystrix.HystrixCommand
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
+import com.ofg.infrastructure.web.resttemplate.fluent.TracingInfo
 import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import groovy.transform.TypeChecked
-import org.springframework.cloud.sleuth.Tracer
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
@@ -35,20 +35,20 @@ class OptionsMethodBuilder implements
     private final AllowContainingWithHeaders withHeaders
     private final BodylessWithQueryParameters<ResponseReceivingOptionsMethod> withQueryParameters
     private final OptionsAllowHeaderExecutor allowHeaderExecutor
-    private final Tracer trace
+    private final TracingInfo tracingInfo
 
-    OptionsMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Tracer trace) {
+    OptionsMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, TracingInfo tracingInfo) {
         this.restOperations = restOperations
         params.host = host
         withHeaders = new AllowContainingWithHeaders(this, params, predefinedHeaders)
         withQueryParameters = new BodylessWithQueryParameters<ResponseReceivingOptionsMethod>(this, params)
-        allowHeaderExecutor = new OptionsAllowHeaderExecutor(restOperations, retryExecutor, params, trace)
+        allowHeaderExecutor = new OptionsAllowHeaderExecutor(restOperations, retryExecutor, params, tracingInfo)
         this.retryExecutor = retryExecutor
-        this.trace = trace
+        this.tracingInfo = tracingInfo
     }
 
-    OptionsMethodBuilder(RestOperations restOperations, Tracer trace) {
-        this(HttpMethodBuilder.EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, trace)
+    OptionsMethodBuilder(RestOperations restOperations,  TracingInfo tracingInfo) {
+        this(HttpMethodBuilder.EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, tracingInfo)
     }
 
     @Override
@@ -135,7 +135,7 @@ class OptionsMethodBuilder implements
     }
 
     private ResponseTypeRelatedRequestsExecutor options(Class responseType) {
-        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, responseType, OPTIONS, trace)
+        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, responseType, OPTIONS, tracingInfo)
     }
 
     @Override

@@ -11,6 +11,9 @@ include ':micro-deps:micro-deps'
 include ':micro-deps:micro-deps-jax-rs-jersey'
 include ':micro-deps:micro-deps-spring-config'
 include ':micro-deps:micro-deps-spring-test-config'
+include ':activity-tracker-root'
+include ':activity-tracker-root:activity-tracker'
+include ':activity-tracker-root:activity-tracker-boot-starter'
 
 rootProject.name = 'micro-infra-spring-root'
 

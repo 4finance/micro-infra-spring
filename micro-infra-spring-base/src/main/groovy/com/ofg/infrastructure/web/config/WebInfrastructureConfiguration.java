@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.ofg.infrastructure.discovery.EnableServiceDiscovery;
-import com.ofg.infrastructure.web.correlationid.EnableCorrelationId;
+import com.ofg.infrastructure.tracing.EnableTracing;
 import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClientConfiguration;
 import com.ofg.infrastructure.web.view.ViewConfiguration;
 
@@ -23,7 +23,7 @@ import com.ofg.infrastructure.web.view.ViewConfiguration;
  */
 @Configuration
 @EnableServiceDiscovery
-@EnableCorrelationId
+@EnableTracing
 @Import({ServiceRestClientConfiguration.class,  ViewConfiguration.class})
 public class WebInfrastructureConfiguration {
 }

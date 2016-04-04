@@ -158,3 +158,6 @@ Rationale:
 
 We want to connect to Zipkin only if one has the production profile turned on and he has deployed his application to the production environment. One can override this functionality by setting the `tracing.properties.enabled` to `false`. Check out `com.ofg.infrastructure.tracing.TracingPropertiesEnabler` for more infromation.
 
+### Your .yaml properties file is not taken into account
+
+You might find out that your .yaml file doesn't override .properties files. This is caused by way spring-boot is processing directories when looking for properties. For now there is no solution for this issue.

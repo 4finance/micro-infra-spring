@@ -1,14 +1,14 @@
 package com.ofg.infrastructure.property;
 
-import com.google.common.base.MoreObjects;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
+
 class ConfigLocations {
 
-    private static final String BASE_FILENAME_FOR_GLOBAL_CONFIG = "global";
+    static final String BASE_FILENAME_FOR_GLOBAL_CONFIG = "global";
     private static final String COMMON_DIR_NAME = "common";
 
     private File rootFolder;
@@ -91,35 +91,35 @@ class ConfigLocations {
     /**
      * Shared properties across all microservices.
      */
-    private File getGlobalConfigFolder() {
+    File getGlobalConfigFolder() {
         return new File(rootFolder, COMMON_DIR_NAME);
     }
 
     /**
      * Shared properties across environments.
      */
-    private File getCommonConfigFolder() {
+    File getCommonConfigFolder() {
         return new File(getGlobalConfigFolder(), microservicePathPrefix);
     }
 
     /**
      * Country specific shared properties across environments.
      */
-    private File getCommonCountryConfigFolder() {
+    File getCommonCountryConfigFolder() {
         return new File(getCommonConfigFolder(), countryCode);
     }
 
     /**
      * Properties environment specific.
      */
-    private File getEnvConfigFolder() {
+    File getEnvConfigFolder() {
         return new File(getEnvFolder(), microservicePathPrefix);
     }
 
     /**
      * Properties country specific in given environment.
      */
-    private File getCountryConfigFolder() {
+    File getCountryConfigFolder() {
         return new File(getEnvConfigFolder(), countryCode);
     }
 

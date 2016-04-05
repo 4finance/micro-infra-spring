@@ -37,7 +37,7 @@ public class FileSystemLocator implements PropertySourceLocator {
     public PropertySource<?> locate(org.springframework.core.env.Environment environment) {
         final ConfigurableEnvironment configurableEnvironment = (ConfigurableEnvironment) environment;
         final NativeEnvironmentRepository springEnv = new NativeEnvironmentRepository(configurableEnvironment);
-        final List<File> propertiesPath = getConfigFiles();
+        final List<File> propertiesPath = getConfigDirs();
         //https://github.com/spring-cloud/spring-cloud-config/issues/338
         springEnv.setSearchLocations(toSearchLocations(propertiesPath));
         CompositePropertySource composite = new CompositePropertySource(FileSystemLocator.class.getSimpleName());
@@ -49,6 +49,10 @@ public class FileSystemLocator implements PropertySourceLocator {
 
     private Environment returnPropertiesForName(NativeEnvironmentRepository springEnv, String forName) {
         return springEnv.findOne(forName, appCoordinates.getEnvironment(), null);
+    }
+
+    List<File> getConfigDirs() {
+        return getConfigLocations().getAllDirs();
     }
 
     List<File> getConfigFiles() {

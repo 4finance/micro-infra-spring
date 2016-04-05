@@ -4,16 +4,22 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.common.base.MoreObjects;
 
 class ConfigLocations {
 
     static final String BASE_FILENAME_FOR_GLOBAL_CONFIG = "global";
+
     private static final String COMMON_DIR_NAME = "common";
 
     private File rootFolder;
+
     private String microservicePathPrefix;
+
     private String environment;
+
     private String countryCode;
 
     ConfigLocations(File rootFolder, String microservicePathPrefix, String environment, String countryCode) {
@@ -106,7 +112,11 @@ class ConfigLocations {
      * Country specific shared properties across environments.
      */
     File getCommonCountryConfigFolder() {
-        return new File(getCommonConfigFolder(), countryCode);
+        if (StringUtils.isNotEmpty(countryCode)) {
+            return new File(getCommonConfigFolder(), countryCode);
+        } else {
+            return null;
+        }
     }
 
     /**

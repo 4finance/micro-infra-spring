@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
 import org.springframework.core.io.Resource;
 
@@ -112,11 +111,7 @@ public class AppCoordinates {
         return path;
     }
 
-    /**
-     * Only for spring-cloud-server properties loading
-     * @return application name
-     */
-    String getApplicationNameWithoutCountry(){
+    String getApplicationNameWithoutCountry() {
         return findBaseNameWithoutCountrySuffix(findBaseName());
     }
 
@@ -125,14 +120,26 @@ public class AppCoordinates {
     }
 
     public List<File> getConfigFiles(File rootConfigFolder) {
+        final String coreName = findBaseNameWithoutCountrySuffix(findBaseName());
+        final String countryName = getCountryName(coreName);
+
         final ConfigLocations configLocations = getConfigLocations(rootConfigFolder);
 
         return Arrays.asList(
-                configLocations.getGlobalConfigFolder(),
-                configLocations.getCommonConfigFolder(),
-                configLocations.getEnvConfigFolder(),
-                configLocations.getCommonCountryConfigFolder(),
-                configLocations.getCountryConfigFolder());
+                configLocations.globalPropertiesFile(),
+                configLocations.globalYamlFile(),
+                configLocations.commonPropertiesFile(coreName),
+                configLocations.commonYamlFile(coreName),
+                configLocations.envPropertiesFile(coreName),
+                configLocations.envYamlFile(coreName),
+                configLocations.commonCountryPropertiesFile(countryName),
+                configLocations.commonCountryYamlFile(countryName),
+                configLocations.envCountryPropertiesFile(countryName),
+                configLocations.envCountryYamlFile(countryName));
+    }
+
+    private String getCountryName(String coreName) {
+        return coreName + "-" + countryCode;
     }
 
     public String getApplicationNameWithCountry() {
@@ -140,7 +147,8 @@ public class AppCoordinates {
     }
 
     private String findBaseName() {
-        return StringUtils.substringAfterLast(path, "/");
+        final String[] nameComponents = nameComponents();
+        return nameComponents[nameComponents.length - 1];
     }
 
     private String[] nameComponents() {

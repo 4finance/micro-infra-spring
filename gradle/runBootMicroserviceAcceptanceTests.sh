@@ -17,7 +17,8 @@ dumpCurrentMicroInfraSpringVersionToFile
 git clone https://github.com/4finance/boot-microservice.git
 cd boot-microservice
 updateMicroInfraSpringVersionInConfigurationFile
-./gradlew clean check guiTest uptodate --stacktrace --continue --no-daemon
+./gradlew clean check uptodate --stacktrace --continue --no-daemon
+./gradlew guiTest --stacktrace --info --continue --no-daemon
 
 git reset --hard
 git checkout boot-microservice-gui

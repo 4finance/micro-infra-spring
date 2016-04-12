@@ -3,36 +3,45 @@ package com.ofg.infrastructure.web.resttemplate.fluent
 import org.mockito.Mockito
 import org.springframework.cloud.sleuth.Sampler
 import org.springframework.cloud.sleuth.Span
-import org.springframework.cloud.sleuth.Trace
-import org.springframework.cloud.sleuth.TraceScope
+import org.springframework.cloud.sleuth.Tracer
 
 import java.util.concurrent.Callable
 
-class FakeTrace implements Trace {
+class FakeTrace implements Tracer {
 
     @Override
-    TraceScope startSpan(String name) {
-        return Mockito.mock(TraceScope)
+    Span createSpan(String name) {
+        return Mockito.mock(Span)
     }
 
     @Override
-    TraceScope startSpan(String name, Span parent) {
-        return Mockito.mock(TraceScope)
+    Span createSpan(String name, Span parent) {
+        return Mockito.mock(Span)
     }
 
     @Override
-    def <T> TraceScope startSpan(String name, Sampler<T> sampler, T info) {
-        return Mockito.mock(TraceScope)
+    Span createSpan(String name, Sampler sampler) {
+        return Mockito.mock(Span)
     }
 
     @Override
-    TraceScope continueSpan(Span s) {
-        return Mockito.mock(TraceScope)
+    Span continueSpan(Span span) {
+        return Mockito.mock(Span)
     }
 
     @Override
-    void addAnnotation(String key, String value) {
+    void addTag(String key, String value) {
 
+    }
+
+    @Override
+    Span detach(Span span) {
+        return Mockito.mock(Span)
+    }
+
+    @Override
+    Span close(Span span) {
+        return Mockito.mock(Span)
     }
 
     @Override
@@ -43,5 +52,15 @@ class FakeTrace implements Trace {
     @Override
     Runnable wrap(Runnable runnable) {
         return runnable
+    }
+
+    @Override
+    Span getCurrentSpan() {
+        return Mockito.mock(Span)
+    }
+
+    @Override
+    boolean isTracing() {
+        return true
     }
 }

@@ -1,17 +1,18 @@
 package com.ofg.infrastructure.web.resttemplate.fluent;
 
+import java.net.URI;
+import java.util.concurrent.Callable;
+
+import org.springframework.cloud.sleuth.Tracer;
+import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies;
+import org.springframework.web.client.RestOperations;
+
+import com.google.common.annotations.VisibleForTesting;
 import com.ofg.infrastructure.discovery.MicroserviceConfiguration;
 import com.ofg.infrastructure.discovery.ServiceAlias;
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver;
 import com.ofg.infrastructure.discovery.ServiceResolver;
-import com.ofg.infrastructure.discovery.watcher.presence.checker.NoInstancesRunningException;
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders;
-import org.springframework.cloud.sleuth.Trace;
-import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies;
-import org.springframework.web.client.RestOperations;
-
-import java.net.URI;
-import java.util.concurrent.Callable;
 
 /**
  * Abstraction over {@link RestOperations} that provides a fluent API for accessing HTTP resources.
@@ -83,23 +84,25 @@ public class ServiceRestClient {
     private final ServiceResolver serviceResolver;
     private final ServiceConfigurationResolver configurationResolver;
     private final ZookeeperDependencies zookeeperDependencies;
-    private final Trace trace;
+    private final TracingInfo tracingInfo;
 
     @Deprecated
-    public ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver, ServiceConfigurationResolver configurationResolver, Trace trace) {
+    public ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver,
+                             ServiceConfigurationResolver configurationResolver, TracingInfo tracingInfo) {
         this.configurationResolver = configurationResolver;
         this.restOperations = restOperations;
         this.serviceResolver = serviceResolver;
         this.zookeeperDependencies = null;
-        this.trace = trace;
+        this.tracingInfo = tracingInfo;
     }
 
-    public ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver, ZookeeperDependencies zookeeperDependencies, Trace trace) {
+    public ServiceRestClient(RestOperations restOperations, ServiceResolver serviceResolver,
+                             ZookeeperDependencies zookeeperDependencies, TracingInfo tracingInfo) {
         this.restOperations = restOperations;
         this.serviceResolver = serviceResolver;
         this.zookeeperDependencies = zookeeperDependencies;
         this.configurationResolver = null;
-        this.trace = trace;
+        this.tracingInfo = tracingInfo;
     }
 
     /**
@@ -132,12 +135,12 @@ public class ServiceRestClient {
     private HttpMethodBuilder getMethodBuilderUsingConfigurationResolver(ServiceAlias serviceAlias) {
         final MicroserviceConfiguration.Dependency dependency = configurationResolver.getDependency(serviceAlias);
         final PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(dependency);
-        return new HttpMethodBuilder(getServiceUri(serviceAlias), restOperations, predefinedHeaders, trace);
+        return new HttpMethodBuilder(getServiceUri(serviceAlias), restOperations, predefinedHeaders, tracingInfo);
     }
 
     private HttpMethodBuilder getMethodBuilderUsingZookeeperDeps(ServiceAlias serviceAlias) {
         final PredefinedHttpHeaders predefinedHeaders = new PredefinedHttpHeaders(zookeeperDependencies.getDependencyForAlias(serviceAlias.getName()));
-        return new HttpMethodBuilder(getServiceUri(serviceAlias), restOperations, predefinedHeaders, trace);
+        return new HttpMethodBuilder(getServiceUri(serviceAlias), restOperations, predefinedHeaders, tracingInfo);
     }
 
     /**
@@ -168,6 +171,6 @@ public class ServiceRestClient {
      * @return builder for the specified HttpMethod
      */
     public HttpMethodBuilder forExternalService() {
-        return new HttpMethodBuilder(restOperations, trace);
+        return new HttpMethodBuilder(restOperations, tracingInfo);
     }
 }

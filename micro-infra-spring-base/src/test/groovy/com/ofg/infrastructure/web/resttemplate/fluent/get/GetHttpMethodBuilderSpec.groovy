@@ -3,19 +3,18 @@ package com.ofg.infrastructure.web.resttemplate.fluent.get
 import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder
 import com.ofg.infrastructure.web.resttemplate.fluent.common.HttpMethodSpec
-
-import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.*
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 
+import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
 import static org.springframework.http.HttpMethod.GET
 
 class GetHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should use only url template without provided service url to retrieve object"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
         when:
             httpMethodBuilder
@@ -35,7 +34,7 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should use only url template without provided service url to retrieve ResponseEntity"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
             ResponseEntity<BigDecimal> expectedResponseEntity = new ResponseEntity<>(HttpStatus.OK)
         when:
@@ -57,7 +56,7 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should use only url template from map without provided service url"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String templateUrl = 'http://some.url/api/objects/{objectId}'
         when:
             httpMethodBuilder
@@ -77,7 +76,7 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add service url to template when provided"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:
             httpMethodBuilder
                 .get()
@@ -92,7 +91,7 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should treat url as path when sending request to a service to a path containing a slash"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:            
             httpMethodBuilder
                 .get()
@@ -106,7 +105,7 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should treat String url as path when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:            
             httpMethodBuilder
                 .get()
@@ -120,7 +119,7 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should be able to send a request and ignore the response"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(restOperations, trace)
+            httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)
             String url = 'http://some.url/api/objects'
         when:
             httpMethodBuilder
@@ -139,7 +138,7 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
         String address = 'http://localhost:8080'
         int id = 42
         and:
-        GetMethodBuilder get = new GetMethodBuilder(new RestTemplate(), trace)
+        GetMethodBuilder get = new GetMethodBuilder(new RestTemplate(), tracingInfo)
         when:
         ResponseReceivingGetMethod response = get
                 .onUrlFromTemplate('{address}/order/{id}')
@@ -152,7 +151,7 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
     
     def "should add parameters to query string when sending request to a service"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:
             httpMethodBuilder
                     .get()
@@ -167,7 +166,7 @@ class GetHttpMethodBuilderSpec extends HttpMethodSpec {
 
     def "should add parameters to query string when sending request to a service via DSL"() {
         given:
-            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, trace)
+            httpMethodBuilder = new HttpMethodBuilder(SERVICE_URL, restOperations, NO_PREDEFINED_HEADERS, tracingInfo)
         when:
             httpMethodBuilder
                 .get()

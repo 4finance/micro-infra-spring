@@ -1,17 +1,18 @@
 package com.ofg.infrastructure.property;
 
-import com.google.common.base.Optional;
-import com.ofg.infrastructure.discovery.ServiceConfigurationResolver;
-import org.apache.commons.io.IOUtils;
-import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
-import org.springframework.core.io.Resource;
+import static java.util.Objects.requireNonNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
+import org.apache.commons.io.IOUtils;
+import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
+import org.springframework.core.io.Resource;
+
+import com.google.common.base.Optional;
+import com.ofg.infrastructure.discovery.ServiceConfigurationResolver;
 
 public class AppCoordinates {
 
@@ -110,6 +111,10 @@ public class AppCoordinates {
         return path;
     }
 
+    String getApplicationNameWithoutCountry() {
+        return findBaseNameWithoutCountrySuffix(findBaseName());
+    }
+
     public String getCountryCode() {
         return countryCode;
     }
@@ -135,6 +140,10 @@ public class AppCoordinates {
 
     private String getCountryName(String coreName) {
         return coreName + "-" + countryCode;
+    }
+
+    public String getApplicationNameWithCountry() {
+        return getApplicationNameWithoutCountry() + "-" + countryCode;
     }
 
     private String findBaseName() {

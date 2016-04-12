@@ -7,11 +7,13 @@ import com.netflix.hystrix.HystrixCommand
 import com.nurkiewicz.asyncretry.RetryExecutor
 import com.nurkiewicz.asyncretry.SyncRetryExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.AbstractMethodBuilder
+import com.ofg.infrastructure.web.resttemplate.fluent.TracingInfo
 import com.ofg.infrastructure.web.resttemplate.fluent.UrlUtils
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.ResponseTypeRelatedRequestsExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.*
 import groovy.transform.TypeChecked
-import org.springframework.cloud.sleuth.Trace
+import org.springframework.cloud.sleuth.TraceKeys
+import org.springframework.cloud.sleuth.Tracer
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
@@ -21,7 +23,6 @@ import java.util.concurrent.Callable
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.HttpMethodBuilder.EMPTY_HOST
 import static com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders.NO_PREDEFINED_HEADERS
-
 /**
  * Implementation of the {@link org.springframework.http.HttpMethod#GET method} fluent API
  */
@@ -34,19 +35,19 @@ class GetMethodBuilder extends AbstractMethodBuilder implements GetMethod, UrlPa
     private final RetryExecutor retryExecutor
     private final BodyContainingWithHeaders<ResponseReceivingGetMethod> withHeaders
     private final BodyContainingWithQueryParameters<ResponseReceivingGetMethod> withQueryParameters
-    private final Trace trace
+    private final TracingInfo tracingInfo
 
-    GetMethodBuilder(RestOperations restOperations, Trace trace) {
-        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, trace)
+    GetMethodBuilder(RestOperations restOperations, TracingInfo tracingInfo) {
+        this(EMPTY_HOST, restOperations, NO_PREDEFINED_HEADERS, SyncRetryExecutor.INSTANCE, tracingInfo)
     }
 
-    GetMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, Trace trace) {
+    GetMethodBuilder(Callable<String> host, RestOperations restOperations, PredefinedHttpHeaders predefinedHeaders, RetryExecutor retryExecutor, TracingInfo tracingInfo) {
         this.restOperations = restOperations
         params.host = host
         withHeaders = new BodyContainingWithHeaders<ResponseReceivingGetMethod>(this, params, predefinedHeaders)
         withQueryParameters = new BodyContainingWithQueryParameters<ResponseReceivingGetMethod>(this, params)
         this.retryExecutor = retryExecutor
-        this.trace = trace
+        this.tracingInfo = tracingInfo
     }
 
     @Override
@@ -129,7 +130,7 @@ class GetMethodBuilder extends AbstractMethodBuilder implements GetMethod, UrlPa
     }
 
     private ResponseTypeRelatedRequestsExecutor get(Class responseType) {
-        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, responseType, HttpMethod.GET, trace)
+        return new ResponseTypeRelatedRequestsExecutor(params, restOperations, retryExecutor, responseType, HttpMethod.GET, tracingInfo)
     }
 
     @Override

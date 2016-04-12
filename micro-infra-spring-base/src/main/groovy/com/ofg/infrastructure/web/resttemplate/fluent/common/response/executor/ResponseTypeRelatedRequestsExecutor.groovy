@@ -2,12 +2,11 @@ package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
 
 import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
+import com.ofg.infrastructure.web.resttemplate.fluent.TracingInfo
 import groovy.transform.TypeChecked
-import org.springframework.cloud.sleuth.Trace
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
-
 /**
  * Abstraction over {@link RestOperations} that for a {@link ResponseTypeRelatedRequestsExecutor#getHttpMethod()} 
  * checks whether user passed an URL or a template. Basing on this we create an execute a request.
@@ -31,10 +30,10 @@ public class ResponseTypeRelatedRequestsExecutor<T> {
     private final Class<T> responseType
     final HttpMethod httpMethod
 
-    public ResponseTypeRelatedRequestsExecutor(Map params, RestOperations restOperations, RetryExecutor retryExecutor, Class<T> responseType, HttpMethod httpMethod, Trace trace) {
+    public ResponseTypeRelatedRequestsExecutor(Map params, RestOperations restOperations, RetryExecutor retryExecutor, Class<T> responseType, HttpMethod httpMethod, TracingInfo tracingInfo) {
         this.params = params
         this.responseType = responseType
-        this.restExecutor = new RestExecutor(restOperations, retryExecutor, trace)
+        this.restExecutor = new RestExecutor(restOperations, retryExecutor, tracingInfo)
         this.httpMethod = httpMethod
         params.url = params?.urlWithQueryParameters?params.urlWithQueryParameters:params.url
     }

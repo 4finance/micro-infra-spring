@@ -1,12 +1,15 @@
 package com.ofg.infrastructure.web.resttemplate.fluent.post
+
 import com.netflix.hystrix.HystrixCommand
 import com.nurkiewicz.asyncretry.RetryExecutor
+import com.ofg.infrastructure.web.resttemplate.fluent.TracingInfo
 import com.ofg.infrastructure.web.resttemplate.fluent.common.request.HttpMethod
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor.LocationFindingExecutor
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.BodyContainingWithHeaders
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.HeadersSetting
 import com.ofg.infrastructure.web.resttemplate.fluent.common.response.receive.PredefinedHttpHeaders
-import org.springframework.cloud.sleuth.Trace
+import org.springframework.cloud.sleuth.TraceKeys
+import org.springframework.cloud.sleuth.Tracer
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -17,12 +20,12 @@ import java.util.concurrent.Callable
 abstract class DataUpdateMethodBuilder<R, S, T> extends LocationFindingExecutor implements HeadersSetting<T>, HttpMethod<R, S> {
 
     private final BodyContainingWithHeaders withHeaders
-    protected final Trace trace
+    final TracingInfo tracingInfo
 
-    DataUpdateMethodBuilder(PredefinedHttpHeaders predefinedHeaders, RestOperations restOperations, RetryExecutor retryExecutor, Trace trace) {
-       super(restOperations, retryExecutor, trace)
+    DataUpdateMethodBuilder(PredefinedHttpHeaders predefinedHeaders, RestOperations restOperations, RetryExecutor retryExecutor, TracingInfo tracingInfo) {
+       super(restOperations, retryExecutor, tracingInfo)
        this.withHeaders = new BodyContainingWithHeaders(this, params, predefinedHeaders)
-       this.trace = trace
+        this.tracingInfo = tracingInfo
     }
 
     @Override

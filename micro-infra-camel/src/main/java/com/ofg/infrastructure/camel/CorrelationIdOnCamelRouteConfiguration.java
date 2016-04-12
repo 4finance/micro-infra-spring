@@ -1,24 +1,25 @@
 package com.ofg.infrastructure.camel;
 
-import com.ofg.infrastructure.camel.aspects.CorrelationIdOnCamelRouteAspect;
-import org.springframework.cloud.sleuth.IdGenerator;
-import org.springframework.cloud.sleuth.Trace;
-import org.springframework.cloud.sleuth.autoconfig.TraceAutoConfiguration;
+import java.util.Random;
+
+import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.Import;
+
+import com.ofg.infrastructure.camel.aspects.CorrelationIdOnCamelRouteAspect;
+import com.ofg.infrastructure.web.correlationid.EnableCorrelationId;
 
 /**
  * Configuration that provides {@link CorrelationIdOnCamelRouteAspect}.
  */
 @Configuration
-@Import(TraceAutoConfiguration.class)
+@EnableCorrelationId
 @EnableAspectJAutoProxy
 public class CorrelationIdOnCamelRouteConfiguration {
 
     @Bean
-    public CorrelationIdOnCamelRouteAspect correlationIdOnCamelRouteAspect(IdGenerator idGenerator, Trace trace) {
+    public CorrelationIdOnCamelRouteAspect correlationIdOnCamelRouteAspect(Random idGenerator, Tracer trace) {
         return new CorrelationIdOnCamelRouteAspect(idGenerator, trace);
     }
 }

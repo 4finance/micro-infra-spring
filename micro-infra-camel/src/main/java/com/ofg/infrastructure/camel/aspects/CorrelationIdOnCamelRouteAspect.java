@@ -1,6 +1,8 @@
 package com.ofg.infrastructure.camel.aspects;
 
-import com.ofg.infrastructure.camel.CorrelationIdInterceptor;
+import java.lang.invoke.MethodHandles;
+import java.util.Random;
+
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.aspectj.lang.JoinPoint;
@@ -8,10 +10,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.sleuth.IdGenerator;
-import org.springframework.cloud.sleuth.Trace;
+import org.springframework.cloud.sleuth.Tracer;
 
-import java.lang.invoke.MethodHandles;
+import com.ofg.infrastructure.camel.CorrelationIdInterceptor;
 
 /**
  * Aspect that adds {@link CorrelationIdInterceptor} to {@link RouteBuilder} for all incoming messages
@@ -26,7 +27,7 @@ public class CorrelationIdOnCamelRouteAspect {
 
     private final Processor correlationIdInterceptor;
 
-    public CorrelationIdOnCamelRouteAspect(IdGenerator idGenerator, Trace trace) {
+    public CorrelationIdOnCamelRouteAspect(Random idGenerator, Tracer trace) {
         correlationIdInterceptor = new CorrelationIdInterceptor(idGenerator, trace);
     }
 

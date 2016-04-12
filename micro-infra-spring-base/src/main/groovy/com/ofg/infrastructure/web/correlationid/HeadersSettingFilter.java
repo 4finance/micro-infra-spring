@@ -1,22 +1,21 @@
 package com.ofg.infrastructure.web.correlationid;
 
-import org.slf4j.MDC;
-import org.springframework.cloud.sleuth.IdGenerator;
-import org.springframework.cloud.sleuth.RandomUuidGenerator;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.web.filter.OncePerRequestFilter;
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER;
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.OLD_CORRELATION_ID_HEADER;
+import static org.springframework.util.StringUtils.hasText;
 
+import java.io.IOException;
+import java.util.Random;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
-import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER;
-import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.OLD_CORRELATION_ID_HEADER;
-import static org.springframework.cloud.sleuth.Trace.SPAN_ID_NAME;
-import static org.springframework.util.StringUtils.hasText;
+import org.slf4j.MDC;
+import org.springframework.cloud.sleuth.Span;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
  * Workaround for missing header setting for TraceFilter in Spring Cloud Sleuth
@@ -25,24 +24,25 @@ import static org.springframework.util.StringUtils.hasText;
  *
  * @see MDC
  */
+//Rewrite using SpanInjector + SpanExtractor
 @Order(Ordered.HIGHEST_PRECEDENCE + 2)
 public class HeadersSettingFilter extends OncePerRequestFilter {
 
-    private final IdGenerator idGenerator;
+    private final Random idGenerator;
 
-    public HeadersSettingFilter(IdGenerator idGenerator) {
+    public HeadersSettingFilter(Random idGenerator) {
         this.idGenerator = idGenerator;
     }
 
     public HeadersSettingFilter() {
-        this.idGenerator = new RandomUuidGenerator();
+        this.idGenerator = new Random();
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String spanId = getHeader(request, response, SPAN_ID_NAME);
+        String spanId = getHeader(request, response, Span.SPAN_ID_NAME);
         String traceId = getFirstNonBlankHeader(request, response, OLD_CORRELATION_ID_HEADER, CORRELATION_ID_HEADER);
         appendSpanIdIfMissing(response, spanId);
         appendTraceIdIfMissing(response, traceId);
@@ -52,15 +52,15 @@ public class HeadersSettingFilter extends OncePerRequestFilter {
     private void appendSpanIdIfMissing(HttpServletResponse response, String spanId) {
         String idToPass = spanId;
         if (!hasText(spanId)) {
-            idToPass = idGenerator.create();
+            idToPass = String.valueOf(idGenerator.nextLong());
         }
-        addToResponseIfNotPresent(response, SPAN_ID_NAME, idToPass);
+        addToResponseIfNotPresent(response, Span.SPAN_ID_NAME, idToPass);
     }
 
     private void appendTraceIdIfMissing(HttpServletResponse response, String traceId) {
         String idToPass = traceId;
         if (!hasText(traceId)) {
-            idToPass = idGenerator.create();
+            idToPass = String.valueOf(idGenerator.nextLong());
         }
         addToResponseIfNotPresent(response, CORRELATION_ID_HEADER, idToPass);
         addToResponseIfNotPresent(response, OLD_CORRELATION_ID_HEADER, idToPass);

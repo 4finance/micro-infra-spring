@@ -16,6 +16,8 @@ import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.OLD_CORRE
 @ContextConfiguration(classes = [BaseConfiguration, ConfigurationWithoutServiceDiscovery], loader = SpringApplicationContextLoader)
 class CorrelationIdFilterSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
+    private Random random = new Random();
+
     def "should create and return correlationId in HTTP header"() {
         when:
             MvcResult mvcResult = sendPingWithoutCorrelationId()
@@ -26,7 +28,7 @@ class CorrelationIdFilterSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
     def "when correlationId is sent, should not create a new one, but return the existing one instead"() {
         given:
-            String passedCorrelationId = "passedCorId"
+            String passedCorrelationId = random.nextLong()
 
         when:
             MvcResult mvcResult = sendPingWithCorrelationId(passedCorrelationId)
@@ -37,7 +39,7 @@ class CorrelationIdFilterSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
     def "when the old correlationId is sent, should not create a new one, but return the existing one instead"() {
         given:
-            String passedCorrelationId = "passedCorId"
+            String passedCorrelationId = random.nextLong()
 
         when:
             MvcResult mvcResult = sendPingWithOldCorrelationId(passedCorrelationId)
@@ -49,7 +51,7 @@ class CorrelationIdFilterSpec extends MvcCorrelationIdSettingIntegrationSpec {
     @Ignore("With spans the approach is different")
     def "should clean up MDC after the call"() {
         given:
-            String passedCorrelationId = "passedCorId"
+            String passedCorrelationId = random.nextLong()
 
         when:
             sendPingWithCorrelationId(passedCorrelationId)

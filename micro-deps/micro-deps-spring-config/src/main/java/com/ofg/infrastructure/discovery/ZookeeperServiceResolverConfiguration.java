@@ -1,6 +1,9 @@
 package com.ofg.infrastructure.discovery;
 
-import com.ofg.config.BasicProfiles;
+import java.lang.invoke.MethodHandles;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.x.discovery.ServiceInstance;
@@ -10,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.commons.util.InetUtils;
+import org.springframework.cloud.commons.util.UtilAutoConfiguration;
 import org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperInstance;
@@ -23,9 +28,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.util.SocketUtils;
 
-import java.lang.invoke.MethodHandles;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
+import com.ofg.config.BasicProfiles;
 
 /**
  * Configuration that binds together whole service discovery. Imports:
@@ -36,7 +39,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * <li>{@link DependencyResolutionConfiguration} - Configuration of microservice's dependencies resolving classes.
  * </ul>
  */
-@Import({ConsumerDrivenContractConfiguration.class, ZookeeperAutoConfiguration.class})
+@Import({ConsumerDrivenContractConfiguration.class, ZookeeperAutoConfiguration.class, UtilAutoConfiguration.class})
 @Configuration
 @Profile(BasicProfiles.SPRING_CLOUD)
 public class ZookeeperServiceResolverConfiguration {
@@ -49,8 +52,8 @@ public class ZookeeperServiceResolverConfiguration {
     @Autowired ApplicationContext applicationContext;
 
     @Bean(initMethod = "build")
-    public ZookeeperServiceDiscovery zookeeperServiceDiscovery(CuratorFramework curator, ZookeeperDiscoveryProperties zookeeperDiscoveryProperties, InstanceSerializer<ZookeeperInstance> instanceSerializer) {
-        ZookeeperServiceDiscovery zookeeperServiceDiscovery = new ZookeeperServiceDiscovery(curator, zookeeperDiscoveryProperties, instanceSerializer) {
+    public ZookeeperServiceDiscovery zookeeperServiceDiscovery(CuratorFramework curator, ZookeeperDiscoveryProperties zookeeperDiscoveryProperties, InstanceSerializer<ZookeeperInstance> instanceSerializer, InetUtils inetUtils) {
+        ZookeeperServiceDiscovery zookeeperServiceDiscovery = new ZookeeperServiceDiscovery(curator, zookeeperDiscoveryProperties, instanceSerializer, inetUtils) {
             @Override
             protected void configureServiceInstance(AtomicReference<ServiceInstance<ZookeeperInstance>> serviceInstance, String appName, ApplicationContext context, AtomicInteger port, String host, UriSpec uriSpec) {
                 try {

@@ -4,13 +4,14 @@ import com.google.common.base.Function
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.RetryExecutor
+import com.ofg.infrastructure.web.resttemplate.fluent.TracingInfo
 import groovy.transform.TypeChecked
-import org.springframework.cloud.sleuth.Trace
+import org.springframework.cloud.sleuth.TraceKeys
+import org.springframework.cloud.sleuth.Tracer
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestOperations
-
 /**
  * Class that executes {@link RestOperations}.exchange() and from {@link org.springframework.http.ResponseEntity#headers}
  * it returns {@link org.springframework.http.HttpHeaders#LOCATION} header
@@ -23,10 +24,10 @@ abstract class LocationFindingExecutor implements LocationReceiving {
     protected final RetryExecutor retryExecutor
     private final RestExecutor restExecutor
 
-    LocationFindingExecutor(RestOperations restOperations, RetryExecutor retryExecutor, Trace trace) {
+    LocationFindingExecutor(RestOperations restOperations, RetryExecutor retryExecutor, TracingInfo tracingInfo) {
         this.restOperations = restOperations
         this.retryExecutor = retryExecutor
-        this.restExecutor = new RestExecutor<>(restOperations, retryExecutor, trace)
+        this.restExecutor = new RestExecutor<>(restOperations, retryExecutor, tracingInfo)
     }
 
     protected abstract HttpMethod getHttpMethod()

@@ -84,15 +84,6 @@ class LoadingFromFileSystemSpec extends AbstractIntegrationSpec {
             myBean.globalDefaultYamlKey == 'overridden country-specific yaml value'
     }
 
-    def '.yaml has priority over .properties'() {
-        expect:
-            myBean.customGlobalKey == 'custom global yaml value'
-            myBean.customCommonKey == 'custom common yaml value'
-            myBean.customEnvKey == 'custom env yaml value'
-            myBean.customCommonCountryKey == 'custom common country yaml value'
-            myBean.customCountryKey == 'custom country yaml value'
-    }
-
     def 'should read unquoted URLs'() {
         expect:
             myBean.globalUrl == 'http://example.com'

@@ -22,6 +22,31 @@ project(':micro-deps-root:micro-deps') {
     }
 }
 
+project(':micro-deps-root:micro-deps-jax-rs-jersey') {
+    description = 'Microservice dependency manager with JAR-RS support'
+
+    configurations {
+        all*.exclude group: 'com.sun.jersey'
+    }
+
+    dependencies {
+        compile "javax.ws.rs:javax.ws.rs-api:2.0.1"
+        compile "org.glassfish.jersey.core:jersey-client:2.22.1"
+        compile "org.glassfish.jersey.ext:jersey-proxy-client:2.22.1"
+        compile project(':micro-deps-root:micro-deps')
+
+        testCompile "org.springframework.boot:spring-boot-starter-test"
+        testCompile "org.springframework.boot:spring-boot-starter-actuator"
+        testCompile "org.springframework.boot:spring-boot-starter-jersey"
+        testCompile "org.springframework.boot:spring-boot-starter-tomcat"
+
+        testCompile project(':micro-deps-root:micro-deps-spring-config')
+        testCompile "org.codehaus.groovy:groovy-all"
+        testCompile "org.spockframework:spock-core"
+        testCompile 'com.jayway.awaitility:awaitility-groovy'
+    }
+}
+
 project(':micro-deps-root:micro-deps-spring-config') {
     description = 'Microservice dependency manager - default Spring configuration'
 

@@ -9,6 +9,7 @@ import groovy.util.logging.Slf4j
 import org.apache.curator.test.TestingServer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryClientConfiguration
 import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties
 import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies
@@ -47,7 +48,8 @@ import org.springframework.context.annotation.Import
  * @see ServiceConfigurationResolver
  */
 @Configuration
-@Import([ZookeeperDiscoveryClientConfiguration, ServiceDiscoveryTestingServerConfiguration])
+@Import([ZookeeperDiscoveryClientConfiguration, ServiceDiscoveryTestingServerConfiguration, ZookeeperDependenciesAutoConfiguration])
+@AutoConfigureAfter(ZookeeperDependenciesAutoConfiguration.class)
 @Slf4j
 @CompileStatic
 class StubRunnerConfiguration {

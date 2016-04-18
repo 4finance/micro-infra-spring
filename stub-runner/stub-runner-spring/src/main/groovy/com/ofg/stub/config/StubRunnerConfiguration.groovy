@@ -48,7 +48,7 @@ import org.springframework.context.annotation.Import
  * @see ServiceConfigurationResolver
  */
 @Configuration
-@Import([ZookeeperDiscoveryClientConfiguration, ServiceDiscoveryTestingServerConfiguration, ZookeeperDependenciesAutoConfiguration])
+@Import([ZookeeperDiscoveryClientConfiguration, ServiceDiscoveryTestingServerConfiguration])
 @AutoConfigureAfter(ZookeeperDependenciesAutoConfiguration.class)
 @Slf4j
 @CompileStatic

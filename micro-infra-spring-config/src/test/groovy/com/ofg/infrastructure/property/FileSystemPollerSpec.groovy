@@ -45,7 +45,7 @@ class FileSystemPollerSpec extends AbstractIntegrationSpec {
 
         then:
             conditions.eventually {
-                counter.value == old(counter.value) + 1
+                assert counter.value == old(counter.value) + 1
             }
             counter.value == old(counter.value) + 1
 

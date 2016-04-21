@@ -27,7 +27,6 @@ class GraphitePublisherRegistrationSpec extends Specification {
         applicationContext.register(BaseConfiguration, GraphiteServiceConfig, MetricsConfiguration)
     }
 
-    @Unroll
     def 'should register Graphite beans when Graphite publishing is enabled using #flagValue'() {
         given:
             registerInContext(propertySourceWithGraphitePublishingEnabled(flagValue))
@@ -39,7 +38,6 @@ class GraphitePublisherRegistrationSpec extends Specification {
             flagValue << ['yes', 'on', 'true']
     }
 
-    @Unroll
     def 'should not register Graphite beans when Graphite publishing is disabled using #flagValue'() {
         given:
             registerInContext(propertySourceWithGraphitePublishingDisabled(flagValue))

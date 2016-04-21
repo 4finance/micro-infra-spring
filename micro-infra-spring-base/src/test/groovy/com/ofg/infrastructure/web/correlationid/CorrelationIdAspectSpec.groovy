@@ -50,7 +50,6 @@ class CorrelationIdAspectSpec extends MicroserviceMvcWiremockSpec {
             wireMock.verifyThat(getRequestedFor(urlMatching('.*')).withHeader(CORRELATION_ID_HEADER, matching(/^(?!\s*$).+/)))
     }
 
-    @Unroll
     def "should set correlationId on header via aspect in asynchronous call using #url"() {
         given:
             stubInteraction(get(urlMatching('.*')), aResponse().withStatus(200))

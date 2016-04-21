@@ -17,7 +17,6 @@ class ZookeeperConnectorConditionsSpec extends Specification {
     ConditionContext context = Mock()
     AnnotatedTypeMetadata metadata = Mock()
 
-    @Unroll
     def '[#condition.class.simpleName] should evaluate to [#expectedOutcome] with profile [#activeProfile] and env[#envProperty]'() {
         given:
             MockEnvironment mockEnv = new MockEnvironment()

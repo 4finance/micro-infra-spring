@@ -15,7 +15,6 @@ class DisablingJsonParserFeaturesSpec extends JsonJacksonFeaturesSpec {
         System.properties.remove("json.jackson.parser.off")
     }
 
-    @Unroll
     def "should enable JsonParser's feature #parserFeature"() {
         given:
             def converter = getFirstConfiguredJacksonMessageConverter()

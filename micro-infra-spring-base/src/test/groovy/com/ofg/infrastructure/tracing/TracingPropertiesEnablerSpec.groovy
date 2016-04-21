@@ -9,7 +9,6 @@ import spock.lang.Unroll
 
 class TracingPropertiesEnablerSpec extends Specification {
 
-    @Unroll
     def 'should resolve zipkin property to [#propValue] if profile is [#profile] and app env is [#appEnv]'() {
         given:
             ConfigurableApplicationContext context = new AnnotationConfigApplicationContext(TracingPropertiesEnabler)

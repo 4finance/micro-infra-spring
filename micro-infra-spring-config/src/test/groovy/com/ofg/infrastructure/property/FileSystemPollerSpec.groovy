@@ -38,7 +38,6 @@ class FileSystemPollerSpec extends AbstractIntegrationSpec {
         poller = context.getBean(FileSystemPoller)
     }
 
-    @Unroll
     def 'should reload configuration once when file #configFile from config location with allowed name is touched'() {
         when:
             oneConfigurationFileWasChanged(configFile)

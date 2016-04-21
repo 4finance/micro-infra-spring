@@ -10,7 +10,6 @@ import static com.ofg.infrastructure.discovery.util.LoadBalancerType.*
 
 class ProviderStrategyFactorySpec extends Specification {
 
-    @Unroll
     def 'should create #strategyProviderName provider for #strategyName'() {
         given:
             ProviderStrategyFactory factory = new ProviderStrategyFactory()

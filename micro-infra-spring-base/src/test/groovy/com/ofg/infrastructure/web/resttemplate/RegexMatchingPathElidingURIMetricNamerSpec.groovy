@@ -5,7 +5,6 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 
-@Unroll
 class RegexMatchingPathElidingURIMetricNamerSpec extends Specification {
 
     def 'should turn "#uriString" into valid metric name: "#expectedMetricName"'() {

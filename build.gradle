@@ -46,6 +46,7 @@ configure(srcSubprojects) {
     bintray {
         pkg {
             repo = project.name.startsWith("micro-deps") ? 'micro-deps' : 'micro'
+            vcsUrl = 'https://github.com/4finance/micro-infra-spring.git'
         }
     }
 }

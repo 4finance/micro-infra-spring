@@ -5,7 +5,6 @@ import spock.lang.Unroll
 
 class ServicePathSpec extends Specification {
 
-    @Unroll
     def "should retrieve last name [#expectedLastName] for path [#path]"() {
         expect:
             new ServicePath(path).lastName == expectedLastName
@@ -16,7 +15,6 @@ class ServicePathSpec extends Specification {
             null                         || ''
     }
 
-    @Unroll
     def "should retrieve path to last name [#expectedPathToLastName] for path [#path]"() {
         expect:
             new ServicePath(path).pathToLastName == expectedPathToLastName

@@ -5,7 +5,6 @@ import spock.lang.Unroll
 
 class LoadBalancerTypeSpec extends Specification {
 
-    @Unroll
     def 'should return ROUND_ROBIN if invalid value [#value] has been provided'() {
         expect:
             LoadBalancerType.ROUND_ROBIN == LoadBalancerType.fromName(value)

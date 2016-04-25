@@ -18,6 +18,7 @@ project(':micro-deps-root:micro-deps') {
 
         testCompile "org.codehaus.groovy:groovy-all"
         testCompile "org.spockframework:spock-core"
+        testCompile 'info.solidsoft.spock:spock-global-unroll'
         testCompile 'com.jayway.awaitility:awaitility-groovy'
     }
 }
@@ -43,6 +44,7 @@ project(':micro-deps-root:micro-deps-jax-rs-jersey') {
         testCompile project(':micro-deps-root:micro-deps-spring-config')
         testCompile "org.codehaus.groovy:groovy-all"
         testCompile "org.spockframework:spock-core"
+        testCompile 'info.solidsoft.spock:spock-global-unroll'
         testCompile 'com.jayway.awaitility:awaitility-groovy'
     }
 }
@@ -65,6 +67,7 @@ project(':micro-deps-root:micro-deps-spring-config') {
         testCompile 'org.codehaus.groovy:groovy-all'
         testCompile "org.spockframework:spock-core"
         testCompile "org.spockframework:spock-spring"
+        testCompile 'info.solidsoft.spock:spock-global-unroll'
         testCompile "org.springframework:spring-test"
         testCompile "org.springframework:spring-webmvc"
         testCompile "com.jayway.restassured:rest-assured"

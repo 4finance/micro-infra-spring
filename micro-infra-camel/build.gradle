@@ -11,8 +11,9 @@ dependencies {
     }
 
     testCompile "org.spockframework:spock-core"
-    testCompile "org.codehaus.groovy:groovy-all"
     testRuntime "org.spockframework:spock-spring"
+    testCompile 'info.solidsoft.spock:spock-global-unroll'
+    testCompile "org.codehaus.groovy:groovy-all"
     testCompile "org.apache.camel:camel-test-spring:$camelVersion"
     testCompile "org.springframework:spring-test"
     testCompile 'cglib:cglib-nodep:3.1'

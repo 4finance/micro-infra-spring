@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.commons.util.UtilAutoConfiguration;
 import org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
@@ -52,8 +51,8 @@ public class ZookeeperServiceResolverConfiguration {
     @Autowired ApplicationContext applicationContext;
 
     @Bean(initMethod = "build")
-    public ZookeeperServiceDiscovery zookeeperServiceDiscovery(CuratorFramework curator, ZookeeperDiscoveryProperties zookeeperDiscoveryProperties, InstanceSerializer<ZookeeperInstance> instanceSerializer, InetUtils inetUtils) {
-        ZookeeperServiceDiscovery zookeeperServiceDiscovery = new ZookeeperServiceDiscovery(curator, zookeeperDiscoveryProperties, instanceSerializer, inetUtils) {
+    public ZookeeperServiceDiscovery zookeeperServiceDiscovery(CuratorFramework curator, ZookeeperDiscoveryProperties zookeeperDiscoveryProperties, InstanceSerializer<ZookeeperInstance> instanceSerializer) {
+        ZookeeperServiceDiscovery zookeeperServiceDiscovery = new ZookeeperServiceDiscovery(curator, zookeeperDiscoveryProperties, instanceSerializer) {
             @Override
             protected void configureServiceInstance(AtomicReference<ServiceInstance<ZookeeperInstance>> serviceInstance, String appName, ApplicationContext context, AtomicInteger port, String host, UriSpec uriSpec) {
                 try {

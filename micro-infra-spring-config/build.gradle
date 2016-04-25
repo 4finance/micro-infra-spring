@@ -1,7 +1,6 @@
 description = 'Microservice Spring infrastructure for properties management'
 
 ext {
-    springCloudVersion = "1.1.0.RC1"
     springSecurityRsaVersion = "1.0.0.RELEASE"
 }
 
@@ -11,10 +10,10 @@ sourceSets.main.groovy.srcDirs += ["src/main/java", "src/main/groovy"]
 dependencies {
     compile project(':micro-deps-root:micro-deps')
 
-    compile("org.springframework.cloud:spring-cloud-config-client:$springCloudVersion") {
+    compile('org.springframework.cloud:spring-cloud-config-client') {
         exclude group: 'ch.qos.logback', module: 'logback-classic'
     }
-    compile("org.springframework.cloud:spring-cloud-config-server:$springCloudVersion") {
+    compile('org.springframework.cloud:spring-cloud-config-server') {
         exclude group: 'ch.qos.logback', module: 'logback-classic'
     }
     compile "org.springframework.security:spring-security-rsa:$springSecurityRsaVersion"
@@ -24,6 +23,7 @@ dependencies {
     compile 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery'
 
     testCompile "org.spockframework:spock-core"
+    testCompile 'info.solidsoft.spock:spock-global-unroll'
     testRuntime "org.springframework:spring-test"
     testRuntime "org.spockframework:spock-spring"
     testRuntime "ch.qos.logback:logback-classic"

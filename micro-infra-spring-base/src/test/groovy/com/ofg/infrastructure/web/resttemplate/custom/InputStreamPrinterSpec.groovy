@@ -3,7 +3,6 @@ package com.ofg.infrastructure.web.resttemplate.custom
 import spock.lang.Specification
 import spock.lang.Unroll
 
-@Unroll
 class InputStreamPrinterSpec extends Specification {
 
     def 'should abbreviate "#source" to "#target" with max chars #maxChars'() {

@@ -46,6 +46,7 @@ configure(srcSubprojects) {
     bintray {
         pkg {
             repo = project.name.startsWith("micro-deps") ? 'micro-deps' : 'micro'
+            vcsUrl = 'https://github.com/4finance/micro-infra-spring.git'
         }
     }
 }
@@ -113,7 +114,7 @@ configure(srcSubprojects) {
 
     dependencyManagement {
         imports {
-            mavenBom 'org.springframework.cloud:spring-cloud-starter-parent:Brixton.RC1'
+            mavenBom 'org.springframework.cloud:spring-cloud-starter-parent:Brixton.RC2'
         }
 
         dependencies {
@@ -137,6 +138,7 @@ configure(srcSubprojects) {
                 entry "spock-core"
                 entry "spock-spring"
             }
+            dependency "info.solidsoft.spock:spock-global-unroll:0.5.0"
             dependencySet(group:'com.jayway.awaitility', version: '1.6.3') {
                 entry "awaitility"
                 entry "awaitility-groovy"
@@ -251,6 +253,12 @@ if (project.hasProperty("coverage")) {
         srcSubprojects*.test
         srcSubprojects*.jacocoTestReport
     }
+}
+
+//Individual HTML test reports could be disabled to speed up build a little bit if testReport was the only one used - http://stackoverflow.com/a/16921750
+task testReport(type: TestReport) {
+    destinationDir = file("$buildDir/reports/allTests")
+    reportOn srcSubprojects*.test
 }
 
 wrapper {

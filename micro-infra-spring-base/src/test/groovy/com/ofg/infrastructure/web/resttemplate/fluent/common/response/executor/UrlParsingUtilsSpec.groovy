@@ -3,7 +3,6 @@ package com.ofg.infrastructure.web.resttemplate.fluent.common.response.executor
 import spock.lang.Specification
 import spock.lang.Unroll
 
-@Unroll
 class UrlParsingUtilsSpec extends Specification {
 
     def 'should fail to instantiate a utility class'() {

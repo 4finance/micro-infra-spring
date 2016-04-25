@@ -31,7 +31,6 @@ class EnvironmentSetupVerifierSpec extends Specification {
             thrown(CheckExitCalled)
     }
 
-    @Unroll
     def "should not let run program with unknown profile [#activeProfiles]"() {
         given:
             environment.setActiveProfiles(activeProfiles as String[])

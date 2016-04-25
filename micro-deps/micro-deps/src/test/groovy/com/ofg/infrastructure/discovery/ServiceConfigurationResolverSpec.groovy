@@ -72,7 +72,6 @@ class ServiceConfigurationResolverSpec extends Specification {
             resolver.dependencies.empty
     }
 
-    @Unroll
     def 'should provide #loadBalancerType for given service #path'() {
         given:
             def resolver = new ServiceConfigurationResolver(LOAD_BALANCING_DEPENDENCIES)

@@ -37,7 +37,6 @@ class UrlUtilsSpec extends Specification {
             paramName << ["", null]
     }
 
-    @Unroll
     def "should deal with '#paramName' as parameters names in query string"() {
         given:
             Map parameters = [firstParameter: "valueOne", (paramName): "valueTwo", secondParameter: null]

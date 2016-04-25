@@ -14,7 +14,6 @@ import spock.lang.Unroll
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import static com.ofg.infrastructure.base.dsl.WireMockHttpRequestMapper.wireMockGet
 
-@Unroll
 @ContextConfiguration(classes = [BaseConfiguration, MockServerConfiguration, ServiceResolverConfiguration,
         CollaboratorsConfiguration, ServiceRestClientConfiguration], loader = SpringApplicationContextLoader)
 class PingClientTest extends MvcWiremockIntegrationSpec {

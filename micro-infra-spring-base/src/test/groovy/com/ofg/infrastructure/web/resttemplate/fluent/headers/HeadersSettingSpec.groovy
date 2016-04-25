@@ -304,7 +304,6 @@ class HeadersSettingSpec extends HttpMethodSpec {
                     _ as Long)
     }
 
-    @Unroll
     def "should have 'Authorization' header with value: '#authorizationValue'"() {
         given:
         httpMethodBuilder = new HttpMethodBuilder(restOperations, tracingInfo)

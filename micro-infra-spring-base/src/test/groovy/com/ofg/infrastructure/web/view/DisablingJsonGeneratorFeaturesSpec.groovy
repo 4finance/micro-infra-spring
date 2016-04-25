@@ -15,7 +15,6 @@ class DisablingJsonGeneratorFeaturesSpec extends JsonJacksonFeaturesSpec {
         System.properties.remove("json.jackson.generator.off")
     }
 
-    @Unroll
     def "should enable JsonGenerator's feature #generatorFeature"() {
         given:
             def converter = getFirstConfiguredJacksonMessageConverter()

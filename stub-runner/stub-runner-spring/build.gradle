@@ -10,6 +10,7 @@ dependencies {
     compile 'org.apache.ivy:ivy:2.4.0'
 
     testCompile 'org.spockframework:spock-core'
+    testCompile 'info.solidsoft.spock:spock-global-unroll'
     testCompile 'cglib:cglib-nodep'
     testCompile 'org.objenesis:objenesis'
 }

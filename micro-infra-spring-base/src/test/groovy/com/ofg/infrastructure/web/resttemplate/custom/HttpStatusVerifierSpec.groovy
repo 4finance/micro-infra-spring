@@ -6,7 +6,6 @@ import spock.lang.Unroll
 
 class HttpStatusVerifierSpec extends Specification {
 
-    @Unroll
     def 'should verify that HTTP status [#status] is error [#error]'() {
         expect:
             error == HttpStatusVerifier.isError(status)

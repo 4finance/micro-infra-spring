@@ -23,6 +23,7 @@ dependencies {
     compile 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery'
 
     testCompile "org.spockframework:spock-core"
+    testCompile 'info.solidsoft.spock:spock-global-unroll'
     testRuntime "org.springframework:spring-test"
     testRuntime "org.spockframework:spock-spring"
     testRuntime "ch.qos.logback:logback-classic"

@@ -5,7 +5,6 @@ import spock.lang.Unroll
 
 import static com.ofg.infrastructure.web.resttemplate.fluent.HTTPAuthorizationUtils.encodeCredentials
 
-@Unroll
 class HTTPAuthorizationUtilsSpec extends Specification {
 
     def "encode basic authentication #username and #password credentials into #authorizationValue"() {

@@ -43,8 +43,6 @@ import com.ofg.config.BasicProfiles;
 @Profile(BasicProfiles.SPRING_CLOUD)
 public class ZookeeperServiceResolverConfiguration {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
     static final Integer DEFAULT_SERVER_PORT = 8080;
 
     @Autowired Environment environment;
@@ -52,21 +50,7 @@ public class ZookeeperServiceResolverConfiguration {
 
     @Bean(initMethod = "build")
     public ZookeeperServiceDiscovery zookeeperServiceDiscovery(CuratorFramework curator, ZookeeperDiscoveryProperties zookeeperDiscoveryProperties, InstanceSerializer<ZookeeperInstance> instanceSerializer) {
-        ZookeeperServiceDiscovery zookeeperServiceDiscovery = new ZookeeperServiceDiscovery(curator, zookeeperDiscoveryProperties, instanceSerializer) {
-            @Override
-            protected void configureServiceInstance(AtomicReference<ServiceInstance<ZookeeperInstance>> serviceInstance, String appName, ApplicationContext context, AtomicInteger port, String host, UriSpec uriSpec) {
-                try {
-                    serviceInstance.set(ServiceInstance.<ZookeeperInstance>builder()
-                            .name(appName)
-                            .port(port.get())
-                            .address(host)
-                            .uriSpec(uriSpec).build());
-                } catch (Exception e) {
-                    LOG.error("Exception occurred while trying to build ServiceInstance", e);
-                    throw new RuntimeException(e);
-                }
-            }
-        };
+        ZookeeperServiceDiscovery zookeeperServiceDiscovery = new ZookeeperServiceDiscovery(curator, zookeeperDiscoveryProperties, instanceSerializer);
         applicationContext.getAutowireCapableBeanFactory().autowireBean(zookeeperServiceDiscovery);
         zookeeperServiceDiscovery.setPort(resolveMicroservicePort(environment));
         return zookeeperServiceDiscovery;

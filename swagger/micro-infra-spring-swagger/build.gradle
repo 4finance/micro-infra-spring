@@ -1,10 +1,9 @@
-description = 'Microservice Spring Swagger configuration. REPACKAGED DUE TO https://github.com/springfox/springfox/issues/1055. ' +
-        'TODO: Remove after fix'
-
 dependencies {
-    compile("com.mangofactory:swagger-models:1.0.2") {
-        exclude group: 'org.mockito'
-        exclude module: 'scala-compiler'
-    }
+    compile('io.springfox:springfox-swagger-ui:2.4.0')
+    compile("io.springfox:springfox-core:2.4.0")
+    compile("io.springfox:springfox-spi:2.4.0")
+    compile("io.springfox:springfox-schema:2.4.0")
+    compile("io.springfox:springfox-spring-web:2.4.0")
+    compile("io.springfox:springfox-swagger2:2.4.0")
     compile "org.springframework.boot:spring-boot-starter-web"
 }

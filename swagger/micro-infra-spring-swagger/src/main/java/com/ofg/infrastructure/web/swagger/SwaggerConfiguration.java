@@ -10,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -36,10 +37,10 @@ public class SwaggerConfiguration extends WebMvcConfigurerAdapter {
                            @Value("${rest.api.description:APIs for this microservice}") String description,
                            @Value("${rest.api.version:1.0}") String apiVersion,
                            @Value("${rest.api.terms:Defined by 4finance internal licences}") String terms,
-                           @Value("${rest.api.contact:info@4finance.com}") String contact,
+                           @Value("${rest.api.contact:info@4finance.com}") String contactEmail,
                            @Value("${rest.api.license.type:4finance internal licence}") String licenseType,
                            @Value("${rest.api.license.url:http://4finance.com}") String licenseUrl) {
-        return new ApiInfo(title, description, apiVersion, terms, contact, licenseType, licenseUrl);
+        return new ApiInfo(title, description, apiVersion, terms, new Contact(null, null, contactEmail), licenseType, licenseUrl);
     }
 
     @Override

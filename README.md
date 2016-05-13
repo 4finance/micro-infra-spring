@@ -161,3 +161,30 @@ We want to connect to Zipkin only if one has the production profile turned on an
 ### Your .yaml properties file is not taken into account
 
 You might find out that your .yaml file doesn't override .properties files. This is caused by way spring-boot is processing directories when looking for properties. For now there is no solution for this issue.
+
+### Missing RxJava version in your project
+
+If you didn't imported BOM dependency for spring-cloud sometimes you can get exception:
+```
+Caused by: java.lang.NoClassDefFound    Error: rx/Single
+```
+
+#### Workaround 
+
+Add io.reactivex.rxjava:1.0.14 version to your dependencies. We will repair this in future versions. 
+
+### Missing org.springframework.web.client.RestTemplate
+
+If you getting 
+```
+NoSuchBeanDefinitionException: No qualifying bean of type [org.springframework.web.client.RestTemplate]
+```
+
+That means that you don't have any RestTemplate instance in your context
+
+#### Workaround
+
+Add to your bootstrap.properites/.yml file this line:
+```
+spring.cloud.zookeeper.dependency.resttemplate.enabled: false
+```

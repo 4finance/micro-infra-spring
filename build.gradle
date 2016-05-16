@@ -15,7 +15,9 @@ buildscript {
             classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+'
             classpath "org.sonarqube.gradle:gradle-sonarqube-plugin:1.0"
         }
-        if (project.hasProperty("compatibility")) { classpath "be.insaneprogramming.gradle:animalsniffer-gradle-plugin:+" }
+        if (project.hasProperty("compatibility")) {
+            classpath 'ru.vyarus:gradle-animalsniffer-plugin:1.0.1'
+        }
     }
     dependencies {
         ant.unjar src: configurations.classpath.find { it.name.startsWith("micro-common-release") }, dest: 'build/release'
@@ -157,14 +159,9 @@ configure(srcSubprojects) {
     }
 
     if (project.hasProperty("compatibility")) {
-        apply plugin: 'be.insaneprogramming.gradle.animalsniffer'
-
-        animalsniffer {
-            signature = "org.codehaus.mojo.signature:java17:+@signature"
-        }
-
-        afterEvaluate {
-            animalSniffer.mustRunAfter 'compileGroovy'
+        apply plugin: 'ru.vyarus.animalsniffer'
+        dependencies {
+            signature 'org.codehaus.mojo.signature:java17:+@signature'
         }
     }
 

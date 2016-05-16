@@ -28,12 +28,18 @@ class DescriptorRepository {
 
     private List<MappingDescriptor> globalContextDescriptorsFrom(ProjectMetadata project) {
         File descriptorsDirectory = new File(path, project.projectRelativePath)
-        return descriptorsDirectory.exists()? collectMappingDescriptors(descriptorsDirectory, GLOBAL) : []
+        return descriptorsDirectory.exists() ?
+                collectMappingDescriptors(descriptorsDirectory, GLOBAL) : emptyMappingDescriptors()
     }
 
     private List<MappingDescriptor> realmContextDescriptorsFrom(ProjectMetadata project) {
         File descriptorsDirectory = new File(path, project.pathWithContext)
-        return descriptorsDirectory.exists() ? collectMappingDescriptors(descriptorsDirectory, REALM_SPECIFIC) : []
+        return descriptorsDirectory.exists() ?
+                collectMappingDescriptors(descriptorsDirectory, REALM_SPECIFIC) : emptyMappingDescriptors()
+    }
+
+    private ArrayList<MappingDescriptor> emptyMappingDescriptors() {
+        new ArrayList<MappingDescriptor>()
     }
 
     private List<MappingDescriptor> collectMappingDescriptors(File descriptorsDirectory, MappingType mappingType) {

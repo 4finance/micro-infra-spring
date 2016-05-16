@@ -10,12 +10,8 @@ sourceSets.main.groovy.srcDirs += ["src/main/java", "src/main/groovy"]
 dependencies {
     compile project(':micro-deps-root:micro-deps')
 
-    compile('org.springframework.cloud:spring-cloud-config-client') {
-        exclude group: 'ch.qos.logback', module: 'logback-classic'
-    }
-    compile('org.springframework.cloud:spring-cloud-config-server') {
-        exclude group: 'ch.qos.logback', module: 'logback-classic'
-    }
+    compile 'org.springframework.cloud:spring-cloud-config-client'
+    compile 'org.springframework.cloud:spring-cloud-config-server'
     compile "org.springframework.security:spring-security-rsa:$springSecurityRsaVersion"
     compile "org.codehaus.groovy:groovy-all"
     compile "org.aspectj:aspectjrt"

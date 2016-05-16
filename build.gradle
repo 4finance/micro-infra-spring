@@ -160,6 +160,7 @@ configure(srcSubprojects) {
 
     if (project.hasProperty("compatibility")) {
         apply plugin: 'ru.vyarus.animalsniffer'
+        repositories { mavenCentral() }
         dependencies {
             signature 'org.codehaus.mojo.signature:java17:+@signature'
         }

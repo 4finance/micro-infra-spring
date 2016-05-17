@@ -1,4 +1,6 @@
 package com.ofg.infrastructure.property
+
+import com.jayway.awaitility.Awaitility
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.cloud.config.client.ConfigClientAutoConfiguration
 import org.springframework.cloud.context.config.annotation.RefreshScope
@@ -9,11 +11,12 @@ import org.springframework.context.annotation.Configuration
 import spock.lang.AutoCleanup
 import spock.lang.IgnoreIf
 import spock.lang.Shared
-import spock.lang.Unroll
 import spock.util.concurrent.PollingConditions
 
 import javax.annotation.PostConstruct
 import java.util.concurrent.atomic.AtomicInteger
+
+import static com.jayway.awaitility.Awaitility.await
 
 @IgnoreIf({ os.macOs }) //Due to problems with native file system poller implementation - https://github.com/4finance/micro-infra-spring/issues/119
 class FileSystemPollerSpec extends AbstractIntegrationSpec {
@@ -43,11 +46,7 @@ class FileSystemPollerSpec extends AbstractIntegrationSpec {
             oneConfigurationFileWasChanged(configFile)
 
         then:
-            conditions.eventually {
-                assert counter.value == old(counter.value) + 1
-            }
-            counter.value == old(counter.value) + 1
-
+            await().until {  counter.value == old(counter.value) + 1 }
         where:
             configFile << [
                     poller.getConfigLocations().globalPropertiesFile(),

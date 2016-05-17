@@ -14,33 +14,33 @@ class JsonPayloadObfuscator extends AbstractPayloadObfuscator {
         super(obfuscationFieldStrategy)
     }
 
-    String cleanFieldsFromJson(String content, List<String> fields){
-        try{
+    String cleanFieldsFromJson(String content, List<String> fields) {
+        try {
             def nodes = new JsonSlurper().parseText(content)
-            if(nodes){
+            if (nodes) {
                 cleanRecursive(nodes, fields)
             }
             return nodes.toString()
-        }catch (Exception ex){
-            log.debug("Error with [$content]",ex)
+        } catch (Exception ex) {
+            log.debug("Error with [$content]", ex)
         }
         return content
     }
 
-    private void cleanRecursive(Map nodes,  List<String> fields) {
+    private void cleanRecursive(Map nodes, List<String> fields) {
         nodes.each {
-            if(isCollectionOrArray(it.value)){
+            if (isCollectionOrArray(it.value)) {
                 cleanRecursive(it.value, fields)
             }
-            if(fields?.contains(it.key)) {
+            if (fields?.contains(it.key)) {
                 nodes.put(it.key, obfuscate(it.value.toString()))
             }
         }
     }
 
-    private void cleanRecursive(List list,  List<String> fields) {
+    private void cleanRecursive(List list, List<String> fields) {
         list.each {
-            if(isCollectionOrArray(it)){
+            if (isCollectionOrArray(it)) {
                 cleanRecursive(it, fields)
             }
         }
@@ -52,7 +52,7 @@ class JsonPayloadObfuscator extends AbstractPayloadObfuscator {
 
     @Override
     String process(String content, List<String> fieldsToObfuscate) {
-        if(content && fieldsToObfuscate){
+        if (content && fieldsToObfuscate) {
             return cleanFieldsFromJson(content, fieldsToObfuscate)
         } else {
             return content

@@ -32,14 +32,6 @@ language: groovy
 jdk:
 - oraclejdk8
 
-matrix:
-  include:
-    # Release and acceptance tests only in Java 7 build
-    - jdk: oraclejdk7
-      env:
-       - SKIP_RELEASE=false
-       - DO_ACCEPTANCE_TESTS=true
-
 env:
   global:
     - TERM=dumb

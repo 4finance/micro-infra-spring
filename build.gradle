@@ -118,7 +118,7 @@ configure(srcSubprojects) {
 
         dependencies {
             dependency "org.codehaus.groovy:groovy-all:2.4.6"
-            dependency "com.google.guava:guava:18.0"
+            dependency "com.google.guava:guava:19.0"
             dependency "commons-io:commons-io:2.4"
 
             dependencySet(group:"org.apache.curator", version: "2.8.0") {
@@ -128,7 +128,7 @@ configure(srcSubprojects) {
 
             //test
             dependency "ch.qos.logback:logback-classic:1.1.7"
-            dependency "com.jayway.restassured:rest-assured:2.4.1"
+            dependency "com.jayway.restassured:rest-assured:2.9.0"
             dependency "com.github.tomakehurst:wiremock:2.0.5-beta"
             dependency "cglib:cglib-nodep:3.2.0"
             dependency "org.objenesis:objenesis:2.1"
@@ -138,7 +138,7 @@ configure(srcSubprojects) {
                 entry "spock-spring"
             }
             dependency "info.solidsoft.spock:spock-global-unroll:0.5.0"
-            dependencySet(group:'com.jayway.awaitility', version: '1.6.3') {
+            dependencySet(group:'com.jayway.awaitility', version: '1.7.0') {
                 entry "awaitility"
                 entry "awaitility-groovy"
             }
@@ -172,7 +172,7 @@ configure(srcSubprojects) {
         groovyClasspath = project.configurations.jansi
     }
     dependencies {
-        jansi 'org.fusesource.jansi:jansi:1.11'
+        jansi 'org.fusesource.jansi:jansi:1.12'
     }
 }
 
@@ -181,7 +181,7 @@ if (project.hasProperty("coverage")) {
         apply plugin: 'jacoco'
 
         jacoco {
-            toolVersion = '0.7.4.201502262128'
+            toolVersion = "0.7.6.201602180812"
         }
     }
 

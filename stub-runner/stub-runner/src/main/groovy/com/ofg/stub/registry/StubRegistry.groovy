@@ -52,19 +52,10 @@ class StubRegistry {
     private static ServiceInstance serviceInstanceOf(StubServer stubServer) {
         return ServiceInstance.builder()
                 .uriSpec(URI_SPEC)
-                .address(resolveLocalhost())
+                .address('localhost')
                 .port(stubServer.port)
                 .name(serviceName(stubServer))
                 .build()
-    }
-
-    private static String resolveLocalhost() {
-        try {
-            return InetAddress.getLocalHost().getHostAddress()
-        } catch (UnknownHostException e) {
-            log.error('Exception occurred while trying to resolve localhost address', e)
-            return 'localhost'
-        }
     }
 
     private static String serviceName(StubServer stubServer) {

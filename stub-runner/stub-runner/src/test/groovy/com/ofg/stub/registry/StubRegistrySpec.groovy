@@ -18,7 +18,6 @@ class StubRegistrySpec extends Specification {
     static final int BYE_STUB_SERVER_PORT = 12183
     static final ProjectMetadata HELLO_STUB_METADATA = new ProjectMetadata('hello', 'com/ofg/hello', 'pl')
     static final ProjectMetadata BYE_STUB_METADATA = new ProjectMetadata('bye', 'com/ofg/bye', 'pl')
-    static final String LOCALHOST_ADDRESS = InetAddress.getLocalHost().getHostAddress()
 
     @AutoCleanup('stop') StubServer helloStub = new StubServer(HELLO_STUB_SERVER_PORT, HELLO_STUB_METADATA, [])
     @AutoCleanup('stop') StubServer byeStub = new StubServer(BYE_STUB_SERVER_PORT, BYE_STUB_METADATA, [])
@@ -44,13 +43,13 @@ class StubRegistrySpec extends Specification {
         then:
             with(resolveStubServerInstanceFromRegistry(helloStub)) {
                 name == HELLO_STUB_METADATA.projectRelativePath
-                address == LOCALHOST_ADDRESS
+                address == 'localhost'
                 port == HELLO_STUB_SERVER_PORT
             }
         and:
             with(resolveStubServerInstanceFromRegistry(byeStub)) {
                 name == BYE_STUB_METADATA.projectRelativePath
-                address == LOCALHOST_ADDRESS
+                address == 'localhost'
                 port == BYE_STUB_SERVER_PORT
             }
     }

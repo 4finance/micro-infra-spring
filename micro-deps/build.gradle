@@ -63,6 +63,7 @@ project(':micro-deps-root:micro-deps-spring-config') {
         compile "org.springframework:spring-context"
         compile 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery'
         compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
+        compile 'io.reactivex:rxjava'
 
         testCompile 'org.codehaus.groovy:groovy-all'
         testCompile "org.spockframework:spock-core"

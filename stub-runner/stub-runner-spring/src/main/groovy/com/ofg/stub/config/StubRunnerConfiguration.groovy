@@ -82,6 +82,7 @@ class StubRunnerConfiguration {
                                 @Deprecated @Value('${stubrunner.stubs.group:com.ofg}') String stubsGroup,
                                 @Deprecated @Value('${stubrunner.stubs.module:stub-definitions}') String stubsModule,
                                 @Value('${stubrunner.stubs.suffix:stubs}') String stubsSuffx,
+                                @Value('${stubrunner.stubs.classifier:}') String stubsClassifier,
                                 @Value('${stubrunner.work-offline:false}') boolean workOffline,
                                 @Deprecated @Value('${stubrunner.skip-local-repo:true}') boolean skipLocalRepo,
                                 @Value('${stubrunner.use-microservice-definitions:false}') boolean useMicroserviceDefinitions,
@@ -91,7 +92,7 @@ class StubRunnerConfiguration {
         checkIfConfigurationIsPresent()
         boolean shouldWorkOnline = isPropertySetToWorkOnline(workOffline, skipLocalRepo)
         StubRunnerOptions stubRunnerOptions = new StubRunnerOptions(minPortValue, maxPortValue, stubRepositoryRoot, stubsGroup, stubsModule, shouldWorkOnline,
-                useMicroserviceDefinitions, testingServer.connectString, testingServer.port, stubsSuffx, waitForService, waitTimeout)
+                useMicroserviceDefinitions, testingServer.connectString, testingServer.port, stubsSuffx, stubsClassifier, waitForService, waitTimeout)
         Collaborators dependencies = getCollaborators()
         return new BatchStubRunnerFactory(stubRunnerOptions, dependencies).buildBatchStubRunner()
     }

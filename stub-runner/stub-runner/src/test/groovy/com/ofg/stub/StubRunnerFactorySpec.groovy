@@ -20,7 +20,7 @@ class StubRunnerFactorySpec extends Specification {
     def "Should download stub definitions many times"() {
         given:
             folder.newFolder("mappings")
-            2 * downloader.downloadAndUnpackStubJar(_, _, _, _) >> folder.root
+            2 * downloader.downloadAndUnpackStubJar(_, _, _, _, _) >> folder.root
             stubRunnerOptions.stubRepositoryRoot = folder.root.absolutePath
         when:
             List<StubRunner> stubRunners = collectOnlyPresentValues(factory.createStubsFromServiceConfiguration())
@@ -33,7 +33,7 @@ class StubRunnerFactorySpec extends Specification {
             folder.newFolder("mappings")
             stubRunnerOptions.stubsModule = "123"
             stubRunnerOptions.stubsGroup = "123"
-            1 * downloader.downloadAndUnpackStubJar(_, _, _, _) >> folder.root
+            1 * downloader.downloadAndUnpackStubJar(_, _, _, _, _) >> folder.root
             stubRunnerOptions.stubRepositoryRoot = folder.root.absolutePath
         when:
             List<StubRunner> stubRunners = collectOnlyPresentValues(factory.createStubsFromStubsModule())
@@ -46,7 +46,7 @@ class StubRunnerFactorySpec extends Specification {
             stubRunnerOptions.stubsModule = "123"
             stubRunnerOptions.stubsGroup = "123"
             stubRunnerOptions.stubRepositoryRoot = folder.root.absolutePath
-            downloader.downloadAndUnpackStubJar(_, _, _, _) >> null
+            downloader.downloadAndUnpackStubJar(_, _, _, _, _) >> null
         when:
             List<StubRunner> stubRunners = collectOnlyPresentValues(factory.createStubsFromStubsModule())
         then:

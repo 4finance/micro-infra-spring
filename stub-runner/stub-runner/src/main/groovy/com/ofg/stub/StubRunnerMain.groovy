@@ -40,8 +40,11 @@ class StubRunnerMain {
     @Option(name = "-sm", aliases = ['--stubsModule'], usage = "@Deprecated - Name of the module where you store your stub definitions (e.g. stub-definitions)")
     private String stubsModule
 
-    @Option(name = "-ss", aliases = ['--stubsSuffix'], usage = "Suffix for the jar containing stubs (e.g. 'stubs' if the stub jar would have a 'stubs' classifier for stubs: foobar-stubs ). Defaults to 'stubs'")
+    @Option(name = "-ss", aliases = ['--stubsSuffix'], usage = "Suffix for the jar containing stubs (e.g. 'stubs' if the stub jar would have a 'stubs' suffix for stubs: foobar-stubs ). Defaults to 'stubs'")
     private String stubsSuffix = 'stubs'
+
+    @Option(name = "-sc", aliases = ['--stubsClassifier'], usage = "Classifier for stubs: foobar:1.0:stubs ). Defaults to ''")
+    private String stubsClassifier = ''
 
     @Option(name = "-minp", aliases = ['--minPort'], usage = "Minimal port value to be assigned to the Wiremock instance. Defaults to 10000")
     private Integer minPortValue = 10000
@@ -83,7 +86,7 @@ class StubRunnerMain {
             parser.parseArgument(args)
             this.arguments = new Arguments(new StubRunnerOptions(minPortValue, maxPortValue, stubRepositoryRoot,
                     stubsGroup, stubsModule, isPropertySetToWorkOnline(workOffline, skipLocalRepo), useMicroserviceDefinitions, zookeeperLocation,
-                    testingZookeeperPort, stubsSuffix, waitForServiceConnect, waitTimeout),
+                    testingZookeeperPort, stubsSuffix, stubsClassifier, waitForServiceConnect, waitTimeout),
                     context, repositoryPath, serviceName)
             this.zookeeperServer = resolveZookeeperServer()
             this.zookeeperServer.start()

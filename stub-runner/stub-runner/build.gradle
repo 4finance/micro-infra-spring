@@ -19,6 +19,13 @@ dependencies {
     compile 'args4j:args4j:2.32'
     compile 'com.nurkiewicz.asyncretry:asyncretry-jdk7:0.0.6'
 
+    compile "org.eclipse.aether:aether-api:${aetherVersion}"
+    compile "org.eclipse.aether:aether-impl:${aetherVersion}"
+    compile "org.eclipse.aether:aether-transport-file:${aetherVersion}"
+    compile "org.eclipse.aether:aether-transport-http:${aetherVersion}"
+    compile "org.eclipse.aether:aether-connector-basic:${aetherVersion}"
+    compile 'org.apache.maven:maven-aether-provider:3.3.9'
+
     testCompile 'org.spockframework:spock-core'
     testCompile 'info.solidsoft.spock:spock-global-unroll'
     testCompile 'cglib:cglib-nodep'

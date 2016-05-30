@@ -36,24 +36,22 @@ class AetherStubDownloader implements StubDownloader {
     private final RepositorySystem repositorySystem
     private final RepositorySystemSession session
 
-    AetherStubDownloader(RepositorySystem repositorySystem, List<RemoteRepository> repositories, RepositorySystemSession session) {
-        this.remoteRepos = repositories
-        this.repositorySystem = repositorySystem ?: newRepositorySystem()
-        this.session = session ?: newSession(this.repositorySystem)
-    }
-
     AetherStubDownloader(StubRunnerOptions stubRunnerOptions) {
         this.remoteRepos = remoteRepositories(stubRunnerOptions)
+        log.info("Download using remote repositories $remoteRepos")
         this.repositorySystem = newRepositorySystem()
-        this.session = newSession(this.repositorySystem)
+        this.session = newSession(this.repositorySystem, stubRunnerOptions.skipLocalRepo)
+    }
+
+    @Override
+    File downloadAndUnpackStubJar(String stubsGroup, String stubsModule, String classifier) {
+        String version = getVersion(stubsGroup, stubsModule, LATEST_VERSION_IN_IVY, classifier)
+        return unpackedJar(version, stubsGroup, stubsModule, classifier)
     }
 
     private List<RemoteRepository> remoteRepositories(StubRunnerOptions stubRunnerOptions) {
-        if (!stubRunnerOptions.skipLocalRepo || !stubRunnerOptions.stubRepositoryRoot) {
-            return []
-        }
         return stubRunnerOptions.stubRepositoryRoot.split(',').collect { String repo ->
-            new RemoteRepository.Builder("remote", "default", repo).build()
+            return new RemoteRepository.Builder("remote", "default", repo).build()
         }
     }
 
@@ -65,24 +63,24 @@ class AetherStubDownloader implements StubDownloader {
         return locator.getService(RepositorySystem)
     }
 
-    private RepositorySystemSession newSession(RepositorySystem system) {
+    private RepositorySystemSession newSession(RepositorySystem system, boolean skipLocalRepo) {
         DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession()
-        session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
-        LocalRepository localRepo = new LocalRepository(System.getProperty(MAVEN_LOCAL_REPOSITORY_LOCATION, "${System.getProperty("user.home")}/.m2/repository"))
+        if (skipLocalRepo) {
+            session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
+        }
+        LocalRepository localRepo = new LocalRepository(localRepositoryDirectory())
         session.setLocalRepositoryManager(system.newLocalRepositoryManager(session, localRepo))
         return session
     }
 
-    @Override
-    File downloadAndUnpackStubJar(boolean workOffline, String stubRepositoryRoot, String stubsGroup, String stubsModule, String classifier) {
-        String version = getVersion(stubsGroup, stubsModule, LATEST_VERSION_IN_IVY, classifier)
-        return unpackedJar(version, stubsGroup, stubsModule, classifier, stubRepositoryRoot)
+    private String localRepositoryDirectory() {
+        System.getProperty(MAVEN_LOCAL_REPOSITORY_LOCATION, "${System.getProperty("user.home")}/.m2/repository")
     }
 
-    private File unpackedJar(String resolvedVersion, String stubsGroup, String stubsModule, String classifier, String stubRepositoryRoot) {
+    private File unpackedJar(String resolvedVersion, String stubsGroup, String stubsModule, String classifier) {
         log.info("Resolved version is [$resolvedVersion]")
         if (!resolvedVersion) {
-            log.warn("Stub for group [$stubsGroup] module [$stubsModule] and classifier [$classifier] not found in [$stubRepositoryRoot]")
+            log.warn("Stub for group [$stubsGroup] module [$stubsModule] and classifier [$classifier] not found in $remoteRepos")
             return null
         }
         Artifact artifact = new DefaultArtifact(stubsGroup, stubsModule, classifier, ARTIFACT_EXTENSION, resolvedVersion)
@@ -93,7 +91,7 @@ class AetherStubDownloader implements StubDownloader {
             log.info("Resolved artifact $artifact to ${result.artifact.file} from ${result.repository}")
             return unpackStubJarToATemporaryFolder(result.artifact.file.toURI())
         } catch (Exception e) {
-            log.warn("Exception occured while trying to download a stub for group [$stubsGroup] module [$stubsModule] and classifier [$classifier] in [$stubRepositoryRoot]", e)
+            log.warn("Exception occured while trying to download a stub for group [$stubsGroup] module [$stubsModule] and classifier [$classifier] in $remoteRepos", e)
             return null
         }
 

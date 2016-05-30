@@ -29,7 +29,7 @@ class AetherStubDownloader implements StubDownloader {
     private static final String MAVEN_LOCAL_REPOSITORY_LOCATION = 'maven.repo.local'
     private static final String ACCUREST_TEMP_DIR_PREFIX = 'accurest'
     private static final String ARTIFACT_EXTENSION = 'jar'
-    private static final String LATEST_ARTIFACT_VERSION = '(0,]'
+    private static final String LATEST_ARTIFACT_VERSION = '(,]'
     private static final String LATEST_VERSION_IN_IVY = "+"
 
     private final List<RemoteRepository> remoteRepos
@@ -80,7 +80,7 @@ class AetherStubDownloader implements StubDownloader {
     }
 
     private File unpackedJar(String resolvedVersion, String stubsGroup, String stubsModule, String classifier, String stubRepositoryRoot) {
-        log.info("Resolved version is $resolvedVersion")
+        log.info("Resolved version is [$resolvedVersion]")
         if (!resolvedVersion) {
             log.warn("Stub for group [$stubsGroup] module [$stubsModule] and classifier [$classifier] not found in [$stubRepositoryRoot]")
             return null
@@ -112,6 +112,9 @@ class AetherStubDownloader implements StubDownloader {
         Artifact artifact = new DefaultArtifact(stubsGroup, stubsModule, classifier, ARTIFACT_EXTENSION, LATEST_ARTIFACT_VERSION)
         VersionRangeRequest versionRangeRequest = new VersionRangeRequest(artifact, remoteRepos, null);
         VersionRangeResult rangeResult = repositorySystem.resolveVersionRange(session, versionRangeRequest);
+        if (!rangeResult.highestVersion) {
+            log.error("Version was not resolved!")
+        }
         return rangeResult.highestVersion ?: ''
     }
 

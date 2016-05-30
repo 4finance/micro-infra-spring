@@ -66,11 +66,11 @@ class AetherStubDownloader implements StubDownloader {
     }
 
     private RepositorySystemSession newSession(RepositorySystem system) {
-        DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
-        session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS);
-        LocalRepository localRepo = new LocalRepository(System.getProperty(MAVEN_LOCAL_REPOSITORY_LOCATION, "${System.getProperty("user.home")}/.m2/repository"));
-        session.setLocalRepositoryManager(system.newLocalRepositoryManager(session, localRepo));
-        return session;
+        DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession()
+        session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
+        LocalRepository localRepo = new LocalRepository(System.getProperty(MAVEN_LOCAL_REPOSITORY_LOCATION, "${System.getProperty("user.home")}/.m2/repository"))
+        session.setLocalRepositoryManager(system.newLocalRepositoryManager(session, localRepo))
+        return session
     }
 
     @Override
@@ -102,7 +102,7 @@ class AetherStubDownloader implements StubDownloader {
     private String getVersion(String stubsGroup, String stubsModule, String version, String classifier) {
         if (!version || LATEST_VERSION_IN_IVY == version) {
             log.info("Desired version is [$version] - will try to resolve the latest version")
-            return resolveHighestArtifactVersion(stubsGroup, stubsModule, classifier);
+            return resolveHighestArtifactVersion(stubsGroup, stubsModule, classifier)
         }
         log.info("Will try to resolve version [$version]")
         return resolveArtifactVersion(stubsGroup, stubsModule, version, classifier)
@@ -110,8 +110,8 @@ class AetherStubDownloader implements StubDownloader {
 
     private String resolveHighestArtifactVersion(String stubsGroup, String stubsModule, String classifier) {
         Artifact artifact = new DefaultArtifact(stubsGroup, stubsModule, classifier, ARTIFACT_EXTENSION, LATEST_ARTIFACT_VERSION)
-        VersionRangeRequest versionRangeRequest = new VersionRangeRequest(artifact, remoteRepos, null);
-        VersionRangeResult rangeResult = repositorySystem.resolveVersionRange(session, versionRangeRequest);
+        VersionRangeRequest versionRangeRequest = new VersionRangeRequest(artifact, remoteRepos, null)
+        VersionRangeResult rangeResult = repositorySystem.resolveVersionRange(session, versionRangeRequest)
         if (!rangeResult.highestVersion) {
             log.error("Version was not resolved!")
         }
@@ -121,7 +121,7 @@ class AetherStubDownloader implements StubDownloader {
     private String resolveArtifactVersion(String stubsGroup, String stubsModule, String version, String classifier) {
         Artifact artifact = new DefaultArtifact(stubsGroup, stubsModule, classifier, ARTIFACT_EXTENSION, version)
         VersionRequest versionRequest = new VersionRequest(artifact, remoteRepos, null)
-        VersionResult versionResult = repositorySystem.resolveVersion(session, versionRequest);
+        VersionResult versionResult = repositorySystem.resolveVersion(session, versionRequest)
         return versionResult.version ?: ''
     }
 

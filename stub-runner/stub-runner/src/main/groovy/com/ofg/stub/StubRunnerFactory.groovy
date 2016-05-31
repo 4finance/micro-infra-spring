@@ -28,7 +28,8 @@ class StubRunnerFactory {
     private final CuratorFramework client
 
     StubRunnerFactory(StubRunnerOptions stubRunnerOptions, Collaborators collaborators) {
-        this(stubRunnerOptions, collaborators, CuratorFrameworkFactory.newClient(stubRunnerOptions.zookeeperConnectString, RETRY_POLICY), new AetherStubDownloader(stubRunnerOptions))
+        this(stubRunnerOptions, collaborators, CuratorFrameworkFactory.newClient(stubRunnerOptions.zookeeperConnectString, RETRY_POLICY),
+                new AetherStubDownloader(stubRunnerOptions))
     }
 
     @PackageScope
@@ -41,11 +42,10 @@ class StubRunnerFactory {
     }
 
     List<Optional<StubRunner>> createStubsFromServiceConfiguration() {
-        checkArgument(isNotEmpty(stubRunnerOptions.stubRepositoryRoot))
         client.start()
         return collaborators.collaboratorsPath.collect { String dependencyMappingsPath ->
             Module module = new Module(dependencyMappingsPath)
-            final File unzipedStubDir = stubDownloader.downloadAndUnpackStubJar(stubRunnerOptions.skipLocalRepo, stubRunnerOptions.stubRepositoryRoot,
+            final File unzipedStubDir = stubDownloader.downloadAndUnpackStubJar(
                     module.groupId, module.artifactId + getStubDefinitionSuffix(), stubRunnerOptions.stubClassifier);
             final String context = collaborators.basePath
             return createStubRunner(unzipedStubDir, module, context, dependencyMappingsPath)
@@ -57,11 +57,10 @@ class StubRunnerFactory {
     }
 
     List<Optional<StubRunner>> createStubsFromStubsModule() {
-        checkArgument(isNotEmpty(stubRunnerOptions.stubRepositoryRoot))
         checkArgument(isNotEmpty(stubRunnerOptions.stubsGroup))
         checkArgument(isNotEmpty(stubRunnerOptions.stubsModule))
         client.start()
-        final File unzippedStubsDir = stubDownloader.downloadAndUnpackStubJar(stubRunnerOptions.skipLocalRepo, stubRunnerOptions.stubRepositoryRoot,
+        final File unzippedStubsDir = stubDownloader.downloadAndUnpackStubJar(
                 stubRunnerOptions.stubsGroup, stubRunnerOptions.stubsModule, stubRunnerOptions.stubClassifier)
         final String context = collaborators.basePath
         return collaborators.collaboratorsPath.collect { String dependencyMappingsPath ->

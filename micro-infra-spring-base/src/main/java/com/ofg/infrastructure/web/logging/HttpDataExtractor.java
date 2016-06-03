@@ -2,14 +2,19 @@ package com.ofg.infrastructure.web.logging;
 
 import com.ofg.infrastructure.web.logging.wrapper.HttpServletRequestLoggingWrapper;
 import com.ofg.infrastructure.web.logging.wrapper.HttpServletResponseLoggingWrapper;
+import feign.Request;
+import feign.Response;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.StreamUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.ByteArrayOutputStream;
+import java.net.URI;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 class HttpDataExtractor {
 
@@ -34,6 +39,20 @@ class HttpDataExtractor {
     static Map<String, String> extractHeaders(HttpRequest request){
         return request.getHeaders().toSingleValueMap();
     }
+    
+    static Map<String, String> extractHeaders(Request request) {
+        return request.headers().entrySet().stream().collect(Collectors.toMap(
+                e -> e.getKey(),
+                e -> StringUtils.collectionToCommaDelimitedString(e.getValue())
+        ));
+    }
+    
+    static Map<String, String> extractHeaders(Response response) {
+        return response.headers().entrySet().stream().collect(Collectors.toMap(
+                e -> e.getKey(),
+                e -> StringUtils.collectionToCommaDelimitedString(e.getValue())
+        ));
+    }
 
     static Map<String, String> extractHeaders(ClientHttpResponse response){
         return response.getHeaders().toSingleValueMap();
@@ -46,6 +65,10 @@ class HttpDataExtractor {
     static String extractUrl(HttpServletRequestLoggingWrapper httpServletRequest){
         return httpServletRequest.getRequestURI();
     }
+    
+    static String extractUrl(Request request) {
+        return request.url();
+    }
 
     static String extractPath(HttpRequest request){
         return request.getURI().getPath();
@@ -54,6 +77,10 @@ class HttpDataExtractor {
     static String extractPath(HttpServletRequestLoggingWrapper httpServletRequest){
         return httpServletRequest.getRequestURI();
     }
+    
+    static String extractPath(Request request) {
+        return URI.create(request.url()).getPath();
+    }
 
     static String extractMethod(HttpRequest request){
         return request.getMethod().name();
@@ -61,6 +88,10 @@ class HttpDataExtractor {
 
     static String extractMethod(HttpServletRequestLoggingWrapper httpServletRequest){
         return httpServletRequest.getMethod();
+    }
+    
+    static String extractMethod(Request request) {
+        return request.method();
     }
 
     static int extractResponseCode(ClientHttpResponse response){
@@ -75,6 +106,10 @@ class HttpDataExtractor {
         return response.getStatus();
     }
 
+    static int extractStatus(Response response) {
+        return response.status();
+    }
+    
     static String extractContent(HttpServletResponseLoggingWrapper response){
         return new String(response.getBytes());
     }
@@ -83,12 +118,26 @@ class HttpDataExtractor {
         return new String(request.getBytes());
     }
 
+    static String extractContent(Request request) {
+        return request.body() == null ? "" : new String(request.body());
+    }
+    
     static String extractContent(ClientHttpResponse response){
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         try{
             StreamUtils.copy(response.getBody(), output);
         } catch (Exception ex) {
-            throw new IllegalStateException("Error extractResponseCode", ex);
+            throw new IllegalStateException("Error extractContent", ex);
+        }
+        return new String(output.toByteArray());
+    }
+    
+    static String extractContent(Response response) {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try{
+            StreamUtils.copy(response.body().asInputStream(), output);
+        } catch (Exception ex) {
+            throw new IllegalStateException("Error extractContent", ex);
         }
         return new String(output.toByteArray());
     }

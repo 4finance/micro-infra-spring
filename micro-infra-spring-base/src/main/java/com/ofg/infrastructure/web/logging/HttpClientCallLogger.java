@@ -1,50 +1,31 @@
 package com.ofg.infrastructure.web.logging;
 
-import com.ofg.infrastructure.web.logging.config.LogsConfig;
-import com.ofg.infrastructure.web.logging.config.LogsConfigElement;
-import com.ofg.infrastructure.web.logging.obfuscation.PayloadObfuscationProcessor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+
 import java.io.IOException;
 
 import static com.ofg.infrastructure.web.logging.HttpDataFactory.createHttpData;
 class HttpClientCallLogger implements ClientHttpRequestInterceptor {
 
-    private static final Logger log = LoggerFactory.getLogger(HttpClientCallLogger.class);
-    private LogsConfig props;
-    private PayloadObfuscationProcessor obfuscator;
+    public static final String TAG = "CLIENT";
+    private RequestResponseLogger requestResponseLogger;
 
-    public HttpClientCallLogger(LogsConfig props, PayloadObfuscationProcessor obfuscator) {
-        this.props = props;
-        this.obfuscator = obfuscator;
+    public HttpClientCallLogger(RequestResponseLogger requestResponseLogger) {
+        this.requestResponseLogger = requestResponseLogger;
     }
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         HttpData reqData = createHttpData(request, body);
-        LogsConfigElement config = props.getConfigElementByUrlAndMethod(reqData.getPath(), reqData.getHttpMethod());
-        if(!config.isSkipAll()){
-            reqData.setProcessedContent(obfuscator.process(reqData.getContent(), reqData.getHeaders(), config.getFilteredReqFields()));
-            reqData.setProcessedHeaders(config.getRequestHeadersToLogging(reqData.getHeaders()));
-            log.debug("REQ CLIENT->" + LogBuilder.createLogBuilder()
-                                                .withHttpData(reqData)
-                                                .build());
-        }
+        requestResponseLogger.logObfuscatedRequest(reqData, TAG);
 
         ClientHttpResponse response = execution.execute(request, body);
 
-        if(!config.isSkipAll()){
-            HttpData resData = createHttpData(response);
-            resData.setProcessedContent(obfuscator.process(resData.getContent(), resData.getHeaders(), config.getFilteredResFields()));
-            resData.setProcessedHeaders(config.getResponseHeadersToLogging(resData.getHeaders()));
-            log.debug("RES CLIENT<-" + LogBuilder.createLogBuilder()
-                                                .withHttpData(resData)
-                                                .build());
-        }
+        HttpData resData = createHttpData(response);
+        requestResponseLogger.logObfuscatedResponse(reqData, resData, TAG);
         return response;
     }
 }

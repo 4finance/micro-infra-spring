@@ -34,7 +34,7 @@ class RequestLoggingClientInterceptorSpec extends MicroserviceMvcWiremockSpec {
 
     def 'JSON: Should create log REQ/RES with all HTTP elements for POST json message'() {
         given:
-            final Appender mockAppender = insertAppender(Mock(Appender.class))
+            final Appender mockAppender = insertAppender(Mock(Appender))
             stubPostIntegration('/logTestJson', 201, [:])
         when:
             callPost('/logTestJson', readResource(JSON_REQ_RESOURCE_NAME), [(CONTENT_TYPE as String)  : MediaType.APPLICATION_JSON.toString()])
@@ -50,7 +50,7 @@ class RequestLoggingClientInterceptorSpec extends MicroserviceMvcWiremockSpec {
 
     def 'JSON: Should create log REQ/RES with all HTTP elements for GET json message'() {
         given:
-            final Appender mockAppender = insertAppender(Mock(Appender.class))
+            final Appender mockAppender = insertAppender(Mock(Appender))
             stubGetIntegration('/logTestJson', 200, readResource(JSON_REQ_RESOURCE_NAME), [(CONTENT_TYPE as String)  : MediaType.APPLICATION_JSON.toString()])
         when:
             callGet('/logTestJson', [:])
@@ -66,7 +66,7 @@ class RequestLoggingClientInterceptorSpec extends MicroserviceMvcWiremockSpec {
 
     def 'JSON: Should not create log REQ/RES for GET call due to skip configuration'() {
         given:
-            final Appender mockAppender = insertAppender(Mock(Appender.class))
+            final Appender mockAppender = insertAppender(Mock(Appender))
             stubGetIntegration('/logTestJsonSkip', 200, readResource(JSON_REQ_RESOURCE_NAME), [(CONTENT_TYPE as String)  : MediaType.APPLICATION_JSON.toString()])
         when:
             callGet('/logTestJsonSkip', [:])
@@ -82,7 +82,7 @@ class RequestLoggingClientInterceptorSpec extends MicroserviceMvcWiremockSpec {
 
     def 'JSON: Should create log REQ/RES for POST call due to skip configuration only for GET'() {
         given:
-            final Appender mockAppender = insertAppender(Mock(Appender.class))
+            final Appender mockAppender = insertAppender(Mock(Appender))
             stubPostIntegration('/logTestJsonSkip', 201, [:])
         when:
             callPost('/logTestJsonSkip', readResource(JSON_REQ_RESOURCE_NAME), [(CONTENT_TYPE as String)  : MediaType.APPLICATION_JSON.toString()])
@@ -99,7 +99,7 @@ class RequestLoggingClientInterceptorSpec extends MicroserviceMvcWiremockSpec {
 
     def 'JSON: Should create log REQ/RES for POST call and remove REQ/RES headers due to configuration'() {
         given:
-            final Appender mockAppender = insertAppender(Mock(Appender.class))
+            final Appender mockAppender = insertAppender(Mock(Appender))
             stubPostIntegration('/logTestJsonSkipHeaders', 201, ['header-req-to-remove-1':'header-req-to-remove-1-value',
                                                                  'header-req-to-remove-2':'header-req-to-remove-2-value'])
         when:
@@ -118,7 +118,7 @@ class RequestLoggingClientInterceptorSpec extends MicroserviceMvcWiremockSpec {
 
     def 'JSON: Should create log REQ/RES for POST call and set REMOVED on fields from REQ due to configuration'() {
         given:
-            final Appender mockAppender = insertAppender(Mock(Appender.class))
+            final Appender mockAppender = insertAppender(Mock(Appender))
             stubPostIntegration('/logTestJsonObfuscateFieldsMsg', 201, [:])
         when:
             callPost('/logTestJsonObfuscateFieldsMsg', readResource(JSON_REQ_RESOURCE_NAME), [(CONTENT_TYPE as String) : MediaType.APPLICATION_JSON.toString()])
@@ -134,7 +134,7 @@ class RequestLoggingClientInterceptorSpec extends MicroserviceMvcWiremockSpec {
 
     def 'JSON: Should create log REQ/RES for GET call and set REMOVED on fields from RES due to configuration'() {
         given:
-            final Appender mockAppender = insertAppender(Mock(Appender.class))
+            final Appender mockAppender = insertAppender(Mock(Appender))
             stubGetIntegration('/logTestJsonObfuscateFieldsMsg', 200, readResource(JSON_REQ_RESOURCE_NAME), [(CONTENT_TYPE as String)  : MediaType.APPLICATION_JSON.toString()])
         when:
             callGet('/logTestJsonObfuscateFieldsMsg', [:])
@@ -150,7 +150,7 @@ class RequestLoggingClientInterceptorSpec extends MicroserviceMvcWiremockSpec {
 
     def 'JSON: Should create log REQ/RES for POST finished with exception'() {
         given:
-            final Appender mockAppender = insertAppender(Mock(Appender.class))
+            final Appender mockAppender = insertAppender(Mock(Appender))
             stubPostIntegration('/logTestJsonException', 501, [:])
         when:
             callPost('/logTestJsonException', readResource(JSON_REQ_RESOURCE_NAME), [(CONTENT_TYPE as String) : MediaType.APPLICATION_JSON.toString()])
@@ -168,7 +168,7 @@ class RequestLoggingClientInterceptorSpec extends MicroserviceMvcWiremockSpec {
 
     def 'XML: Should create log REQ/RES for POST call and set REMOVED on fields from REQ due to configuration'() {
         given:
-            final Appender mockAppender = insertAppender(Mock(Appender.class))
+            final Appender mockAppender = insertAppender(Mock(Appender))
             stubPostIntegration('/logTestXmlObfuscateFieldsMsg', 201, [:])
         when:
             callPost('/logTestXmlObfuscateFieldsMsg', readResource(XML_REQ_RESOURCE_NAME), [(CONTENT_TYPE as String) : MediaType.APPLICATION_XML.toString()])
@@ -184,7 +184,7 @@ class RequestLoggingClientInterceptorSpec extends MicroserviceMvcWiremockSpec {
 
     def 'XML: Should create log REQ/RES for GET call and set REMOVED on fields from RES due to configuration'() {
         given:
-            final Appender mockAppender = insertAppender(Mock(Appender.class))
+            final Appender mockAppender = insertAppender(Mock(Appender))
             stubGetIntegration('/logTestXmlObfuscateFieldsMsg', 200, readResource(XML_REQ_RESOURCE_NAME), [(CONTENT_TYPE as String)  : MediaType.APPLICATION_XML.toString()])
         when:
             callGet('/logTestXmlObfuscateFieldsMsg', [:])
@@ -200,7 +200,7 @@ class RequestLoggingClientInterceptorSpec extends MicroserviceMvcWiremockSpec {
 
 
     @Configuration
-    @EnableRequestBodyLogging
+    @EnableObfuscatedLogging
     static class RequestLoggingSpecConfiguration {}
 
     private void callGet(String path, Map<String, String> requestHeaders) {

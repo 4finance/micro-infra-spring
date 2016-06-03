@@ -102,7 +102,7 @@ configure(srcSubprojects) {
     apply plugin: 'com.ofg.uptodate'
     apply plugin: "io.spring.dependency-management"
 
-    sourceCompatibility = 1.7
+    sourceCompatibility = 1.8
 
     dependencyManagement {
         imports {

@@ -6,11 +6,9 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.cloud.sleuth.Span
-import org.springframework.cloud.sleuth.instrument.async.AsyncDefaultAutoConfiguration
 import org.springframework.cloud.sleuth.trace.SpanContextHolder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import org.springframework.scheduling.annotation.Async
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.test.context.ContextConfiguration
@@ -44,7 +42,6 @@ class CorrelationIdAsyncSpec extends MicroserviceMvcWiremockSpec {
 
     @CompileStatic
     @Configuration
-    @Import(AsyncDefaultAutoConfiguration)
     @EnableAsync
     static class CorrelationIdAsyncSpecConfiguration {
 

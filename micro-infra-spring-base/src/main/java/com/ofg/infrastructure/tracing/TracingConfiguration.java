@@ -1,12 +1,19 @@
 package com.ofg.infrastructure.tracing;
 
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.cloud.sleuth.Sampler;
 import org.springframework.cloud.sleuth.autoconfig.TraceAutoConfiguration;
-import org.springframework.cloud.sleuth.instrument.scheduling.TraceSchedulingAutoConfiguration;
+import org.springframework.cloud.sleuth.instrument.web.TraceWebAutoConfiguration;
+import org.springframework.cloud.sleuth.sampler.AlwaysSampler;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({ TraceAutoConfiguration.class, TraceSchedulingAutoConfiguration.class })
+@AutoConfigureBefore({TraceAutoConfiguration.class, TraceWebAutoConfiguration.class})
 public class TracingConfiguration {
 
+    @Bean
+    public Sampler alwaysSampler() {
+        return new AlwaysSampler();
+    }
 }

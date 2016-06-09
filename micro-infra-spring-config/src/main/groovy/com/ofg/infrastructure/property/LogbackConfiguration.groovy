@@ -14,7 +14,7 @@ class LogbackConfiguration {
 
     private static String DEFAULT_FILENAME = 'logs/application.log'
     private static String DEFAULT_LOG_PATTERN =
-            '%d{yyyy-MM-dd HH:mm:ss.SSSZ, Europe/Warsaw} | %-5level | %X{X-Trace-Id} | %thread | %logger{1} | %m%n'
+            '%d{yyyy-MM-dd HH:mm:ss.SSSZ, Europe/Warsaw} | %-5level | %X{X-B3-TraceId} | %thread | %logger{1} | %m%n'
     private static String DEFAULT_SCAN_TIME = '1 minutes'
     private static String DEFAULT_ROLLING_FILENAME_PATTERN = 'logs/application.%d{yyyy-MM-dd}.log.zip'
     private static int DEFAULT_ROLLING_MAX_HISTORY = 7

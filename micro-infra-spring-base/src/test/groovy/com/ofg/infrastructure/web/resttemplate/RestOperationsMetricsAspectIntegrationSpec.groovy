@@ -7,6 +7,7 @@ import com.ofg.infrastructure.discovery.ServiceDiscoveryConfiguration
 import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClientConfiguration
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.EnableAspectJAutoProxy
@@ -129,6 +130,7 @@ class RestOperationsMetricsAspectIntegrationSpec extends MvcWiremockIntegrationS
     }
 
     @EnableAspectJAutoProxy
+    @EnableAutoConfiguration
     static class Config {
 
         @Bean

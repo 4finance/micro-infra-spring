@@ -11,7 +11,7 @@ class LogbackConfigurationSpec extends Specification {
 
     def 'log pattern should contain correlationId'() {
         expect:
-            config.getLogPattern().contains('X-Trace-Id')
+            config.getLogPattern().contains('X-B3-TraceId')
     }
 
     def 'scan time should be in minutes'() {

@@ -36,7 +36,7 @@ public class FeignCallObfuscatingLogger extends feign.Logger.JavaLogger {
         HttpData resData = createHttpData(response);
         Response rebufferedResponse = Response.create(response.status(), response.reason(), response.headers(), resData.getContent().getBytes());
         requestResponseLogger.logObfuscatedResponse(reqData, resData, TAG);
-        requestDataProvider.remove(traceId);
+//        requestDataProvider.remove(traceId);
         return super.logAndRebufferResponse(configKey, logLevel, rebufferedResponse, elapsedTime);
     }
 }

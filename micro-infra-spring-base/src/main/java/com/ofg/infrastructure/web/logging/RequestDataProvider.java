@@ -2,6 +2,7 @@ package com.ofg.infrastructure.web.logging;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.netflix.servo.util.Preconditions;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
@@ -14,6 +15,8 @@ public class RequestDataProvider {
     }
 
     public void store(String traceId, HttpData data) {
+        Preconditions.checkNotNull(traceId, "traceId cannot be null");
+        Preconditions.checkArgument(!traceId.isEmpty(), "traceId cannot be empty");
         storage.put(traceId, data);
     }
     

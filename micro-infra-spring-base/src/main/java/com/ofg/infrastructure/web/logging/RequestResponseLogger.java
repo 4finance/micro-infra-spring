@@ -6,6 +6,8 @@ import com.ofg.infrastructure.web.logging.obfuscation.PayloadObfuscationProcesso
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class RequestResponseLogger {
 
     private static final Logger log = LoggerFactory.getLogger(RequestResponseLogger.class);
@@ -18,6 +20,7 @@ public class RequestResponseLogger {
     }
 
     public void logObfuscatedRequest(HttpData reqData, String tag) {
+        checkNotNull(reqData, "request data cannot be empty");
         LogsConfigElement config = props.getConfigElementByUrlAndMethod(reqData.getPath(), reqData.getHttpMethod());
         if(!config.isSkipAll()){
             reqData.setProcessedContent(obfuscator.process(reqData.getContent(), reqData.getHeaders(), config.getFilteredReqFields()));
@@ -29,6 +32,8 @@ public class RequestResponseLogger {
     }
     
     public void logObfuscatedResponse(HttpData reqData, HttpData resData, String tag) {
+        checkNotNull(reqData, "request data cannot be empty");
+        checkNotNull(resData, "response data cannot be empty");
         LogsConfigElement config = props.getConfigElementByUrlAndMethod(reqData.getPath(), reqData.getHttpMethod());
         if(!config.isSkipAll()){
             resData.setProcessedContent(obfuscator.process(resData.getContent(), resData.getHeaders(), config.getFilteredResFields()));

@@ -1,16 +1,18 @@
 package com.ofg.infrastructure.web.logging;
 
 import com.ofg.infrastructure.web.logging.config.LogsConfig;
-import com.ofg.infrastructure.web.logging.config.LogsConfigElement;
+import com.ofg.infrastructure.web.logging.feign.FeignRequestResponseLoggingConifguration;
 import com.ofg.infrastructure.web.logging.obfuscation.AbstractPayloadObfuscator;
 import com.ofg.infrastructure.web.logging.obfuscation.FieldReplacementStrategy;
 import com.ofg.infrastructure.web.logging.obfuscation.JsonPayloadObfuscator;
 import com.ofg.infrastructure.web.logging.obfuscation.ObfuscationFieldStrategy;
 import com.ofg.infrastructure.web.logging.obfuscation.PayloadObfuscationProcessor;
 import com.ofg.infrastructure.web.logging.obfuscation.XmlPayloadObfuscator;
+import feign.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 
 import javax.servlet.Filter;
@@ -24,6 +26,7 @@ import java.util.List;
  * @see RequestBodyLoggingContextFilter
  */
 @Configuration
+@Import(FeignRequestResponseLoggingConifguration.class)
 public class RequestLoggingConfiguration {
 
     @Bean
@@ -32,13 +35,18 @@ public class RequestLoggingConfiguration {
     }
 
     @Bean
-    ClientHttpRequestInterceptor createHttpClientCallLogger(LogsConfig props, PayloadObfuscationProcessor obfuscator) {
-        return new HttpClientCallLogger(props, obfuscator);
+    public RequestResponseLogger createRequestResponseLogger(LogsConfig props, PayloadObfuscationProcessor obfuscationProcessor) {
+        return new RequestResponseLogger(props, obfuscationProcessor);
+    }
+    
+    @Bean
+    ClientHttpRequestInterceptor createHttpClientCallLogger(RequestResponseLogger requestResponseLogger) {
+        return new HttpClientCallLogger(requestResponseLogger);
     }
 
     @Bean
-    Filter createHttpControllerCallLogger(LogsConfig props, PayloadObfuscationProcessor obfuscator) {
-        return new HttpControllerCallLogger(props, obfuscator);
+    Filter createHttpControllerCallLogger(RequestResponseLogger requestResponseLogger) {
+        return new HttpControllerCallLogger(requestResponseLogger);
     }
 
     @Bean
@@ -65,4 +73,10 @@ public class RequestLoggingConfiguration {
     LogsConfig createLogsConfig(){
         return new LogsConfig();
     }
+
+    @Bean
+    public Logger.Level feignLoggerLevel() {
+        return Logger.Level.FULL;
+    }
+    
 }

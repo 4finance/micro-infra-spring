@@ -37,7 +37,7 @@ class FeignCallObfuscatingLoggerSpec extends MicroserviceMvcWiremockSpec {
     @Autowired private RequestResponseLogger reqResLogger;
     @Autowired private HttpMockServer httpMockServer
     
-    RequestDataProvider requestDataProvider = new RequestDataProvider(200);
+    RequestDataProvider requestDataProvider = new RequestDataProvider(20000);
     
     private TestFeignClient testFeignClient;
 

@@ -31,7 +31,7 @@ public class FeignRequestResponseLoggingConifguration {
     }
     
     @Bean
-    public RequestDataProvider requestDataProvider(@Value("${rest.client.feign.logging.payload.expirationTimeout:20000}") int requestDataExpirationTimeout) {
+    public RequestDataProvider requestDataProvider(@Value("${rest.client.feign.logging.payload.expirationTimeout:5000}") int requestDataExpirationTimeout) {
         return new RequestDataProvider(requestDataExpirationTimeout);
     }
 }

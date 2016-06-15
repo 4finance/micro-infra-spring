@@ -1,15 +1,14 @@
 package io.fourfinance.activity_tracker.activity;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import io.fourfinance.activity_tracker.audit.TrackUserActivityAudits;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 
-import io.fourfinance.activity_tracker.audit.TrackUserActivityAudits;
+import java.util.HashMap;
+import java.util.Map;
 
 @Aspect
 public class TrackUserActivityAspect {
@@ -52,6 +51,6 @@ public class TrackUserActivityAspect {
     }
 
     private String extractParamValue(JoinPoint joinPoint, final String field) {
-        return (String) new JoinPointParameters(joinPoint).getValue(field).or("<not available>");
+        return new JoinPointParameters(joinPoint).getValue(field).or("<not available>").toString();
     }
 }

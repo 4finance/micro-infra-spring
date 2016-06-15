@@ -53,16 +53,18 @@ class TrackUserActivityAspectSpec extends Specification {
     def "Should audit agentId and personalId"() {
         given:
             signature.method >> fooMethod('foo')
-            recordMethodInvocationWithParams(agentId: 'superAgent', customerId: 'superCustomer')
+            recordMethodInvocationWithParams(agentId: 123, customerId: 'superCustomer')
         when:
             trackUserActivityAspect.audit(joinPoint)
         then:
             1 * trackUserActivityAudits.audit(*_) >> {
-                Map arg -> assert arg.customerId == 'superCustomer'
+                Map arg -> 
+                    assert arg.customerId == 'superCustomer'
+                    assert arg.agentId == '123'
             }
     }
-
-    def "Should audit not specified params as <not available"() {
+    
+    def "Should audit not specified params as <not available>"() {
         given:
             signature.method >> fooMethod('foo')
         when:
@@ -96,7 +98,7 @@ class TrackUserActivityAspectSpec extends Specification {
                 Map arg -> assert arg.activity == 'empty'
             }
     }
-
+    
     public Method fooMethod(String methodName) {
         return this.class.getDeclaredMethod(methodName)
     }
@@ -111,7 +113,7 @@ class TrackUserActivityAspectSpec extends Specification {
     public void foo() {
 
     }
-
+    
     @TrackUserActivity
     public void fooWithoutApiOperation() {
 

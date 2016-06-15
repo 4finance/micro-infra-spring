@@ -33,7 +33,7 @@ jdk:
 - oraclejdk8
 
 addons:
-  firefox: latest-beta
+  firefox: "46.0.1"
 
 env:
   global:

@@ -55,26 +55,7 @@ class StubRegistry {
                 .uriSpec(URI_SPEC)
                 .address('localhost')
                 .port(stubServer.port)
-                .name(serviceName(stubServer))
+                .name(stubServer.projectMetadata.projectRelativePath)
                 .build()
-    }
-
-    private static String serviceName(StubServer stubServer) {
-        String projectRelativePath = stubServer.projectMetadata.projectRelativePath
-        String projectName = stubServer.projectMetadata.projectName
-        if (projectRelativePath.endsWith(projectName)) {
-            return projectRelativePath
-        } else {
-            return pathWithoutProjectName(projectRelativePath) + projectName
-        }
-    }
-
-    private static String pathWithoutProjectName(String projectRelativePath) {
-        if (projectRelativePath.contains('/')) {
-            int idx = projectRelativePath.lastIndexOf('/')
-            return projectRelativePath.substring(0, idx + 1)
-        } else {
-            return ''
-        }
     }
 }

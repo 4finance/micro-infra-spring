@@ -11,6 +11,7 @@ import org.apache.curator.x.discovery.ServiceDiscovery;
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder;
 import org.apache.curator.x.discovery.ServiceInstance;
 import org.apache.curator.x.discovery.UriSpec;
+import org.apache.curator.x.discovery.details.InstanceSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -87,17 +88,24 @@ public class ServiceDiscoveryInfrastructureConfiguration {
                 .build();
     }
 
+    @Bean
+    public InstanceSerializer instanceSerializer() {
+        return new IgnorePayloadInstanceSerializer(Void.class);
+    }
+
     @Bean(destroyMethod = "close")
     @SuppressWarnings("unchecked")
     public ServiceDiscovery serviceDiscovery(CuratorFramework curatorFramework,
                                              ServiceInstance serviceInstance,
-                                             ServiceConfigurationResolver serviceConfigurationResolver) {
+                                             ServiceConfigurationResolver serviceConfigurationResolver,
+                                             InstanceSerializer instanceSerializer) {
         log.info("Registering myself: " + String.valueOf(serviceInstance));
         final ServiceDiscovery<Void> serviceDiscovery = ServiceDiscoveryBuilder
                 .builder(Void.class)
                 .basePath("/" + serviceConfigurationResolver.getBasePath())
                 .client(curatorFramework)
                 .thisInstance(serviceInstance)
+                .serializer(instanceSerializer)
                 .build();
         asyncRegisterInsideZookeeper(serviceDiscovery);
         return serviceDiscovery;

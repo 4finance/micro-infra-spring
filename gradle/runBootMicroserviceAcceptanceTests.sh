@@ -19,8 +19,3 @@ cd boot-microservice
 git checkout legacy
 updateMicroInfraSpringVersionInConfigurationFile
 ./gradlew clean check uptodate --stacktrace --continue --info --no-daemon
-
-git reset --hard
-git checkout legacy-gui
-updateMicroInfraSpringVersionInConfigurationFile
-./gradlew clean check --stacktrace --continue --info --no-daemon

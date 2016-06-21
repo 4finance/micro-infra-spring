@@ -1,11 +1,11 @@
 package com.ofg.infrastructure.discovery;
 
+import java.util.Map;
+
 import org.apache.curator.x.discovery.ServiceInstance;
 import org.apache.curator.x.discovery.details.JsonInstanceSerializer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.JavaType;
-
-import java.util.Map;
 
 public class IgnorePayloadInstanceSerializer<T> extends JsonInstanceSerializer {
 

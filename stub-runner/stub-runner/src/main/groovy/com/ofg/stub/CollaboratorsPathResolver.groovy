@@ -2,6 +2,7 @@ package com.ofg.stub
 import com.google.common.util.concurrent.ListenableFuture
 import com.nurkiewicz.asyncretry.AsyncRetryExecutor
 import com.nurkiewicz.asyncretry.RetryExecutor
+import com.ofg.infrastructure.discovery.IgnorePayloadInstanceSerializer
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.stub.server.ZookeeperServer
 import groovy.json.JsonOutput
@@ -47,6 +48,7 @@ class CollaboratorsPathResolver {
         ServiceDiscovery discovery = ServiceDiscoveryBuilder.builder(Void)
                 .basePath(context)
                 .client(zookeeperServer.curatorFramework)
+                .serializer(new IgnorePayloadInstanceSerializer(Void.class))
                 .build()
         discovery.start()
         String uriSpec = obtainServiceInstanceUri(discovery, serviceName, config)

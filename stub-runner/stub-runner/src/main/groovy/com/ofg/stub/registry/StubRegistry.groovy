@@ -43,7 +43,7 @@ class StubRegistry {
     @PackageScope
     static ServiceDiscovery serviceDiscoveryFor(StubServer stubServer, CuratorFramework client) {
         ServiceInstance serviceInstance = serviceInstanceOf(stubServer)
-        return ServiceDiscoveryBuilder.builder(Void)
+        return ServiceDiscoveryBuilder.builder(Map)
                 .basePath(stubServer.projectMetadata.context)
                 .client(client)
                 .thisInstance(serviceInstance)

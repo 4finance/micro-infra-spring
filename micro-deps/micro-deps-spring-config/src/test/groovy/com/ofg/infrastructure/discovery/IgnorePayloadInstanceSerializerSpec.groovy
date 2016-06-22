@@ -32,7 +32,7 @@ class IgnorePayloadInstanceSerializerSpec extends Specification {
         given:
             byte[] instanceBytes = instanceBytes(payloadContent)
         when:
-            new IgnorePayloadInstanceSerializer(Void.class).deserialize(instanceBytes)
+            new IgnorePayloadInstanceSerializer(Map.class).deserialize(instanceBytes)
         then:
             noExceptionThrown()
         where:

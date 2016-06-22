@@ -24,6 +24,8 @@ import com.ofg.config.BasicProfiles;
 import com.ofg.infrastructure.discovery.ZookeeperConnectorConditions.InMemoryZookeeperCondition;
 import com.ofg.infrastructure.discovery.ZookeeperConnectorConditions.StandaloneZookeeperCondition;
 
+import java.util.Map;
+
 /**
  * Class holding configuration to Zookeeper server, Zookeeper service instance and to Curator framework.
  * <p/>
@@ -90,7 +92,7 @@ public class ServiceDiscoveryInfrastructureConfiguration {
 
     @Bean
     public InstanceSerializer instanceSerializer() {
-        return new IgnorePayloadInstanceSerializer(Void.class);
+        return new IgnorePayloadInstanceSerializer(Map.class);
     }
 
     @Bean(destroyMethod = "close")
@@ -100,8 +102,8 @@ public class ServiceDiscoveryInfrastructureConfiguration {
                                              ServiceConfigurationResolver serviceConfigurationResolver,
                                              InstanceSerializer instanceSerializer) {
         log.info("Registering myself: " + String.valueOf(serviceInstance));
-        final ServiceDiscovery<Void> serviceDiscovery = ServiceDiscoveryBuilder
-                .builder(Void.class)
+        final ServiceDiscovery<Map> serviceDiscovery = ServiceDiscoveryBuilder
+                .builder(Map.class)
                 .basePath("/" + serviceConfigurationResolver.getBasePath())
                 .client(curatorFramework)
                 .thisInstance(serviceInstance)
@@ -111,7 +113,7 @@ public class ServiceDiscoveryInfrastructureConfiguration {
         return serviceDiscovery;
     }
 
-    private void asyncRegisterInsideZookeeper(final ServiceDiscovery<Void> serviceDiscovery) {
+    private void asyncRegisterInsideZookeeper(final ServiceDiscovery<Map> serviceDiscovery) {
         new Thread(new Runnable() {
             @Override
             public void run() {

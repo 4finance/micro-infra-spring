@@ -55,7 +55,7 @@ class ProjectMetadataResolverSpec extends Specification {
                 .port(COLLABORATOR_URL)
                 .name(TEST_SERVICE_PATH)
                 .build()
-        return ServiceDiscoveryBuilder.builder(Void)
+        return ServiceDiscoveryBuilder.builder(Map)
                 .basePath('pl')
                 .client(curatorFramework)
                 .thisInstance(serviceInstance)

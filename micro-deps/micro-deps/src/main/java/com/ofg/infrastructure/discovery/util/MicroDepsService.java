@@ -20,6 +20,7 @@ import org.apache.curator.x.discovery.UriSpec;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 /**
  * Class that registers microservice in Zookeeper server and enables its discovery using Curator framework.
@@ -64,7 +65,7 @@ public class MicroDepsService {
         } catch (Exception e) {
             Throwables.propagate(e);
         }
-        serviceDiscovery = ServiceDiscoveryBuilder.builder(Void.class).basePath(configurationResolver.getBasePath()).client(curatorFramework).thisInstance(serviceInstance).build();
+        serviceDiscovery = ServiceDiscoveryBuilder.builder(Map.class).basePath(configurationResolver.getBasePath()).client(curatorFramework).thisInstance(serviceInstance).build();
         dependencyWatcher = new DependencyWatcher(configurationResolver.getDependencies(), serviceDiscovery, new DefaultDependencyPresenceOnStartupVerifier());
         serviceResolver = new ZookeeperServiceResolver(configurationResolver, serviceDiscovery, curatorFramework, new ProviderStrategyFactory());
     }

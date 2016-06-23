@@ -11,6 +11,7 @@ import org.apache.curator.x.discovery.ProviderStrategy;
 import org.apache.curator.x.discovery.ServiceDiscovery;
 import org.apache.curator.x.discovery.ServiceInstance;
 import org.apache.curator.x.discovery.ServiceProvider;
+import org.apache.curator.x.discovery.UriSpec;
 
 import java.io.IOException;
 import java.net.URI;
@@ -180,7 +181,12 @@ public class ZookeeperServiceResolver implements ServiceResolver {
         if (instance == null) {
             return null;
         }
-        return URI.create(instance.buildUriSpec());
+        String uriSpec = instance.buildUriSpec();
+        if (uriSpec.isEmpty()) {
+            uriSpec = new UriSpec("{scheme}://{address}:{port}").build(instance);
+        }
+
+        return URI.create(uriSpec);
     }
 
     private ServiceProvider providerFor(ServicePath service) {

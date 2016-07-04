@@ -45,10 +45,10 @@ class CollaboratorsPathResolver {
 
     private
     static ServiceConfigurationResolver resolveServiceDependenciesFromZookeeper(String context, ZookeeperServer zookeeperServer, String serviceName, StubRunnerOptions config) {
-        ServiceDiscovery discovery = ServiceDiscoveryBuilder.builder(Void)
+        ServiceDiscovery discovery = ServiceDiscoveryBuilder.builder(Map)
                 .basePath(context)
                 .client(zookeeperServer.curatorFramework)
-                .serializer(new IgnorePayloadInstanceSerializer(Void.class))
+                .serializer(new IgnorePayloadInstanceSerializer(Map.class))
                 .build()
         discovery.start()
         String uriSpec = obtainServiceInstanceUri(discovery, serviceName, config)
@@ -62,7 +62,7 @@ class CollaboratorsPathResolver {
     static String obtainServiceInstanceUri(ServiceDiscovery discovery, String serviceName, StubRunnerOptions config) {
         ServiceProvider serviceProvider = discovery.serviceProviderBuilder().serviceName(serviceName).build()
         serviceProvider.start()
-        ServiceInstance<Void> instance = serviceProvider.instance
+        ServiceInstance<Map> instance = serviceProvider.instance
         if (!instance && config.waitForServiceConnect) {
             instance = waitAndGetService(discovery, serviceName, serviceProvider, config.waitTimeout, instance)
         }
@@ -71,7 +71,7 @@ class CollaboratorsPathResolver {
     }
 
     private
-    static ServiceInstance<Void> waitAndGetService(ServiceDiscovery discovery, String serviceName, ServiceProvider serviceProvider, Integer waitTimeout, ServiceInstance<Void> instance) {
+    static ServiceInstance<Map> waitAndGetService(ServiceDiscovery discovery, String serviceName, ServiceProvider serviceProvider, Integer waitTimeout, ServiceInstance<Map> instance) {
         ServiceCache serviceCache = discovery.serviceCacheBuilder().name(serviceName).build()
         serviceCache.start()
         TimeoutServiceCacheListener listener = new TimeoutServiceCacheListener(serviceProvider)
@@ -87,7 +87,7 @@ class CollaboratorsPathResolver {
         private static enum State {
             DONE, EMPTY, CANCELLED
         }
-        BlockingQueue<ServiceInstance<Void>> blockingQueue = new ArrayBlockingQueue(1)
+        BlockingQueue<ServiceInstance<Map>> blockingQueue = new ArrayBlockingQueue(1)
         volatile State state = State.EMPTY
 
         TimeoutServiceCacheListener(ServiceProvider serviceProvider) {
@@ -96,7 +96,7 @@ class CollaboratorsPathResolver {
 
         @Override
         void cacheChanged() {
-            ServiceInstance<Void> instance = serviceProvider.getInstance()
+            ServiceInstance<Map> instance = serviceProvider.getInstance()
             if (instance) {
                 blockingQueue.put(instance)
                 state = State.DONE
@@ -124,13 +124,13 @@ class CollaboratorsPathResolver {
         }
 
         @Override
-        ServiceInstance<Void> get() throws InterruptedException, ExecutionException {
+        ServiceInstance<Map> get() throws InterruptedException, ExecutionException {
             return blockingQueue.take()
         }
 
         @Override
-        ServiceInstance<Void> get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-            ServiceInstance<Void> object = blockingQueue.poll(timeout, unit)
+        ServiceInstance<Map> get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+            ServiceInstance<Map> object = blockingQueue.poll(timeout, unit)
             if (!object) {
                 throw new TimeoutException("Service unavailable")
             }

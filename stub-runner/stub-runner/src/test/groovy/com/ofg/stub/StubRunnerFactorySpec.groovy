@@ -1,17 +1,20 @@
 package com.ofg.stub
+
 import com.google.common.base.Optional
 import org.apache.curator.framework.CuratorFramework
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
+import static com.ofg.infrastructure.discovery.MicroserviceConfiguration.Dependency.StubsConfiguration
+
 class StubRunnerFactorySpec extends Specification {
 
     @Rule
     TemporaryFolder folder = new TemporaryFolder()
 
-    Collaborators collaborators = new Collaborators('pl', ["com/ofg/risk-service", "com/ofg/fraud"])
-    CuratorFramework curatorFramework = Stub()
+    Collaborators collaborators = new Collaborators('pl', ["com/ofg/risk-service", "com/ofg/fraud"], ['': null])
+    CuratorFramework curatorFramework = Stub(CuratorFramework)
     StubDownloader downloader = Mock(StubDownloader)
     String connectString = "localhost:12345"
     StubRunnerOptions stubRunnerOptions = new StubRunnerOptions(zookeeperConnectString: connectString, stubRepositoryRoot: 'pl')
@@ -51,6 +54,32 @@ class StubRunnerFactorySpec extends Specification {
             List<StubRunner> stubRunners = collectOnlyPresentValues(factory.createStubsFromStubsModule())
         then:
             stubRunners.empty
+    }
+
+    def "should download stubs from StubsConfiguration and from dependencyMappingPath"() {
+        given:
+            Collaborators collaborators = new Collaborators('pl', ['com/ofg/risk-service', 'com/ofg/fraud'],
+                    ['com/ofg/risk-service': new StubsConfiguration('com.ofg', 'custom-risk-service', 'stub')])
+            StubRunnerFactory factory = new StubRunnerFactory(stubRunnerOptions, collaborators, curatorFramework, downloader)
+        when:
+            factory.createStubsFromServiceConfiguration()
+        then:
+            1 * downloader.downloadAndUnpackStubJar("com.ofg", "custom-risk-service", "stub")
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'fraud', 'stubs')
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'fraud', null)
+    }
+
+    def "should try to download using stuboptions.classifier properties if no dependency found"() {
+        given:
+            folder.newFolder("mappings")
+            Collaborators collaborators = new Collaborators('pl', ["com/ofg/risk-service", "com/ofg/fraud"],
+                    ['com/ofg/risk-service': new StubsConfiguration('com.ofg', 'risk-service', '')])
+            stubRunnerOptions.stubClassifier = 'anyOption'
+            StubRunnerFactory factory = new StubRunnerFactory(stubRunnerOptions, collaborators, curatorFramework, downloader)
+        when:
+            factory.createStubsFromServiceConfiguration()
+        then:
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'risk-service', 'anyOption') >> folder.root
     }
 
     private List<StubRunner> collectOnlyPresentValues(List<Optional<StubRunner>> stubRunners) {

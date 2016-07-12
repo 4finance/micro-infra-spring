@@ -3,6 +3,7 @@ package com.ofg.stub.config
 import com.ofg.infrastructure.discovery.MicroserviceConfigurationNotPresentException
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.stub.*
+import com.ofg.stub.util.CollaboratorsFromZookeeper
 import groovy.grape.Grape
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
@@ -15,6 +16,7 @@ import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDepende
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
+
 /**
  * Configuration that initializes a {@link BatchStubRunner} that runs {@link StubRunner} instance for each microservice's collaborator.
  *
@@ -52,9 +54,13 @@ import org.springframework.context.annotation.Import
 @CompileStatic
 class StubRunnerConfiguration {
 
-    @Deprecated @Autowired(required = false) private ServiceConfigurationResolver serviceConfigurationResolver
-    @Autowired(required = false) ZookeeperDependencies zookeeperDependencies
-    @Autowired(required = false) ZookeeperDiscoveryProperties zookeeperDiscoveryProperties
+    @Deprecated
+    @Autowired(required = false)
+    private ServiceConfigurationResolver serviceConfigurationResolver
+    @Autowired(required = false)
+    ZookeeperDependencies zookeeperDependencies
+    @Autowired(required = false)
+    ZookeeperDiscoveryProperties zookeeperDiscoveryProperties
 
     /**
      * Bean that initializes stub runners, runs them and on shutdown closes them. Upon its instantiation
@@ -105,7 +111,7 @@ class StubRunnerConfiguration {
 
     private Collaborators getCollaborators() {
         if (zookeeperDiscoveryProperties && zookeeperDependencies) {
-            return new Collaborators(zookeeperDiscoveryProperties.root,  zookeeperDependencies.getDependencyConfigurations().collect { it.path })
+            return CollaboratorsFromZookeeper.fromZookeeperDependencies(zookeeperDiscoveryProperties, zookeeperDependencies)
         }
         return DescriptorToCollaborators.fromDeprecatedMicroserviceDescriptor(serviceConfigurationResolver)
     }

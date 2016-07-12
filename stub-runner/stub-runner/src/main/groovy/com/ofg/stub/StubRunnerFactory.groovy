@@ -1,7 +1,7 @@
 package com.ofg.stub
 
+import com.google.common.base.Function
 import com.google.common.base.Optional
-import com.ofg.infrastructure.discovery.MicroserviceConfiguration
 import com.ofg.stub.mapping.ProjectMetadata
 import com.ofg.stub.registry.StubRegistry
 import groovy.transform.CompileStatic
@@ -13,6 +13,7 @@ import org.apache.curator.framework.CuratorFrameworkFactory
 import org.apache.curator.retry.ExponentialBackoffRetry
 
 import static com.google.common.base.Preconditions.checkArgument
+import static com.ofg.infrastructure.discovery.MicroserviceConfiguration.Dependency.StubsConfiguration
 import static org.apache.commons.lang.StringUtils.*
 
 @Slf4j
@@ -44,12 +45,30 @@ class StubRunnerFactory {
     List<Optional<StubRunner>> createStubsFromServiceConfiguration() {
         client.start()
         return collaborators.collaboratorsPath.collect { String dependencyMappingsPath ->
-            Module module = new Module(dependencyMappingsPath)
-            final File unzipedStubDir = stubDownloader.downloadAndUnpackStubJar(
-                    module.groupId, module.artifactId + getStubDefinitionSuffix(), stubRunnerOptions.stubClassifier);
+            Module module = getModuleForDependency(dependencyMappingsPath)
+            final File unzippedStubDir = getUnzippedStubDir(module)
             final String context = collaborators.basePath
-            return createStubRunner(unzipedStubDir, module, context, dependencyMappingsPath)
+            return createStubRunner(unzippedStubDir, module, context, dependencyMappingsPath)
         }
+    }
+
+    private File getUnzippedStubDir(Module module) {
+        return stubDownloader.downloadAndUnpackStubJar(module.groupId, module.artifactId + getStubDefinitionSuffix(), module.classifier) ?:
+                stubDownloader.downloadAndUnpackStubJar(module.groupId, module.artifactId + getStubDefinitionSuffix(), getClassifierIfMissing())
+    }
+
+    private String getClassifierIfMissing() {
+        return stubRunnerOptions.stubClassifier != null ? stubRunnerOptions.stubClassifier : 'stubs'
+    }
+
+    private Module getModuleForDependency(String dependencyMappingsPath) {
+        return Optional.fromNullable(collaborators.stubsPaths.get(dependencyMappingsPath))
+                .transform(STUBS_TO_MODULE)
+                .or(createModuleFromDependencyMappingsPath(dependencyMappingsPath))
+    }
+
+    private Module createModuleFromDependencyMappingsPath(String dependencyMappingsPath) {
+        return new Module(dependencyMappingsPath, stubRunnerOptions.stubClassifier)
     }
 
     private String getStubDefinitionSuffix() {
@@ -64,24 +83,23 @@ class StubRunnerFactory {
                 stubRunnerOptions.stubsGroup, stubRunnerOptions.stubsModule, stubRunnerOptions.stubClassifier)
         final String context = collaborators.basePath
         return collaborators.collaboratorsPath.collect { String dependencyMappingsPath ->
-            Module module = new Module(dependencyMappingsPath)
+            Module module = getModuleForDependency(dependencyMappingsPath)
             return createStubRunner(unzippedStubsDir, module, context, dependencyMappingsPath)
         }
     }
 
-    private Optional createStubRunner(File unzipedStubDir, Module module, String context, String dependencyMappingsPath) {
-        if (!unzipedStubDir) {
+    private Optional createStubRunner(File unzippedStubDir, Module module, String context, String dependencyMappingsPath) {
+        if (!unzippedStubDir) {
             return Optional.absent()
         }
-        String[] pathAndArtifactId = splitToPathAndArtifactId(dependencyMappingsPath)
-        return Optional.of(createStubRunner(pathAndArtifactId[0], unzipedStubDir, context, pathAndArtifactId[1] + module.artifactId, stubRunnerOptions, client))
+        return Optional.of(createStubRunner(module.artifactId, unzippedStubDir, context, dependencyMappingsPath, stubRunnerOptions, client))
     }
 
-    private String[] splitToPathAndArtifactId(String dependencyMappingsPath) {
-        int idx = dependencyMappingsPath.lastIndexOf('/')
-        String path = dependencyMappingsPath.substring(0, idx + 1)
-        String artifactId = dependencyMappingsPath.substring(idx + 1)
-        return [artifactId, path] as String[]
+    private static final Function<StubsConfiguration, Module> STUBS_TO_MODULE = new Function<StubsConfiguration, Module>() {
+        @Override
+        Module apply(StubsConfiguration configuration) {
+            return new Module(configuration.stubsGroupId, configuration.stubsArtifactId, configuration.stubsClassifier)
+        }
     }
 
     private StubRunner createStubRunner(String alias, File unzippedStubsDir, String context, String dependencyMappingsPath, StubRunnerOptions stubRunnerOptions, CuratorFramework client) {
@@ -90,16 +108,23 @@ class StubRunnerFactory {
         return new StubRunner(arguments, new StubRegistry(stubRunnerOptions.zookeeperConnectString, client))
     }
 
-    private class Module {
+    private static class Module {
         final String groupId
         final String artifactId
+        final String classifier
 
-        Module(String dependencyMappingsPath) {
+        Module(String dependencyMappingsPath, String classifier) {
             String dependencyInPackageNotation = dependencyMappingsPath.replaceAll("/", ".")
             groupId = substringBeforeLast(dependencyInPackageNotation, ".")
             artifactId = substringAfterLast(dependencyInPackageNotation, ".")
+            this.classifier = classifier
         }
 
+        Module(String groupId, String artifactId, String classifier) {
+            this.groupId = groupId
+            this.artifactId = artifactId
+            this.classifier = classifier
+        }
     }
 
 }

@@ -74,13 +74,55 @@ class StubRunnerFactorySpec extends Specification {
             folder.newFolder("mappings")
             Collaborators collaborators = new Collaborators('pl', ["com/ofg/risk-service", "com/ofg/fraud"],
                     ['com/ofg/risk-service': new StubsConfiguration('com.ofg', 'risk-service', '')])
-            stubRunnerOptions.stubClassifier = 'anyOption'
+            stubRunnerOptions.stubClassifier = 'anyClassifier'
             StubRunnerFactory factory = new StubRunnerFactory(stubRunnerOptions, collaborators, curatorFramework, downloader)
         when:
             factory.createStubsFromServiceConfiguration()
         then:
-            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'risk-service', 'anyOption') >> folder.root
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'risk-service', 'anyClassifier') >> folder.root
     }
+
+    def "should not add stuboptions.stubDefinitionSuffix if stubs set"() {
+        given:
+            folder.newFolder("mappings")
+            Collaborators collaborators = new Collaborators('pl', ["com/ofg/risk-service"],
+                    ['com/ofg/risk-service': new StubsConfiguration('com.ofg', 'risk-service', '')])
+            stubRunnerOptions.stubClassifier = 'anyClassifier'
+            stubRunnerOptions.stubDefinitionSuffix = 'stubs'
+            StubRunnerFactory factory = new StubRunnerFactory(stubRunnerOptions, collaborators, curatorFramework, downloader)
+        when:
+            factory.createStubsFromServiceConfiguration()
+        then:
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'risk-service', 'anyClassifier') >> folder.root
+    }
+
+
+    def "should add stuboptions.stubDefinitionSuffix if property set and no stubs"() {
+        given:
+            folder.newFolder("mappings")
+            Collaborators collaborators = new Collaborators('pl', ["com/ofg/risk-service"], [:])
+            stubRunnerOptions.stubClassifier = 'anyClassifier'
+            stubRunnerOptions.stubDefinitionSuffix = 'stubs'
+            StubRunnerFactory factory = new StubRunnerFactory(stubRunnerOptions, collaborators, curatorFramework, downloader)
+        when:
+            factory.createStubsFromServiceConfiguration()
+        then:
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'risk-service-stubs', 'anyClassifier') >> folder.root
+    }
+
+    def "should not stuboptions.stubDefinitionSuffix if property empty and no stubs"() {
+        given:
+            folder.newFolder("mappings")
+            Collaborators collaborators = new Collaborators('pl', ["com/ofg/risk-service"], [:])
+            stubRunnerOptions.stubClassifier = 'anyClassifier'
+            stubRunnerOptions.stubDefinitionSuffix = ''
+            StubRunnerFactory factory = new StubRunnerFactory(stubRunnerOptions, collaborators, curatorFramework, downloader)
+        when:
+            factory.createStubsFromServiceConfiguration()
+        then:
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'risk-service', 'anyClassifier') >> folder.root
+    }
+
 
     private List<StubRunner> collectOnlyPresentValues(List<Optional<StubRunner>> stubRunners) {
         return stubRunners.findAll { it.present }.collect { it.get() }

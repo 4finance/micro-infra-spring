@@ -71,7 +71,7 @@ class ServiceRestClientConfigurationSupport {
     @Deprecated @Autowired(required = false) ServiceConfigurationResolver configurationResolver
 
     @Bean
-    TracingInfo tracingInfo(Tracer tracer, @Qualifier("traceKeys") TraceKeys keys){
+    TracingInfo tracingInfo(Tracer tracer, TraceKeys keys){
         return new TracingInfo(tracer, keys)
     }
 

@@ -45,14 +45,14 @@ class StubRunnerFactory {
     List<Optional<StubRunner>> createStubsFromServiceConfiguration() {
         client.start()
         return collaborators.collaboratorsPath.collect { String dependencyMappingsPath ->
-            Module module = getModuleForDependency(dependencyMappingsPath)
+            StubDependency module = getModuleForDependency(dependencyMappingsPath)
             final File unzippedStubDir = getUnzippedStubDir(module)
             final String context = collaborators.basePath
-            return createStubRunner(unzippedStubDir, module, context, dependencyMappingsPath)
+            return createStubRunner(unzippedStubDir, extractServiceNameFromPath(dependencyMappingsPath), context, dependencyMappingsPath)
         }
     }
 
-    private File getUnzippedStubDir(Module module) {
+    private File getUnzippedStubDir(StubDependency module) {
         return stubDownloader.downloadAndUnpackStubJar(module.groupId, module.artifactId, module.classifier) ?:
                 stubDownloader.downloadAndUnpackStubJar(module.groupId, module.artifactId, getClassifierIfMissing())
     }
@@ -61,14 +61,14 @@ class StubRunnerFactory {
         return stubRunnerOptions.stubClassifier != null ? stubRunnerOptions.stubClassifier : 'stubs'
     }
 
-    private Module getModuleForDependency(String dependencyMappingsPath) {
+    private StubDependency getModuleForDependency(String dependencyMappingsPath) {
         return Optional.fromNullable(collaborators.stubsPaths.get(dependencyMappingsPath))
-                .transform(STUBS_TO_MODULE)
+                .transform(STUBS_TO_DEPENDENCY)
                 .or(createModuleFromDependencyMappingsPath(dependencyMappingsPath))
     }
 
-    private Module createModuleFromDependencyMappingsPath(String dependencyMappingsPath) {
-        return new Module(dependencyMappingsPath + getStubDefinitionSuffix(), stubRunnerOptions.stubClassifier)
+    private StubDependency createModuleFromDependencyMappingsPath(String dependencyMappingsPath) {
+        return new StubDependency(dependencyMappingsPath + getStubDefinitionSuffix(), stubRunnerOptions.stubClassifier)
     }
 
     private String getStubDefinitionSuffix() {
@@ -83,44 +83,48 @@ class StubRunnerFactory {
                 stubRunnerOptions.stubsGroup, stubRunnerOptions.stubsModule, stubRunnerOptions.stubClassifier)
         final String context = collaborators.basePath
         return collaborators.collaboratorsPath.collect { String dependencyMappingsPath ->
-            Module module = getModuleForDependency(dependencyMappingsPath)
-            return createStubRunner(unzippedStubsDir, module, context, dependencyMappingsPath)
+            return createStubRunner(unzippedStubsDir, extractServiceNameFromPath(dependencyMappingsPath), context, dependencyMappingsPath)
         }
     }
 
-    private Optional createStubRunner(File unzippedStubDir, Module module, String context, String dependencyMappingsPath) {
+    private Optional createStubRunner(File unzippedStubDir, String dependencyName, String context, String dependencyMappingsPath) {
         if (!unzippedStubDir) {
             return Optional.absent()
         }
-        return Optional.of(createStubRunner(module.artifactId, unzippedStubDir, context, dependencyMappingsPath, stubRunnerOptions, client))
+        return Optional.of(createStubRunner(dependencyName, unzippedStubDir, context, dependencyMappingsPath, stubRunnerOptions, client))
     }
 
-    private static final Function<StubsConfiguration, Module> STUBS_TO_MODULE = new Function<StubsConfiguration, Module>() {
+    private static
+    final Function<StubsConfiguration, StubDependency> STUBS_TO_DEPENDENCY = new Function<StubsConfiguration, StubDependency>() {
         @Override
-        Module apply(StubsConfiguration configuration) {
-            return new Module(configuration.stubsGroupId, configuration.stubsArtifactId, configuration.stubsClassifier)
+        StubDependency apply(StubsConfiguration configuration) {
+            return new StubDependency(configuration.stubsGroupId, configuration.stubsArtifactId, configuration.stubsClassifier)
         }
     }
 
-    private StubRunner createStubRunner(String alias, File unzippedStubsDir, String context, String dependencyMappingsPath, StubRunnerOptions stubRunnerOptions, CuratorFramework client) {
-        List<ProjectMetadata> projects = [new ProjectMetadata(alias, dependencyMappingsPath, context)]
-        Arguments arguments = new Arguments(stubRunnerOptions, context, unzippedStubsDir.path, alias, projects)
+    private StubRunner createStubRunner(String dependencyName, File unzippedStubsDir, String context, String dependencyMappingsPath, StubRunnerOptions stubRunnerOptions, CuratorFramework client) {
+        List<ProjectMetadata> projects = [new ProjectMetadata(dependencyName, dependencyMappingsPath, context)]
+        Arguments arguments = new Arguments(stubRunnerOptions, context, unzippedStubsDir.path, dependencyName, projects)
         return new StubRunner(arguments, new StubRegistry(stubRunnerOptions.zookeeperConnectString, client))
     }
 
-    private static class Module {
+    private static String extractServiceNameFromPath(String dependencyPath) {
+        return substringAfterLast(dependencyPath, "/")
+    }
+
+    private static class StubDependency {
         final String groupId
         final String artifactId
         final String classifier
 
-        Module(String dependencyMappingsPath, String classifier) {
+        StubDependency(String dependencyMappingsPath, String classifier) {
             String dependencyInPackageNotation = dependencyMappingsPath.replaceAll("/", ".")
             groupId = substringBeforeLast(dependencyInPackageNotation, ".")
             artifactId = substringAfterLast(dependencyInPackageNotation, ".")
             this.classifier = classifier
         }
 
-        Module(String groupId, String artifactId, String classifier) {
+        StubDependency(String groupId, String artifactId, String classifier) {
             this.groupId = groupId
             this.artifactId = artifactId
             this.classifier = classifier

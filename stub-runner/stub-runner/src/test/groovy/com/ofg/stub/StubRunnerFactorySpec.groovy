@@ -69,6 +69,19 @@ class StubRunnerFactorySpec extends Specification {
             1 * downloader.downloadAndUnpackStubJar('com.ofg', 'fraud', null)
     }
 
+    def "should create stubs with service correct name from dependencyMappingPath and unzipped folder from StubsConfiguration"() {
+        given:
+            folder.newFolder("mappings")
+            Collaborators collaborators = new Collaborators('pl', ['com/ofg/risk-service'],
+                    ['com/ofg/risk-service': new StubsConfiguration('com.ofg', 'different-name-for-stubs', 'stub')])
+            StubRunnerFactory factory = new StubRunnerFactory(stubRunnerOptions, collaborators, curatorFramework, downloader)
+        when:
+            List<Optional<StubRunner>>  listOfOptionals = factory.createStubsFromServiceConfiguration()
+        then:
+            1 * downloader.downloadAndUnpackStubJar("com.ofg", "different-name-for-stubs", "stub") >> folder.root
+            listOfOptionals.get(0).get().arguments.serviceName == 'risk-service'
+    }
+
     def "should try to download using stuboptions.classifier properties if no dependency found"() {
         given:
             folder.newFolder("mappings")

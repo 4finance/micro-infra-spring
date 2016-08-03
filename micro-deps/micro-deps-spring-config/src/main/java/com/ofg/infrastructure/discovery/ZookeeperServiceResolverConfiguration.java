@@ -66,7 +66,7 @@ public class ZookeeperServiceResolverConfiguration {
 
     private Integer randomizePortIfRequired(String port) {
         Integer portToPick = Integer.valueOf(port);
-        if (portToPick == -1) {
+        if (portToPick <= 0) {
             return SocketUtils.findAvailableTcpPort();
         }
         return portToPick;

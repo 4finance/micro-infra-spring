@@ -1,22 +1,28 @@
 package com.ofg.infrastructure.web.logging;
 
-import com.ofg.infrastructure.web.logging.wrapper.HttpServletRequestLoggingWrapper;
-import com.ofg.infrastructure.web.logging.wrapper.HttpServletResponseLoggingWrapper;
-import feign.Request;
-import feign.Response;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.util.StreamUtils;
-import org.springframework.util.StringUtils;
-
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.util.StreamUtils;
+import org.springframework.util.StringUtils;
+
+import com.ofg.infrastructure.web.logging.wrapper.HttpServletRequestLoggingWrapper;
+import com.ofg.infrastructure.web.logging.wrapper.HttpServletResponseLoggingWrapper;
+import feign.Request;
+import feign.Response;
+
 class HttpDataExtractor {
+
+    private static final Logger log = LoggerFactory.getLogger(HttpDataExtractor.class);
 
     static Map<String, String> extractHeaders(HttpServletRequestLoggingWrapper httpServletRequest){
         Map<String, String> headers = new HashMap<>();
@@ -122,12 +128,14 @@ class HttpDataExtractor {
         return request.body() == null ? "" : new String(request.body());
     }
     
-    static String extractContent(ClientHttpResponse response){
+    static String extractContent(ClientHttpResponse response) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        try{
+        try {
             StreamUtils.copy(response.getBody(), output);
+        } catch (FileNotFoundException ex) {
+            log.debug("ExtractContent error:", ex);
         } catch (Exception ex) {
-            throw new IllegalStateException("Error extractContent", ex);
+            log.error("ExtractContent error:", ex);
         }
         return new String(output.toByteArray());
     }
@@ -136,8 +144,10 @@ class HttpDataExtractor {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         try{
             StreamUtils.copy(response.body().asInputStream(), output);
+        } catch (FileNotFoundException ex) {
+            log.debug("ExtractContent error:", ex);
         } catch (Exception ex) {
-            throw new IllegalStateException("Error extractContent", ex);
+            log.error("ExtractContent error:", ex);
         }
         return new String(output.toByteArray());
     }

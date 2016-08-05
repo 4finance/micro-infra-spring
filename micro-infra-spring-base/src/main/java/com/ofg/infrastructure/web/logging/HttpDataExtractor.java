@@ -1,20 +1,21 @@
 package com.ofg.infrastructure.web.logging;
 
-import com.ofg.infrastructure.web.logging.wrapper.HttpServletRequestLoggingWrapper;
-import com.ofg.infrastructure.web.logging.wrapper.HttpServletResponseLoggingWrapper;
-import feign.Request;
-import feign.Response;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.util.StreamUtils;
-import org.springframework.util.StringUtils;
-
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.springframework.http.HttpRequest;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.util.StreamUtils;
+import org.springframework.util.StringUtils;
+
+import com.ofg.infrastructure.web.logging.wrapper.HttpServletRequestLoggingWrapper;
+import com.ofg.infrastructure.web.logging.wrapper.HttpServletResponseLoggingWrapper;
+import feign.Request;
+import feign.Response;
 
 class HttpDataExtractor {
 
@@ -126,9 +127,7 @@ class HttpDataExtractor {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         try{
             StreamUtils.copy(response.getBody(), output);
-        } catch (Exception ex) {
-            throw new IllegalStateException("Error extractContent", ex);
-        }
+        } catch (Exception ex) {}
         return new String(output.toByteArray());
     }
     
@@ -136,9 +135,7 @@ class HttpDataExtractor {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         try{
             StreamUtils.copy(response.body().asInputStream(), output);
-        } catch (Exception ex) {
-            throw new IllegalStateException("Error extractContent", ex);
-        }
+        } catch (Exception ex) {}
         return new String(output.toByteArray());
     }
 

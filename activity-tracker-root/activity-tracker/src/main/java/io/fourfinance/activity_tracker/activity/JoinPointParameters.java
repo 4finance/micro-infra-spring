@@ -1,40 +1,32 @@
 package io.fourfinance.activity_tracker.activity;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-
-import java.util.List;
-
+import javaslang.Tuple;
+import javaslang.collection.HashMap;
+import javaslang.collection.List;
+import javaslang.collection.Map;
+import javaslang.control.Option;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 class JoinPointParameters {
 
-    private final List<String> parameterNames;
-
-    private final List<Object> parameterValues;
+    private final Map<String, String> parameters;
 
     JoinPointParameters(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        parameterNames = signature.getParameterNames() != null ? asList(signature.getParameterNames()) : java.util
-                .Collections.<String>emptyList();
-        parameterValues = joinPoint.getArgs() != null ? asList(joinPoint.getArgs()) : emptyList();
+        List<String> names = signature.getParameterNames() != null ? List.of(signature.getParameterNames()) : List.empty();
+        List<Object> values = joinPoint.getArgs() != null ? List.of(joinPoint.getArgs()) : List.empty();
+        parameters = HashMap.ofEntries(names.zip(values).map(t -> Tuple.of(t._1, t._2.toString())));
     }
 
-    Optional<Object> getValue(String parameterName) {
-        Preconditions.checkNotNull(parameterName, "JoinPoint param must not be null");
-        if(parameterNames.contains(parameterName)) {
-            return Optional.fromNullable(parameterValues.get(indexOfParameter(parameterName)));
+    Option<String> getValue(String parameterName) {
+        checkNotNull(parameterName, "JoinPoint param must not be null");
+        if (parameters.containsKey(parameterName)) {
+            return parameters.get(parameterName);
         } else {
-            return Optional.absent();
+            return Option.none();
         }
     }
-
-    private int indexOfParameter(final String parameterName) {
-        return parameterNames.indexOf(parameterName);
-    }
-
 }

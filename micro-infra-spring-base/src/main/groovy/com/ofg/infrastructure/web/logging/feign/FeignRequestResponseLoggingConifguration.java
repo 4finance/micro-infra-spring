@@ -7,17 +7,18 @@ import com.ofg.infrastructure.web.logging.RequestResponseLogger;
 import com.ofg.infrastructure.web.logging.SpanIdProvider;
 import feign.Logger;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.sleuth.SpanAccessor;
 import org.springframework.cloud.sleuth.Tracer;
+import org.springframework.cloud.sleuth.autoconfig.TraceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableTracing
-@ConditionalOnProperty(prefix = "rest.client.feign.logging", name = "enabled", havingValue = "true", matchIfMissing = true)
-@ConditionalOnBean(Tracer.class)
+@ConditionalOnProperty(name = "rest.client.feign.logging.enabled", matchIfMissing = true)
+@AutoConfigureAfter(TraceAutoConfiguration.class)
 public class FeignRequestResponseLoggingConifguration {
 
     @Bean

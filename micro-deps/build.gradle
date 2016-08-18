@@ -73,6 +73,8 @@ project(':micro-deps-root:micro-deps-spring-config') {
         testCompile "org.springframework:spring-webmvc"
         testCompile "com.jayway.restassured:rest-assured"
         testCompile 'org.slf4j:slf4j-api'
+        testCompile 'cglib:cglib-nodep'
+        testCompile 'org.objenesis:objenesis'
     }
 }
 

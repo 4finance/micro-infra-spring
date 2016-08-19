@@ -33,7 +33,13 @@ public class SpringCloudToMicroserviceJsonConverter {
                     LoadBalancerType.fromName(zookeeperDependency.getLoadBalancerType().name()),
                     zookeeperDependency.getContentTypeTemplate(),
                     zookeeperDependency.getVersion(),
-                    convertFromMapOfCollection(zookeeperDependency.getHeaders())
+                    convertFromMapOfCollection(zookeeperDependency.getHeaders()),
+                    zookeeperDependency.getStubsConfiguration() == null
+                            ? null
+                            : new MicroserviceConfiguration.Dependency.StubsConfiguration(
+                            zookeeperDependency.getStubsConfiguration().getStubsGroupId(),
+                            zookeeperDependency.getStubsConfiguration().getStubsArtifactId(),
+                            zookeeperDependency.getStubsConfiguration().getStubsClassifier())
             );
             dependencies.add(dependency);
         }

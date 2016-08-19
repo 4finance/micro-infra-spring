@@ -9,18 +9,24 @@ import spock.lang.Specification
 
 class SpringCloudToMicroserviceJsonConverterSpec extends Specification {
 
+    ZookeeperDiscoveryProperties discoveryProperties
+
+    String dependencyPath
+
+    def setup() {
+        dependencyPath = 'pl/any/service'
+        discoveryProperties = Stub(ZookeeperDiscoveryProperties)
+        discoveryProperties.root >> dependencyPath
+    }
+
     def "should create collaborator with default stubs"() {
         given:
         ZookeeperDependencies dependencies = new ZookeeperDependencies()
-        String dependencyPath = 'pl/any/service'
-        ZookeeperDiscoveryProperties discoveryProperties = Stub(ZookeeperDiscoveryProperties)
-        discoveryProperties.root >> dependencyPath
         ZookeeperDependency dependency = new ZookeeperDependency(dependencyPath)
         dependencies.setDependencies(['service': dependency])
         SpringCloudToMicroserviceJsonConverter converter = new SpringCloudToMicroserviceJsonConverter("base", dependencies, discoveryProperties)
 
         when:
-        println converter.toMicroserviceJsonNotation()
         def dependenciesMicroserviceJson = new JsonSlurper().parseText(converter.toMicroserviceJsonNotation())
 
         then:
@@ -45,9 +51,6 @@ class SpringCloudToMicroserviceJsonConverterSpec extends Specification {
     def "should convert dependency with defined stubs"() {
         given:
         ZookeeperDependencies dependencies = new ZookeeperDependencies()
-        String dependencyPath = 'pl/any/service'
-        ZookeeperDiscoveryProperties discoveryProperties = Stub(ZookeeperDiscoveryProperties)
-        discoveryProperties.root >> dependencyPath
         ZookeeperDependency dependency = new ZookeeperDependency(dependencyPath)
         String stubPath = 'com.different:service:stub'
         dependency.stubs = stubPath

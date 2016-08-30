@@ -14,7 +14,7 @@ class DescriptorRepository {
 
     DescriptorRepository(File repository) {
         if (!repository.isDirectory()) {
-            throw new InvalidRepositoryLayout('missing descriptor repository')
+            throw new InvalidRepositoryLayout("Missing descriptor repository. Check what is under path: ${repository}")
         }
         path = repository
     }

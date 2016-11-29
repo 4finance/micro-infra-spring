@@ -1,19 +1,19 @@
 package com.ofg.infrastructure.web.logging.feign;
 
 
-import com.ofg.infrastructure.web.logging.SpanIdProvider;
+import com.ofg.infrastructure.web.logging.RequestIdProvider;
 import org.springframework.cloud.sleuth.SpanAccessor;
 
-public class SleuthSpanIdProvider implements SpanIdProvider {
+public class SleuthRequestIdProvider implements RequestIdProvider {
     
     private final SpanAccessor spanAccessor;
 
-    public SleuthSpanIdProvider(SpanAccessor spanAccessor) {
+    public SleuthRequestIdProvider(SpanAccessor spanAccessor) {
         this.spanAccessor = spanAccessor;
     }
 
     @Override
-    public String getSpanId() {
+    public String getRequestId() {
         return String.valueOf(spanAccessor.getCurrentSpan().getSpanId());
     }
 }

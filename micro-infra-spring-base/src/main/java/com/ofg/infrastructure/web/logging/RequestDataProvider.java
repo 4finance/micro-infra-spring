@@ -14,18 +14,18 @@ public class RequestDataProvider {
         storage = CacheBuilder.newBuilder().expireAfterWrite(timeToLiveMillis, MILLISECONDS).build();
     }
 
-    public void store(String traceId, HttpData data) {
-        Preconditions.checkNotNull(traceId, "traceId cannot be null");
-        Preconditions.checkArgument(!traceId.isEmpty(), "traceId cannot be empty");
-        storage.put(traceId, data);
+    public void store(String requestId, HttpData data) {
+        Preconditions.checkNotNull(requestId, "requestId cannot be null");
+        Preconditions.checkArgument(!requestId.isEmpty(), "requestId cannot be empty");
+        storage.put(requestId, data);
     }
     
-    public HttpData retrieve(String traceId) {
-        return storage.getIfPresent(traceId);
+    public HttpData retrieve(String requestId) {
+        return storage.getIfPresent(requestId);
     }
 
-    public void remove(String traceId) {
-        storage.invalidate(traceId);
+    public void remove(String requestId) {
+        storage.invalidate(requestId);
     }
     
     public long size() {

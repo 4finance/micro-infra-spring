@@ -42,9 +42,9 @@ class FeignCallObfuscatingLoggerSpec extends MicroserviceMvcWiremockSpec {
     private TestFeignClient testFeignClient;
 
     def setup() {
-        SpanIdProvider traceIdProvider = Mock(SpanIdProvider)
-        traceIdProvider.getSpanId() >> UUID.randomUUID().toString()
-        FeignCallObfuscatingLogger logger = new FeignCallObfuscatingLogger(requestDataProvider, traceIdProvider, reqResLogger)
+        RequestIdProvider requestIdProvider = Mock(RequestIdProvider)
+        requestIdProvider.getRequestId() >> UUID.randomUUID().toString()
+        FeignCallObfuscatingLogger logger = new FeignCallObfuscatingLogger(requestDataProvider, requestIdProvider, reqResLogger)
         
         testFeignClient = Feign.builder().
                 logger(logger).
@@ -182,6 +182,23 @@ class FeignCallObfuscatingLoggerSpec extends MicroserviceMvcWiremockSpec {
         cleanup:
             removeAppender(mockAppender)
     }
+    
+    def 'JSON: Should skip logging response if request data is gone from cache'() {
+        given:
+            final Appender mockAppender = insertAppender(Mock(Appender))
+            TestFeignClient feignClient = feignClientLosingRequests()
+            stubPost('/logTestJson', 201, [:])
+        when:
+            feignClient.testPost(readResource(JSON_REQ_RESOURCE_NAME));
+        then:
+            interaction {
+                checkInteraction(mockAppender,'.*REQ CLIENT->.*', 1)
+                and:
+                checkInteraction(mockAppender,'.*RES CLIENT<-.*', 0)
+            }
+        cleanup:
+            removeAppender(mockAppender)
+    }
 
     def 'XML: Should create log REQ/RES for POST call and set REMOVED on fields from REQ due to configuration'() {
         given:
@@ -255,6 +272,18 @@ class FeignCallObfuscatingLoggerSpec extends MicroserviceMvcWiremockSpec {
 
         @RequestLine("GET /logTestXmlObfuscateFieldsMsg")
         Response testGetXmlObfuscateFieldsMsg();
+    }
+    
+    private TestFeignClient feignClientLosingRequests() {
+        RequestDataProvider alwaysLost = Stub(RequestDataProvider)
+        RequestIdProvider requestIdProvider = Mock(RequestIdProvider)
+        alwaysLost.retrieve(_) >> null
+        FeignCallObfuscatingLogger alwaysLostLogger = new FeignCallObfuscatingLogger(alwaysLost, requestIdProvider, reqResLogger);
+
+        return Feign.builder().
+                logger(alwaysLostLogger).
+                logLevel(feign.Logger.Level.FULL).
+                target(TestFeignClient, "http://localhost:${httpMockServer.port()}")
     }
     
     private Appender insertAppender(Appender appender) {

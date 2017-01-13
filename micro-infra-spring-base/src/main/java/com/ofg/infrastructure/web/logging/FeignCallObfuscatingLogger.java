@@ -1,13 +1,14 @@
 package com.ofg.infrastructure.web.logging;
 
+import static com.ofg.infrastructure.web.logging.HttpDataFactory.createHttpData;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
 import feign.Request;
 import feign.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-
-import static com.ofg.infrastructure.web.logging.HttpDataFactory.createHttpData;
 
 public class FeignCallObfuscatingLogger extends feign.Logger.JavaLogger {
 
@@ -39,7 +40,8 @@ public class FeignCallObfuscatingLogger extends feign.Logger.JavaLogger {
         HttpData reqData = requestDataProvider.retrieve(requestId);
         if (requestTraceable(reqData)) {
             HttpData resData = createHttpData(response);
-            Response rebufferedResponse = Response.create(response.status(), response.reason(), response.headers(), resData.getContent().getBytes());
+            Response rebufferedResponse = Response.create(response.status(), response.reason(), response.headers(),
+                    resData.getContent().getBytes(StandardCharsets.UTF_8.name()));
             requestResponseLogger.logObfuscatedResponse(reqData, resData, TAG);
             requestDataProvider.remove(requestId);
             return super.logAndRebufferResponse(configKey, logLevel, rebufferedResponse, elapsedTime);

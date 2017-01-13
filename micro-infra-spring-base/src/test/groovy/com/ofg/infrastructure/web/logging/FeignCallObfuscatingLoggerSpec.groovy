@@ -7,6 +7,7 @@ import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MicroserviceMvcWiremockSpec
 import com.ofg.infrastructure.discovery.web.HttpMockServer
+import com.ofg.infrastructure.web.logging.config.LogsConfig
 import feign.Feign
 import feign.FeignException
 import feign.Headers
@@ -36,7 +37,7 @@ class FeignCallObfuscatingLoggerSpec extends MicroserviceMvcWiremockSpec {
     
     @Autowired private RequestResponseLogger reqResLogger;
     @Autowired private HttpMockServer httpMockServer
-    
+    @Autowired private LogsConfig props;
     RequestDataProvider requestDataProvider = new RequestDataProvider(20000);
     
     private TestFeignClient testFeignClient;
@@ -44,7 +45,7 @@ class FeignCallObfuscatingLoggerSpec extends MicroserviceMvcWiremockSpec {
     def setup() {
         RequestIdProvider requestIdProvider = Mock(RequestIdProvider)
         requestIdProvider.getRequestId() >> UUID.randomUUID().toString()
-        FeignCallObfuscatingLogger logger = new FeignCallObfuscatingLogger(requestDataProvider, requestIdProvider, reqResLogger)
+        FeignCallObfuscatingLogger logger = new FeignCallObfuscatingLogger(props, requestDataProvider, requestIdProvider, reqResLogger)
         
         testFeignClient = Feign.builder().
                 logger(logger).
@@ -278,7 +279,7 @@ class FeignCallObfuscatingLoggerSpec extends MicroserviceMvcWiremockSpec {
         RequestDataProvider alwaysLost = Stub(RequestDataProvider)
         RequestIdProvider requestIdProvider = Mock(RequestIdProvider)
         alwaysLost.retrieve(_) >> null
-        FeignCallObfuscatingLogger alwaysLostLogger = new FeignCallObfuscatingLogger(alwaysLost, requestIdProvider, reqResLogger);
+        FeignCallObfuscatingLogger alwaysLostLogger = new FeignCallObfuscatingLogger(props, alwaysLost, requestIdProvider, reqResLogger);
 
         return Feign.builder().
                 logger(alwaysLostLogger).

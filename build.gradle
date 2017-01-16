@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:1.4.0.RELEASE"
-        classpath 'com.ofg:uptodate-gradle-plugin:+'
+        classpath 'com.toomuchcoding:uptodate-gradle-plugin:+'
         classpath "com.ofg:micro-common-release:0.1.18"
         classpath "io.spring.gradle:dependency-management-plugin:0.5.6.RELEASE"
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:+"
@@ -99,7 +99,7 @@ configure(emptySubprojects + rootProject) {
 
 configure(srcSubprojects) {
 
-    apply plugin: 'com.ofg.uptodate'
+    apply plugin: 'com.toomuchcoding.uptodate'
     apply plugin: "io.spring.dependency-management"
 
     sourceCompatibility = 1.8

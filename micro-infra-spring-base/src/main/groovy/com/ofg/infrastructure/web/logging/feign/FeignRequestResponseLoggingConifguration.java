@@ -5,6 +5,7 @@ import com.ofg.infrastructure.web.logging.FeignCallObfuscatingLogger;
 import com.ofg.infrastructure.web.logging.RequestDataProvider;
 import com.ofg.infrastructure.web.logging.RequestResponseLogger;
 import com.ofg.infrastructure.web.logging.RequestIdProvider;
+import com.ofg.infrastructure.web.logging.config.LogsConfig;
 import feign.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -26,8 +27,9 @@ public class FeignRequestResponseLoggingConifguration {
     }
     
     @Bean
-    public Logger feignLogger(RequestDataProvider requestDataProvider, RequestIdProvider traceIdProvider, RequestResponseLogger requestResponseLogger) {
-        return new FeignCallObfuscatingLogger(requestDataProvider, traceIdProvider, requestResponseLogger);
+    public Logger feignLogger(LogsConfig props, RequestDataProvider requestDataProvider,
+                              RequestIdProvider traceIdProvider, RequestResponseLogger requestResponseLogger) {
+        return new FeignCallObfuscatingLogger(props, requestDataProvider, traceIdProvider, requestResponseLogger);
     }
     
     @Bean

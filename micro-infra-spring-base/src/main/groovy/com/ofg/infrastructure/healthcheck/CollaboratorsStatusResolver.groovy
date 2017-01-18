@@ -28,6 +28,13 @@ class CollaboratorsStatusResolver {
         }
     }
 
+    public String statusOfService(String serviceId) {
+        Set<ServicePath> myCollaborators = serviceResolver.fetchMyDependencies()
+        ServicePath service = myCollaborators
+                .find { ServicePath service -> service.lastName == serviceId }
+        return pingOfAllCollaboratorInstances(service)
+    }
+
     public Map statusOfAllDependencies() {
         final Set<ServicePath> allServices = serviceResolver.fetchAllDependencies()
         return allServices.collectEntries { ServicePath service ->
@@ -43,6 +50,14 @@ class CollaboratorsStatusResolver {
         }
     }
 
+    private String pingOfAllCollaboratorInstances(ServicePath service) {
+        Set<URI> allUrisOfService = serviceResolver.fetchAllUris(service)
+        boolean status = allUrisOfService
+                .collect { URI instanceUrl -> checkConnectionStatus(instanceUrl) }
+                .find { status -> status }
+        return CollaboratorStatus.of(status)
+    }
+
     private Map collaboratorsStatusOfAllInstances(ServicePath service) {
         final Set<URI> collaboratorInstances = serviceResolver.fetchAllUris(service)
         return collaboratorInstances.collectEntries { URI uri ->
@@ -53,7 +68,7 @@ class CollaboratorsStatusResolver {
     private Map checkCollaborators(URI url) {
         Optional<Map> collaborators = establishCollaboratorsStatus(url)
         return [
-                status: CollaboratorStatus.of(collaborators.isPresent()),
+                status       : CollaboratorStatus.of(collaborators.isPresent()),
                 collaborators: collaborators.or([:])
         ]
     }
@@ -89,8 +104,8 @@ class CollaboratorsStatusResolver {
 
     private Map adjustLegacyCollaboratorsResponse(Map collaboratorsResponse) {
         Map result = [:]
-        collaboratorsResponse.each {alias, statusStr ->
-            tryResolveAlias(alias as String).transform ({ ServicePath path ->
+        collaboratorsResponse.each { alias, statusStr ->
+            tryResolveAlias(alias as String).transform({ ServicePath path ->
                 result << suspectedStatusOfAllInstances(path, statusStr as String)
             })
         }
@@ -117,7 +132,7 @@ class CollaboratorsStatusResolver {
 
     private boolean isLegacyResponse(Map collaboratorsResponse) {
         return !collaboratorsResponse.empty &&
-                collaboratorsResponse.values().any{!(it instanceof Map)}
+                collaboratorsResponse.values().any { !(it instanceof Map) }
     }
 
     private boolean checkConnectionStatus(URI url) {

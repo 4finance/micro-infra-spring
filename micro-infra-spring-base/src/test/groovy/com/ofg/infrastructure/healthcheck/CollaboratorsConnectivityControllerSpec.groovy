@@ -5,6 +5,8 @@ import com.ofg.infrastructure.discovery.ServiceAlias
 import com.ofg.infrastructure.discovery.ServicePath
 import com.ofg.infrastructure.discovery.ServiceResolver
 import org.apache.commons.lang.StringUtils
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 
 import static com.ofg.infrastructure.healthcheck.CollaboratorStatus.DOWN
@@ -64,6 +66,39 @@ class CollaboratorsConnectivityControllerSpec extends Specification {
             info['/com/micro2'] == [
                     (MICRO_2_URL): UP
             ]
+    }
+
+    def 'should return status OK when selected collaborator is UP'() {
+        given:
+            instancesOfMicroservices(['/com/micro1': [MICRO_1A_URL, MICRO_1B_URL],
+                                      '/com/micro2': [MICRO_2_URL],
+                                      '/com/micro3': [MICRO_3A_URL]])
+            myCollaboratorsAre('/com/micro1', '/com/micro2')
+            theseAreOk(MICRO_2_URL, MICRO_1A_URL)
+
+        when:
+            ResponseEntity<String> response = controller.getCollaboratorsPing('micro1')
+
+        then:
+            println response.body
+            response.statusCode == HttpStatus.OK
+            response.body == 'OK'
+    }
+
+    def 'should return 404 when selected collaborator is DOWN'() {
+        given:
+            instancesOfMicroservices(['/com/micro1': [MICRO_1A_URL, MICRO_1B_URL],
+                                      '/com/micro2': [MICRO_2_URL],
+                                      '/com/micro3': [MICRO_3A_URL]])
+            myCollaboratorsAre('/com/micro1', '/com/micro2')
+            theseAreOk(MICRO_2_URL, MICRO_1A_URL)
+
+        when:
+            ResponseEntity<String> response = controller.getCollaboratorsPing('micro3')
+
+        then:
+            println response.body
+            response.statusCode == HttpStatus.NOT_FOUND
     }
 
     def myCollaboratorsAre(String... strings) {

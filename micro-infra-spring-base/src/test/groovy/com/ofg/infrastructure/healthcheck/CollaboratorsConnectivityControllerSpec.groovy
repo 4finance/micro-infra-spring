@@ -73,14 +73,13 @@ class CollaboratorsConnectivityControllerSpec extends Specification {
             instancesOfMicroservices(['/com/micro1': [MICRO_1A_URL, MICRO_1B_URL],
                                       '/com/micro2': [MICRO_2_URL],
                                       '/com/micro3': [MICRO_3A_URL]])
-            myCollaboratorsAre('/com/micro1', '/com/micro2')
+            myCollaboratorsAre('/com/micro2', '/com/micro3')
             theseAreOk(MICRO_2_URL, MICRO_1A_URL)
 
         when:
             ResponseEntity<String> response = controller.getCollaboratorsPing('micro1')
 
         then:
-            println response.body
             response.statusCode == HttpStatus.OK
             response.body == 'OK'
     }
@@ -97,7 +96,19 @@ class CollaboratorsConnectivityControllerSpec extends Specification {
             ResponseEntity<String> response = controller.getCollaboratorsPing('micro3')
 
         then:
-            println response.body
+            response.statusCode == HttpStatus.NOT_FOUND
+    }
+
+    def 'should return 404 when selected collaborator is not existing'() {
+        given:
+            instancesOfMicroservices(['/com/micro2': [MICRO_2_URL]])
+            myCollaboratorsAre('/com/micro2')
+            theseAreOk(MICRO_2_URL)
+
+        when:
+            ResponseEntity<String> response = controller.getCollaboratorsPing('micro3')
+
+        then:
             response.statusCode == HttpStatus.NOT_FOUND
     }
 

@@ -29,10 +29,10 @@ class CollaboratorsStatusResolver {
     }
 
     public String statusOfService(String serviceId) {
-        Set<ServicePath> myCollaborators = serviceResolver.fetchMyDependencies()
+        Set<ServicePath> myCollaborators = serviceResolver.fetchAllDependencies()
         ServicePath service = myCollaborators
                 .find { ServicePath service -> service.lastName == serviceId }
-        return pingOfAllCollaboratorInstances(service)
+        return service ? pingOfAllCollaboratorInstances(service) : ''
     }
 
     public Map statusOfAllDependencies() {

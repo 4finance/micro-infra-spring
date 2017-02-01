@@ -1,12 +1,12 @@
 package com.ofg.infrastructure.web.logging;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.ofg.infrastructure.web.logging.config.LogsConfig;
 import com.ofg.infrastructure.web.logging.config.LogsConfigElement;
 import com.ofg.infrastructure.web.logging.obfuscation.PayloadObfuscationProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class RequestResponseLogger {
 
@@ -22,7 +22,7 @@ public class RequestResponseLogger {
     public void logObfuscatedRequest(HttpData reqData, String tag) {
         checkNotNull(reqData, "request data cannot be empty");
         LogsConfigElement config = props.getConfigElementByUrlAndMethod(reqData.getPath(), reqData.getHttpMethod());
-        if(!config.isSkipAll()){
+        if (!config.isSkipAll()) {
             reqData.setProcessedContent(obfuscator.process(reqData.getContent(), reqData.getHeaders(), config.getFilteredReqFields()));
             reqData.setProcessedHeaders(config.getRequestHeadersToLogging(reqData.getHeaders()));
             log.debug("REQ {}->{}", tag, LogBuilder.createLogBuilder()
@@ -30,12 +30,12 @@ public class RequestResponseLogger {
                     .build());
         }
     }
-    
+
     public void logObfuscatedResponse(HttpData reqData, HttpData resData, String tag) {
         checkNotNull(reqData, "request data cannot be empty");
         checkNotNull(resData, "response data cannot be empty");
         LogsConfigElement config = props.getConfigElementByUrlAndMethod(reqData.getPath(), reqData.getHttpMethod());
-        if(!config.isSkipAll()){
+        if (!config.isSkipAll()) {
             resData.setProcessedContent(obfuscator.process(resData.getContent(), resData.getHeaders(), config.getFilteredResFields()));
             resData.setProcessedHeaders(config.getResponseHeadersToLogging(resData.getHeaders()));
             log.debug("RES {}<-{}", tag, LogBuilder.createLogBuilder()

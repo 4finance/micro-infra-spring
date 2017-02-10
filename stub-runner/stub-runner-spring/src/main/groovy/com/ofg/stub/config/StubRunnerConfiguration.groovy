@@ -84,7 +84,7 @@ class StubRunnerConfiguration {
     @Bean(initMethod = 'runStubs', destroyMethod = 'close')
     StubRunning batchStubRunner(@Value('${stubrunner.port.range.min:10000}') Integer minPortValue,
                                 @Value('${stubrunner.port.range.max:15000}') Integer maxPortValue,
-                                @Value('${stubrunner.stubs.repository.root:http://nexus.4finance.net/content/repositories/Pipeline}') String stubRepositoryRoot,
+                                @Value('${stubrunner.stubs.repository.root:https://nexus.4finance.net/content/repositories/Pipeline}') String stubRepositoryRoot,
                                 @Deprecated @Value('${stubrunner.stubs.group:com.ofg}') String stubsGroup,
                                 @Deprecated @Value('${stubrunner.stubs.module:stub-definitions}') String stubsModule,
                                 @Value('${stubrunner.stubs.suffix:stubs}') String stubsSuffx,

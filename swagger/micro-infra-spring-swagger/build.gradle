@@ -1,9 +1,9 @@
 dependencies {
-    compile('io.springfox:springfox-swagger-ui:2.4.0')
-    compile("io.springfox:springfox-core:2.4.0")
-    compile("io.springfox:springfox-spi:2.4.0")
-    compile("io.springfox:springfox-schema:2.4.0")
-    compile("io.springfox:springfox-spring-web:2.4.0")
-    compile("io.springfox:springfox-swagger2:2.4.0")
+    compile('io.springfox:springfox-swagger-ui:2.6.1')
+    compile("io.springfox:springfox-core:2.6.1")
+    compile("io.springfox:springfox-spi:2.6.1")
+    compile("io.springfox:springfox-schema:2.6.1")
+    compile("io.springfox:springfox-spring-web:2.6.1")
+    compile("io.springfox:springfox-swagger2:2.6.1")
     compile "org.springframework.boot:spring-boot-starter-web"
 }

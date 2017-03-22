@@ -1,8 +1,9 @@
 package com.ofg.infrastructure.base
 
-import com.github.tomakehurst.wiremock.client.RequestPatternBuilder
-import com.github.tomakehurst.wiremock.client.UrlMatchingStrategy
+import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.RequestMethod
+import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder
+import com.github.tomakehurst.wiremock.matching.UrlPattern
 import com.ofg.infrastructure.BaseConfiguration
 import com.ofg.infrastructure.discovery.ServiceAlias
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
@@ -41,8 +42,7 @@ class CollaboratorStubIntegrationSpec extends MvcWiremockIntegrationSpec {
     }
 
     private RequestPatternBuilder expectedRequest() {
-        def matchingPongEndpoint = new UrlMatchingStrategy()
-        matchingPongEndpoint.setUrlPath("/$STUB_NAME")
+        UrlPattern matchingPongEndpoint = WireMock.urlEqualTo("/$STUB_NAME")
         return new RequestPatternBuilder(RequestMethod.GET, matchingPongEndpoint)
     }
 

@@ -122,7 +122,7 @@ configure(srcSubprojects) {
             //test
             dependency "ch.qos.logback:logback-classic:1.1.7"
             dependency "com.jayway.restassured:rest-assured:2.9.0"
-            dependency "com.github.tomakehurst:wiremock:2.0.10-beta"
+            dependency "com.github.tomakehurst:wiremock:2.1.6"
             dependency "cglib:cglib-nodep:3.2.0"
             dependency "org.objenesis:objenesis:2.1"
 

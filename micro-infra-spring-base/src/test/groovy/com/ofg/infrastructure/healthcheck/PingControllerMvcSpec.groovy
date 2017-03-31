@@ -5,11 +5,10 @@ import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
 import com.ofg.infrastructure.base.ServiceDiscoveryStubbingApplicationConfiguration
 import org.junit.ClassRule
 import org.junit.contrib.java.lang.system.ProvideSystemProperty
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpMethod
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import spock.lang.Shared
 
@@ -18,7 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@ContextConfiguration(classes = TestConfig, loader = SpringApplicationContextLoader)
+@SpringBootTest(classes = TestConfig)
 class PingControllerMvcSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
     @Shared @ClassRule

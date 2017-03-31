@@ -3,7 +3,7 @@ package com.ofg.infrastructure.web.view
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.ConfigurationWithoutServiceDiscovery
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
@@ -13,8 +13,7 @@ import org.springframework.test.context.ContextConfiguration
 import static com.ofg.config.BasicProfiles.DEVELOPMENT
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 
-@ContextConfiguration(classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery],
-                      loader = SpringApplicationContextLoader)
+@SpringBootTest(classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery])
 @ActiveProfiles(DEVELOPMENT)
 class PrettyPrintingInDevelopmentEnvironmentSpec extends MvcCorrelationIdSettingIntegrationSpec {
 

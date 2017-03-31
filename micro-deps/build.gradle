@@ -64,6 +64,9 @@ project(':micro-deps-root:micro-deps-spring-config') {
         compile 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery'
         compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
         compile 'io.reactivex:rxjava'
+        compile 'org.eclipse.jetty:jetty-server'
+        compile 'org.eclipse.jetty:jetty-servlet'
+        compile 'org.eclipse.jetty:jetty-servlets'
 
         testCompile 'org.codehaus.groovy:groovy-all'
         testCompile "org.spockframework:spock-core"

@@ -3,7 +3,7 @@ package com.ofg.infrastructure.web.view
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.ConfigurationWithoutServiceDiscovery
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.ApplicationContextInitializer
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Bean
@@ -19,9 +19,9 @@ import static com.ofg.config.BasicProfiles.DEVELOPMENT
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+@SpringBootTest()
 @ContextConfiguration(classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery, ViewConfiguration],
-                      loader = SpringApplicationContextLoader,
-                      initializers = PropertyMockingApplicationContextInitializer.class)
+        initializers = PropertyMockingApplicationContextInitializer.class)
 @ActiveProfiles(DEVELOPMENT)
 class AcceptingUnquotedFieldsInJsonSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
@@ -32,7 +32,7 @@ class AcceptingUnquotedFieldsInJsonSpec extends MvcCorrelationIdSettingIntegrati
             mockMvc.perform(post("/test")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(REQUEST_JSON_BODY))
-                .andExpect(status().isCreated())
+                    .andExpect(status().isCreated())
     }
 
     @Configuration

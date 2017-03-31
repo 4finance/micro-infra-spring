@@ -12,7 +12,6 @@ import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
 
 import static com.ofg.config.BasicProfiles.TEST
-
 /**
  * Base for specifications that use Spring's {@link MockMvc}. Provides also {@link WebApplicationContext}, 
  * {@link ApplicationContext}. The latter you can use to specify what

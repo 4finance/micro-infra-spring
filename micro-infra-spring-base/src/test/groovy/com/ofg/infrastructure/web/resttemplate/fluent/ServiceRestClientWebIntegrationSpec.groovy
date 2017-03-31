@@ -13,7 +13,7 @@ import org.hamcrest.Matchers
 import org.junit.ClassRule
 import org.junit.contrib.java.lang.system.ProvideSystemProperty
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cloud.sleuth.instrument.web.TraceFilter
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ActiveProfiles
@@ -28,7 +28,7 @@ import spock.lang.Shared
 import java.util.concurrent.Executors
 
 @ActiveProfiles(['stub', BasicProfiles.TEST])
-@ContextConfiguration(classes = [BaseConfiguration, SampleController, ServiceDiscoveryStubbingApplicationConfiguration], loader = SpringApplicationContextLoader)
+@SpringBootTest(classes = [BaseConfiguration, SampleController, ServiceDiscoveryStubbingApplicationConfiguration])
 class ServiceRestClientWebIntegrationSpec extends MvcWiremockIntegrationSpec {
 
     private static final ServiceAlias COLLABORATOR_ALIAS = new ServiceAlias('foo-bar')

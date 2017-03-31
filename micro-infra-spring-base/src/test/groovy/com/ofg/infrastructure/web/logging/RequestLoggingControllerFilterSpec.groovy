@@ -12,7 +12,7 @@ import com.ofg.infrastructure.web.view.ViewConfiguration
 import groovy.transform.CompileStatic
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
@@ -35,8 +35,8 @@ import java.util.regex.Pattern
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 
-@ContextConfiguration(classes = [RequestLoggingSpecConfiguration, BaseConfiguration, ConfigurationWithoutServiceDiscovery, ViewConfiguration],
-        loader = SpringApplicationContextLoader)
+@SpringBootTest(classes = [RequestLoggingSpecConfiguration, BaseConfiguration, ConfigurationWithoutServiceDiscovery,
+        ViewConfiguration])
 class RequestLoggingControllerFilterSpec extends MvcIntegrationSpec {
 
     private static final String JSON_REQ_RESOURCE_NAME = 'requestLogging/message_req.json'

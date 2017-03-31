@@ -6,29 +6,23 @@ import ch.qos.logback.core.Appender
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MicroserviceMvcWiremockSpec
+import com.ofg.infrastructure.discovery.ServiceResolverConfiguration
 import com.ofg.infrastructure.discovery.web.HttpMockServer
 import com.ofg.infrastructure.web.logging.config.LogsConfig
-import feign.Feign
-import feign.FeignException
-import feign.Headers
-import feign.RequestLine
-import feign.Response
+import com.ofg.infrastructure.web.resttemplate.fluent.EnableServiceRestClient
+import feign.*
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
-import org.springframework.test.context.ContextConfiguration
 
 import java.util.regex.Pattern
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse
-import static com.github.tomakehurst.wiremock.client.WireMock.get
-import static com.github.tomakehurst.wiremock.client.WireMock.post
-import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching
+import static com.github.tomakehurst.wiremock.client.WireMock.*
 
-@ContextConfiguration(classes = [RequestLoggingSpecConfiguration, BaseConfiguration], loader = SpringApplicationContextLoader)
+@SpringBootTest(classes = [RequestLoggingSpecConfiguration, BaseConfiguration, ServiceResolverConfiguration])
 class FeignCallObfuscatingLoggerSpec extends MicroserviceMvcWiremockSpec {
 
     private static final String JSON_REQ_RESOURCE_NAME = 'requestLogging/message_req.json'
@@ -332,5 +326,6 @@ class FeignCallObfuscatingLoggerSpec extends MicroserviceMvcWiremockSpec {
     @Configuration
     @EnableObfuscatedLogging
     @EnableConfigurationProperties
+    @EnableServiceRestClient
     static class RequestLoggingSpecConfiguration {}
 }

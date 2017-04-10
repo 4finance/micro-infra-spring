@@ -2,7 +2,7 @@ package com.ofg.infrastructure.web.exception
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.ConfigurationWithoutServiceDiscovery
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ContextConfiguration
@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@ContextConfiguration(classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery], loader = SpringApplicationContextLoader)
+@SpringBootTest(classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery])
 class CustomControllerAdviceMvcSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
     def "should apply custom logic when application uses its own @ControllerAdvice"() {

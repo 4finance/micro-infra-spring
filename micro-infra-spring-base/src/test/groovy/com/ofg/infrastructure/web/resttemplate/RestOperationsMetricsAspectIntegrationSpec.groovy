@@ -8,7 +8,7 @@ import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClientConfiguration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.EnableAspectJAutoProxy
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
@@ -27,7 +27,7 @@ import java.util.concurrent.Callable
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*
 
-@ContextConfiguration(classes = [ServiceRestClientConfiguration, ServiceDiscoveryConfiguration, Config], loader = SpringApplicationContextLoader)
+@SpringBootTest(classes = [ServiceRestClientConfiguration, ServiceDiscoveryConfiguration, Config])
 @TestPropertySource(properties = 'rest.client.metrics.enabled=true')
 class RestOperationsMetricsAspectIntegrationSpec extends MvcWiremockIntegrationSpec {
 

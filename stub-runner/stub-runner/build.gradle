@@ -18,6 +18,9 @@ dependencies {
     compile 'ch.qos.logback:logback-classic'
     compile 'args4j:args4j:2.32'
     compile 'com.nurkiewicz.asyncretry:asyncretry-jdk7:0.0.6'
+    compile 'org.eclipse.jetty:jetty-server'
+    compile 'org.eclipse.jetty:jetty-servlet'
+    compile 'org.eclipse.jetty:jetty-servlets'
 
     compile "org.eclipse.aether:aether-api:${aetherVersion}"
     compile "org.eclipse.aether:aether-impl:${aetherVersion}"

@@ -2,21 +2,22 @@ package com.ofg.infrastructure.web.correlationid
 
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MicroserviceMvcWiremockSpec
+import com.ofg.infrastructure.discovery.ServiceResolverConfiguration
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cloud.sleuth.Span
 import org.springframework.cloud.sleuth.trace.SpanContextHolder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 import org.springframework.scheduling.annotation.Async
 import org.springframework.scheduling.annotation.EnableAsync
-import org.springframework.test.context.ContextConfiguration
 import spock.util.concurrent.PollingConditions
 
 import java.util.concurrent.atomic.AtomicReference
 
-@ContextConfiguration(classes = [BaseConfiguration, CorrelationIdAsyncSpecConfiguration], loader = SpringApplicationContextLoader)
+@SpringBootTest(classes = [BaseConfiguration, CorrelationIdAsyncSpecConfiguration])
 class CorrelationIdAsyncSpec extends MicroserviceMvcWiremockSpec {
 
     @Autowired AsyncClass asyncClass
@@ -43,6 +44,7 @@ class CorrelationIdAsyncSpec extends MicroserviceMvcWiremockSpec {
     @CompileStatic
     @Configuration
     @EnableAsync
+    @Import([ServiceResolverConfiguration])
     static class CorrelationIdAsyncSpecConfiguration {
 
         @Bean AsyncClass asyncClass() {

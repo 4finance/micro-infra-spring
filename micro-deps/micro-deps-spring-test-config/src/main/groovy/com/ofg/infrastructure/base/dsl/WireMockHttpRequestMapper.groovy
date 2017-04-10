@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import groovy.transform.CompileStatic
 
 /**
- * A class that contains static helper methods that map HTTP methods with given path 
+ * A class that contains static helper methods that map HTTP methods with given path
  */
 @CompileStatic
 class WireMockHttpRequestMapper {
@@ -33,5 +33,5 @@ class WireMockHttpRequestMapper {
     static RemoteMappingBuilder wireMockHead(String path) {
         return WireMock.head(WireMock.urlEqualTo(path))
     }
-    
+
 }

@@ -6,24 +6,22 @@ import ch.qos.logback.core.Appender
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MicroserviceMvcWiremockSpec
+import com.ofg.infrastructure.discovery.ServiceResolverConfiguration
 import com.ofg.infrastructure.discovery.web.HttpMockServer
 import com.ofg.infrastructure.web.resttemplate.custom.ResponseException
+import com.ofg.infrastructure.web.resttemplate.fluent.EnableServiceRestClient
 import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClient
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
-import org.springframework.test.context.ContextConfiguration
 
 import java.util.regex.Pattern
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse
-import static com.github.tomakehurst.wiremock.client.WireMock.get
-import static com.github.tomakehurst.wiremock.client.WireMock.post
-import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching
+import static com.github.tomakehurst.wiremock.client.WireMock.*
 
-@ContextConfiguration(classes = [RequestLoggingSpecConfiguration, BaseConfiguration], loader = SpringApplicationContextLoader)
+@SpringBootTest(classes = [RequestLoggingSpecConfiguration, BaseConfiguration, ServiceResolverConfiguration])
 class RequestLoggingClientInterceptorSpec extends MicroserviceMvcWiremockSpec {
 
     @Autowired private ServiceRestClient serviceRestClient
@@ -201,6 +199,7 @@ class RequestLoggingClientInterceptorSpec extends MicroserviceMvcWiremockSpec {
 
     @Configuration
     @EnableObfuscatedLogging
+    @EnableServiceRestClient
     static class RequestLoggingSpecConfiguration {}
 
     private void callGet(String path, Map<String, String> requestHeaders) {

@@ -1,10 +1,9 @@
 package com.ofg.infrastructure.web.logging;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.netflix.servo.util.Preconditions;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class RequestDataProvider {
 
@@ -15,8 +14,6 @@ public class RequestDataProvider {
     }
 
     public void store(String requestId, HttpData data) {
-        Preconditions.checkNotNull(requestId, "requestId cannot be null");
-        Preconditions.checkArgument(!requestId.isEmpty(), "requestId cannot be empty");
         storage.put(requestId, data);
     }
     

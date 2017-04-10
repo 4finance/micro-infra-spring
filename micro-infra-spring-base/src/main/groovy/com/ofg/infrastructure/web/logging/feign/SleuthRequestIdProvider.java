@@ -14,6 +14,7 @@ public class SleuthRequestIdProvider implements RequestIdProvider {
 
     @Override
     public String getRequestId() {
-        return String.valueOf(spanAccessor.getCurrentSpan().getSpanId());
+        return spanAccessor.getCurrentSpan() != null ?
+                String.valueOf(spanAccessor.getCurrentSpan().getSpanId()) : "_MISSING_SPAN_ID";
     }
 }

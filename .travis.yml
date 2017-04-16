@@ -7,6 +7,8 @@ before_install:
   - "export GRADLE_OPTS='-Dorg.gradle.parallel=false'"
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
+  - "echo $TRAVIS_COMMIT"
+  - "echo $TRAVIS_COMMIT_RANGE"
 
 install:
 - ./gradlew assemble --stacktrace

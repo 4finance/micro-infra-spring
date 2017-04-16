@@ -5,6 +5,8 @@
 micro-infra-spring
 ======================
 
+[![Join the chat at https://gitter.im/4finance/micro-infra-spring](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/4finance/micro-infra-spring?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Sets up the whole Spring infrastructure stack that will turn your microservice into a beauty.
 
 Check out [the wiki](https://github.com/4finance/micro-infra-spring/wiki) to have a deeper insight into the project.

@@ -49,7 +49,7 @@ import org.springframework.context.annotation.Import
  * @see ServiceConfigurationResolver
  */
 @Configuration
-@Import([ZookeeperDiscoveryClientConfiguration, ServiceDiscoveryTestingServerConfiguration])
+@Import([ZookeeperDiscoveryClientConfiguration, ServiceDiscoveryTestingServerConfiguration, ZookeeperDependenciesAutoConfiguration])
 @Slf4j
 @CompileStatic
 class StubRunnerConfiguration {

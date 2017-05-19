@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.stub
 
-import com.github.tomakehurst.wiremock.client.RemoteMappingBuilder
+import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.VerificationException
@@ -162,7 +162,7 @@ class StubSpec extends Specification {
         return new RequestPatternBuilder(RequestMethod.GET, matchingPongEndpoint)
     }
 
-    private void stubInteraction(RemoteMappingBuilder mapping, ResponseDefinitionBuilder response) {
+    private void stubInteraction(MappingBuilder mapping, ResponseDefinitionBuilder response) {
         wireMock.register(mapping.willReturn(response))
     }
 

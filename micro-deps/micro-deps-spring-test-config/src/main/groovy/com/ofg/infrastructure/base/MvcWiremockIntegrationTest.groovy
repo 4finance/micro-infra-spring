@@ -1,6 +1,6 @@
 package com.ofg.infrastructure.base
 
-import com.github.tomakehurst.wiremock.client.RemoteMappingBuilder
+import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.ofg.infrastructure.discovery.ServiceAlias
@@ -19,10 +19,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import static com.ofg.config.BasicProfiles.TEST
 
 /**
- * Base specification for tests that use Wiremock as HTTP server stub.
+ * Base specification for tests that use WireMock as HTTP server stub.
  * By extending this specification you gain a bean with {@link HttpMockServer} and a {@link WireMock} 
  * 
- * instance that you can stub by using {@link MvcWiremockIntegrationSpec#stubInteraction(com.github.tomakehurst.wiremock.client.RemoteMappingBuilder, com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder)}
+ * instance that you can stub by using {@link MvcWiremockIntegrationTest#stubInteraction(com.github.tomakehurst.wiremock.client.MappingBuilder, com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder)}
  * @see MockServerConfiguration
  * @see WireMock
  * @see HttpMockServer
@@ -45,7 +45,7 @@ abstract class MvcWiremockIntegrationTest extends MvcIntegrationTest {
         wireMock.resetToDefaultMappings()
     }
 
-    protected void stubInteraction(RemoteMappingBuilder mapping, ResponseDefinitionBuilder response) {
+    protected void stubInteraction(MappingBuilder mapping, ResponseDefinitionBuilder response) {
         wireMock.register(mapping.willReturn(response))
     }
 

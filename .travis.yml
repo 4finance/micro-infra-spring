@@ -40,7 +40,7 @@ env:
     - TERM=dumb
     - SKIP_RELEASE=false
     - DO_ACCEPTANCE_TESTS=true
-    - secure: bfDBE6D+46A8h4+LGS9Spczjq0/8hXBCsyt1rb6kzouw3QP5hkVLdd3mF1T250DGa6qfDWTskLVDzo+Oe1ceOsvbMSb/A/A6hvaGIFIlmyRI5Ird3B9fhSKhFUjn9kkHaUVy/ix98UsAL59e7mqkNIcz4LUw6StiKugAUF3Wzk8=
+    - secure: Q3bNlAQ2CNAEBCeqzfp6dgXlagsPfPB9tRHI2zAc3MlDfW61AAljDVLgOgV3JBMH9kBaTW1Z0xQZtDFMhjXP4f57iXUzPtwZeXxYEjKvfxXMjp+Pfy6fbFZ8bAO2vI9YATJXayyvYbmLBuUfuDSibPjSSW1WW6WqpjwjYfQmRo8=
     - secure: J4fk9XkFDpm5GCP2kBd7aKHW3CgFAr3zSpfnDTQV3n7qlvzQNUU+OfMSi86+J5Rxm3HOkl0SypYQjQv4NBytnaV/mV6ZAztHnoC0YYx0D3B3OSzFVstrkyddIF19R/ejEwTezAJg/bLXdZemTveHJHoEnbkv0fN+CIZ9kz/9bt4=
     - secure: ogwhc2NiNb0YIiWuUu7K24plJiSYVEeOj9rOh1PG6RoSRVJ1Bh6+hQ//vCaak4Z/pPmLkikPhFjfnYMQlyvmc9qhXUABjJ1SzZRozoZETRpMrFXu//Q6fCkh2P5ygKezNaAgD+zKbf+8DEkUW/7XOTNczTQZ1mL6XgS3BThPUA8=
  

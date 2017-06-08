@@ -7,7 +7,6 @@ import com.ofg.infrastructure.discovery.MicroserviceConfigurationNotPresentExcep
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.web.resttemplate.RestOperationsMetricsAspect
-import com.ofg.infrastructure.web.resttemplate.custom.ResponseRethrowingErrorHandler
 import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import com.ofg.infrastructure.web.resttemplate.fluent.config.RestClientConfigurer
 import groovy.transform.CompileStatic
@@ -51,7 +50,7 @@ class ServiceRestClientConfigurationSupport {
     @Value('${rest.client.maxLogResponseChars:4096}')
     int maxLogResponseChars
 
-    @Value('{rest.client.responseErrorMessageLogging:ERROR}')
+    @Value('${rest.client.responseErrorMessageLogging:ERROR}')
     String responseErrorMessageLogging
 
     @Autowired(required = false)

@@ -7,12 +7,12 @@ import com.ofg.infrastructure.discovery.MicroserviceConfigurationNotPresentExcep
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
 import com.ofg.infrastructure.discovery.ServiceResolver
 import com.ofg.infrastructure.web.resttemplate.RestOperationsMetricsAspect
+import com.ofg.infrastructure.web.resttemplate.custom.ResponseRethrowingErrorHandler
 import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import com.ofg.infrastructure.web.resttemplate.fluent.config.RestClientConfigurer
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
@@ -51,6 +51,8 @@ class ServiceRestClientConfigurationSupport {
     @Value('${rest.client.maxLogResponseChars:4096}')
     int maxLogResponseChars
 
+    @Value('{rest.client.responseErrorMessageLogging:ERROR}')
+    String responseErrorMessageLogging
 
     @Autowired(required = false)
     List<ClientHttpRequestInterceptor> interceptors
@@ -94,7 +96,7 @@ class ServiceRestClientConfigurationSupport {
     @Bean
     RestOperations microInfraSpringRestTemplate() {
         RestClientConfigurer configurer = getRestClientConfigurer()
-        RestTemplate restTemplate = new RestTemplate(configurer.maxLogResponseChars)
+        RestTemplate restTemplate = new RestTemplate(configurer.maxLogResponseChars, responseErrorMessageLogging)
         this.configureMessageConverters(restTemplate.messageConverters)
         restTemplate.requestFactory = requestFactory()
         restTemplate.interceptors = filteredInterceptors()

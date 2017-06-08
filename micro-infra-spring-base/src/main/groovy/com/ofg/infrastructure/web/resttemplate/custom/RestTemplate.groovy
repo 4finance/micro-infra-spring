@@ -8,6 +8,7 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory
 import org.springframework.web.client.ResponseExtractor
 
 import java.lang.reflect.Type
+
 /**
  * Default implementation of RestTemplate {@see RestTemplate} with custom
  * <ul>
@@ -36,8 +37,12 @@ class RestTemplate extends org.springframework.web.client.RestTemplate {
     }
 
     RestTemplate(int maxLogResponseChars) {
+        this(maxLogResponseChars, null)
+    }
+
+    RestTemplate(int maxLogResponseChars, String errorMessageLogging) {
         this.maxLogResponseChars = maxLogResponseChars
-        errorHandler = new ResponseRethrowingErrorHandler()
+        errorHandler = new ResponseRethrowingErrorHandler(errorMessageLogging)
         requestFactory = new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory())
     }
 

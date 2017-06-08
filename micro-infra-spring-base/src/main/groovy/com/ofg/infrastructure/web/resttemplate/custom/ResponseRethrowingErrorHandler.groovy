@@ -7,7 +7,7 @@ import org.springframework.web.client.ResponseErrorHandler
 
 /**
  * RestTemplate {@link ResponseErrorHandler} that on statuses equal to 4xx or 5xx
- * logs an error response body, status code and then rethrows exceptions {@link ResponseException}
+ * logs an error response body, status code (if configured) and then rethrows exceptions {@link ResponseException}
  *
  * @see org.springframework.web.client.RestTemplate
  * @see ResponseErrorHandler
@@ -15,6 +15,29 @@ import org.springframework.web.client.ResponseErrorHandler
 @Slf4j
 @CompileStatic
 class ResponseRethrowingErrorHandler implements ResponseErrorHandler {
+
+    static final enum ErrorMessageLogging {
+        NONE, WARN, ERROR
+    }
+
+    private final ErrorMessageLogging errorMessageLogging
+
+    ResponseRethrowingErrorHandler() {
+        this(null)
+    }
+
+    ResponseRethrowingErrorHandler(String errorMessageLogging) {
+        this.errorMessageLogging = safelyParseErrorMessageLogging(errorMessageLogging)
+    }
+
+    private static ErrorMessageLogging safelyParseErrorMessageLogging(String errorMessageLogging) {
+        try {
+            return ErrorMessageLogging.valueOf(errorMessageLogging)
+        } catch (Exception ignored) {
+            log.error("Incorrect value of errorMessageLogging: $errorMessageLogging, setting to ERROR")
+            return ErrorMessageLogging.ERROR
+        }
+    }
 
     @Override
     boolean hasError(ClientHttpResponse response) throws IOException {
@@ -29,7 +52,15 @@ class ResponseRethrowingErrorHandler implements ResponseErrorHandler {
 
     protected String getLoggedErrorResponseBody(ClientHttpResponse response) {
         String responseBody = getResponseBody(response)
-        log.error("Response error: status code [$response.statusCode], headers [$response.headers], body [$responseBody]")
+
+        switch (errorMessageLogging) {
+            case ErrorMessageLogging.ERROR:
+                log.error("Response error: status code [$response.statusCode], headers [$response.headers], body [$responseBody]")
+                break
+            case ErrorMessageLogging.WARN:
+                log.warn("Response error: status code [$response.statusCode], headers [$response.headers], body [$responseBody]")
+                break
+        }
         return responseBody
     }
 

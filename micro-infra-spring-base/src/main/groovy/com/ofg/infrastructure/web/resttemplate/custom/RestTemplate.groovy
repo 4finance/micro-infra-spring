@@ -37,12 +37,12 @@ class RestTemplate extends org.springframework.web.client.RestTemplate {
     }
 
     RestTemplate(int maxLogResponseChars) {
-        this(maxLogResponseChars, null)
+        this(maxLogResponseChars, Optional.empty())
     }
 
-    RestTemplate(int maxLogResponseChars, String errorMessageLogging) {
+    RestTemplate(int maxLogResponseChars, Optional<String> errorMessageLoggingLevel) {
         this.maxLogResponseChars = maxLogResponseChars
-        errorHandler = new ResponseRethrowingErrorHandler(errorMessageLogging)
+        errorHandler = new ResponseRethrowingErrorHandler(errorMessageLoggingLevel)
         requestFactory = new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory())
     }
 

@@ -50,8 +50,8 @@ class ServiceRestClientConfigurationSupport {
     @Value('${rest.client.maxLogResponseChars:4096}')
     int maxLogResponseChars
 
-    @Value('${rest.client.responseErrorMessageLogging:ERROR}')
-    String responseErrorMessageLogging
+    @Value('${rest.client.responseErrorMessageLoggingLevel:ERROR}')
+    String responseErrorMessageLoggingLevel
 
     @Autowired(required = false)
     List<ClientHttpRequestInterceptor> interceptors
@@ -95,7 +95,7 @@ class ServiceRestClientConfigurationSupport {
     @Bean
     RestOperations microInfraSpringRestTemplate() {
         RestClientConfigurer configurer = getRestClientConfigurer()
-        RestTemplate restTemplate = new RestTemplate(configurer.maxLogResponseChars, responseErrorMessageLogging)
+        RestTemplate restTemplate = new RestTemplate(configurer.maxLogResponseChars, Optional.of(responseErrorMessageLoggingLevel))
         this.configureMessageConverters(restTemplate.messageConverters)
         restTemplate.requestFactory = requestFactory()
         restTemplate.interceptors = filteredInterceptors()

@@ -5,6 +5,9 @@ import groovy.util.logging.Slf4j
 import org.springframework.http.client.ClientHttpResponse
 import org.springframework.web.client.ResponseErrorHandler
 
+import static com.ofg.infrastructure.web.resttemplate.custom.ResponseRethrowingErrorHandler.ErrorMessageLoggingLevel.ERROR
+import static com.ofg.infrastructure.web.resttemplate.custom.ResponseRethrowingErrorHandler.ErrorMessageLoggingLevel.WARN
+
 /**
  * RestTemplate {@link ResponseErrorHandler} that on statuses equal to 4xx or 5xx
  * logs an error response body, status code (if configured) and then rethrows exceptions {@link ResponseException}
@@ -16,26 +19,28 @@ import org.springframework.web.client.ResponseErrorHandler
 @CompileStatic
 class ResponseRethrowingErrorHandler implements ResponseErrorHandler {
 
-    static final enum ErrorMessageLogging {
+    static final enum ErrorMessageLoggingLevel {
         NONE, WARN, ERROR
     }
 
-    private final ErrorMessageLogging errorMessageLogging
+    private final ErrorMessageLoggingLevel errorMessageLoggingLevel
 
     ResponseRethrowingErrorHandler() {
-        this(null)
+        this(Optional.empty())
     }
 
-    ResponseRethrowingErrorHandler(String errorMessageLogging) {
-        this.errorMessageLogging = safelyParseErrorMessageLogging(errorMessageLogging)
+    ResponseRethrowingErrorHandler(Optional<String> errorMessageLoggingLevel) {
+        this.errorMessageLoggingLevel = safelyParseErrorMessageLoggingLevel(errorMessageLoggingLevel)
     }
 
-    private static ErrorMessageLogging safelyParseErrorMessageLogging(String errorMessageLogging) {
+    private static ErrorMessageLoggingLevel safelyParseErrorMessageLoggingLevel(Optional<String> errorMessageLoggingLevel) {
         try {
-            return ErrorMessageLogging.valueOf(errorMessageLogging)
+            return errorMessageLoggingLevel
+                    .map({ ErrorMessageLoggingLevel.valueOf(it) })
+                    .orElse(ERROR)
         } catch (Exception ignored) {
-            log.error("Incorrect value of errorMessageLogging: $errorMessageLogging, setting to ERROR")
-            return ErrorMessageLogging.ERROR
+            log.error("Incorrect value of errorMessageLoggingLevel: $errorMessageLoggingLevel, setting to ERROR")
+            return ERROR
         }
     }
 
@@ -53,11 +58,11 @@ class ResponseRethrowingErrorHandler implements ResponseErrorHandler {
     protected String getLoggedErrorResponseBody(ClientHttpResponse response) {
         String responseBody = getResponseBody(response)
 
-        switch (errorMessageLogging) {
-            case ErrorMessageLogging.ERROR:
+        switch (errorMessageLoggingLevel) {
+            case ERROR:
                 log.error("Response error: status code [$response.statusCode], headers [$response.headers], body [$responseBody]")
                 break
-            case ErrorMessageLogging.WARN:
+            case WARN:
                 log.warn("Response error: status code [$response.statusCode], headers [$response.headers], body [$responseBody]")
                 break
         }

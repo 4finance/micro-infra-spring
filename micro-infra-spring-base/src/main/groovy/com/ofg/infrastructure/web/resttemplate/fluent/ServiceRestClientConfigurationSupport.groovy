@@ -12,7 +12,6 @@ import com.ofg.infrastructure.web.resttemplate.fluent.config.RestClientConfigure
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
@@ -51,6 +50,8 @@ class ServiceRestClientConfigurationSupport {
     @Value('${rest.client.maxLogResponseChars:4096}')
     int maxLogResponseChars
 
+    @Value('${rest.client.responseErrorMessageLoggingLevel:ERROR}')
+    String responseErrorMessageLoggingLevel
 
     @Autowired(required = false)
     List<ClientHttpRequestInterceptor> interceptors
@@ -94,7 +95,7 @@ class ServiceRestClientConfigurationSupport {
     @Bean
     RestOperations microInfraSpringRestTemplate() {
         RestClientConfigurer configurer = getRestClientConfigurer()
-        RestTemplate restTemplate = new RestTemplate(configurer.maxLogResponseChars)
+        RestTemplate restTemplate = new RestTemplate(configurer.maxLogResponseChars, Optional.of(responseErrorMessageLoggingLevel))
         this.configureMessageConverters(restTemplate.messageConverters)
         restTemplate.requestFactory = requestFactory()
         restTemplate.interceptors = filteredInterceptors()

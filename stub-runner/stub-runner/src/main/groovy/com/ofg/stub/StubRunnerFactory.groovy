@@ -54,7 +54,9 @@ class StubRunnerFactory {
 
     private File getUnzippedStubDir(StubDependency module) {
         return stubDownloader.downloadAndUnpackStubJar(module.groupId, module.artifactId, module.classifier) ?:
-                stubDownloader.downloadAndUnpackStubJar(module.groupId, module.artifactId, getClassifierIfMissing())
+                stubDownloader.downloadAndUnpackStubJar(module.groupId, module.artifactId, getClassifierIfMissing()) ?:
+                        stubDownloader.downloadAndUnpackStubJar(module.groupId, module.artifactId, null) ?:
+                                stubDownloader.downloadAndUnpackStubJar(module.groupId, module.artifactId + getStubDefinitionSuffix(), null)
     }
 
     private String getClassifierIfMissing() {
@@ -68,7 +70,7 @@ class StubRunnerFactory {
     }
 
     private StubDependency createModuleFromDependencyMappingsPath(String dependencyMappingsPath) {
-        return new StubDependency(dependencyMappingsPath + getStubDefinitionSuffix(), stubRunnerOptions.stubClassifier)
+        return new StubDependency(dependencyMappingsPath, stubRunnerOptions.stubClassifier)
     }
 
     private String getStubDefinitionSuffix() {

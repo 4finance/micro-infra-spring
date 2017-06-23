@@ -1,7 +1,6 @@
 package com.ofg.infrastructure.base
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder
-import com.github.tomakehurst.wiremock.client.RemoteMappingBuilder
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.ofg.infrastructure.discovery.ServiceAlias
@@ -46,7 +45,7 @@ abstract class MvcWiremockIntegrationTest extends MvcIntegrationTest {
         wireMock.resetToDefaultMappings()
     }
 
-    protected void stubInteraction(RemoteMappingBuilder mapping, ResponseDefinitionBuilder response) {
+    protected void stubInteraction(MappingBuilder mapping, ResponseDefinitionBuilder response) {
         wireMock.register(mapping.willReturn(response))
     }
 

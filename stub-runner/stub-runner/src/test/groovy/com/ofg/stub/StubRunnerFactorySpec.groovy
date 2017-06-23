@@ -58,15 +58,80 @@ class StubRunnerFactorySpec extends Specification {
 
     def "should download stubs from StubsConfiguration and from dependencyMappingPath"() {
         given:
+            stubRunnerOptions.stubDefinitionSuffix = 'stubs'
             Collaborators collaborators = new Collaborators('pl', ['com/ofg/risk-service', 'com/ofg/fraud'],
                     ['com/ofg/risk-service': new StubsConfiguration('com.ofg', 'custom-risk-service', 'stub')])
             StubRunnerFactory factory = new StubRunnerFactory(stubRunnerOptions, collaborators, curatorFramework, downloader)
         when:
             factory.createStubsFromServiceConfiguration()
         then:
-            1 * downloader.downloadAndUnpackStubJar("com.ofg", "custom-risk-service", "stub")
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'custom-risk-service', 'stub')
             1 * downloader.downloadAndUnpackStubJar('com.ofg', 'fraud', 'stubs')
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'fraud-stubs', null)
+    }
+
+    def "should correctly resolve stubs when stub configuration and default classifier not defined"() {
+        given:
+            stubRunnerOptions.stubClassifier = null
+            Collaborators collaborators = new Collaborators('pl', ['com/ofg/fraud'], [:])
+        and:
+            stubRunnerOptions.stubDefinitionSuffix = 'defaultStubPostfix'
+            StubRunnerFactory factory = new StubRunnerFactory(stubRunnerOptions, collaborators, curatorFramework, downloader)
+        when:
+            factory.createStubsFromServiceConfiguration()
+        then:
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'fraud', 'stubs')
+            2 * downloader.downloadAndUnpackStubJar('com.ofg', 'fraud', null)
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'fraud-defaultStubPostfix', null)
+    }
+
+    def "should correctly resolve stubs when stub configuration not defined and default classifier is set"() {
+        given:
+            stubRunnerOptions.stubClassifier = 'defaultClassifier'
+            Collaborators collaborators = new Collaborators('pl', ['com/ofg/fraud'], [:])
+        and:
+            stubRunnerOptions.stubDefinitionSuffix = 'defaultStubPostfix'
+            StubRunnerFactory factory = new StubRunnerFactory(stubRunnerOptions, collaborators, curatorFramework, downloader)
+        when:
+            factory.createStubsFromServiceConfiguration()
+        then:
+            2 * downloader.downloadAndUnpackStubJar('com.ofg', 'fraud', 'defaultClassifier')
             1 * downloader.downloadAndUnpackStubJar('com.ofg', 'fraud', null)
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'fraud-defaultStubPostfix', null)
+    }
+
+    def "should correctly resolve stubs when stub configuration defined and default classifier not set"() {
+        given:
+            stubRunnerOptions.stubClassifier = null
+            Collaborators collaborators = new Collaborators('pl', ['com/ofg/fraud'],
+                    ['com/ofg/fraud':new StubsConfiguration('com.ofg', 'custom-fraud', 'fraudCustomClassifier')])
+        and:
+            stubRunnerOptions.stubDefinitionSuffix = 'defaultStubPostfix'
+            StubRunnerFactory factory = new StubRunnerFactory(stubRunnerOptions, collaborators, curatorFramework, downloader)
+        when:
+            factory.createStubsFromServiceConfiguration()
+        then:
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'custom-fraud', 'fraudCustomClassifier')
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'custom-fraud', 'stubs')
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'custom-fraud', null)
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'custom-fraud-defaultStubPostfix', null)
+    }
+
+    def "should correctly resolve stubs when stub configuration and default classifier are defined"() {
+        given:
+            stubRunnerOptions.stubClassifier = 'defaultClassifier'
+            Collaborators collaborators = new Collaborators('pl', ['com/ofg/fraud'],
+                    ['com/ofg/fraud':new StubsConfiguration('com.ofg', 'custom-fraud', 'fraudCustomClassifier')])
+        and:
+            stubRunnerOptions.stubDefinitionSuffix = 'defaultStubPostfix'
+            StubRunnerFactory factory = new StubRunnerFactory(stubRunnerOptions, collaborators, curatorFramework, downloader)
+        when:
+            factory.createStubsFromServiceConfiguration()
+        then:
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'custom-fraud', 'fraudCustomClassifier')
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'custom-fraud', 'defaultClassifier')
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'custom-fraud', null)
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'custom-fraud-defaultStubPostfix', null)
     }
 
     def "should create stubs with service correct name from dependencyMappingPath and unzipped folder from StubsConfiguration"() {
@@ -120,7 +185,8 @@ class StubRunnerFactorySpec extends Specification {
         when:
             factory.createStubsFromServiceConfiguration()
         then:
-            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'risk-service-stubs', 'anyClassifier') >> folder.root
+            1 * downloader.downloadAndUnpackStubJar('com.ofg', 'risk-service-stubs', null) >> folder.root
+            0 * downloader.downloadAndUnpackStubJar('com.ofg', 'risk-service-stubs', 'anyClassifier') >> folder.root
     }
 
     def "should not stuboptions.stubDefinitionSuffix if property empty and no stubs"() {

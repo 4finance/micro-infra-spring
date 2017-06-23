@@ -27,10 +27,10 @@ class BatchStubRunnerFactory {
         List<Optional<StubRunner>> stubRunners
         checkArgument(isNotEmpty(stubRunnerOptions.stubRepositoryRoot))
         StubRunnerFactory stubRunnerFactory = new StubRunnerFactory(stubRunnerOptions, dependencies)
-        if (!stubRunnerOptions.useMicroserviceDefinitions) {
-            stubRunners = stubRunnerFactory.createStubsFromStubsModule()
-        } else {
+        if (stubRunnerOptions.useMicroserviceDefinitions) {
             stubRunners = stubRunnerFactory.createStubsFromServiceConfiguration()
+        } else {
+            stubRunners = stubRunnerFactory.createStubsFromStubsModule()
         }
         return new BatchStubRunner(Optional.presentInstances(stubRunners))
     }

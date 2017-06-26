@@ -1,12 +1,12 @@
 package com.ofg.infrastructure.stub
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder
-import com.github.tomakehurst.wiremock.client.RequestPatternBuilder
-import com.github.tomakehurst.wiremock.client.UrlMatchingStrategy
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.VerificationException
 import com.github.tomakehurst.wiremock.http.RequestMethod
+import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder
+import com.github.tomakehurst.wiremock.matching.UrlPattern
 import com.google.common.base.Optional
 import com.ofg.infrastructure.discovery.MicroserviceConfiguration
 import com.ofg.infrastructure.discovery.ServiceAlias
@@ -158,8 +158,7 @@ class StubSpec extends Specification {
     }
 
     private RequestPatternBuilder expectedRequest() {
-        def matchingPongEndpoint = new UrlMatchingStrategy()
-        matchingPongEndpoint.setUrlPath(PONG_ENDPOINT)
+        UrlPattern matchingPongEndpoint = WireMock.urlPathEqualTo(PONG_ENDPOINT)
         return new RequestPatternBuilder(RequestMethod.GET, matchingPongEndpoint)
     }
 

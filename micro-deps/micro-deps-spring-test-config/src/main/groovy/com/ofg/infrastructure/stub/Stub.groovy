@@ -1,8 +1,8 @@
 package com.ofg.infrastructure.stub
 
-import com.github.tomakehurst.wiremock.client.RequestPatternBuilder
+import com.github.tomakehurst.wiremock.admin.model.ListStubMappingsResult
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.stubbing.ListStubMappingsResult
+import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import groovy.transform.CompileStatic
 import groovyjarjarantlr.collections.List

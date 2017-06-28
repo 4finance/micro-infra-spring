@@ -59,7 +59,7 @@ class StubRunnerFactory {
     }
 
     private String getClassifierIfMissing() {
-        return stubRunnerOptions.stubClassifier != null ? stubRunnerOptions.stubClassifier : 'stubs'
+        return stubRunnerOptions.stubClassifier ? stubRunnerOptions.stubClassifier : 'stubs'
     }
 
     private StubDependency getModuleForDependency(String dependencyMappingsPath) {

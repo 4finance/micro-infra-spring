@@ -95,8 +95,7 @@ class StubRunnerFactorySpec extends Specification {
         where:
             defaultClassifier   | defaultSuffix   | searchedDefaultClassifier | searchedDefaultSuffix
             null                | null            | 'stubs'                   | 'stubs'
-            null                | 'defaultSuffix' | 'stubs'                   | 'defaultSuffix'
-            'defaultClassifier' | null            | 'defaultClassifier'       | 'stubs'
+            ''                  | ''              | 'stubs'                   | 'stubs'
             'defaultClassifier' | 'defaultSuffix' | 'defaultClassifier'       | 'defaultSuffix'
     }
 

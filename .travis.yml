@@ -40,8 +40,10 @@ addons:
 jobs:
   include:
     - stage: smoke-testing
+      install: echo "Overridden smoke-testing install" 
       script: echo "Smoke testing"
     - stage: release
+      install: echo "Overridden release install" 
       script: echo "(Fake) releasing..."
 
 env:

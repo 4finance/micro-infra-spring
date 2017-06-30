@@ -41,6 +41,7 @@ jdk:
 
 jobs:
   include:
+    - stage: build and test
     - stage: smoke-testing
       install: echo "Overridden smoke-testing install" 
       script: echo "Smoke testing"

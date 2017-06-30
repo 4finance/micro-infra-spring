@@ -20,8 +20,8 @@ script:
 #- ./gradlew finalizeRelease publishUploadedArtifacts -x test -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace
 - echo "Building..."
 
-after_success:
-  - echo "After success..."
+#after_success:
+#  - echo "After success..."
 #- ./gradlew jacocoRootReport coveralls -Pcoverage --continue
 
 before_cache:
@@ -44,6 +44,7 @@ jobs:
     - stage: Build and test
       install: true
       script: echo "Building and testing"
+      after_success: echo "Sending stats to coveralls"
     - stage: Smoke testing
       install: echo "Overridden smoke-testing install" 
       script: echo "Smoke testing"

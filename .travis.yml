@@ -45,7 +45,7 @@ jdk:
 
 jobs:
   include:
-    - stage: test2
+    - stage: test
       install: true
       script: echo "Building and testing $JAVA_HOME"
       after_success: echo "Sending stats to coveralls"

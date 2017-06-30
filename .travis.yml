@@ -38,7 +38,7 @@ jdk:
 addons:
   firefox: "46.0.1"
 
-job:
+jobs:
   include:
     - stage: smoke-testing
       script: echo "Smoke testing"

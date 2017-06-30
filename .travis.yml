@@ -37,7 +37,7 @@ jobs:
     - stage: Smoke testing
       install: "sh -e /etc/init.d/xvfb start"
       script: ./gradle/runBootMicroserviceAcceptanceTests.sh
-      after_success: skip
+      after_success: true
       addons:
         firefox: "46.0.1"
     - stage: Release
@@ -48,7 +48,7 @@ jobs:
         - ./gradlew release -Prelease.disableRemoteCheck -Prelease.localOnly --stacktrace --continue
 #        - ./gradlew build -x test --stacktrace
         - ./gradlew finalizeRelease publishUploadedArtifacts -x test -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace
-      after_success: skip
+      after_success: true
 
 env:
   global:

@@ -13,7 +13,7 @@ install:
 
 script:
   - set -e
-  - ./gradlew check publishToMavenLocal -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace --continue
+  - ./gradlew check -x test publishToMavenLocal -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace --continue
 
 after_success:
   - ./gradlew jacocoRootReport coveralls -Pcoverage --continue

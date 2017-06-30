@@ -16,12 +16,7 @@ install:
 script:
   - set -e
   - ./gradlew check -x test publishToMavenLocal -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace --continue
-#- source build/release/gradle/setGitVariables.sh
-#- ./gradlew release -Prelease.disableRemoteCheck -Prelease.localOnly --stacktrace --continue
-#- ./gradlew check publishToMavenLocal -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace --continue
-#- if [ $DO_ACCEPTANCE_TESTS == true ]; then ./gradle/runBootMicroserviceAcceptanceTests.sh; fi
-#- ./gradlew finalizeRelease publishUploadedArtifacts -x test -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace
-- echo "Building..."
+
 
 after_success:
 #  - echo "Sending stats to coveralls..."

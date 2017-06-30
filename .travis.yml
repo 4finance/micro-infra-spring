@@ -23,6 +23,8 @@ script:
 after_success:
 - ./gradlew jacocoRootReport coveralls -Pcoverage --continue
 
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
   directories:
   - $HOME/.gradle

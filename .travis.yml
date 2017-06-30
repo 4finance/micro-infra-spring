@@ -42,9 +42,9 @@ jdk:
 
 jobs:
   include:
-    - stage: Build and test
+    - stage: test
       install: skip
-      script: echo "Building and testing"
+      script: echo "Building and testing $JAVA_HOME"
       after_success: echo "Sending stats to coveralls"
     - stage: Smoke testing
       install: echo "Overridden smoke-testing install" 

@@ -1,1 +1,3 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.ofg.infrastructure.tracing.TracingConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.ofg.infrastructure.tracing.TracingConfiguration,\
+com.ofg.infrastructure.discovery.ZookeeperDependencyStubsConfigurationFix

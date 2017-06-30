@@ -4,7 +4,7 @@ before_install:
   - "echo $GRADLE_OPTS"
   - "export GRADLE_OPTS='-Dorg.gradle.parallel=false'"
   - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
+#  - "sh -e /etc/init.d/xvfb start"
 
 install:
 - ./gradlew assemble --stacktrace
@@ -34,8 +34,8 @@ language: groovy
 jdk:
 - oraclejdk8
 
-addons:
-  firefox: "46.0.1"
+#addons:
+#  firefox: "46.0.1"
 
 jobs:
   include:

@@ -1,4 +1,4 @@
-sudo: true
+sudo: false
 dist: trusty
 
 before_install:

@@ -47,7 +47,12 @@ jobs:
         firefox: "46.0.1"
     - stage: Release
       install: true
-      script: ./gradlew addHashFile -s && source build/release/gradle/setGitVariables.sh && ./gradlew release -Prelease.disableRemoteCheck -Prelease.localOnly -s --continue && ./gradlew finalizeRelease publishUploadedArtifacts -x test -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} -s
+      script:
+        - set -e
+        - ./gradlew addHashFile -s
+        - source build/release/gradle/setGitVariables.sh
+        - ./gradlew release -Prelease.disableRemoteCheck -Prelease.localOnly -s --continue
+        - ./gradlew finalizeRelease publishUploadedArtifacts -x test -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} -s
       after_success: true
 
 env:

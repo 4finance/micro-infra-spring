@@ -38,7 +38,7 @@ language: groovy
 
 jdk:
   - oraclejdk8
-  - oraclejdk9
+  - openjdk8
 
 #addons:
 #  firefox: "46.0.1"

@@ -46,6 +46,7 @@ jdk:
 jobs:
   include:
     - script: echo "Extra script 1"
+      after_success: echo "After success script 1"
     - script: echo "Extra script 2"
     - stage: Smoke testing
       install: echo "Overridden smoke-testing install" 

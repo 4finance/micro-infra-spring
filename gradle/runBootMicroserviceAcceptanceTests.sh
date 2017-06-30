@@ -14,7 +14,7 @@ function updateMicroInfraSpringVersionInConfigurationFile {
 set -e
 dumpCurrentMicroInfraSpringVersionToFile
 
-git clone https://github.com/4finance/boot-microservice.git
+git clone -b travisDocker https://github.com/4finance/boot-microservice.git
 cd boot-microservice
 updateMicroInfraSpringVersionInConfigurationFile
 ./gradlew clean check guiTest uptodate --stacktrace --continue --no-daemon

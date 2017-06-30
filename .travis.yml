@@ -38,14 +38,17 @@ language: groovy
 
 jdk:
   - oraclejdk8
-  - oraclejdk9
 
 #addons:
 #  firefox: "46.0.1"
 
 jobs:
   include:
-    - install: true
+    - stage: test2
+      jdk:
+        - oraclejdk7
+        - oraclejdk9
+      install: true
       script: echo "Building and testing $JAVA_HOME"
       after_success: echo "Sending stats to coveralls"
     - stage: Smoke testing

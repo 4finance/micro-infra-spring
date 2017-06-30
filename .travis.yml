@@ -11,14 +11,12 @@ before_install:
 
 install:
   - ./gradlew assemble --stacktrace
-#  - echo "Default install $JAVA_HOME"
 
 script:
   - set -e
-  - ./gradlew check -x test publishToMavenLocal -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace --continue
+  - ./gradlew check publishToMavenLocal -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace --continue
 
 after_success:
-#  - echo "Sending stats to coveralls..."
   - ./gradlew jacocoRootReport coveralls -Pcoverage --continue
 
 before_cache:
@@ -40,7 +38,6 @@ jobs:
     - stage: Smoke testing
       install: "sh -e /etc/init.d/xvfb start"
       script: ./gradle/runBootMicroserviceAcceptanceTests.sh
-#      script: echo "Smoke testing"
       after_success: skip
       addons:
         firefox: "46.0.1"

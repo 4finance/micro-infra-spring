@@ -41,11 +41,13 @@ jdk:
 
 jobs:
   include:
-    - stage: build and test
-    - stage: smoke-testing
+    - stage: Build and test
+      install: true
+      script: echo "Building and testing"
+    - stage: Smoke testing
       install: echo "Overridden smoke-testing install" 
       script: echo "Smoke testing"
-    - stage: release
+    - stage: Release
       install: echo "Overridden release install" 
       script: echo "(Fake) releasing..."
 

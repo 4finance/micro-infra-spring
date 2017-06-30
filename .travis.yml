@@ -17,7 +17,6 @@ script:
   - set -e
   - ./gradlew check -x test publishToMavenLocal -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace --continue
 
-
 after_success:
 #  - echo "Sending stats to coveralls..."
   - ./gradlew jacocoRootReport coveralls -Pcoverage --continue
@@ -35,9 +34,6 @@ jdk:
   - oraclejdk8
   - openjdk8
 
-addons:
-  firefox: "46.0.1"
-
 jobs:
   include:
     # TODO Consider warming up cache - https://docs.travis-ci.com/user/build-stages/warm-cache/ - there is some limitation - https://github.com/travis-ci/beta-features/issues/11#issuecomment-309172077
@@ -46,6 +42,8 @@ jobs:
       script: ./gradle/runBootMicroserviceAcceptanceTests.sh
 #      script: echo "Smoke testing"
       after_success: skip
+      addons:
+        firefox: "46.0.1"
     - stage: Release
       install: true
       script:

@@ -14,10 +14,11 @@ install:
 script:
 - set -e
 - source build/release/gradle/setGitVariables.sh
-- ./gradlew release -Prelease.disableRemoteCheck -Prelease.localOnly --stacktrace --continue
-- ./gradlew check publishToMavenLocal -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace --continue
-- if [ $DO_ACCEPTANCE_TESTS == true ]; then ./gradle/runBootMicroserviceAcceptanceTests.sh; fi
-- ./gradlew finalizeRelease publishUploadedArtifacts -x test -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace
+#- ./gradlew release -Prelease.disableRemoteCheck -Prelease.localOnly --stacktrace --continue
+#- ./gradlew check publishToMavenLocal -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace --continue
+#- if [ $DO_ACCEPTANCE_TESTS == true ]; then ./gradle/runBootMicroserviceAcceptanceTests.sh; fi
+#- ./gradlew finalizeRelease publishUploadedArtifacts -x test -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace
+- ./gradlew assemble
 
 after_success:
 - ./gradlew jacocoRootReport coveralls -Pcoverage --continue
@@ -34,6 +35,13 @@ jdk:
 
 addons:
   firefox: "46.0.1"
+
+job:
+  include:
+    - stage: smoke-testing
+      script: echo "Smoke testing"
+    - stage: release
+      script: echo "(Fake) releasing..."
 
 env:
   global:

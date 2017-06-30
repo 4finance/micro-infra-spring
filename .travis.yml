@@ -16,7 +16,7 @@ install:
 
 script:
 - set -e
-- source build/release/gradle/setGitVariables.sh
+#- source build/release/gradle/setGitVariables.sh
 #- ./gradlew release -Prelease.disableRemoteCheck -Prelease.localOnly --stacktrace --continue
 #- ./gradlew check publishToMavenLocal -Pcoverage -Pcompatibility -Dstubrunner.skip-local-repo=true -PbintrayUser=${BINTRAY_USER} -PbintrayKey=${BINTRAY_API_KEY} --stacktrace --continue
 #- if [ $DO_ACCEPTANCE_TESTS == true ]; then ./gradle/runBootMicroserviceAcceptanceTests.sh; fi
@@ -38,6 +38,7 @@ language: groovy
 
 jdk:
   - oraclejdk8
+  - oraclejdk9
 
 #addons:
 #  firefox: "46.0.1"
@@ -45,9 +46,6 @@ jdk:
 jobs:
   include:
     - stage: test2
-      jdk:
-        - oraclejdk7
-        - oraclejdk9
       install: true
       script: echo "Building and testing $JAVA_HOME"
       after_success: echo "Sending stats to coveralls"

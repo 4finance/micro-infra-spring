@@ -34,7 +34,8 @@ cache:
 language: groovy
 
 jdk:
-- oraclejdk8
+  - oraclejdk8
+  - oraclejdk9
 
 #addons:
 #  firefox: "46.0.1"
@@ -42,7 +43,7 @@ jdk:
 jobs:
   include:
     - stage: Build and test
-      install: true
+      install: skip
       script: echo "Building and testing"
       after_success: echo "Sending stats to coveralls"
     - stage: Smoke testing

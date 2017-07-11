@@ -13,7 +13,10 @@ dependencies {
 
     compile "org.codehaus.groovy:groovy-all"
     compile 'com.fasterxml.jackson.core:jackson-databind'
-    compile "org.springframework.boot:spring-boot-starter-web"
+    compile("org.springframework.boot:spring-boot-starter-web") {
+        exclude module: "spring-boot-starter-tomcat"
+    }
+    compile "org.springframework.boot:spring-boot-starter-jetty"
     compile "org.aspectj:aspectjrt"
     compile "io.dropwizard.metrics:metrics-core:$metricsVersion"
     compile "io.dropwizard.metrics:metrics-jvm:$metricsVersion"
@@ -40,4 +43,5 @@ dependencies {
     testCompile 'org.codehaus.gpars:gpars:1.2.1'
     testCompile 'org.mockito:mockito-core:1.10.19'
     testCompile 'com.jayway.awaitility:awaitility-groovy'
+    testCompile 'org.springframework.boot:spring-boot-test'
 }

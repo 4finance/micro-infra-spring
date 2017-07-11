@@ -8,14 +8,14 @@ import com.ofg.infrastructure.web.resttemplate.RestOperationsMetricsAspect
 import groovy.transform.CompileStatic
 import groovy.transform.InheritConstructors
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootContextLoader
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.EnableAspectJAutoProxy
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.ContextConfiguration
 
-@ContextConfiguration(classes = CustomConfig, loader = SpringApplicationContextLoader)
+@ContextConfiguration(classes = CustomConfig, loader = SpringBootContextLoader)
 class ServiceRestClientCustomizationByNameSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
     @Autowired

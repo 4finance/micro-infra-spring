@@ -65,8 +65,12 @@ public class CorrelationIdInterceptor implements Processor {
             log.debug("No spanId has been set in request inbound message. Creating new one.");
             spanId = idGenerator.nextLong();
         }
-        return builder().spanId(spanId).traceId(firstNonNull(oldTraceId, traceId))
-                .name(notSampledName).parent(parentId).processId(processID).build();
+        Span.SpanBuilder spanBuilder = builder().spanId(spanId).traceId(firstNonNull(oldTraceId, traceId))
+                .name(notSampledName).processId(processID);
+        if (parentId != null) {
+            spanBuilder.parent(parentId);
+        }
+        return spanBuilder.build();
     }
 
     private Long firstNonNull(Long first, Long second) {

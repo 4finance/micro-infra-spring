@@ -4,6 +4,7 @@ import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
 import groovy.transform.ToString
 import groovy.transform.TupleConstructor
+import org.springframework.boot.Banner
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.security.crypto.encrypt.TextEncryptor
 
@@ -31,7 +32,7 @@ class EncryptorTestUtil {
 
         def context = new SpringApplicationBuilder(DecryptingPropertyTestApp)
                 .web(false)
-                .showBanner(false)
+                .bannerMode(Banner.Mode.OFF)
                 .run()
         def encryptor = context.getBean(TextEncryptor)
 

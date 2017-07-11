@@ -4,7 +4,7 @@ import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.MicroserviceMvcWiremockSpec
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootContextLoader
 import org.springframework.cloud.sleuth.Span
 import org.springframework.cloud.sleuth.trace.SpanContextHolder
 import org.springframework.context.annotation.Bean
@@ -16,7 +16,7 @@ import spock.util.concurrent.PollingConditions
 
 import java.util.concurrent.atomic.AtomicReference
 
-@ContextConfiguration(classes = [BaseConfiguration, CorrelationIdAsyncSpecConfiguration], loader = SpringApplicationContextLoader)
+@ContextConfiguration(classes = [BaseConfiguration, CorrelationIdAsyncSpecConfiguration], loader = SpringBootContextLoader)
 class CorrelationIdAsyncSpec extends MicroserviceMvcWiremockSpec {
 
     @Autowired AsyncClass asyncClass

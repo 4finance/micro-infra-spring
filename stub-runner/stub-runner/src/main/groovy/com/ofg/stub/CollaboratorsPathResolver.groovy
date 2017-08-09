@@ -40,6 +40,7 @@ class CollaboratorsPathResolver {
      * @return - collaborators of your service
      */
     static ServiceConfigurationResolver resolveFromZookeeper(String serviceName, String context, ZookeeperServer zookeeperServer, StubRunnerOptions config) {
+        log.info("Resolving collaborators for service name: '{}' with context: '{}'", serviceName, context)
         return resolveServiceDependenciesFromZookeeper(context, zookeeperServer, serviceName, config)
     }
 
@@ -52,6 +53,7 @@ class CollaboratorsPathResolver {
                 .build()
         discovery.start()
         String uriSpec = obtainServiceInstanceUri(discovery, serviceName, config)
+        log.info("Resolved service instance Uri: '{}' for service name: '{}' with context: '{}'", uriSpec, serviceName, context)
         ListenableFuture<String> microserviceDescriptor = getMicroserviceDescriptor(uriSpec, config.waitTimeout)
         ServiceConfigurationResolver serviceConfigurationResolver = new ServiceConfigurationResolver(microserviceDescriptor.get())
         discovery?.close()
@@ -76,7 +78,9 @@ class CollaboratorsPathResolver {
         serviceCache.start()
         TimeoutServiceCacheListener listener = new TimeoutServiceCacheListener(serviceProvider)
         serviceCache.addListener(listener)
+        log.info("Registering listener and waiting {} seconds for service instance with name '{}' to connect", waitTimeout, serviceName)
         instance = listener.get(waitTimeout, TimeUnit.SECONDS)
+        log.info("Service instance resolved for service name '{}'", serviceName)
         return instance
     }
 
@@ -96,7 +100,9 @@ class CollaboratorsPathResolver {
 
         @Override
         void cacheChanged() {
+            log.debug("Service cache changed")
             ServiceInstance<Map> instance = serviceProvider.getInstance()
+            log.debug("Service provider returned instance: {}", instance)
             if (instance) {
                 blockingQueue.put(instance)
                 state = State.DONE
@@ -105,6 +111,7 @@ class CollaboratorsPathResolver {
 
         @Override
         void stateChanged(CuratorFramework client, ConnectionState newState) {
+            log.debug("Service cache state changed")
             // It's not called anytime
         }
 
@@ -147,7 +154,7 @@ class CollaboratorsPathResolver {
         if (timeout) {
             executor.retryOn(HttpHostConnectException, ConnectException).
                     withExponentialBackoff(500, 2).     //500ms times 2 after each retry
-                    withMaxDelay(timeout * 1000);       //timeout in seconds;
+                    withMaxDelay(timeout * 1000)      //timeout in seconds
         }
         return executor.getWithRetry(new Callable<String>() {
             @Override

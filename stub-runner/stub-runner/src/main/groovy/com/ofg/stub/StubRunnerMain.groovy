@@ -126,9 +126,10 @@ class StubRunnerMain {
 
     private void execute() {
         try {
-            log.debug("Launching StubRunner with args: $arguments")
+            log.info("Launching StubRunner with args: {}", arguments)
             ServiceConfigurationResolver microserviceDescriptor = new CollaboratorsPathResolver().resolveFromZookeeper(arguments.serviceName, arguments.context, zookeeperServer, arguments.stubRunnerOptions)
             Collaborators collaborators = DescriptorToCollaborators.fromDeprecatedMicroserviceDescriptor(microserviceDescriptor)
+            log.info("Registering stubs for collaborators: {}", collaborators)
             BatchStubRunner stubRunner = new BatchStubRunnerFactory(arguments.stubRunnerOptions, collaborators).buildBatchStubRunner()
             stubRunner.runStubs()
         } catch (Exception e) {

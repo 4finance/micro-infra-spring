@@ -44,69 +44,68 @@ class CollaboratorsPathResolver {
         return resolveServiceDependenciesFromZookeeper(context, zookeeperServer, serviceName, config)
     }
 
-    private
-    static ServiceConfigurationResolver resolveServiceDependenciesFromZookeeper(String context, ZookeeperServer zookeeperServer, String serviceName, StubRunnerOptions config) {
-        ServiceDiscovery discovery = ServiceDiscoveryBuilder.builder(Map)
+    private static ServiceConfigurationResolver resolveServiceDependenciesFromZookeeper(String context, ZookeeperServer zookeeperServer, String serviceName, StubRunnerOptions config) {
+        return ServiceDiscoveryBuilder.builder(Map)
                 .basePath(context)
                 .client(zookeeperServer.curatorFramework)
                 .serializer(new IgnorePayloadInstanceSerializer(Map.class))
                 .build()
-        discovery.start()
-        String uriSpec = obtainServiceInstanceUri(discovery, serviceName, config)
-        log.info("Resolved service instance Uri: '{}' for service name: '{}' with context: '{}'", uriSpec, serviceName, context)
-        ListenableFuture<String> microserviceDescriptor = getMicroserviceDescriptor(uriSpec, config.waitTimeout)
-        ServiceConfigurationResolver serviceConfigurationResolver = new ServiceConfigurationResolver(microserviceDescriptor.get())
-        discovery?.close()
-        return serviceConfigurationResolver
-    }
-
-    private
-    static String obtainServiceInstanceUri(ServiceDiscovery discovery, String serviceName, StubRunnerOptions config) {
-        ServiceProvider serviceProvider = discovery.serviceProviderBuilder().serviceName(serviceName).build()
-        serviceProvider.start()
-        ServiceInstance<Map> instance = serviceProvider.instance
-        if (!instance && config.waitForServiceConnect) {
-            instance = waitAndGetService(discovery, serviceName, serviceProvider, config.waitTimeout, instance)
+                .withCloseable { ServiceDiscovery discovery ->
+            discovery.start()
+            String uriSpec = obtainServiceInstanceUri(discovery, serviceName, config)
+            log.info("Resolved service instance Uri: '{}' for service name: '{}' with context: '{}'", uriSpec, serviceName, context)
+            ListenableFuture<String> microserviceDescriptor = getMicroserviceDescriptor(uriSpec, config.waitTimeout)
+            return new ServiceConfigurationResolver(microserviceDescriptor.get())
         }
-        serviceProvider?.close()
-        return instance.buildUriSpec()
     }
 
-    private
-    static ServiceInstance<Map> waitAndGetService(ServiceDiscovery discovery, String serviceName, ServiceProvider serviceProvider, Integer waitTimeout, ServiceInstance<Map> instance) {
-        ServiceCache serviceCache = discovery.serviceCacheBuilder().name(serviceName).build()
-        serviceCache.start()
-        TimeoutServiceCacheListener listener = new TimeoutServiceCacheListener(serviceProvider)
-        serviceCache.addListener(listener)
-        log.info("Registering listener and waiting {} seconds for service instance with name '{}' to connect", waitTimeout, serviceName)
-        instance = listener.get(waitTimeout, TimeUnit.SECONDS)
-        log.info("Service instance resolved for service name '{}'", serviceName)
-        return instance
+    private static String obtainServiceInstanceUri(ServiceDiscovery discovery, String serviceName, StubRunnerOptions config) {
+        return discovery.serviceProviderBuilder().serviceName(serviceName).build().withCloseable { ServiceProvider serviceProvider ->
+            serviceProvider.start()
+            ServiceInstance<Map> instance = serviceProvider.instance
+            if (!instance && config.waitForServiceConnect) {
+                instance = waitAndGetService(discovery, serviceName, config.waitTimeout)
+            }
+            return instance.buildUriSpec()
+        }
     }
 
-    private static final  class TimeoutServiceCacheListener implements ServiceCacheListener, Future<ServiceInstance<Void>> {
+    private static ServiceInstance<Map> waitAndGetService(ServiceDiscovery discovery, String serviceName, Integer waitTimeout) {
+        return discovery.serviceCacheBuilder().name(serviceName).build().withCloseable { ServiceCache serviceCache ->
+            serviceCache.start()
+            TimeoutServiceCacheListener listener = new TimeoutServiceCacheListener(serviceCache)
+            serviceCache.addListener(listener)
+            log.info("Registering listener and waiting {} seconds for service instance with name '{}' to connect", waitTimeout, serviceName)
+            ServiceInstance<Map> instance = listener.get(waitTimeout, TimeUnit.SECONDS)
+            log.info("Service instance resolved for service name '{}'", serviceName)
+            return instance
+        }
+    }
 
-        ServiceProvider serviceProvider
+    private static final class TimeoutServiceCacheListener implements ServiceCacheListener, Future<ServiceInstance<Void>> {
+
+        private ServiceCache serviceCache
 
         private static enum State {
             DONE, EMPTY, CANCELLED
         }
-        BlockingQueue<ServiceInstance<Map>> blockingQueue = new ArrayBlockingQueue(1)
-        volatile State state = State.EMPTY
+        private BlockingQueue<ServiceInstance<Map>> blockingQueue = new ArrayBlockingQueue(1)
+        private volatile State state = State.EMPTY
 
-        TimeoutServiceCacheListener(ServiceProvider serviceProvider) {
-            this.serviceProvider = serviceProvider
+        TimeoutServiceCacheListener(ServiceCache serviceCache) {
+            this.serviceCache = serviceCache
         }
 
         @Override
         void cacheChanged() {
             log.debug("Service cache changed")
-            ServiceInstance<Map> instance = serviceProvider.getInstance()
-            log.debug("Service provider returned instance: {}", instance)
-            if (instance) {
+            List<ServiceInstance> instances = serviceCache.getInstances()
+            log.debug("Service cache returned instances: {}", instances)
+            instances.stream().findFirst().ifPresent({ ServiceInstance<Map> instance ->
+                log.debug("Setting service instance: {}", instance)
                 blockingQueue.put(instance)
                 state = State.DONE
-            }
+            })
         }
 
         @Override

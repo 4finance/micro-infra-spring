@@ -73,27 +73,23 @@ class CollaboratorsPathResolver {
     private static ServiceInstance<Map> waitAndGetService(ServiceDiscovery discovery, String serviceName, Integer waitTimeout) {
         return discovery.serviceCacheBuilder().name(serviceName).build().withCloseable { ServiceCache serviceCache ->
             serviceCache.start()
-            TimeoutServiceCacheListener listener = new TimeoutServiceCacheListener(serviceCache)
-            serviceCache.addListener(listener)
+            CompletableFuture<ServiceInstance<Map>> futureServiceInstance = new CompletableFuture<>()
+            serviceCache.addListener(new TimeoutServiceCacheListener(serviceCache, futureServiceInstance))
             log.info("Registering listener and waiting {} seconds for service instance with name '{}' to connect", waitTimeout, serviceName)
-            ServiceInstance<Map> instance = listener.get(waitTimeout, TimeUnit.SECONDS)
+            ServiceInstance<Map> instance = futureServiceInstance.get(waitTimeout, TimeUnit.SECONDS)
             log.info("Service instance resolved for service name '{}'", serviceName)
             return instance
         }
     }
 
-    private static final class TimeoutServiceCacheListener implements ServiceCacheListener, Future<ServiceInstance<Void>> {
+    private static final class TimeoutServiceCacheListener implements ServiceCacheListener {
 
-        private ServiceCache serviceCache
+        private final ServiceCache serviceCache
+        private final CompletableFuture<ServiceInstance<Map>> futureServiceInstance
 
-        private static enum State {
-            DONE, EMPTY, CANCELLED
-        }
-        private BlockingQueue<ServiceInstance<Map>> blockingQueue = new ArrayBlockingQueue(1)
-        private volatile State state = State.EMPTY
-
-        TimeoutServiceCacheListener(ServiceCache serviceCache) {
+        TimeoutServiceCacheListener(ServiceCache serviceCache, CompletableFuture<ServiceInstance<Map>> futureServiceInstance) {
             this.serviceCache = serviceCache
+            this.futureServiceInstance = futureServiceInstance
         }
 
         @Override
@@ -103,8 +99,7 @@ class CollaboratorsPathResolver {
             log.debug("Service cache returned instances: {}", instances)
             instances.stream().findFirst().ifPresent({ ServiceInstance<Map> instance ->
                 log.debug("Setting service instance: {}", instance)
-                blockingQueue.put(instance)
-                state = State.DONE
+                futureServiceInstance.complete(instance)
             })
         }
 
@@ -112,35 +107,6 @@ class CollaboratorsPathResolver {
         void stateChanged(CuratorFramework client, ConnectionState newState) {
             log.debug("Service cache state changed")
             // It's not called anytime
-        }
-
-        @Override
-        boolean cancel(boolean mayInterruptIfRunning) {
-            throw new UnsupportedOperationException()
-        }
-
-        @Override
-        boolean isCancelled() {
-            return state == State.CANCELLED
-        }
-
-        @Override
-        boolean isDone() {
-            return state == State.DONE
-        }
-
-        @Override
-        ServiceInstance<Map> get() throws InterruptedException, ExecutionException {
-            return blockingQueue.take()
-        }
-
-        @Override
-        ServiceInstance<Map> get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-            ServiceInstance<Map> object = blockingQueue.poll(timeout, unit)
-            if (!object) {
-                throw new TimeoutException("Service unavailable")
-            }
-            return object
         }
     }
 

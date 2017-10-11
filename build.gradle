@@ -7,7 +7,7 @@ buildscript {
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:1.4.5.RELEASE"
         classpath 'com.toomuchcoding:uptodate-gradle-plugin:+'
-        classpath "com.ofg:micro-common-release:0.1.18"
+        classpath "com.ofg:micro-common-release:0.1.19-SNAPSHOT"
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:+"
         if (project.hasProperty("coverage")) {
             classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+'

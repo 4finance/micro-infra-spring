@@ -5,18 +5,19 @@ import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
 import com.ofg.infrastructure.base.ServiceDiscoveryStubbingApplicationConfiguration
 import org.junit.ClassRule
 import org.junit.contrib.java.lang.system.ProvideSystemProperty
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootContextLoader
 import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Shared
 
-import static org.hamcrest.Matchers.*
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import static org.hamcrest.Matchers.equalTo
+import static org.hamcrest.Matchers.is
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@ContextConfiguration(classes = [BaseConfiguration, HealthCheckConfiguration, ServiceDiscoveryStubbingApplicationConfiguration], loader = SpringApplicationContextLoader)
+@ContextConfiguration(classes = [BaseConfiguration, HealthCheckConfiguration, ServiceDiscoveryStubbingApplicationConfiguration], loader = SpringBootContextLoader)
 class MicroserviceConfigurationControllerSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
     @Shared @ClassRule
@@ -29,7 +30,7 @@ class MicroserviceConfigurationControllerSpec extends MvcCorrelationIdSettingInt
         expect:
             mockMvc.perform(get('/microservice.json'))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                     .andExpect(jsonPath('$.pl.this', is(equalTo('foo/bar/registration'))))
                     .andExpect(jsonPath('$.pl.dependencies.confirmation.path', is(equalTo('foo/bar/security/confirmation'))))
                     .andExpect(jsonPath('$.pl.dependencies.foo-bar.path', is(equalTo('com/ofg/foo/bar'))))

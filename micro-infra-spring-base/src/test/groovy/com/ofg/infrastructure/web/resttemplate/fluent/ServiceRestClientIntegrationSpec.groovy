@@ -1,4 +1,5 @@
 package com.ofg.infrastructure.web.resttemplate.fluent
+
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.Appender
@@ -15,7 +16,7 @@ import org.junit.contrib.java.lang.system.ProvideSystemProperty
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootContextLoader
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -27,7 +28,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import static com.ofg.infrastructure.base.dsl.WireMockHttpRequestMapper.wireMockGet
 
 @ActiveProfiles(['stub', BasicProfiles.TEST])
-@ContextConfiguration(classes = [BaseConfiguration, ServiceDiscoveryStubbingApplicationConfiguration], loader = SpringApplicationContextLoader)
+@ContextConfiguration(classes = [BaseConfiguration, ServiceDiscoveryStubbingApplicationConfiguration], loader = SpringBootContextLoader)
 class ServiceRestClientIntegrationSpec extends MvcWiremockIntegrationSpec {
 
     private static final ServiceAlias COLLABORATOR_ALIAS = new ServiceAlias('foo-bar')

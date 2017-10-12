@@ -1,11 +1,10 @@
 package com.ofg.infrastructure.tracing
 
 import com.ofg.config.BasicProfiles
-import org.springframework.boot.test.EnvironmentTestUtils
+import org.springframework.boot.test.util.EnvironmentTestUtils
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import spock.lang.Specification
-import spock.lang.Unroll
 
 class TracingPropertiesEnablerSpec extends Specification {
 
@@ -17,13 +16,13 @@ class TracingPropertiesEnablerSpec extends Specification {
         expect:
             propValue == Boolean.valueOf(context.environment.getProperty(TracingPropertiesEnabler.SPRING_ZIPKIN_ENABLED))
         where:
-            profile                   | appEnv     || propValue
-            BasicProfiles.DEVELOPMENT | 'sth'      || false
-            BasicProfiles.DEVELOPMENT | 'test'      || false
-            BasicProfiles.PRODUCTION  | 'sth'      || true
-            BasicProfiles.PRODUCTION  | 'test'     || false
-            BasicProfiles.PRODUCTION  | 'test-01'  || false
-            BasicProfiles.PRODUCTION  | 'STAGE-09' || false
-            BasicProfiles.PRODUCTION  | 'stage-09' || false
+            profile                   | appEnv     | propValue
+            BasicProfiles.DEVELOPMENT | 'sth'      | false
+            BasicProfiles.DEVELOPMENT | 'test'     | false
+            BasicProfiles.PRODUCTION  | 'sth'      | true
+            BasicProfiles.PRODUCTION  | 'test'     | false
+            BasicProfiles.PRODUCTION  | 'test-01'  | false
+            BasicProfiles.PRODUCTION  | 'STAGE-09' | false
+            BasicProfiles.PRODUCTION  | 'stage-09' | false
     }
 }

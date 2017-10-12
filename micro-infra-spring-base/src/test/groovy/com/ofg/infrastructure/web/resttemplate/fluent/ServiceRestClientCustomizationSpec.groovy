@@ -7,7 +7,7 @@ import com.ofg.infrastructure.web.resttemplate.custom.RestTemplate
 import com.ofg.infrastructure.web.resttemplate.fluent.config.ServiceRestClientConfigurerAdapter
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootContextLoader
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.EnableAspectJAutoProxy
@@ -16,7 +16,7 @@ import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.test.context.ContextConfiguration
 
-@ContextConfiguration(classes = CustomConfig, loader = SpringApplicationContextLoader)
+@ContextConfiguration(classes = CustomConfig, loader = SpringBootContextLoader)
 class ServiceRestClientCustomizationSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
     static

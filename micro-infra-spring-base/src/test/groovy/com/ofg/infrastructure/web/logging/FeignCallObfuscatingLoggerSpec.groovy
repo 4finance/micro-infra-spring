@@ -16,7 +16,7 @@ import feign.Response
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootContextLoader
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
@@ -28,7 +28,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get
 import static com.github.tomakehurst.wiremock.client.WireMock.post
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching
 
-@ContextConfiguration(classes = [RequestLoggingSpecConfiguration, BaseConfiguration], loader = SpringApplicationContextLoader)
+@ContextConfiguration(classes = [RequestLoggingSpecConfiguration, BaseConfiguration], loader = SpringBootContextLoader)
 class FeignCallObfuscatingLoggerSpec extends MicroserviceMvcWiremockSpec {
 
     private static final String JSON_REQ_RESOURCE_NAME = 'requestLogging/message_req.json'

@@ -81,12 +81,14 @@ allprojects {
     }
 }
 
-task addHashFile << {
-    String gitCmd = "git log --pretty=format:'%H' -n 1"
-    def proc = gitCmd.execute()
-    proc.waitFor()
-    project.buildDir.mkdirs()
-    new File(project.buildDir, "commitHash.txt").withWriter { it << proc.in.text }
+task addHashFile { 
+    doLast {
+        String gitCmd = "git log --pretty=format:'%H' -n 1"
+        def proc = gitCmd.execute()
+        proc.waitFor()
+        project.buildDir.mkdirs()
+        new File(project.buildDir, "commitHash.txt").withWriter { it << proc.in.text }
+    }
 }
 
 configure(emptySubprojects + rootProject) {

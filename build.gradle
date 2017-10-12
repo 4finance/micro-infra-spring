@@ -6,20 +6,17 @@ buildscript {
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:1.4.5.RELEASE"
+        classpath "pl.allegro.tech.build:axion-release-plugin:1.7.2"
         classpath 'com.toomuchcoding:uptodate-gradle-plugin:+'
-        classpath "com.ofg:micro-common-release:0.1.19-SNAPSHOT"
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:+"
         if (project.hasProperty("coverage")) {
             classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+'
             classpath "org.sonarqube.gradle:gradle-sonarqube-plugin:1.0"
         }
     }
-    dependencies {
-        ant.unjar src: configurations.classpath.find { it.name.startsWith("micro-common-release") }, dest: 'build/release'
-    }
 }
 
-apply from: "${rootProject.buildDir}/release/gradle/version.gradle"
+apply from: "gradle/version.gradle"
 
 scmVersion {
     tag {
@@ -38,7 +35,7 @@ Set srcSubprojects = subprojects - emptySubprojects
 
 configure(srcSubprojects) {
     apply plugin: 'groovy'
-    apply from: "${rootProject.buildDir}/release/gradle/publish.gradle"
+    apply from: "${rootProject.projectDir}/gradle/publish.gradle"
 
     bintray {
         pkg {
@@ -48,7 +45,7 @@ configure(srcSubprojects) {
     }
 }
 
-apply from: "${rootProject.buildDir}/release/gradle/release.gradle"
+apply from: "gradle/release.gradle"
 
 //NOTE: All release and publishing modifications (including further scmVersion closure) should be put AFTER the apply of publish.gradle and/or release.gradle
 //      (to be not overridden by the default values applied in those files)

@@ -1,0 +1,7 @@
+apply plugin: 'pl.allegro.tech.build.axion-release'
+
+scmVersion {
+    createReleaseCommit = true
+    releaseCommitMessage { version, position -> "release version: ${version}\n\n[ci skip]" }
+    dryRun = project.hasProperty("dryRun")
+}

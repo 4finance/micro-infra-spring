@@ -1,0 +1,159 @@
+//Based on release.gradle from Mockito project by Szczepan Faber - https://github.com/mockito/mockito
+
+//release mechanism should be applied only on a root project
+assert project == rootProject
+
+//To allow to use GrGit and RestTask classes as 'buildscript' closure has to be in every included file
+buildscript {
+    ext {
+        ghToken = System.env.GH_TOKEN ?: "" //Here to be visible also in github.gradle
+    }
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "pl.allegro.tech.build:axion-release-plugin:1.7.2"
+        classpath "org._10ne.gradle:rest-gradle-plugin:0.3.2"
+        classpath "org.codehaus.groovy.modules.http-builder:http-builder:0.7.2" //to override old version in rest-gradle-plugin
+    }
+}
+
+def dryRun = project.hasProperty('dryRun')
+def branch = System.env.TRAVIS_BRANCH
+def ghUser = System.env.GH_USER ?: "4financeBot"
+boolean localRelease = project.hasProperty("localRelease")
+boolean isTriggerInCommit = isReleaseTriggerInLastCommitMessage(localRelease)
+
+task("releaseNeeded") {
+    doLast {
+        println "Checking if release is needed..."
+        def pr = System.env.TRAVIS_PULL_REQUEST
+        def ci = System.env.CI
+        def skipRelease = System.env.SKIP_RELEASE
+        ext.needed = isNullOrFalse(skipRelease) && (dryRun || (isNullOrFalse(pr) && branch == 'master' && isTriggerInCommit) || (isNullOrFalse(ci) && isNullOrFalse(pr) && localRelease))
+        logger.lifecycle("Release needed: {}, skipRelease: {}, branch: {}, pull request: {}, dryRun: {}, ci: {}, isTriggerInCommit: {}, localRelease: {}.",
+                needed, skipRelease, branch, pr, dryRun, ci, isTriggerInCommit, localRelease)
+    }
+}
+
+//Workaround to "subprojects.bintrayUpload" failure on empty subprojects
+Set uploadableProjects = allprojects.findAll { sProject -> sProject.tasks.matching { it.name == "bintrayUpload" }}
+
+uploadableProjects*.bintrayUpload {
+    dependsOn { releaseNeeded }
+    onlyIf { releaseNeeded.needed }
+    doFirst {
+        if (dryRun) {
+            logger.lifecycle "Dry-running bintrayUpload"
+        }
+    }
+}
+
+release {
+    dependsOn { releaseNeeded }
+    onlyIf { releaseNeeded.needed }
+    doFirst {
+        if (dryRun) {
+            logger.lifecycle "Dry-running Axion release"
+        }
+    }
+}
+
+import org.ajoberstar.grgit.Commit
+import org.ajoberstar.grgit.Credentials
+import org.ajoberstar.grgit.Grgit
+
+
+task("finalizeRelease") {
+    dependsOn { [uploadableProjects.bintrayUpload, releaseNeeded] }
+    onlyIf { releaseNeeded.needed }
+    doLast {
+        if (dryRun) {
+            logger.lifecycle "Dry-running finalizeRelease"
+        }
+        println "Finalizing release..."
+
+        Grgit grgit
+        def pushParams = [tags: true, remote: "origin"]
+        if (!localRelease) {
+            grgit = Grgit.open(getRootDir(), new Credentials(ghUser, ghToken))
+            pushParams << [refsOrSpecs: ["HEAD:refs/heads/${branch}"]]
+        } else {
+            grgit = Grgit.open(getRootDir())
+        }
+
+        if (dryRun) {   //TODO: GrGit push does not support real dryRun mode - https://github.com/ajoberstar/grgit/pull/44
+            println "Dry-running push to GH with tags"
+        } else {
+            grgit.push(pushParams)
+        }
+    }
+    description "Finalizes release - pushes release commit and tag back to GitHub"
+    group "release"
+}
+
+configure(uploadableProjects) {
+    task publishUploadedArtifacts(type: org._10ne.gradle.rest.RestTask) {
+        dependsOn { releaseNeeded }
+        mustRunAfter { finalizeRelease }
+        onlyIf { releaseNeeded.needed && !project.hasProperty('dryRun') }   //TODO: Not available in rest-gradle-plugin yet - https://github.com/noamt/rest-gradle-plugin/issues/9
+        httpMethod = 'post'
+        uri = "broken-should-be-overridden-in-do-frst"
+        username = project.hasProperty('bintrayUser') ? project.getProperty('bintrayUser') : System.properties['bintrayUser']
+        password = project.hasProperty('bintrayKey') ? project.getProperty('bintrayKey') : System.properties['bintrayKey']
+        contentType = groovyx.net.http.ContentType.JSON
+        requestBody = [discard: 'false']
+
+        doFirst {
+            //Update uri with 'bintray.pkg.repo' and package user overridden in end project
+            def packageUser = bintray.pkg.userOrg ?: bintray.user
+            uri = "https://api.bintray.com/content/$packageUser/${bintray.pkg.repo}/${project.name}/${project.version}/publish"
+        }
+        description "Publishes uploaded artifacts in Bintray - makes them publicly available"
+        group "publishing"
+    }
+}
+
+private boolean isReleaseTriggerInLastCommitMessage(boolean isLocalRelease) {
+    final String RELEASE_TRIGGER = '[#DO_RELEASE]'
+
+    def grgit = Grgit.open(getRootDir())
+    List<Commit> history = []
+
+    if (isLocalRelease) {
+        history = grgit.log(maxCommits: 1)
+    } else {
+        def buildCommit = System.env.TRAVIS_COMMIT   //or TRAVIS_COMMIT_RANGE to check for a triggering command?
+        if (buildCommit != null) {
+            history = grgit.log(includes: [buildCommit], maxCommits: 1)
+        }
+    }
+
+    history.each { println "${it.id}: ${it.fullMessage}" }
+    return history[0]?.fullMessage?.contains(RELEASE_TRIGGER)
+}
+
+//Temporarily replaced with shell script. Should be run before Axion
+private void configureGit() {
+    runCommand "git", "config", "user.email", "4financebot@gmail.com"
+    runCommand "git", "config", "user.name", "4Finance Bot"
+    runCommand "git", "config", "push.default", "simple"
+    runCommand "git", "remote", "set-url", "origin", new MaskedArg(value: "https://${System.env.GH_TOKEN}@github.com/4finance/${project.name}.git")
+}
+
+private void runCommand(Object ... args) {
+    runCommand(args as List)
+}
+private void runCommand(Collection args) {
+    logger.lifecycle("--- Executing: {}", args.join(" "))
+    exec { commandLine args.collect { it instanceof MaskedArg? it.value : it.toString()} }
+    logger.lifecycle("--- Completed!", args)
+}
+class MaskedArg {
+    String value
+    String toString() { "<masked>" }
+}
+
+private boolean isNullOrFalse(def env) {
+    env == null || env == "false" || (env instanceof Boolean && !env)
+}

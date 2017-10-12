@@ -1,0 +1,94 @@
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+tasks.bintrayUpload.dependsOn 'build'
+
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.getProperty('bintrayUser') : System.properties['bintrayUser']
+    key = project.hasProperty('bintrayKey') ? project.getProperty('bintrayKey') : System.properties['bintrayKey']
+    publications = ['mavenJava']
+    dryRun = project.hasProperty('dryRun')
+    publish = false
+    pkg {
+        repo = 'micro'
+        userOrg = '4finance'
+        name = project.name
+        desc = project.description
+        licenses = ['Apache-2.0']
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom.withXml {
+                //#89 - workaround to not to have only runtime dependencies in generated pom.xml
+                //Known limitation in maven-publish - - http://forums.gradle.org/gradle/topics/maven_publish_plugin_generated_pom_making_dependency_scope_runtime#reply_14120711
+                asNode().dependencies.'*'.findAll() {
+                    it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
+                        dep.name == it.artifactId.text()
+                    }
+                }.each() {
+                    it.scope*.value = 'compile'
+                }
+
+                //#70 - workaround for empty version in pom.xml when dependency-management-plugin is used
+                //Known limitation of new Gradle publishing mechanism - https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/8
+                //and in addition a workaround for an incorrect version in pom.xml when a version is assigned by resolutionStrategy:
+                //http://forums.gradle.org/gradle/topics/getting-version-of-a-dependency-resolved-with-resolutionstrategy
+                def scopeToConfMapping = [compile: 'compile', runtime: 'runtime', testRuntime: 'test']
+                def scopeResolutionMap = scopeToConfMapping.collectEntries { confName, scope ->
+                    Configuration runtimeConfiguration = project.configurations.getByName(confName)
+                    ResolutionResult resolution = runtimeConfiguration.incoming.resolutionResult // Forces resolve of configuration
+                    Map<ModuleIdentifier, ResolvedComponentResult> resolutionMap = resolution.getAllComponents().collectEntries { ResolvedComponentResult versionResult ->
+                        [versionResult.moduleVersion.module, versionResult]
+                    }
+                    [scope, resolutionMap]
+                }
+                asNode().dependencies[0]?.get('dependency')?.each() { dep ->
+                    String pomVer = dep.get("version").text();
+                    String name = dep.get("artifactId").text();
+                    String group = dep.get("groupId").text();
+                    String scope = dep.get("scope").text();
+
+                    def id = new org.gradle.api.internal.artifacts.DefaultModuleIdentifier(group, name)
+                    ResolvedComponentResult versionResult = scopeResolutionMap.get(scope).get(id)
+                    if(versionResult != null) {
+                        if (!dep.version) {
+                            dep.appendNode('version', versionResult.moduleVersion.version)
+                        } else {
+                            dep.version[0].value = versionResult.moduleVersion.version
+                        }
+                    } else {
+                        if (pomVer.isEmpty()) {
+                            throw new StopExecutionException("Unable to find dependency version to put into pom.xml (dependency: $group:$name)")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+task javadocJar(type: Jar, dependsOn: groovydoc) {
+    classifier = 'javadoc'
+    from groovydoc.destinationDir
+}
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}

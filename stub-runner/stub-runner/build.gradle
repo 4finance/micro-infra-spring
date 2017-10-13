@@ -9,6 +9,8 @@ dependencies {
     compile 'org.apache.ivy:ivy:2.4.0'
     compile 'org.codehaus.groovy:groovy-all'
     compile 'com.github.tomakehurst:wiremock'
+    compile 'org.eclipse.jetty:jetty-servlet'
+    compile 'org.eclipse.jetty:jetty-servlets'
     compile 'javax.servlet:javax.servlet-api:3.1.0'
     compile "org.apache.curator:curator-x-discovery"
     compile "org.apache.curator:curator-test"

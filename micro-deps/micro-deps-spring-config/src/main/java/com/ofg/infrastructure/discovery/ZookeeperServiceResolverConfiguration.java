@@ -1,9 +1,11 @@
 package com.ofg.infrastructure.discovery;
 
+import com.ofg.config.BasicProfiles;
 import org.apache.commons.lang.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.x.discovery.details.InstanceSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.commons.util.UtilAutoConfiguration;
 import org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration;
@@ -19,8 +21,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.util.SocketUtils;
 
-import com.ofg.config.BasicProfiles;
-
 /**
  * Configuration that binds together whole service discovery. Imports:
  * <p/>
@@ -30,7 +30,8 @@ import com.ofg.config.BasicProfiles;
  * <li>{@link DependencyResolutionConfiguration} - Configuration of microservice's dependencies resolving classes.
  * </ul>
  */
-@Import({ConsumerDrivenContractConfiguration.class, ZookeeperAutoConfiguration.class, UtilAutoConfiguration.class})
+@Import(ConsumerDrivenContractConfiguration.class) 
+@ImportAutoConfiguration({ ZookeeperAutoConfiguration.class, UtilAutoConfiguration.class })
 @Configuration
 @Profile(BasicProfiles.SPRING_CLOUD)
 public class ZookeeperServiceResolverConfiguration {

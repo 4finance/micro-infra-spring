@@ -1,25 +1,26 @@
 package com.ofg.infrastructure.camel;
 
-import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER;
-import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.OLD_CORRELATION_ID_HEADER;
-import static org.springframework.cloud.sleuth.Span.PARENT_ID_NAME;
-import static org.springframework.cloud.sleuth.Span.PROCESS_ID_NAME;
-import static org.springframework.cloud.sleuth.Span.SPAN_ID_NAME;
-import static org.springframework.cloud.sleuth.Span.SPAN_NAME_NAME;
-import static org.springframework.cloud.sleuth.Span.builder;
-
-import java.lang.invoke.MethodHandles;
-import java.util.Random;
-
+import com.google.common.collect.Iterables;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.sleuth.Span;
+import org.springframework.cloud.sleuth.Span.SpanBuilder;
 import org.springframework.cloud.sleuth.Tracer;
 
-import com.google.common.collect.Iterables;
+import java.lang.invoke.MethodHandles;
+import java.util.Random;
+
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER;
+import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.OLD_CORRELATION_ID_HEADER;
+import static java.util.Objects.nonNull;
+import static org.springframework.cloud.sleuth.Span.PARENT_ID_NAME;
+import static org.springframework.cloud.sleuth.Span.PROCESS_ID_NAME;
+import static org.springframework.cloud.sleuth.Span.SPAN_ID_NAME;
+import static org.springframework.cloud.sleuth.Span.SPAN_NAME_NAME;
+import static org.springframework.cloud.sleuth.Span.builder;
 
 /**
  * Interceptor class that ensures the correlationId header is present in {@Exchange}.
@@ -51,29 +52,38 @@ public class CorrelationIdInterceptor implements Processor {
     }
 
     private Span getCorrelationId(Exchange exchange) {
-        Long traceId = (Long) exchange.getIn().getHeader(CORRELATION_ID_HEADER);
-        Long oldTraceId = (Long) exchange.getIn().getHeader(OLD_CORRELATION_ID_HEADER);
-        Long spanId = (Long) exchange.getIn().getHeader(SPAN_ID_NAME);
-        String notSampledName = (String) exchange.getIn().getHeader(SPAN_NAME_NAME);
+        SpanBuilder spanBuilder = builder()
+                .spanId(getSpanId(exchange))
+                .traceId(getTraceId(exchange))
+                .name((String) exchange.getIn().getHeader(SPAN_NAME_NAME))
+                .processId((String) exchange.getIn().getHeader(PROCESS_ID_NAME));
         Long parentId = (Long) exchange.getIn().getHeader(PARENT_ID_NAME);
-        String processID = (String) exchange.getIn().getHeader(PROCESS_ID_NAME);
-        if (traceId == null && oldTraceId == null) {
-            log.debug("No correlationId has been set in request inbound message. Creating new one.");
-            traceId = idGenerator.nextLong();
+        if (nonNull(parentId)) {
+            spanBuilder.parent(parentId);
         }
-        if (spanId == null) {
-            log.debug("No spanId has been set in request inbound message. Creating new one.");
-            spanId = idGenerator.nextLong();
-        }
-        return builder().spanId(spanId).traceId(firstNonNull(oldTraceId, traceId))
-                .name(notSampledName).parent(parentId).processId(processID).build();
+        return spanBuilder.build();
     }
 
-    private Long firstNonNull(Long first, Long second) {
-        if (first != null) {
-            return first;
+    private Long getSpanId(Exchange exchange) {
+        Long spanId = (Long) exchange.getIn().getHeader(SPAN_ID_NAME);
+        if (nonNull(spanId)) {
+            return spanId;
         }
-        return second;
+        log.debug("No spanId has been set in request inbound message. Creating new one.");
+        return idGenerator.nextLong();
+    }
+
+    private Long getTraceId(Exchange exchange) {
+        Long oldTraceId = (Long) exchange.getIn().getHeader(OLD_CORRELATION_ID_HEADER);
+        if (nonNull(oldTraceId)) {
+            return oldTraceId;
+        }
+        Long traceId = (Long) exchange.getIn().getHeader(CORRELATION_ID_HEADER);
+        if (nonNull(traceId)) {
+            return traceId;
+        }
+        log.debug("No correlationId has been set in request inbound message. Creating new one.");
+        return idGenerator.nextLong();
     }
 
     private void setCorrelationIdHeaderIfMissing(Exchange exchange, Span span) {

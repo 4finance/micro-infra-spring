@@ -10,9 +10,10 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Shared
 
-import static org.hamcrest.Matchers.*
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import static org.hamcrest.Matchers.equalTo
+import static org.hamcrest.Matchers.is
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -29,7 +30,7 @@ class MicroserviceConfigurationControllerSpec extends MvcCorrelationIdSettingInt
         expect:
             mockMvc.perform(get('/microservice.json'))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                     .andExpect(jsonPath('$.pl.this', is(equalTo('foo/bar/registration'))))
                     .andExpect(jsonPath('$.pl.dependencies.confirmation.path', is(equalTo('foo/bar/security/confirmation'))))
                     .andExpect(jsonPath('$.pl.dependencies.foo-bar.path', is(equalTo('com/ofg/foo/bar'))))

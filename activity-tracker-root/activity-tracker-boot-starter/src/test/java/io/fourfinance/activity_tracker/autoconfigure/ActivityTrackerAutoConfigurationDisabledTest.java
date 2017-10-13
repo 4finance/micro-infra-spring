@@ -4,17 +4,15 @@ import io.fourfinance.activity_tracker.testapp.TestApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.BDDAssertions.then;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(value = TestApplication.class, initializers = ConfigFileApplicationContextInitializer.class)
-@IntegrationTest("com.ofg.infra.microservice.track-activity.enabled = false")
+@RunWith(SpringRunner.class)
+@SpringBootTest(properties = "com.ofg.infra.microservice.track-activity.enabled = false", webEnvironment = NONE, classes = TestApplication.class)
 public class ActivityTrackerAutoConfigurationDisabledTest {
 
     @Autowired

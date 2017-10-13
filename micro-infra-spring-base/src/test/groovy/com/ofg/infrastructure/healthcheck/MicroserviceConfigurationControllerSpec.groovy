@@ -5,9 +5,8 @@ import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
 import com.ofg.infrastructure.base.ServiceDiscoveryStubbingApplicationConfiguration
 import org.junit.ClassRule
 import org.junit.contrib.java.lang.system.ProvideSystemProperty
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.test.context.ContextConfiguration
 import spock.lang.Shared
 
 import static org.hamcrest.Matchers.equalTo
@@ -17,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@ContextConfiguration(classes = [BaseConfiguration, HealthCheckConfiguration, ServiceDiscoveryStubbingApplicationConfiguration], loader = SpringApplicationContextLoader)
+@SpringBootTest(classes = [BaseConfiguration, HealthCheckConfiguration, ServiceDiscoveryStubbingApplicationConfiguration])
 class MicroserviceConfigurationControllerSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
     @Shared @ClassRule

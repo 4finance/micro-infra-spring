@@ -6,7 +6,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder
@@ -24,7 +24,7 @@ import static com.ofg.config.BasicProfiles.TEST
  * @see ApplicationContext
  */
 @CompileStatic
-@RunWith(SpringJUnit4ClassRunner)
+@RunWith(SpringRunner)
 @WebAppConfiguration
 @ActiveProfiles(TEST)
 abstract class MvcIntegrationTest extends IntegrationTest {

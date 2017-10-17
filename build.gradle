@@ -112,7 +112,7 @@ configure(srcSubprojects) {
             dependency "com.google.guava:guava:20.0"
             dependency "commons-io:commons-io:2.5"
 
-            dependencySet(group:"org.apache.curator", version: "2.8.0") {
+            dependencySet(group:"org.apache.curator", version: "2.11.1") {
                 entry "curator-x-discovery"
                 entry "curator-test"
             }

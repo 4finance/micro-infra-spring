@@ -5,6 +5,7 @@ import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.metrics.publishing.EnvironmentAwareMetricsBasePath
 import com.ofg.infrastructure.metrics.publishing.GraphitePublisher
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
+import org.springframework.core.env.MapPropertySource
 import org.springframework.core.env.PropertySource
 import org.springframework.core.io.support.ResourcePropertySource
 import org.springframework.mock.env.MockPropertySource
@@ -76,6 +77,7 @@ class GraphitePublisherRegistrationSpec extends Specification {
 
     def 'should pick values from microservice.json as defaults for metrics if props are not passed explicitly'() {
         given:
+            applicationContext.environment.propertySources.addFirst(new MapPropertySource("test", ["spring.cloud.zookeeper.discovery.enabled": false]))
             applicationContext.refresh()
         expect:
             metricPathConsistsOf(microserviceJsonEntries())

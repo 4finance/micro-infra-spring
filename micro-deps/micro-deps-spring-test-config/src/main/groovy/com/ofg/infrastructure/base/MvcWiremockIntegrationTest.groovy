@@ -14,7 +14,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.springframework.test.context.junit4.SpringRunner
 
 import static com.ofg.config.BasicProfiles.TEST
 
@@ -29,7 +29,7 @@ import static com.ofg.config.BasicProfiles.TEST
  * @see MvcIntegrationSpec
  */
 @CompileStatic
-@RunWith(SpringJUnit4ClassRunner)
+@RunWith(SpringRunner)
 @ContextConfiguration(classes = [MockServerConfiguration])
 @ActiveProfiles(TEST)
 abstract class MvcWiremockIntegrationTest extends MvcIntegrationTest {

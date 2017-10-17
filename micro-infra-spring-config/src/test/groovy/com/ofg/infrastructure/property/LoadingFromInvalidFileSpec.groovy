@@ -14,7 +14,7 @@ class LoadingFromInvalidFileSpec extends AbstractIntegrationSpec {
             contextWithSources(AppWithInvalidConfig)
         then:
             def e = thrown(Exception)
-            e.message.contains("keyForUnquotedCurlyBraces: {cipher}aKey")
+            e.message.contains("invalid-app.yaml")
     }
 }
 

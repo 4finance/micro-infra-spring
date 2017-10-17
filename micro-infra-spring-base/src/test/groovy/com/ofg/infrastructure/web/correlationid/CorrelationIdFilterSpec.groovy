@@ -1,11 +1,11 @@
 package com.ofg.infrastructure.web.correlationid
+
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.ConfigurationWithoutServiceDiscovery
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
 import org.slf4j.MDC
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import spock.lang.Ignore
@@ -13,7 +13,7 @@ import spock.lang.Ignore
 import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.CORRELATION_ID_HEADER
 import static com.ofg.infrastructure.correlationid.CorrelationIdHolder.OLD_CORRELATION_ID_HEADER
 
-@ContextConfiguration(classes = [BaseConfiguration, ConfigurationWithoutServiceDiscovery], loader = SpringApplicationContextLoader)
+@SpringBootTest(classes = [BaseConfiguration, ConfigurationWithoutServiceDiscovery])
 class CorrelationIdFilterSpec extends MvcCorrelationIdSettingIntegrationSpec {
 
     private Random random = new Random();

@@ -10,11 +10,13 @@ buildscript {
     }
     repositories {
         jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath "pl.allegro.tech.build:axion-release-plugin:1.7.2"
-        classpath "org._10ne.gradle:rest-gradle-plugin:0.3.2"
-        classpath "org.codehaus.groovy.modules.http-builder:http-builder:0.7.2" //to override old version in rest-gradle-plugin
+        classpath "org._10ne.gradle:rest-gradle-plugin:0.4.2"
     }
 }
 
@@ -117,7 +119,7 @@ configure(uploadableProjects) {
 private boolean isReleaseTriggerInLastCommitMessage(boolean isLocalRelease) {
     final String RELEASE_TRIGGER = '[#DO_RELEASE]'
 
-    def grgit = Grgit.open(getRootDir())
+    def grgit = Grgit.open()
     List<Commit> history = []
 
     if (isLocalRelease) {

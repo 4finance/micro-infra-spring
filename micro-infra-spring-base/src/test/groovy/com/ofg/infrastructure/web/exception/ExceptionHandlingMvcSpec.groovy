@@ -3,11 +3,10 @@ package com.ofg.infrastructure.web.exception
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.ConfigurationWithoutServiceDiscovery
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
-import org.springframework.test.context.ContextConfiguration
 
 import static org.hamcrest.Matchers.equalTo
 import static org.springframework.http.HttpStatus.BAD_REQUEST
@@ -16,7 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@ContextConfiguration(classes = TestConfig, loader = SpringApplicationContextLoader)
+@SpringBootTest(classes = TestConfig)
 class ExceptionHandlingMvcSpec extends MvcCorrelationIdSettingIntegrationSpec {
     
     def "should return bad request error for invalid field"() {

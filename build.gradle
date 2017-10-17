@@ -5,7 +5,7 @@ buildscript {
         maven { url "https://plugins.gradle.org/m2/" } //for sonarqube plugin
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.4.5.RELEASE"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.5.7.RELEASE"
         classpath "pl.allegro.tech.build:axion-release-plugin:1.7.2"
         classpath 'com.toomuchcoding:uptodate-gradle-plugin:+'
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:+"
@@ -104,11 +104,11 @@ configure(srcSubprojects) {
 
     dependencyManagement {
         imports {
-            mavenBom 'org.springframework.cloud:spring-cloud-starter-parent:Brixton.SR7'
+            mavenBom 'org.springframework.cloud:spring-cloud-starter-parent:Camden.SR7'
         }
 
         dependencies {
-            dependency "org.codehaus.groovy:groovy-all:2.4.11"
+            dependency "org.codehaus.groovy:groovy-all:2.4.12"
             dependency "com.google.guava:guava:20.0"
             dependency "commons-io:commons-io:2.5"
 
@@ -125,7 +125,7 @@ configure(srcSubprojects) {
             dependency "cglib:cglib-nodep:3.2.5"
             dependency "org.objenesis:objenesis:2.5.1"
 
-            dependencySet(group:'org.spockframework', version: '1.0-groovy-2.4') {
+            dependencySet(group:'org.spockframework', version: '1.1-groovy-2.4') {
                 entry "spock-core"
                 entry "spock-spring"
             }
@@ -139,7 +139,7 @@ configure(srcSubprojects) {
 
     test {
         jvmArgs project.gradle.startParameter.systemPropertiesArgs.entrySet().collect{"-D${it.key}=${it.value}"}
-        jvmArgs '-XX:MaxPermSize=256m', '-Xmx512m'
+        jvmArgs '-Xmx512m'
         testLogging {
             exceptionFormat = 'full'
         }

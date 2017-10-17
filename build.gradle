@@ -5,7 +5,7 @@ buildscript {
         maven { url "https://plugins.gradle.org/m2/" } //for sonarqube plugin
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.4.5.RELEASE"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.5.7.RELEASE"
         classpath "pl.allegro.tech.build:axion-release-plugin:1.7.2"
         classpath 'com.toomuchcoding:uptodate-gradle-plugin:+'
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:+"
@@ -139,7 +139,7 @@ configure(srcSubprojects) {
 
     test {
         jvmArgs project.gradle.startParameter.systemPropertiesArgs.entrySet().collect{"-D${it.key}=${it.value}"}
-        jvmArgs '-XX:MaxPermSize=256m', '-Xmx512m'
+        jvmArgs '-Xmx512m'
         testLogging {
             exceptionFormat = 'full'
         }

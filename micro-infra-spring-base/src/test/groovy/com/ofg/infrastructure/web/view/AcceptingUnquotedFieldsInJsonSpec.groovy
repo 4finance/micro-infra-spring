@@ -3,7 +3,6 @@ package com.ofg.infrastructure.web.view
 import com.ofg.infrastructure.base.BaseConfiguration
 import com.ofg.infrastructure.base.ConfigurationWithoutServiceDiscovery
 import com.ofg.infrastructure.base.MvcCorrelationIdSettingIntegrationSpec
-import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.context.ApplicationContextInitializer
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Bean
@@ -20,7 +19,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @ContextConfiguration(classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery, ViewConfiguration],
-                      loader = SpringApplicationContextLoader,
                       initializers = PropertyMockingApplicationContextInitializer.class)
 @ActiveProfiles(DEVELOPMENT)
 class AcceptingUnquotedFieldsInJsonSpec extends MvcCorrelationIdSettingIntegrationSpec {

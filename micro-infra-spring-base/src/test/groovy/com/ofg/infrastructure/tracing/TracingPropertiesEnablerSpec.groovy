@@ -1,11 +1,10 @@
 package com.ofg.infrastructure.tracing
 
 import com.ofg.config.BasicProfiles
-import org.springframework.boot.test.EnvironmentTestUtils
+import org.springframework.boot.test.util.EnvironmentTestUtils
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import spock.lang.Specification
-import spock.lang.Unroll
 
 class TracingPropertiesEnablerSpec extends Specification {
 

@@ -6,7 +6,7 @@ subprojects {
     targetCompatibility = 1.8
 
     dependencies {
-        compile group: 'org.aspectj', name: 'aspectjrt', version: '1.8.9'
+        compile group: 'org.aspectj', name: 'aspectjrt'
         testCompile group: 'junit', name: 'junit', version: '4.12'
         testCompile 'org.codehaus.groovy:groovy-all'
         testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'

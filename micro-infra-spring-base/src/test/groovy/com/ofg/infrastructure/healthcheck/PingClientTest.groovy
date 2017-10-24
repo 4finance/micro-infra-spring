@@ -7,13 +7,14 @@ import com.ofg.infrastructure.discovery.ServiceResolverConfiguration
 import com.ofg.infrastructure.discovery.web.MockServerConfiguration
 import com.ofg.infrastructure.web.resttemplate.fluent.ServiceRestClientConfiguration
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.context.ContextConfiguration
+import org.springframework.boot.test.context.SpringBootTest
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import static com.ofg.infrastructure.base.dsl.WireMockHttpRequestMapper.wireMockGet
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 
-@ContextConfiguration(classes = [BaseConfiguration, MockServerConfiguration, ServiceResolverConfiguration,
-        CollaboratorsConfiguration, ServiceRestClientConfiguration])
+@SpringBootTest(classes = [BaseConfiguration, MockServerConfiguration, ServiceResolverConfiguration,
+        CollaboratorsConfiguration, ServiceRestClientConfiguration], webEnvironment = RANDOM_PORT)
 class PingClientTest extends MvcWiremockIntegrationSpec {
 
     @Autowired

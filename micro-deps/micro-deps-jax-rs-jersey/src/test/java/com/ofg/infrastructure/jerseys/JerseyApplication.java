@@ -3,7 +3,7 @@ package com.ofg.infrastructure.jerseys;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.web.SpringBootServletInitializer;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 @SpringBootApplication
 public class JerseyApplication extends SpringBootServletInitializer {

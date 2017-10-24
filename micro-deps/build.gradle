@@ -15,6 +15,7 @@ project(':micro-deps-root:micro-deps') {
         compile 'com.google.guava:guava'
         compile 'commons-io:commons-io:2.4'
         compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
+        compile 'log4j:log4j:1.2.17'
 
         testCompile "org.codehaus.groovy:groovy-all"
         testCompile "org.spockframework:spock-core"

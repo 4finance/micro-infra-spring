@@ -34,7 +34,6 @@ project(':micro-deps-root:micro-deps-jax-rs-jersey') {
         compile "javax.ws.rs:javax.ws.rs-api:2.0.1"
         compile "org.glassfish.jersey.core:jersey-client:2.22.1"
         compile "org.glassfish.jersey.ext:jersey-proxy-client:2.22.1"
-        compile "org.springframework.boot:spring-boot-starter-web"
         compile project(':micro-deps-root:micro-deps')
 
         testCompile "org.springframework.boot:spring-boot-starter-test"

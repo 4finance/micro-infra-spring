@@ -3,7 +3,6 @@ package com.ofg.infrastructure.property;
 import com.ofg.infrastructure.property.decrypt.JceUnlimitedStrengthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryClientConfiguration;
@@ -18,8 +17,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 
-@Import(ZookeeperDiscoveryClientConfiguration.class)
-@ImportAutoConfiguration(ZookeeperAutoConfiguration.class)
+@Import({ZookeeperDiscoveryClientConfiguration.class, ZookeeperAutoConfiguration.class})
 @Configuration
 @Profile("!test")
 public class ExternalPropertiesConfiguration implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {

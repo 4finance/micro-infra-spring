@@ -18,7 +18,9 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.web.WebAppConfiguration
 
+@WebAppConfiguration
 @ContextConfiguration(classes = Config)
 class CollaboratorStubIntegrationSpec extends MvcWiremockIntegrationSpec {
 

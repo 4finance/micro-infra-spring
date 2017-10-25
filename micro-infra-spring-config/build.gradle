@@ -18,6 +18,7 @@ dependencies {
     compile "commons-io:commons-io"
     compile 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery'
 
+    testCompile 'org.aspectj:aspectjweaver'
     testCompile "org.spockframework:spock-core"
     testCompile 'info.solidsoft.spock:spock-global-unroll'
     testRuntime "org.springframework:spring-test"

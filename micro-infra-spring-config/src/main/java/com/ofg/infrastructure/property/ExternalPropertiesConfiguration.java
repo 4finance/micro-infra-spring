@@ -33,13 +33,7 @@ public class ExternalPropertiesConfiguration implements ApplicationContextInitia
         return new FileSystemLocator(
                 PropertiesFolderFinder.find(),
                 appCoordinates,
-                encryptor());
-    }
-    
-    private TextEncryptor encryptor() {
-        return (textEncryptor == null || textEncryptor.getClass().getSimpleName().equals("NoOpTextEncryptor"))
-                ? new FailsafeTextEncryptor()
-                : textEncryptor;
+                textEncryptor == null ? new FailsafeTextEncryptor() : textEncryptor);
     }
 
     @Bean

@@ -3,6 +3,7 @@ package com.ofg.infrastructure.property.decrypt
 import com.ofg.infrastructure.property.AbstractIntegrationSpec
 import org.codehaus.groovy.runtime.StackTraceUtils
 import org.springframework.context.ConfigurableApplicationContext
+import spock.lang.Ignore
 
 class DecryptingPropertyExtendedSpec extends AbstractIntegrationSpec {
 
@@ -21,6 +22,10 @@ class DecryptingPropertyExtendedSpec extends AbstractIntegrationSpec {
             context?.close()
     }
 
+    /**
+     * {@link org.springframework.cloud.config.server.config.EncryptionAutoConfiguration} automatically creates NoOpTextEncryptor so Failsafe is always skipped
+     */
+    @Ignore
     def "should fail when encryption key is not provided and there are encrypted passwords"() {
         when:
             def context = contextWithProperties(ENCRYPTED_PROPERTY)

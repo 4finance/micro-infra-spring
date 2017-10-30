@@ -1,6 +1,8 @@
 package com.ofg.infrastructure.stub
 
 import com.github.tomakehurst.wiremock.admin.model.ListStubMappingsResult
+import com.github.tomakehurst.wiremock.client.MappingBuilder
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
@@ -37,6 +39,16 @@ class Stub {
      */
     void verifyThat(int count, RequestPatternBuilder requestPatternBuilder) {
         delegate.verifyThat(count, requestPatternBuilder)
+    }
+
+    /**
+     * Registers interaction and mapping for this stub.
+     *
+     * @param mapping request mapping criteria
+     * @param response expected response to be returned
+     */
+    void register(MappingBuilder mapping, ResponseDefinitionBuilder response) {
+        delegate.register(mapping.willReturn(response))
     }
 
     /**

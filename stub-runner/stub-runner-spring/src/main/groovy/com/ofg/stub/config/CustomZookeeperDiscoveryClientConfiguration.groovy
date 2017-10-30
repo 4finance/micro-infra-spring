@@ -11,10 +11,14 @@ import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryPropertie
 import org.springframework.cloud.zookeeper.discovery.ZookeeperInstance
 import org.springframework.cloud.zookeeper.discovery.ZookeeperServiceDiscovery
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 
 /**
  * Custom configuration that helps initialize deprecated ZookeeperServiceDiscovery and ZookeeperDiscoveryProperties
  */
+@Configuration
+@Profile("springCloud")
 class CustomZookeeperDiscoveryClientConfiguration extends ZookeeperDiscoveryClientConfiguration {
 
     @Autowired

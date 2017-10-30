@@ -1,8 +1,5 @@
 package com.ofg.infrastructure.stub
 
-import com.github.tomakehurst.wiremock.client.MappingBuilder
-import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.VerificationException
 import com.github.tomakehurst.wiremock.http.RequestMethod
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder
@@ -19,7 +16,8 @@ import spock.lang.AutoCleanup
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import static com.github.tomakehurst.wiremock.client.WireMock.ok
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import static com.ofg.infrastructure.base.dsl.WireMockHttpRequestMapper.wireMockGet
 
 class StubSpec extends Specification {
@@ -33,19 +31,18 @@ class StubSpec extends Specification {
     static final int MOCK_PORT = 8993
 
     @AutoCleanup('shutdownServer') HttpMockServer mockServer
-    @AutoCleanup('shutdown') WireMock wireMock
-    StubRunning stubRunning
-    ServiceConfigurationResolver configurationResolver
+    @AutoCleanup('shutdown') Stubs stubs
+    Stub pongStub
 
     def setup() {
-        stubRunningWithPredefinedPongPath()
-        configurationResolverWithPingPongDependencies()
-
         mockServer = new HttpMockServer(MOCK_PORT)
         mockServer.start()
 
-        wireMock = new WireMock('localhost', mockServer.port())
-        wireMock.resetToDefaultMappings()
+        StubRunning stubRunning = stubRunningWithPredefinedPongPath()
+        ServiceConfigurationResolver configurationResolver = configurationResolverWithPingPongDependencies()
+
+        stubs = new Stubs(configurationResolver, stubRunning)
+        pongStub = stubs.of(PONG)
     }
 
     def 'should successfully verify interaction with stub'() {
@@ -53,24 +50,18 @@ class StubSpec extends Specification {
             predefinedPongInteraction()
             simulatedSinglePongInteraction()
         when:
-            Stubs stub = new Stubs(configurationResolver, stubRunning)
-            stub.of(PONG).verifyThat(expectedRequest())
+            pongStub.verifyThat(expectedRequest())
         then:
             noExceptionThrown()
-        cleanup:
-            stub.shutdown()
     }
 
     def 'should throw verification exception if no verification happened'() {
         given:
             predefinedPongInteraction()
         when:
-            Stubs stub = new Stubs(configurationResolver, stubRunning)
-            stub.of(PONG).verifyThat(expectedRequest())
+            pongStub.verifyThat(expectedRequest())
         then:
             thrown(VerificationException)
-        cleanup:
-            stub.shutdown()
     }
 
     def 'should successfully verify multiple interactions with stub'() {
@@ -78,12 +69,9 @@ class StubSpec extends Specification {
             predefinedPongInteraction()
             multiplePongInteractions(3)
         when:
-            Stubs stub = new Stubs(configurationResolver, stubRunning)
-            stub.of(PONG).verifyThat(3, expectedRequest())
+            pongStub.verifyThat(3, expectedRequest())
         then:
             noExceptionThrown()
-        cleanup:
-            stub.shutdown()
     }
 
     @Unroll('should throw exception when there were #actualCount interactions while #verificationCount were expected')
@@ -92,12 +80,9 @@ class StubSpec extends Specification {
             predefinedPongInteraction()
             multiplePongInteractions(3)
         when:
-            Stubs stub = new Stubs(configurationResolver, stubRunning)
-            stub.of(PONG).verifyThat(2, expectedRequest())
+            pongStub.verifyThat(2, expectedRequest())
         then:
             thrown(VerificationException)
-        cleanup:
-            stub.shutdown()
         where:
             actualCount | verificationCount
             3           | 5
@@ -105,42 +90,36 @@ class StubSpec extends Specification {
     }
 
     def 'should throw exception for unknown collaborator alias'() {
-        given:
-            Stubs stub = new Stubs(configurationResolver, stubRunning)
         when:
-            stub.of(UNKOWN_COLLABORATOR)
+            stubs.of(UNKOWN_COLLABORATOR)
         then:
             def ex = thrown(UnknownCollaboratorException)
             ex.message == "Could not resolve service with alias: $UNKOWN_COLLABORATOR"
-        cleanup:
-            stub.shutdown()
     }
 
     def 'should throw exception for missing stub URL of well-known collaborator alias'() {
-        given:
-            Stubs stub = new Stubs(configurationResolver, stubRunning)
         when:
-            stub.of(PING)
+            stubs.of(PING)
         then:
             def ex = thrown(MissingStubException)
             ex.message == "Could not find stub with alias: $PING"
-        cleanup:
-            stub.shutdown()
     }
 
-    private void configurationResolverWithPingPongDependencies() {
-        configurationResolver = Mock(ServiceConfigurationResolver)
+    private ServiceConfigurationResolver configurationResolverWithPingPongDependencies() {
+        ServiceConfigurationResolver configurationResolver = Mock(ServiceConfigurationResolver)
         MicroserviceConfiguration.Dependency ping = new MicroserviceConfiguration.Dependency(PING, UNKNOWN_PING_PATH)
         MicroserviceConfiguration.Dependency pong = new MicroserviceConfiguration.Dependency(PONG, KNOWN_PONG_PATH)
         configurationResolver.getDependency(PING) >> ping
         configurationResolver.getDependency(PONG) >> pong
         configurationResolver.dependencies >> [ping, pong]
+        return configurationResolver
     }
 
-    private void stubRunningWithPredefinedPongPath() {
-        stubRunning = Mock(StubRunning)
+    private StubRunning stubRunningWithPredefinedPongPath() {
+        StubRunning stubRunning = Mock(StubRunning)
         stubRunning.findStubUrlByRelativePath(KNOWN_PONG_PATH.path) >> Optional.of(new URL("http://localhost:$MOCK_PORT"))
         stubRunning.findStubUrlByRelativePath(_ as String) >> Optional.absent()
+        return stubRunning
     }
 
     private void simulatedSinglePongInteraction() {
@@ -154,16 +133,12 @@ class StubSpec extends Specification {
     }
 
     private predefinedPongInteraction() {
-        stubInteraction(wireMockGet(PONG_ENDPOINT), aResponse().withStatus(200))
+        pongStub.register(wireMockGet(PONG_ENDPOINT), ok())
     }
 
     private RequestPatternBuilder expectedRequest() {
-        UrlPattern matchingPongEndpoint = WireMock.urlPathEqualTo(PONG_ENDPOINT)
+        UrlPattern matchingPongEndpoint = urlPathEqualTo(PONG_ENDPOINT)
         return new RequestPatternBuilder(RequestMethod.GET, matchingPongEndpoint)
-    }
-
-    private void stubInteraction(MappingBuilder mapping, ResponseDefinitionBuilder response) {
-        wireMock.register(mapping.willReturn(response))
     }
 
 }

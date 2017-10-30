@@ -2,7 +2,13 @@ package com.ofg.stub.config
 
 import com.ofg.infrastructure.discovery.MicroserviceConfigurationNotPresentException
 import com.ofg.infrastructure.discovery.ServiceConfigurationResolver
-import com.ofg.stub.*
+import com.ofg.stub.BatchStubRunner
+import com.ofg.stub.BatchStubRunnerFactory
+import com.ofg.stub.Collaborators
+import com.ofg.stub.DescriptorToCollaborators
+import com.ofg.stub.StubRunner
+import com.ofg.stub.StubRunnerOptions
+import com.ofg.stub.StubRunning
 import com.ofg.stub.util.CollaboratorsFromZookeeper
 import groovy.grape.Grape
 import groovy.transform.CompileStatic
@@ -10,13 +16,12 @@ import groovy.util.logging.Slf4j
 import org.apache.curator.test.TestingServer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryClientConfiguration
+import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryAutoConfiguration
 import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties
 import org.springframework.cloud.zookeeper.discovery.dependency.ZookeeperDependencies
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
-
 /**
  * Configuration that initializes a {@link BatchStubRunner} that runs {@link StubRunner} instance for each microservice's collaborator.
  *
@@ -49,7 +54,7 @@ import org.springframework.context.annotation.Import
  * @see ServiceConfigurationResolver
  */
 @Configuration
-@Import([ZookeeperDiscoveryClientConfiguration, ServiceDiscoveryTestingServerConfiguration])
+@Import([CustomZookeeperDiscoveryClientConfiguration, ZookeeperDiscoveryAutoConfiguration, ServiceDiscoveryTestingServerConfiguration])
 @Slf4j
 @CompileStatic
 class StubRunnerConfiguration {

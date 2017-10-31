@@ -21,6 +21,7 @@ dependencies {
     compile 'args4j:args4j:2.32'
     compile 'com.nurkiewicz.asyncretry:asyncretry-jdk7:0.0.6'
     compile 'com.jayway.jsonpath:json-path'
+    compile 'log4j:log4j:1.2.17'
 
     compile "org.eclipse.aether:aether-api:${aetherVersion}"
     compile "org.eclipse.aether:aether-impl:${aetherVersion}"

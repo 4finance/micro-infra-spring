@@ -74,7 +74,6 @@ allprojects {
                     if (details.requested.group == 'org.codehaus.groovy' && details.requested.name != "groovy-all") {
                         details.useTarget("org.codehaus.groovy:groovy-all:${details.requested.version}")
                     }
-                    if (details.requested.group == 'org.aspectj') { details.useVersion '1.8.9' }
                 }
             }
         }
@@ -104,7 +103,7 @@ configure(srcSubprojects) {
 
     dependencyManagement {
         imports {
-            mavenBom 'org.springframework.cloud:spring-cloud-starter-parent:Camden.SR7'
+            mavenBom 'org.springframework.cloud:spring-cloud-starter-parent:Dalston.SR4'
         }
 
         dependencies {
@@ -112,7 +111,7 @@ configure(srcSubprojects) {
             dependency "com.google.guava:guava:20.0"
             dependency "commons-io:commons-io:2.5"
 
-            dependencySet(group:"org.apache.curator", version: "2.8.0") {
+            dependencySet(group:"org.apache.curator", version: "2.11.1") {
                 entry "curator-x-discovery"
                 entry "curator-test"
             }

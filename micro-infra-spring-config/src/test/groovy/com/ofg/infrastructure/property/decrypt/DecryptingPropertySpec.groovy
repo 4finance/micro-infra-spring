@@ -61,7 +61,7 @@ class TestConfigurationWithPropertySource {
 }
 
 @Component
-@ConfigurationProperties(locations = "classpath:testConfigurationWithConfigurationProperties.properties", prefix = "enc")
+@ConfigurationProperties(value = "classpath:testConfigurationWithConfigurationProperties.properties")
 class ConfigurationPropertiesSettings {
     String configurationProperties
 }

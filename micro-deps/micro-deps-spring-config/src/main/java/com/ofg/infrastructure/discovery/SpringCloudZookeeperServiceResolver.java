@@ -128,7 +128,7 @@ public class SpringCloudZookeeperServiceResolver implements ServiceResolver {
     private boolean isServiceName(String path) {
         final String potentialServiceName = path.substring(zookeeperDiscoveryProperties.getRoot().length());
         try {
-            return !serviceDiscovery.getServiceDiscovery().queryForInstances(potentialServiceName).isEmpty();
+            return !serviceDiscovery.getServiceDiscoveryRef().get().queryForInstances(potentialServiceName).isEmpty();
         } catch (Exception ignored) {
             //ignored, not a service
             return false;

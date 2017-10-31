@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryClientConfiguration;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
@@ -34,6 +36,13 @@ public class ExternalPropertiesConfiguration implements ApplicationContextInitia
                 PropertiesFolderFinder.find(),
                 appCoordinates,
                 textEncryptor == null ? new FailsafeTextEncryptor() : textEncryptor);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @Profile("springCloud")
+    ZookeeperDiscoveryProperties zookeeperDiscoveryProperties(InetUtils inetUtils) {
+        return new ZookeeperDiscoveryProperties(inetUtils);
     }
 
     @Bean

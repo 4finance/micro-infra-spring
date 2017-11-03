@@ -31,7 +31,7 @@ import org.springframework.util.SocketUtils;
  * </ul>
  */
 @Import(ConsumerDrivenContractConfiguration.class) 
-@ImportAutoConfiguration({ ZookeeperAutoConfiguration.class, UtilAutoConfiguration.class })
+@ImportAutoConfiguration({SpringCloudZookeeperDiscoveryClientConfiguration.class, ZookeeperAutoConfiguration.class, UtilAutoConfiguration.class})
 @Configuration
 @Profile(BasicProfiles.SPRING_CLOUD)
 public class ZookeeperServiceResolverConfiguration {

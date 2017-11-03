@@ -5,13 +5,13 @@ buildscript {
         maven { url "https://plugins.gradle.org/m2/" } //for sonarqube plugin
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.5.7.RELEASE"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE"
         classpath "pl.allegro.tech.build:axion-release-plugin:1.7.2"
         classpath 'com.toomuchcoding:uptodate-gradle-plugin:+'
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:+"
         if (project.hasProperty("coverage")) {
             classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+'
-            classpath "org.sonarqube.gradle:gradle-sonarqube-plugin:1.0"
+            classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5"
         }
     }
 }
@@ -218,7 +218,7 @@ if (project.hasProperty("coverage")) {
 
         reports {
             xml.enabled true
-            xml.destination "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+            xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
         }
     }
 

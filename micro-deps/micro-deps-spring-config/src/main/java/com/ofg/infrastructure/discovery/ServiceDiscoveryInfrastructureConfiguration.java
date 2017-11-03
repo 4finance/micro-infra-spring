@@ -56,25 +56,13 @@ public class ServiceDiscoveryInfrastructureConfiguration {
     @Bean
     @Conditional(StandaloneZookeeperCondition.class)
     public ZookeeperConnector standaloneZookeeperConnector(@Value("${service.resolver.url:localhost:2181}") final String serviceResolverUrl) {
-        return new ZookeeperConnector() {
-            @Override
-            public String getServiceResolverUrl() {
-                return serviceResolverUrl;
-            }
-
-        };
+        return () -> serviceResolverUrl;
     }
 
     @Bean
     @Conditional(InMemoryZookeeperCondition.class)
     public ZookeeperConnector inMemoryZookeeperConnector(final TestingServer testingServer) {
-        return new ZookeeperConnector() {
-            @Override
-            public String getServiceResolverUrl() {
-                return testingServer.getConnectString();
-            }
-
-        };
+        return () -> testingServer.getConnectString();
     }
 
     @Bean
@@ -113,16 +101,13 @@ public class ServiceDiscoveryInfrastructureConfiguration {
     }
 
     private void asyncRegisterInsideZookeeper(final ServiceDiscovery<Map> serviceDiscovery) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    serviceDiscovery.start();
-                    log.info("Registration inside zookeeper successful");
-                } catch (Exception e) {
-                    log.error("Error during service registration inside Zookeeper");
-                    System.exit(1);
-                }
+        new Thread(() -> {
+            try {
+                serviceDiscovery.start();
+                log.info("Registration inside zookeeper successful");
+            } catch (Exception e) {
+                log.error("Error during service registration inside Zookeeper");
+                System.exit(1);
             }
         }, "async-register-service-thread").start();
     }

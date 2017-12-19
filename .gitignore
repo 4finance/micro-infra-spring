@@ -9,6 +9,6 @@ build/
 logs
 .log
 .zip
-/out
+out/
 atlassian-ide-plugin.xml
 *~

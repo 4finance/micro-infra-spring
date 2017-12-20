@@ -51,6 +51,6 @@ public class TrackUserActivityAspect {
     }
 
     private String extractParamValue(JoinPoint joinPoint, final String field) {
-        return new JoinPointParameters(joinPoint).getValue(field).or("<not available>").toString();
+        return new JoinPointParameters(joinPoint).getValue(field).getOrElse("<not available>");
     }
 }

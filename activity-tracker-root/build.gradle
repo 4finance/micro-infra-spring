@@ -18,6 +18,7 @@ project(':activity-tracker-root:activity-tracker') {
         compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.8.10'
         compile group: 'io.dropwizard.metrics', name: 'metrics-core', version: '3.1.2'
         compile 'commons-beanutils:commons-beanutils:1.9.2'
+        compile 'io.javaslang:javaslang:2.0.2'
         compile 'com.google.guava:guava'
     }
 }

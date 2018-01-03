@@ -1,9 +1,5 @@
 description = 'Microservice Spring infrastructure for properties management'
 
-ext {
-    springSecurityRsaVersion = "1.0.0.RELEASE"
-}
-
 sourceSets.main.java.srcDirs = []
 sourceSets.main.groovy.srcDirs += ["src/main/java", "src/main/groovy"]
 
@@ -12,7 +8,7 @@ dependencies {
 
     compile 'org.springframework.cloud:spring-cloud-config-client'
     compile 'org.springframework.cloud:spring-cloud-config-server'
-    compile "org.springframework.security:spring-security-rsa:$springSecurityRsaVersion"
+    compile 'org.springframework.security:spring-security-rsa:1.0.5.RELEASE'
     compile 'org.codehaus.groovy:groovy-all'
     compile 'org.aspectj:aspectjrt'
     compile 'commons-io:commons-io'

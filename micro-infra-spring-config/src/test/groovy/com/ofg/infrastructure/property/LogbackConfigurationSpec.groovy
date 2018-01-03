@@ -18,7 +18,7 @@ class LogbackConfigurationSpec extends Specification {
     LogbackConfiguration config = new LogbackConfiguration()
 
     def setup() {
-        environmentVariables.set(CONFIG_FOLDER, null)
+        environmentVariables.clear(CONFIG_FOLDER)
         System.clearProperty(CONFIG_FOLDER)
     }
 

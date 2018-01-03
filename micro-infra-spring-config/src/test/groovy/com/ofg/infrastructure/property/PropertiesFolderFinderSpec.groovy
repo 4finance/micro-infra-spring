@@ -19,7 +19,7 @@ class PropertiesFolderFinderSpec extends Specification {
     PropertiesFolderFinder propertiesFolderFinder = new PropertiesFolderFinder()
 
     def setup() {
-        environmentVariables.set(CONFIG_FOLDER, null)
+        environmentVariables.clear(CONFIG_FOLDER)
         System.clearProperty(CONFIG_FOLDER)
     }
 

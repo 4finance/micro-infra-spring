@@ -2,7 +2,7 @@ description = 'Microservice base infrastructure registered in Spring'
 
 ext {
     metricsVersion = '4.0.0'
-    hystrixVersion = '1.4.12'
+    hystrixVersion = '1.5.13'
 }
 
 sourceSets.main.java.srcDirs = []
@@ -20,9 +20,9 @@ dependencies {
     compile "io.dropwizard.metrics:metrics-jmx:${metricsVersion}"
     compile "io.dropwizard.metrics:metrics-graphite:${metricsVersion}"
     compile 'com.nurkiewicz.asyncretry:asyncretry-jdk7:0.0.6'
-    compile "com.netflix.hystrix:hystrix-core:$hystrixVersion"
-    compile "com.netflix.hystrix:hystrix-metrics-event-stream:$hystrixVersion"
-    compile "com.netflix.hystrix:hystrix-codahale-metrics-publisher:$hystrixVersion"
+    compile "com.netflix.hystrix:hystrix-core:${hystrixVersion}"
+    compile "com.netflix.hystrix:hystrix-metrics-event-stream:${hystrixVersion}"
+    compile "com.netflix.hystrix:hystrix-codahale-metrics-publisher:${hystrixVersion}"
     compile "org.springframework.cloud:spring-cloud-starter-zipkin"
     compile "org.springframework.cloud:spring-cloud-starter-feign"
     compile "org.apache.commons:commons-collections4:4.1"

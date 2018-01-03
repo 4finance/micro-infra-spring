@@ -171,7 +171,7 @@ configure(srcSubprojects) {
         groovyClasspath = project.configurations.jansi
     }
     dependencies {
-        jansi 'org.fusesource.jansi:jansi:1.15'
+        jansi 'org.fusesource.jansi:jansi:1.16'
     }
 }
 

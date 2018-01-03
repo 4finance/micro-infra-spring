@@ -16,6 +16,6 @@ dependencies {
     testCompile 'org.codehaus.groovy:groovy-all'
     testCompile "org.apache.camel:camel-test-spring:${camelVersion}"
     testCompile "org.springframework:spring-test"
-    testCompile 'cglib:cglib-nodep:3.2.5'
+    testCompile 'cglib:cglib-nodep'
     testCompile 'org.objenesis:objenesis'
 }

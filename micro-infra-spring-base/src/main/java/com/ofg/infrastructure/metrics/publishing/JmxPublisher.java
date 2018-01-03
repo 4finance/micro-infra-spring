@@ -1,8 +1,8 @@
 package com.ofg.infrastructure.metrics.publishing;
 
-import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.jmx.JmxReporter;
 
 import java.util.concurrent.TimeUnit;
 

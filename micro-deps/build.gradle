@@ -18,7 +18,7 @@ project(':micro-deps-root:micro-deps') {
         compile 'log4j:log4j:1.2.17'
 
         testCompile 'org.codehaus.groovy:groovy-all'
-        testCompile "org.spockframework:spock-core"
+        testCompile 'org.spockframework:spock-core'
         testCompile 'info.solidsoft.spock:spock-global-unroll'
         testCompile 'org.awaitility:awaitility-groovy'
     }
@@ -45,7 +45,7 @@ project(':micro-deps-root:micro-deps-jax-rs-jersey') {
 
         testCompile project(':micro-deps-root:micro-deps-spring-config')
         testCompile 'org.codehaus.groovy:groovy-all'
-        testCompile "org.spockframework:spock-core"
+        testCompile 'org.spockframework:spock-core'
         testCompile 'info.solidsoft.spock:spock-global-unroll'
         testCompile 'org.awaitility:awaitility-groovy'
     }
@@ -68,8 +68,8 @@ project(':micro-deps-root:micro-deps-spring-config') {
         compile 'io.reactivex:rxjava'
 
         testCompile 'org.codehaus.groovy:groovy-all'
-        testCompile "org.spockframework:spock-core"
-        testCompile "org.spockframework:spock-spring"
+        testCompile 'org.spockframework:spock-core'
+        testCompile 'org.spockframework:spock-spring'
         testCompile 'info.solidsoft.spock:spock-global-unroll'
         testCompile "org.springframework:spring-test"
         testCompile "org.springframework:spring-webmvc"
@@ -90,8 +90,8 @@ project(':micro-deps-root:micro-deps-spring-test-config') {
         compile 'org.objenesis:objenesis'
         compile 'org.aspectj:aspectjweaver'
 
-        compile "org.spockframework:spock-core"
-        compile "org.spockframework:spock-spring"
+        compile 'org.spockframework:spock-core'
+        compile 'org.spockframework:spock-spring'
         compile "org.springframework:spring-webmvc"
         compile "org.springframework:spring-test"
         compile 'com.github.tomakehurst:wiremock'

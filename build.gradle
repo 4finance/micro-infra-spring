@@ -131,9 +131,9 @@ configure(srcSubprojects) {
                 entry 'logback-core'
                 entry 'logback-classic'
             }
-            dependencySet(group:'org.spockframework', version: '1.1-groovy-2.4') {
-                entry "spock-core"
-                entry "spock-spring"
+            dependencySet(group: 'org.spockframework', version: '1.1-groovy-2.4') {
+                entry 'spock-core'
+                entry 'spock-spring'
             }
             dependency "info.solidsoft.spock:spock-global-unroll:0.5.0"
             dependencySet(group: 'org.awaitility', version: '3.0.0') {

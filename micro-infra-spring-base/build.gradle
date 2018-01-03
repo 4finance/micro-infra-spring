@@ -30,8 +30,8 @@ dependencies {
     runtime 'org.aspectj:aspectjweaver'
 
     testCompile "org.springframework.boot:spring-boot-starter-test"
-    testCompile "org.spockframework:spock-core"
-    testRuntime "org.spockframework:spock-spring"
+    testCompile 'org.spockframework:spock-core'
+    testRuntime 'org.spockframework:spock-spring'
     testCompile 'info.solidsoft.spock:spock-global-unroll'
     testCompile "org.springframework:spring-test"
     testCompile 'org.hamcrest:hamcrest-library:1.3'

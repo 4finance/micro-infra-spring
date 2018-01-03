@@ -137,6 +137,10 @@ configure(srcSubprojects) {
                 entry "awaitility"
                 entry "awaitility-groovy"
             }
+            dependencySet(group: 'com.jayway.jsonpath', version: '2.4.0') {
+                entry 'json-path'
+                entry 'json-path-assert'
+            }
         }
     }
 

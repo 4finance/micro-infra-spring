@@ -73,7 +73,7 @@ project(':micro-deps-root:micro-deps-spring-config') {
         testCompile 'info.solidsoft.spock:spock-global-unroll'
         testCompile "org.springframework:spring-test"
         testCompile "org.springframework:spring-webmvc"
-        testCompile "com.jayway.restassured:rest-assured"
+        testCompile 'io.rest-assured:rest-assured'
         testCompile 'org.slf4j:slf4j-api'
         testCompile 'cglib:cglib-nodep'
         testCompile 'org.objenesis:objenesis'
@@ -97,7 +97,6 @@ project(':micro-deps-root:micro-deps-spring-test-config') {
         compile 'com.github.tomakehurst:wiremock'
         compile 'javax.servlet:javax.servlet-api:3.1.0'
 
-
-        testCompile "com.jayway.restassured:rest-assured"
+        testCompile 'io.rest-assured:rest-assured'
     }
 }

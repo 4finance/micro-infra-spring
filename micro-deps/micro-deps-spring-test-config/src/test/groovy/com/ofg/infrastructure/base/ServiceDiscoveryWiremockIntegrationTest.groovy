@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse
-import static com.jayway.restassured.RestAssured.get
 import static com.ofg.infrastructure.base.dsl.WireMockHttpRequestMapper.wireMockGet
+import static io.restassured.RestAssured.get
 import static org.springframework.http.HttpStatus.OK
 
 @ContextConfiguration(classes = [MockServerConfiguration, BaseConfiguration, ServiceResolverConfiguration])

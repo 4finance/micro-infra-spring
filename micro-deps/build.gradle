@@ -10,8 +10,8 @@ project(':micro-deps-root:micro-deps') {
     description = 'Microservice dependency manager'
 
     dependencies {
-        compile "org.apache.curator:curator-x-discovery"
-        compile "org.apache.curator:curator-test"
+        compile 'org.apache.curator:curator-x-discovery'
+        compile 'org.apache.curator:curator-test'
         compile 'com.google.guava:guava'
         compile 'commons-io:commons-io'
         compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
@@ -32,16 +32,16 @@ project(':micro-deps-root:micro-deps-jax-rs-jersey') {
     }
 
     dependencies {
-        compile "javax.ws.rs:javax.ws.rs-api:2.0.1"
-        compile "org.glassfish.jersey.core:jersey-client:2.22.1"
-        compile "org.glassfish.jersey.ext:jersey-proxy-client:2.22.1"
+        compile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
+        compile 'org.glassfish.jersey.core:jersey-client:2.22.1'
+        compile 'org.glassfish.jersey.ext:jersey-proxy-client:2.22.1'
         compile project(':micro-deps-root:micro-deps')
 
-        testCompile "org.springframework.boot:spring-boot-starter-web"
-        testCompile "org.springframework.boot:spring-boot-starter-test"
-        testCompile "org.springframework.boot:spring-boot-starter-actuator"
-        testCompile "org.springframework.boot:spring-boot-starter-jersey"
-        testCompile "org.springframework.boot:spring-boot-starter-tomcat"
+        testCompile 'org.springframework.boot:spring-boot-starter-web'
+        testCompile 'org.springframework.boot:spring-boot-starter-test'
+        testCompile 'org.springframework.boot:spring-boot-starter-actuator'
+        testCompile 'org.springframework.boot:spring-boot-starter-jersey'
+        testCompile 'org.springframework.boot:spring-boot-starter-tomcat'
 
         testCompile project(':micro-deps-root:micro-deps-spring-config')
         testCompile 'org.codehaus.groovy:groovy-all'
@@ -60,9 +60,9 @@ project(':micro-deps-root:micro-deps-spring-config') {
     dependencies {
         compile project(':micro-deps-root:micro-deps')
         compile(project(':stub-runner-root:stub-runner-spring')) {
-            exclude group: "org.slf4j", module: "log4j-over-slf4j"
+            exclude group: 'org.slf4j', module: 'log4j-over-slf4j'
         }
-        compile "org.springframework:spring-context"
+        compile 'org.springframework:spring-context'
         compile 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery'
         compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
         compile 'io.reactivex:rxjava'
@@ -71,8 +71,8 @@ project(':micro-deps-root:micro-deps-spring-config') {
         testCompile 'org.spockframework:spock-core'
         testCompile 'org.spockframework:spock-spring'
         testCompile 'info.solidsoft.spock:spock-global-unroll'
-        testCompile "org.springframework:spring-test"
-        testCompile "org.springframework:spring-webmvc"
+        testCompile 'org.springframework:spring-test'
+        testCompile 'org.springframework:spring-webmvc'
         testCompile 'io.rest-assured:rest-assured'
         testCompile 'org.slf4j:slf4j-api'
         testCompile 'cglib:cglib-nodep'
@@ -92,8 +92,8 @@ project(':micro-deps-root:micro-deps-spring-test-config') {
 
         compile 'org.spockframework:spock-core'
         compile 'org.spockframework:spock-spring'
-        compile "org.springframework:spring-webmvc"
-        compile "org.springframework:spring-test"
+        compile 'org.springframework:spring-webmvc'
+        compile 'org.springframework:spring-test'
         compile 'com.github.tomakehurst:wiremock'
         compile 'javax.servlet:javax.servlet-api:3.1.0'
 

@@ -15,7 +15,7 @@ dependencies {
     testCompile 'info.solidsoft.spock:spock-global-unroll'
     testCompile 'org.codehaus.groovy:groovy-all'
     testCompile "org.apache.camel:camel-test-spring:${camelVersion}"
-    testCompile "org.springframework:spring-test"
+    testCompile 'org.springframework:spring-test'
     testCompile 'cglib:cglib-nodep'
     testCompile 'org.objenesis:objenesis'
 }

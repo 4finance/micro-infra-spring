@@ -6,12 +6,12 @@ buildscript {
     }
     dependencies {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE'
-        classpath "pl.allegro.tech.build:axion-release-plugin:1.7.2"
+        classpath 'pl.allegro.tech.build:axion-release-plugin:1.7.2'
         classpath 'com.toomuchcoding:uptodate-gradle-plugin:+'
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:+"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
         if (project.hasProperty("coverage")) {
             classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+'
-            classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5"
+            classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5'
         }
     }
 }
@@ -108,12 +108,12 @@ configure(srcSubprojects) {
 
         dependencies {
             dependency 'org.codehaus.groovy:groovy-all:2.4.13'
-            dependency "com.google.guava:guava:20.0"
+            dependency 'com.google.guava:guava:20.0'
             dependency 'commons-io:commons-io:2.6'
 
-            dependencySet(group:"org.apache.curator", version: "2.11.1") {
-                entry "curator-x-discovery"
-                entry "curator-test"
+            dependencySet(group: 'org.apache.curator', version: '2.11.1') {
+                entry 'curator-x-discovery'
+                entry 'curator-test'
             }
             dependencySet(group: 'org.aspectj', version: '1.8.13') {
                 entry 'aspectjrt'

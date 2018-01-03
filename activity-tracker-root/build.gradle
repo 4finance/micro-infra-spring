@@ -7,7 +7,7 @@ subprojects {
 
     dependencies {
         compile 'org.aspectj:aspectjrt'
-        testCompile group: 'junit', name: 'junit', version: '4.12'
+        testCompile 'junit:junit:4.12'
         testCompile 'org.codehaus.groovy:groovy-all'
         testCompile 'org.spockframework:spock-core'
     }
@@ -25,8 +25,8 @@ project(':activity-tracker-root:activity-tracker') {
 project(':activity-tracker-root:activity-tracker-boot-starter') {
     dependencies {
         compile project(':activity-tracker-root:activity-tracker')
-        compile('org.springframework.boot:spring-boot-starter')
-        testCompile('org.springframework.boot:spring-boot-starter-test')
-        testCompile('org.assertj:assertj-core')
+        compile 'org.springframework.boot:spring-boot-starter'
+        testCompile 'org.springframework.boot:spring-boot-starter-test'
+        testCompile 'org.assertj:assertj-core'
     }
 }

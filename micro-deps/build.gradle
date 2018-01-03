@@ -20,7 +20,7 @@ project(':micro-deps-root:micro-deps') {
         testCompile 'org.codehaus.groovy:groovy-all'
         testCompile "org.spockframework:spock-core"
         testCompile 'info.solidsoft.spock:spock-global-unroll'
-        testCompile 'com.jayway.awaitility:awaitility-groovy'
+        testCompile 'org.awaitility:awaitility-groovy'
     }
 }
 
@@ -47,7 +47,7 @@ project(':micro-deps-root:micro-deps-jax-rs-jersey') {
         testCompile 'org.codehaus.groovy:groovy-all'
         testCompile "org.spockframework:spock-core"
         testCompile 'info.solidsoft.spock:spock-global-unroll'
-        testCompile 'com.jayway.awaitility:awaitility-groovy'
+        testCompile 'org.awaitility:awaitility-groovy'
     }
 }
 

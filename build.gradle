@@ -133,9 +133,9 @@ configure(srcSubprojects) {
                 entry "spock-spring"
             }
             dependency "info.solidsoft.spock:spock-global-unroll:0.5.0"
-            dependencySet(group:'com.jayway.awaitility', version: '1.7.0') {
-                entry "awaitility"
-                entry "awaitility-groovy"
+            dependencySet(group: 'org.awaitility', version: '3.0.0') {
+                entry 'awaitility'
+                entry 'awaitility-groovy'
             }
             dependencySet(group: 'com.jayway.jsonpath', version: '2.4.0') {
                 entry 'json-path'

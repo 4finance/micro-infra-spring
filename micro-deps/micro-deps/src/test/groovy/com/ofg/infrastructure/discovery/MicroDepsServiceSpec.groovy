@@ -1,7 +1,6 @@
 package com.ofg.infrastructure.discovery
 
 import com.google.common.base.Optional
-import com.jayway.awaitility.groovy.AwaitilitySupport
 import com.ofg.infrastructure.discovery.util.MicroDepsService
 import com.ofg.infrastructure.discovery.watcher.DependencyState
 import com.ofg.infrastructure.discovery.watcher.DependencyWatcherListener
@@ -15,7 +14,8 @@ import spock.lang.Specification
 
 import java.util.concurrent.TimeUnit
 
-@Mixin(AwaitilitySupport)
+import static org.awaitility.Awaitility.await
+
 class MicroDepsServiceSpec extends Specification {
 
     private static final RetryPolicy RETRY_POLICY = new RetryNTimes(50, 100)

@@ -14,6 +14,7 @@ import org.springframework.http.MediaType
 import org.springframework.mock.env.MockPropertySource
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.TestPropertySource
 
 import static com.ofg.config.BasicProfiles.DEVELOPMENT
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
@@ -23,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ContextConfiguration(classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery, ViewConfiguration],
                       initializers = PropertyMockingApplicationContextInitializer.class)
+@TestPropertySource(properties = ["spring.cloud.service-registry.auto-registration.enabled=false"])
 @ActiveProfiles(DEVELOPMENT)
 class AcceptingUnquotedFieldsInJsonSpec extends MvcCorrelationIdSettingIntegrationSpec {
 

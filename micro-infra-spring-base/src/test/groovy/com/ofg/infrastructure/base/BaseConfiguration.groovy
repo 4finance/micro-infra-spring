@@ -5,7 +5,7 @@ import groovy.transform.CompileStatic
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration
 import org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration
-import org.springframework.cloud.sleuth.zipkin.ZipkinAutoConfiguration
+import org.springframework.cloud.sleuth.zipkin2.ZipkinAutoConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.EnableAspectJAutoProxy

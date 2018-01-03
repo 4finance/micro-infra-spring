@@ -14,7 +14,7 @@ dependencies {
     compile 'org.springframework.cloud:spring-cloud-config-server'
     compile "org.springframework.security:spring-security-rsa:$springSecurityRsaVersion"
     compile 'org.codehaus.groovy:groovy-all'
-    compile "org.aspectj:aspectjrt"
+    compile 'org.aspectj:aspectjrt'
     compile 'commons-io:commons-io'
     compile 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery'
 

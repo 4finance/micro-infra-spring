@@ -14,7 +14,7 @@ dependencies {
     compile 'org.codehaus.groovy:groovy-all'
     compile 'com.fasterxml.jackson.core:jackson-databind'
     compile "org.springframework.boot:spring-boot-starter-web"
-    compile "org.aspectj:aspectjrt"
+    compile 'org.aspectj:aspectjrt'
     compile "io.dropwizard.metrics:metrics-core:$metricsVersion"
     compile "io.dropwizard.metrics:metrics-jvm:$metricsVersion"
     compile "io.dropwizard.metrics:metrics-graphite:$metricsVersion"
@@ -26,7 +26,7 @@ dependencies {
     compile "org.springframework.cloud:spring-cloud-starter-feign"
     compile "org.apache.commons:commons-collections4:4.1"
 
-    runtime "org.aspectj:aspectjweaver"
+    runtime 'org.aspectj:aspectjweaver'
 
     testCompile "org.springframework.boot:spring-boot-starter-test"
     testCompile "org.spockframework:spock-core"

@@ -115,6 +115,10 @@ configure(srcSubprojects) {
                 entry "curator-x-discovery"
                 entry "curator-test"
             }
+            dependencySet(group: 'org.aspectj', version: '1.8.13') {
+                entry 'aspectjrt'
+                entry 'aspectjweaver'
+            }
 
             //test
             dependency "ch.qos.logback:logback-core:1.1.7"

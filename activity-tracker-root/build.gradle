@@ -6,7 +6,7 @@ subprojects {
     targetCompatibility = 1.8
 
     dependencies {
-        compile group: 'org.aspectj', name: 'aspectjrt'
+        compile 'org.aspectj:aspectjrt'
         testCompile group: 'junit', name: 'junit', version: '4.12'
         testCompile 'org.codehaus.groovy:groovy-all'
         testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
@@ -15,7 +15,7 @@ subprojects {
 
 project(':activity-tracker-root:activity-tracker') {
     dependencies {
-        compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.8.10'
+        compile 'org.aspectj:aspectjweaver'
         compile group: 'io.dropwizard.metrics', name: 'metrics-core', version: '3.1.2'
         compile 'commons-beanutils:commons-beanutils:1.9.3'
         compile 'com.google.guava:guava'

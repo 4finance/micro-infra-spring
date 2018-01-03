@@ -14,7 +14,7 @@ dependencies {
     compile 'javax.servlet:javax.servlet-api:3.1.0'
     compile "org.apache.curator:curator-x-discovery"
     compile "org.apache.curator:curator-test"
-    compile "commons-io:commons-io"
+    compile 'commons-io:commons-io'
     compile "org.slf4j:slf4j-api"
     compile "org.slf4j:log4j-over-slf4j"
     compile 'ch.qos.logback:logback-classic'

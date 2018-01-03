@@ -17,7 +17,7 @@ project(':micro-deps-root:micro-deps') {
         compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.2'
         compile 'log4j:log4j:1.2.17'
 
-        testCompile "org.codehaus.groovy:groovy-all"
+        testCompile 'org.codehaus.groovy:groovy-all'
         testCompile "org.spockframework:spock-core"
         testCompile 'info.solidsoft.spock:spock-global-unroll'
         testCompile 'com.jayway.awaitility:awaitility-groovy'
@@ -44,7 +44,7 @@ project(':micro-deps-root:micro-deps-jax-rs-jersey') {
         testCompile "org.springframework.boot:spring-boot-starter-tomcat"
 
         testCompile project(':micro-deps-root:micro-deps-spring-config')
-        testCompile "org.codehaus.groovy:groovy-all"
+        testCompile 'org.codehaus.groovy:groovy-all'
         testCompile "org.spockframework:spock-core"
         testCompile 'info.solidsoft.spock:spock-global-unroll'
         testCompile 'com.jayway.awaitility:awaitility-groovy'

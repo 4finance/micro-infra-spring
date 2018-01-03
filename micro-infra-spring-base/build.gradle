@@ -11,7 +11,7 @@ sourceSets.main.groovy.srcDirs += ["src/main/java", "src/main/groovy"]
 dependencies {
     compile project(":micro-deps-root:micro-deps-spring-config")
 
-    compile "org.codehaus.groovy:groovy-all"
+    compile 'org.codehaus.groovy:groovy-all'
     compile 'com.fasterxml.jackson.core:jackson-databind'
     compile "org.springframework.boot:spring-boot-starter-web"
     compile "org.aspectj:aspectjrt"

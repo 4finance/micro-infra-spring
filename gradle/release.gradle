@@ -10,9 +10,7 @@ buildscript {
     }
     repositories {
         jcenter()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
+        gradlePluginPortal()
     }
     dependencies {
         classpath "pl.allegro.tech.build:axion-release-plugin:1.7.2"

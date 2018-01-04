@@ -2,16 +2,16 @@ buildscript {
     repositories {
         mavenLocal()
         jcenter()
-        maven { url "https://plugins.gradle.org/m2/" } //for sonarqube plugin
+        gradlePluginPortal() //for sonarqube plugin
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE"
-        classpath "pl.allegro.tech.build:axion-release-plugin:1.7.2"
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE'
+        classpath 'pl.allegro.tech.build:axion-release-plugin:1.7.2'
         classpath 'com.toomuchcoding:uptodate-gradle-plugin:+'
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:+"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:+'
         if (project.hasProperty("coverage")) {
             classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:+'
-            classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5"
+            classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5'
         }
     }
 }
@@ -71,7 +71,7 @@ allprojects {
 
                     // To prevent an accidental usage of groovy-all.jar and groovy.jar in different versions
                     // all modularized Groovy jars are replaced with groovy-all.jar by default.
-                    if (details.requested.group == 'org.codehaus.groovy' && details.requested.name != "groovy-all") {
+                    if (details.requested.group == 'org.codehaus.groovy' && details.requested.name != 'groovy-all') {
                         details.useTarget("org.codehaus.groovy:groovy-all:${details.requested.version}")
                     }
                 }
@@ -103,35 +103,46 @@ configure(srcSubprojects) {
 
     dependencyManagement {
         imports {
-            mavenBom 'org.springframework.cloud:spring-cloud-starter-parent:Dalston.SR4'
+            mavenBom 'org.springframework.cloud:spring-cloud-starter-parent:Edgware.RELEASE'
         }
 
         dependencies {
-            dependency "org.codehaus.groovy:groovy-all:2.4.12"
-            dependency "com.google.guava:guava:20.0"
-            dependency "commons-io:commons-io:2.5"
+            dependency 'org.codehaus.groovy:groovy-all:2.4.13'
+            dependency 'com.google.guava:guava:20.0'
+            dependency 'commons-io:commons-io:2.6'
 
-            dependencySet(group:"org.apache.curator", version: "2.11.1") {
-                entry "curator-x-discovery"
-                entry "curator-test"
+            dependencySet(group: 'org.apache.curator', version: '2.11.1') {
+                entry 'curator-x-discovery'
+                entry 'curator-test'
+            }
+            dependencySet(group: 'org.aspectj', version: '1.8.13') {
+                entry 'aspectjrt'
+                entry 'aspectjweaver'
             }
 
             //test
-            dependency "ch.qos.logback:logback-core:1.1.7"
-            dependency "ch.qos.logback:logback-classic:1.1.7"
-            dependency "com.jayway.restassured:rest-assured:2.9.0"
-            dependency "com.github.tomakehurst:wiremock:2.6.0"
-            dependency "cglib:cglib-nodep:3.2.5"
-            dependency "org.objenesis:objenesis:2.5.1"
+            dependency 'io.rest-assured:rest-assured:3.0.6'
+            dependency 'com.github.tomakehurst:wiremock:2.12.0'
+            dependency 'cglib:cglib-nodep:3.2.5'
+            dependency 'org.objenesis:objenesis:2.6'
+            dependency 'com.github.stefanbirkner:system-rules:1.17.0'
 
-            dependencySet(group:'org.spockframework', version: '1.1-groovy-2.4') {
-                entry "spock-core"
-                entry "spock-spring"
+            dependencySet(group: 'ch.qos.logback', version: '1.2.3') {
+                entry 'logback-core'
+                entry 'logback-classic'
             }
-            dependency "info.solidsoft.spock:spock-global-unroll:0.5.0"
-            dependencySet(group:'com.jayway.awaitility', version: '1.7.0') {
-                entry "awaitility"
-                entry "awaitility-groovy"
+            dependencySet(group: 'org.spockframework', version: '1.1-groovy-2.4') {
+                entry 'spock-core'
+                entry 'spock-spring'
+            }
+            dependency 'info.solidsoft.spock:spock-global-unroll:0.5.1'
+            dependencySet(group: 'org.awaitility', version: '3.0.0') {
+                entry 'awaitility'
+                entry 'awaitility-groovy'
+            }
+            dependencySet(group: 'com.jayway.jsonpath', version: '2.4.0') {
+                entry 'json-path'
+                entry 'json-path-assert'
             }
         }
     }
@@ -163,7 +174,7 @@ configure(srcSubprojects) {
         groovyClasspath = project.configurations.jansi
     }
     dependencies {
-        jansi 'org.fusesource.jansi:jansi:1.15'
+        jansi 'org.fusesource.jansi:jansi:1.16'
     }
 }
 

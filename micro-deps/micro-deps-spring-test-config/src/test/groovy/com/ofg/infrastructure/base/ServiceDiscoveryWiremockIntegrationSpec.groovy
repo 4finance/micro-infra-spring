@@ -10,14 +10,14 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.web.WebAppConfiguration
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse
-import static com.jayway.restassured.RestAssured.get
 import static com.ofg.infrastructure.base.dsl.WireMockHttpRequestMapper.wireMockGet
+import static io.restassured.RestAssured.get
 import static org.springframework.http.HttpStatus.OK
 
 @WebAppConfiguration
 @ContextConfiguration(classes = [MockServerConfiguration, BaseConfiguration, ServiceResolverConfiguration])
 class ServiceDiscoveryWiremockIntegrationSpec extends MvcWiremockIntegrationSpec {
-   
+
     @Autowired ServiceResolver serviceResolver
     @Autowired ServiceConfigurationResolver serviceConfigurationResolver
 

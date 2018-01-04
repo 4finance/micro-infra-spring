@@ -6,8 +6,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import spock.lang.Shared
 import spock.lang.Specification
 
-import static com.jayway.restassured.RestAssured.get
 import static com.ofg.config.BasicProfiles.TEST
+import static io.restassured.RestAssured.get
 import static org.hamcrest.Matchers.equalTo
 
 class ConsumerDrivenContractSpec extends Specification {

@@ -1,6 +1,5 @@
 package com.ofg.infrastructure.property
 
-import com.jayway.awaitility.Awaitility
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.cloud.config.client.ConfigClientAutoConfiguration
 import org.springframework.cloud.context.config.annotation.RefreshScope
@@ -16,7 +15,7 @@ import spock.util.concurrent.PollingConditions
 import javax.annotation.PostConstruct
 import java.util.concurrent.atomic.AtomicInteger
 
-import static com.jayway.awaitility.Awaitility.await
+import static org.awaitility.Awaitility.await
 
 @IgnoreIf({ os.macOs }) //Due to problems with native file system poller implementation - https://github.com/4finance/micro-infra-spring/issues/119
 class FileSystemPollerSpec extends AbstractIntegrationSpec {

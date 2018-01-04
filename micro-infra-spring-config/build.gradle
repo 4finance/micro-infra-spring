@@ -1,9 +1,5 @@
 description = 'Microservice Spring infrastructure for properties management'
 
-ext {
-    springSecurityRsaVersion = "1.0.0.RELEASE"
-}
-
 sourceSets.main.java.srcDirs = []
 sourceSets.main.groovy.srcDirs += ["src/main/java", "src/main/groovy"]
 
@@ -12,21 +8,21 @@ dependencies {
 
     compile 'org.springframework.cloud:spring-cloud-config-client'
     compile 'org.springframework.cloud:spring-cloud-config-server'
-    compile "org.springframework.security:spring-security-rsa:$springSecurityRsaVersion"
-    compile "org.codehaus.groovy:groovy-all"
-    compile "org.aspectj:aspectjrt"
-    compile "commons-io:commons-io"
+    compile 'org.springframework.security:spring-security-rsa:1.0.5.RELEASE'
+    compile 'org.codehaus.groovy:groovy-all'
+    compile 'org.aspectj:aspectjrt'
+    compile 'commons-io:commons-io'
     compile 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery'
 
     testCompile 'org.aspectj:aspectjweaver'
-    testCompile "org.spockframework:spock-core"
+    testCompile 'org.spockframework:spock-core'
     testCompile 'info.solidsoft.spock:spock-global-unroll'
-    testRuntime "org.springframework:spring-test"
-    testRuntime "org.spockframework:spock-spring"
-    testRuntime "ch.qos.logback:logback-classic"
-    testCompile "com.jayway.awaitility:awaitility"
-    testCompile "com.jayway.awaitility:awaitility-groovy"
-    testCompile 'com.github.stefanbirkner:system-rules:1.16.0'
+    testRuntime 'org.springframework:spring-test'
+    testRuntime 'org.spockframework:spock-spring'
+    testRuntime 'ch.qos.logback:logback-classic'
+    testCompile 'org.awaitility:awaitility'
+    testCompile 'org.awaitility:awaitility-groovy'
+    testCompile 'com.github.stefanbirkner:system-rules'
 }
 
 test {

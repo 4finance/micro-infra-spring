@@ -1,21 +1,21 @@
 description = 'Utility controlling presence of correlationId in message flow.'
 
 ext {
-    camelVersion = '2.15.3'
+    camelVersion = '2.20.1'
 }
 
 dependencies {
     compile project(':micro-infra-spring-base')
-    compile("org.apache.camel:camel-spring-javaconfig:$camelVersion") {
+    compile("org.apache.camel:camel-spring-javaconfig:${camelVersion}") {
         exclude group: 'org.springframework', module: 'spring-test'
     }
 
-    testCompile "org.spockframework:spock-core"
-    testRuntime "org.spockframework:spock-spring"
+    testCompile 'org.spockframework:spock-core'
+    testRuntime 'org.spockframework:spock-spring'
     testCompile 'info.solidsoft.spock:spock-global-unroll'
-    testCompile "org.codehaus.groovy:groovy-all"
-    testCompile "org.apache.camel:camel-test-spring:$camelVersion"
-    testCompile "org.springframework:spring-test"
-    testCompile 'cglib:cglib-nodep:3.2.5'
-    testCompile 'org.objenesis:objenesis:2.5.1'
+    testCompile 'org.codehaus.groovy:groovy-all'
+    testCompile "org.apache.camel:camel-test-spring:${camelVersion}"
+    testCompile 'org.springframework:spring-test'
+    testCompile 'cglib:cglib-nodep'
+    testCompile 'org.objenesis:objenesis'
 }

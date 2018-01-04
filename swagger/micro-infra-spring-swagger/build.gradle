@@ -1,9 +1,13 @@
+ext {
+    springfoxVersion = '2.6.1'
+}
+
 dependencies {
-    compile('io.springfox:springfox-swagger-ui:2.6.1')
-    compile("io.springfox:springfox-core:2.6.1")
-    compile("io.springfox:springfox-spi:2.6.1")
-    compile("io.springfox:springfox-schema:2.6.1")
-    compile("io.springfox:springfox-spring-web:2.6.1")
-    compile("io.springfox:springfox-swagger2:2.6.1")
-    compile "org.springframework.boot:spring-boot-starter-web"
+    compile "io.springfox:springfox-swagger-ui:${springfoxVersion}"
+    compile "io.springfox:springfox-core:${springfoxVersion}"
+    compile "io.springfox:springfox-spi:${springfoxVersion}"
+    compile "io.springfox:springfox-schema:${springfoxVersion}"
+    compile "io.springfox:springfox-spring-web:${springfoxVersion}"
+    compile "io.springfox:springfox-swagger2:${springfoxVersion}"
+    compile 'org.springframework.boot:spring-boot-starter-web'
 }

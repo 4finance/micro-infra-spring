@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ContextConfiguration(classes = [Config, BaseConfiguration, ConfigurationWithoutServiceDiscovery, ViewConfiguration],
                       initializers = PropertyMockingApplicationContextInitializer.class)
-@TestPropertySource(properties = ["spring.cloud.service-registry.auto-registration.enabled=false"])
+@TestPropertySource(properties = ['spring.cloud.service-registry.auto-registration.enabled=false'])
 @ActiveProfiles(DEVELOPMENT)
 class AcceptingUnquotedFieldsInJsonSpec extends MvcCorrelationIdSettingIntegrationSpec {
 

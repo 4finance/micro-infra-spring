@@ -19,9 +19,9 @@ class RequestDataProviderTest extends Specification {
             provider.store("1", httpData());
         then:
             provider.retrieve("1") != null
-            await().atMost(TIME_TO_LIVE_MILLIS + 500, MILLISECONDS).untilAsserted({
+            await().atMost(TIME_TO_LIVE_MILLIS + 500, MILLISECONDS).untilAsserted {
                 assert provider.retrieve("1") == null    
-            })
+            }
     }
 
     private static HttpData httpData() {

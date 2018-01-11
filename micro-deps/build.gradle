@@ -94,7 +94,7 @@ project(':micro-deps-root:micro-deps-spring-test-config') {
         compile 'org.spockframework:spock-spring'
         compile 'org.springframework:spring-webmvc'
         compile 'org.springframework:spring-test'
-        compile 'com.github.tomakehurst:wiremock'
+        compile 'com.github.tomakehurst:wiremock-standalone'
         compile 'javax.servlet:javax.servlet-api:3.1.0'
 
         testCompile 'io.rest-assured:rest-assured'

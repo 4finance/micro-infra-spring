@@ -1,7 +1,7 @@
 description = 'Microservice base infrastructure registered in Spring'
 
 ext {
-    metricsVersion = '4.0.0'
+    metricsVersion = '4.0.2'
     hystrixVersion = '1.5.13'
 }
 

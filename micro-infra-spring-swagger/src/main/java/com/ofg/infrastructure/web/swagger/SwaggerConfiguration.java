@@ -1,5 +1,7 @@
 package com.ofg.infrastructure.web.swagger;
 
+import java.util.ArrayList;
+
 import static com.google.common.base.Predicates.or;
 import static springfox.documentation.builders.PathSelectors.regex;
 
@@ -41,14 +43,15 @@ public class SwaggerConfiguration extends WebMvcConfigurerAdapter {
                            @Value("${rest.api.contact:info@4finance.com}") String contactEmail,
                            @Value("${rest.api.license.type:4finance internal licence}") String licenseType,
                            @Value("${rest.api.license.url:http://4finance.com}") String licenseUrl) {
-        return new ApiInfo(title, description, apiVersion, terms, new Contact(null, null, contactEmail), licenseType, licenseUrl);
+        return new ApiInfo(title, description, apiVersion, terms, new Contact(null, null, contactEmail), licenseType, licenseUrl, new ArrayList<>());
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/swagger/**", "/*.js", "/images/**", "/lib/**", "/css/**")
-                .addResourceLocations("classpath:/webjars/springfox-swagger-ui/", "classpath:/webjars/springfox-swagger-ui/images/",
-                        "classpath:/webjars/springfox-swagger-ui/lib/", "classpath:/webjars/springfox-swagger-ui/css/");
+        registry.addResourceHandler("/swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
     @Override

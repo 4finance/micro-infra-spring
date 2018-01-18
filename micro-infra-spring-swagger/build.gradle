@@ -1,5 +1,5 @@
 ext {
-    springfoxVersion = '2.6.1'
+    springfoxVersion = '2.8.0'
 }
 
 dependencies {

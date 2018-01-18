@@ -5,6 +5,10 @@ before_install:
   - "export JAVA_OPTS='-Xmx1024m'"
   - "echo $GRADLE_OPTS"
   - "export GRADLE_OPTS='-Dorg.gradle.parallel=false'"
+  - "wget https://chromedriver.storage.googleapis.com/2.35/chromedriver_linux64.zip -P $HOME/"
+  - "mkdir $HOME/chromedriver"
+  - "unzip $HOME/chromedriver_linux64.zip -d $HOME/chromedriver"
+  - "export PATH=$PATH:$HOME/chromedriver"
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
 
@@ -33,7 +37,7 @@ jdk:
 - oraclejdk8
 
 addons:
-  firefox: "46.0.1"
+  chrome: stable
 
 env:
   global:

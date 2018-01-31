@@ -17,4 +17,4 @@ dumpCurrentMicroInfraSpringVersionToFile
 git clone https://github.com/4finance/boot-microservice.git
 cd boot-microservice
 updateMicroInfraSpringVersionInConfigurationFile
-./gradlew clean check guiTest uptodate --stacktrace --continue --no-daemon
+./gradlew clean check guiTest uptodate --stacktrace --continue --no-daemon --info -Dwebdriver=chrome

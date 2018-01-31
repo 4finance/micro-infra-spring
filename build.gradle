@@ -30,7 +30,7 @@ allprojects {
     project.version = scmVersion.version
 }
 
-Set emptySubprojects = [project(':swagger'), project(':micro-deps-root'), project(':stub-runner-root')]
+Set emptySubprojects = [project(':micro-deps-root'), project(':stub-runner-root')]
 Set srcSubprojects = subprojects - emptySubprojects
 
 configure(srcSubprojects) {
@@ -201,14 +201,13 @@ if (project.hasProperty("coverage")) {
 
         test {
             jacoco {
-                excludes = ['*Configuration', 'repackaged.*']
+                excludes = ['*Configuration']
             }
         }
 
         sonarqube {
             properties {
                 property "sonar.groovy.jacoco.reportPath", "$buildDir/jacoco/test.exec"     //TODO: Could be taken from JaCoCo extension directly
-                property "sonar.exclusions", "**/src/main/resources/static/swagger/**"
             }
         }
     }

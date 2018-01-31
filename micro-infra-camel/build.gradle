@@ -1,7 +1,7 @@
 description = 'Utility controlling presence of correlationId in message flow.'
 
 ext {
-    camelVersion = '2.20.1'
+    camelVersion = '2.20.2'
 }
 
 dependencies {

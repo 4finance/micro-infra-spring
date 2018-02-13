@@ -16,6 +16,8 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger.web.UiConfiguration;
+import springfox.documentation.swagger.web.UiConfigurationBuilder;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
@@ -44,6 +46,13 @@ public class SwaggerConfiguration extends WebMvcConfigurerAdapter {
                            @Value("${rest.api.license.type:4finance internal licence}") String licenseType,
                            @Value("${rest.api.license.url:http://4finance.com}") String licenseUrl) {
         return new ApiInfo(title, description, apiVersion, terms, new Contact(null, null, contactEmail), licenseType, licenseUrl, new ArrayList<>());
+    }
+
+    @Bean
+    UiConfiguration uiConfig() {
+        return UiConfigurationBuilder.builder()
+                .validatorUrl("")
+                .build();
     }
 
     @Override

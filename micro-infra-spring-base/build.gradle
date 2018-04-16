@@ -1,7 +1,6 @@
 description = 'Microservice base infrastructure registered in Spring'
 
 ext {
-    metricsVersion = '4.0.2'
     hystrixVersion = '1.5.13'
 }
 
@@ -15,10 +14,10 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind'
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.aspectj:aspectjrt'
-    compile "io.dropwizard.metrics:metrics-core:${metricsVersion}"
-    compile "io.dropwizard.metrics:metrics-jvm:${metricsVersion}"
-    compile "io.dropwizard.metrics:metrics-jmx:${metricsVersion}"
-    compile "io.dropwizard.metrics:metrics-graphite:${metricsVersion}"
+    compile 'io.dropwizard.metrics:metrics-core'
+    compile 'io.dropwizard.metrics:metrics-jvm'
+    compile 'io.dropwizard.metrics:metrics-jmx'
+    compile 'io.dropwizard.metrics:metrics-graphite'
     compile 'com.nurkiewicz.asyncretry:asyncretry-jdk7:0.0.6'
     compile "com.netflix.hystrix:hystrix-core:${hystrixVersion}"
     compile "com.netflix.hystrix:hystrix-metrics-event-stream:${hystrixVersion}"
@@ -40,6 +39,6 @@ dependencies {
     testCompile 'com.github.stefanbirkner:system-rules'
     testCompile project(':micro-infra-spring-test')
     testCompile 'org.codehaus.gpars:gpars:1.2.1'
-    testCompile 'org.mockito:mockito-core:2.13.0'
+    testCompile 'org.mockito:mockito-core:2.18.0'
     testCompile 'org.awaitility:awaitility-groovy'
 }

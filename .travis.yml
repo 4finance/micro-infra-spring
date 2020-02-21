@@ -33,6 +33,8 @@ cache:
 
 language: groovy
 
+dist: trusty
+
 jdk:
 - oraclejdk8
 
